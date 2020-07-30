@@ -1,30 +1,32 @@
-activemq-data/
-.idea/
-*.iml
-*.ipr
-*.iws
-.metadata/
-.recommenders/
-.classpath
-.project
-.cache
-.settings/
-.factorypath
-.checkstyle
-.gradle/
-.vscode/
-build/
-deploy/
-target/
-mods/
-*.swp
-epom
-log
-npm-debug.log
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+
+#generated files:
+config.js
+keycloak.js
+keycloak.json
+
+# testing
+coverage
+
+# production
+build
+dist
+
+# misc
 .DS_Store
-phantomjsdriver.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-generated-sources/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-/state/
-bin/
+.idea
+.cache
+.rts2_cache*
+lerna-debug.log

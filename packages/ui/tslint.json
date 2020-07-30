@@ -1,0 +1,17 @@
+{
+  "extends": ["tslint:recommended", "tslint-react", "tslint-eslint-rules", "tslint-config-prettier"],
+  "linterOptions": {
+    "exclude": [
+      "**/node_modules/**/*.ts"
+    ]
+  },
+  "member-access": false,
+  "rules": {
+    "ordered-imports": [false],
+    "interface-name": false,
+    "member-access": false,
+    "no-console": false,
+    "no-shadowed-variable": false,
+    "prefer-for-of": false
+  }
+}

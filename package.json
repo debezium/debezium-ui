@@ -1,0 +1,46 @@
+{
+  "description": "Debezium UI POC",
+  "repository": "https://github.com/debezium/debezium-ui-poc.git",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@patternfly/react-core",
+      "**/@patternfly/react-core/**",
+      "**/patternfly",
+      "**/@rh-uxd/integration-core",
+      "**/@rh-uxd/integration-core/**",
+      "**/@rh-uxd/integration-react",
+      "**/@rh-uxd/integration-react/**",
+      "**/rh-uxd"
+    ]
+  },
+  "scripts": {
+    "clean": "lerna run clean",
+    "prebuild": "./init-dev.sh",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "start": "lerna run start --scope=@debezium/ui",
+    "test": "echo \"TODO: Add tests\" && exit 0 "
+  },
+  "devDependencies": {
+    "lerna": "^3.20.2",
+    "typescript": "^3.8.3",
+    "typescript-tslint-plugin": "^0.5.5",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "name": "debezium-ui-poc",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "babel-preset-es2015": "^6.24.1",
+    "js-base64": "^2.5.2",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
