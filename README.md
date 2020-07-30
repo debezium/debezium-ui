@@ -17,7 +17,15 @@ This repository contains a proof-of-concept for a potential future web-based UI 
 
 ## Build
 
-Tbd.
+Overall build of the backend services and UI is TBD.
+
+## Deployment
+
+Deployment of the backend services and UI are TBD.
+
+## UI Development
+
+The UI code for the POC is located in the ui folder, with README instructions [here](./ui/README.md) to launch the UI for development.
 
 ## Contributing
 

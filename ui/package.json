@@ -1,0 +1,25 @@
+{
+  "description": "Debezium UI POC",
+  "repository": "https://github.com/debezium/debezium-ui-poc.git",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@patternfly/react-core",
+      "**/@patternfly/react-core/**",
+      "**/patternfly"
+    ]
+  },
+  "scripts": {
+    "clean": "lerna run clean",
+    "build": "lerna run build",
+    "start": "lerna run start --scope=@debezium/ui"
+  },
+  "devDependencies": {
+    "lerna": "3.21.0"
+  },
+  "name": "debezium-ui-poc"
+}
