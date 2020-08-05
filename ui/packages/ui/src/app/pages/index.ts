@@ -1,1 +1,2 @@
-export * from './dashboard/dashboard';
+export * from './connections/ConnectionsPage';
+export * from './createConnection/CreateConnectionPage';
