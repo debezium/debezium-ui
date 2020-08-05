@@ -2,7 +2,7 @@ import React  from "react";
 import { Page } from "@patternfly/react-core";
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import AppHeader from "./appHeader";
-import {DashboardPage} from "./pages";
+import {ConnectionsPage, CreateConnectionPage} from "./pages";
 import './app.css';
 
 export const App: React.FunctionComponent = () => {
@@ -14,8 +14,9 @@ export const App: React.FunctionComponent = () => {
         header={<AppHeader />}
         className="app-page"
       >
-        <Route path='/' exact={true} component={DashboardPage}/>
-        <Route path='/dashboard' exact={true} component={DashboardPage}/>
+        <Route path='/' exact={true} component={ConnectionsPage}/>
+        <Route path='/connections' exact={true} component={ConnectionsPage}/>
+        <Route path='/create-connection' exact={true} component={CreateConnectionPage}/>
       </Page>
       </Router>
   );
