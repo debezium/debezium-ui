@@ -8,7 +8,7 @@
     <groupId>io.debezium</groupId>
     <artifactId>debezium-ui-poc</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>debezium-ui-poc</name>
 
     <properties>
@@ -24,6 +24,7 @@
         <frontend.maven.plugin.version>1.10.0</frontend.maven.plugin.version>
         <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
         <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
+        <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
 
         <!-- UI Build Tools -->
         <node.version>10.20.1</node.version>
@@ -31,6 +32,14 @@
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
