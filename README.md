@@ -17,15 +17,27 @@ This repository contains a proof-of-concept for a potential future web-based UI 
 
 ## Build
 
-Overall build of the backend services and UI is TBD.
+The entire application (UI and backend) can be built via Maven:
 
-## Deployment
+```
+mvn clean install
+```
 
-Deployment of the backend services and UI are TBD.
+The UI part is an SPA application based on the React framework. It is packaged as JAR,
+whose contents are then exposed by the Quarkus-based backend application.
 
-## UI Development
+### UI Development
 
-The UI code for the POC is located in the ui folder, with README instructions [here](./ui/README.md) to launch the UI for development.
+The UI code for the PoC is located in the _ui_ folder, with README instructions [here](./ui/README.md) to launch the UI for development.
+
+### Backend
+
+The UI backend is a Quarkus application located under _backend_.
+You can run it in development mode like so:
+
+```
+mvn -pl backend compile quarkus:dev
+```
 
 ## Contributing
 
