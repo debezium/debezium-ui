@@ -9,7 +9,7 @@ import { Button,
          Title, 
          PageSection, 
          PageSectionVariants } from '@patternfly/react-core';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../app.css';
 
 export const ConnectionsPage: React.FunctionComponent = () => {
