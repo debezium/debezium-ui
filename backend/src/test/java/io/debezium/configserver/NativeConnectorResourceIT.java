@@ -1,9 +1,9 @@
-package org.acme;
+package io.debezium.configserver;
 
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeExampleResourceIT extends ExampleResourceTest {
+public class NativeConnectorResourceIT extends ConnectorResourceTest {
 
     // Execute the same tests but in native mode.
 }
