@@ -5,6 +5,7 @@ import { Breadcrumb,
          PageSectionVariants, 
          Wizard } from '@patternfly/react-core';
 import '../../app.css';
+import {SelectConnectorComponent} from './index'
 
 export const CreateConnectionPage: React.FunctionComponent = () => {
   
@@ -27,7 +28,7 @@ export const CreateConnectionPage: React.FunctionComponent = () => {
   };
 
   const wizardSteps = [
-    { id: 1, name: 'Select Connector', component: <p>component for selecting connector type</p> },
+    { id: 1, name: 'Select Connector', component: <SelectConnectorComponent/> },
     { id: 2, name: 'Configure Connector', component: <p>component for connector config</p>, canJumpTo: stepIdReached >= 2 },
     { id: 3, name: 'Select Tables', component: <p>component for table selection</p>, canJumpTo: stepIdReached >= 3 },
     { id: 4, name: 'Data Options', component: <p>component for data options</p>, canJumpTo: stepIdReached >= 4 },
