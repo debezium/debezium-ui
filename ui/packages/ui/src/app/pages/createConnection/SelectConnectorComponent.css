@@ -1,0 +1,11 @@
+.select-connector-component_cardItem{
+    text-align: center;
+    cursor: pointer;
+}
+.select-connector-component_dbIcon{
+    width: 50%;
+    margin: 0 auto;
+}
+.select-connector-component_dbIcon svg{
+    font-size: xx-large;
+}
