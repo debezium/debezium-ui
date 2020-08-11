@@ -17,9 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import io.debezium.configserver.model.BadRequestResponse;
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorType;
+import io.debezium.configserver.rest.model.BadRequestResponse;
 import io.debezium.configserver.service.ConnectorIntegrator;
 
 @Path("/api")

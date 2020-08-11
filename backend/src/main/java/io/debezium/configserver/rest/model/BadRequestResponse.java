@@ -1,4 +1,4 @@
-package io.debezium.configserver.model;
+package io.debezium.configserver.rest.model;
 
 public class BadRequestResponse {
 

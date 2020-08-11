@@ -2,21 +2,13 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>io.debezium.uipoc</groupId>
-        <artifactId>debezium-uipoc-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-
-    <artifactId>debezium-uipoc-backend</artifactId>
-    <packaging>jar</packaging>
-    <name>Debezium UI PoC Backend</name>
-  
-  <properties>
-  </properties>
-  
+  <parent>
+    <groupId>io.debezium.uipoc</groupId>
+    <artifactId>debezium-uipoc-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>debezium-uipoc-backend</artifactId>
+  <name>Debezium UI PoC Backend</name>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -62,6 +54,10 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -82,7 +78,6 @@
         <version>${maven.compiler.plugin.version}</version>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
