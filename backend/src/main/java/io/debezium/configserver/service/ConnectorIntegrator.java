@@ -4,6 +4,7 @@ import java.util.Map;
 
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorType;
+import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 
 public interface ConnectorIntegrator {
@@ -14,6 +15,11 @@ public interface ConnectorIntegrator {
      * Validates the set of connection-related properties.
      */
     ConnectionValidationResult validateConnection(Map<String, String> properties);
+
+    /**
+     * Validates the set of filter-related properties and returns the matching data collection(s).
+     */
+    FilterValidationResult validateFilters(Map<String, String> properties);
 
     /**
      * Validates an arbitrary set of connector properties.

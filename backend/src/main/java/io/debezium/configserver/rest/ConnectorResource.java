@@ -1,5 +1,6 @@
 package io.debezium.configserver.rest;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +18,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import io.debezium.DebeziumException;
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorType;
+import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.rest.model.BadRequestResponse;
+import io.debezium.configserver.rest.model.ServerError;
 import io.debezium.configserver.service.ConnectorIntegrator;
 
 @Path("/api")
@@ -66,6 +70,33 @@ public class ConnectorResource {
                 .build();
     }
 
+    @Path("/connector-types/{id}/validation/filters")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateFilters(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
+        ConnectorIntegrator integrator = integrators.get(connectorTypeId);
+
+        if (integrator == null) {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new BadRequestResponse("Unknown connector type: " + connectorTypeId))
+                    .build();
+        }
+
+        try {
+            FilterValidationResult validationResult = integrator.validateFilters(properties);
+
+            return Response.ok(validationResult)
+                    .build();
+        }
+        catch(DebeziumException e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ServerError("Failed to apply table filters", traceAsString(e)))
+                    .build();
+        }
+    }
+
     @Path("/connector-types/{id}/validation/properties")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -83,5 +114,9 @@ public class ConnectorResource {
 
         return Response.ok(validationResult)
                 .build();
+    }
+
+    private String traceAsString(Exception e) {
+        return e.getStackTrace() != null && e.getStackTrace().length > 0 ? Arrays.toString(e.getStackTrace()) : null;
     }
 }
