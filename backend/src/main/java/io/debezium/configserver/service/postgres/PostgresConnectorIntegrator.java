@@ -1,5 +1,6 @@
 package io.debezium.configserver.service.postgres;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -9,14 +10,19 @@ import java.util.stream.Collectors;
 import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.ConfigKey;
+import org.apache.kafka.common.config.ConfigValue;
 
+import io.debezium.config.Configuration;
+import io.debezium.config.Field;
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.model.ConnectorType;
 import io.debezium.configserver.model.GenericValidationResult;
+import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertyValidationResult;
 import io.debezium.configserver.service.ConnectorIntegrator;
 import io.debezium.connector.postgresql.PostgresConnector;
+import io.debezium.connector.postgresql.PostgresConnectorConfig;
 
 public class PostgresConnectorIntegrator implements ConnectorIntegrator {
 
@@ -40,18 +46,40 @@ public class PostgresConnectorIntegrator implements ConnectorIntegrator {
 
         try {
             Config result = instance.validate(properties);
-
-            List<PropertyValidationResult> propertyResults = result.configValues()
-                    .stream()
-                    .filter(cv -> !cv.errorMessages().isEmpty())
-                    .map(cv -> new PropertyValidationResult(cv.name(), cv.errorMessages().get(0)))
-                    .collect(Collectors.toList());
+            List<PropertyValidationResult> propertyResults = toPropertyValidationResults(result);
 
             return propertyResults.isEmpty() ? ConnectionValidationResult.valid() : ConnectionValidationResult.invalid(propertyResults);
         }
         catch(Exception e) {
             return ConnectionValidationResult.invalid(Collections.emptyList(), Collections.singletonList(new GenericValidationResult(e.getMessage(), traceAsString(e))));
         }
+    }
+
+    @Override
+    public PropertiesValidationResult validateProperties(Map<String, String> properties) {
+        List<Field> fields = new ArrayList<>();
+        PostgresConnectorConfig.ALL_FIELDS.forEach(field -> {
+            if (properties.containsKey(field.name())) {
+                fields.add(field);
+            }
+        });
+
+        Configuration config = Configuration.from(properties);
+        Map<String, ConfigValue> results = config.validate(Field.setOf(fields));
+        Config result = new Config(new ArrayList<>(results.values()));
+
+        List<PropertyValidationResult> propertyResults = toPropertyValidationResults(result);
+
+        return propertyResults.isEmpty() ? PropertiesValidationResult.valid() : PropertiesValidationResult.invalid(propertyResults);
+    }
+
+    private List<PropertyValidationResult> toPropertyValidationResults(Config result) {
+        List<PropertyValidationResult> propertyResults = result.configValues()
+                .stream()
+                .filter(cv -> !cv.errorMessages().isEmpty())
+                .map(cv -> new PropertyValidationResult(cv.name(), cv.errorMessages().get(0)))
+                .collect(Collectors.toList());
+        return propertyResults;
     }
 
     private String traceAsString(Exception e) {
