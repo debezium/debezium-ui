@@ -5,64 +5,34 @@ import {
   Card,
   CardHeader,
   CardHeaderMain,
-  Brand,
   CardTitle,
   CardBody,
 } from "@patternfly/react-core";
-import brandImg from "../../../../assets/images/debezium_logo_300px.png";
 import "./SelectConnectorComponent.css";
 import { DatabaseIcon } from "@patternfly/react-icons";
-// tslint:disable-next-line: no-empty-interface
-export interface ISelectConnectorComponentProps {}
-export const SelectConnectorComponent: React.FunctionComponent<ISelectConnectorComponentProps> = () => {
+import { ConnectorType } from "@debezium/ui-models";
+import { getConnectorTypeDescription } from '../../shared/Utils';
+
+export interface ISelectConnectorComponentProps {
+  connectorTypes: ConnectorType[];
+}
+
+export const SelectConnectorComponent: React.FunctionComponent<ISelectConnectorComponentProps> = props => {
   return (
-    <div>
-      <Flex className="example-border">
-        <FlexItem className={"select-connector-component_cardItem"}>
+    <Flex>
+      {props.connectorTypes.map((cType, index) => (
+        <FlexItem key={index} className={"select-connector-component_cardItem"}>
           <Card>
             <CardHeader>
               <CardHeaderMain className={"select-connector-component_dbIcon"}>
                 <DatabaseIcon/>
               </CardHeaderMain>
             </CardHeader>
-            <CardTitle>MySQL</CardTitle>
-            <CardBody>Connection to sampleDB</CardBody>
+            <CardTitle>{cType.displayName}</CardTitle>
+            <CardBody>{getConnectorTypeDescription(cType)}</CardBody>
           </Card>
         </FlexItem>
-        <FlexItem className={"select-connector-component_cardItem"}>
-          <Card>
-            <CardHeader>
-            <CardHeaderMain className={"select-connector-component_dbIcon"}>
-                <DatabaseIcon/>
-              </CardHeaderMain>
-            </CardHeader>
-            <CardTitle>MySQL</CardTitle>
-            <CardBody>Connection to sampleDB</CardBody>
-          </Card>
-        </FlexItem>
-        <FlexItem className={"select-connector-component_cardItem"}>
-          <Card>
-            <CardHeader>
-            <CardHeaderMain className={"select-connector-component_dbIcon"}>
-                <DatabaseIcon/>
-              </CardHeaderMain>
-            </CardHeader>
-            <CardTitle>MySQL</CardTitle>
-            <CardBody>Connection to sampleDB</CardBody>
-          </Card>
-        </FlexItem>
-        <FlexItem className={"select-connector-component_cardItem"}>
-          <Card>
-            <CardHeader>
-            <CardHeaderMain className={"select-connector-component_dbIcon"}>
-                <DatabaseIcon/>
-              </CardHeaderMain>
-            </CardHeader>
-            <CardTitle>MySQL</CardTitle>
-            <CardBody>Connection to sampleDB</CardBody>
-          </Card>
-        </FlexItem>
-      </Flex>
-    </div>
+      ))}
+    </Flex>
   );
 };
