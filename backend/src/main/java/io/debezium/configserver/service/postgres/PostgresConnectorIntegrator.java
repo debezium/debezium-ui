@@ -1,10 +1,12 @@
 package io.debezium.configserver.service.postgres;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.kafka.common.config.Config;
@@ -12,18 +14,25 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.ConfigKey;
 import org.apache.kafka.common.config.ConfigValue;
 
+import io.debezium.DebeziumException;
 import io.debezium.config.Configuration;
 import io.debezium.config.Field;
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.model.ConnectorType;
+import io.debezium.configserver.model.DataCollection;
+import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.GenericValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
+import io.debezium.configserver.model.PropertiesValidationResult.Status;
 import io.debezium.configserver.model.PropertyValidationResult;
 import io.debezium.configserver.service.ConnectorIntegrator;
 import io.debezium.connector.postgresql.PostgresConnector;
 import io.debezium.connector.postgresql.PostgresConnectorConfig;
+import io.debezium.connector.postgresql.connection.PostgresConnection;
+import io.debezium.relational.TableId;
 
+// TODO: This will live in the PG connector module eventually
 public class PostgresConnectorIntegrator implements ConnectorIntegrator {
 
     @Override
@@ -52,6 +61,33 @@ public class PostgresConnectorIntegrator implements ConnectorIntegrator {
         }
         catch(Exception e) {
             return ConnectionValidationResult.invalid(Collections.emptyList(), Collections.singletonList(new GenericValidationResult(e.getMessage(), traceAsString(e))));
+        }
+    }
+
+    @Override
+    public FilterValidationResult validateFilters(Map<String, String> properties) {
+        PropertiesValidationResult result = validateProperties(properties);
+        if (result.status == Status.INVALID) {
+            return FilterValidationResult.invalid(result.propertyValidationResults);
+        }
+
+
+        PostgresConnectorConfig config = new PostgresConnectorConfig(Configuration.from(properties));
+
+        PostgresConnection connection = new PostgresConnection(config.jdbcConfig());
+        Set<TableId> tables;
+        try {
+            tables = connection.readTableNames(config.databaseName(), null, null, new String[]{ "TABLE" });
+
+            List<DataCollection> matchingTables = tables.stream()
+                    .filter(tableId -> config.getTableFilters().dataCollectionFilter().isIncluded(tableId))
+                    .map(tableId -> new DataCollection(tableId.schema(), tableId.table()))
+                    .collect(Collectors.toList());
+
+            return FilterValidationResult.valid(matchingTables);
+        }
+        catch (SQLException e) {
+            throw new DebeziumException(e);
         }
     }
 
