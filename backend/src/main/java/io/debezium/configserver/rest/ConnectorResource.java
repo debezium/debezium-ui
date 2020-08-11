@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status;
 
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorType;
+import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.rest.model.BadRequestResponse;
 import io.debezium.configserver.service.ConnectorIntegrator;
 
@@ -60,6 +61,25 @@ public class ConnectorResource {
         }
 
         ConnectionValidationResult validationResult = integrator.validateConnection(properties);
+
+        return Response.ok(validationResult)
+                .build();
+    }
+
+    @Path("/connector-types/{id}/validation/properties")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateConnectorProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
+        ConnectorIntegrator integrator = integrators.get(connectorTypeId);
+
+        if (integrator == null) {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new BadRequestResponse("Unknown connector type: " + connectorTypeId))
+                    .build();
+        }
+
+        PropertiesValidationResult validationResult = integrator.validateProperties(properties);
 
         return Response.ok(validationResult)
                 .build();
