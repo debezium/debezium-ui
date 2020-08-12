@@ -26,7 +26,7 @@ export class GlobalsService extends BaseService {
 
     public getConnectorTypes(): Promise<ConnectorType[]> {
         this.logger.info("[GlobalsService] Getting the list of connector types.");
-        const endpoint: string = this.endpoint("/connector");
+        const endpoint: string = this.endpoint("/connector-types");
         return this.httpGet<ConnectorType[]>(endpoint);
     }
 
