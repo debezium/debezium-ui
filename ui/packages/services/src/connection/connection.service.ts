@@ -16,19 +16,43 @@
  */
 
 import {
-    Connection
+    ConnectionValidationResult, FilterValidationResult, PropertiesValidationResult
 } from "@debezium/ui-models";
 import {BaseService} from "../baseService";
 
 /**
- * The connection service.  Used to fetch connections and also details about individual connections.
+ * The connection service.  Used to fetch connections and other connection operations.
  */
 export class ConnectionService extends BaseService {
 
-    public getConnections(): Promise<Connection[]> {
-        this.logger.info("[ConnectionService] Getting the list of connections.");
-        const endpoint: string = this.endpoint("/connection");
-        return this.httpGet<Connection[]>(endpoint);
+    public validateConnection(connectorTypeId: string, input: Map<string, string>): Promise<ConnectionValidationResult> {
+        this.logger.info("[ConnectionService] Validating connection:", connectorTypeId);
+
+        const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/connection", { connectorTypeId });
+        const body = {
+            input
+        };
+        return this.httpPostWithReturn(endpoint, body);
+    }
+
+    public validateFilters(connectorTypeId: string, input: Map<string, string>): Promise<FilterValidationResult> {
+        this.logger.info("[ConnectionService] Validating filters:", connectorTypeId);
+
+        const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/filters", { connectorTypeId });
+        const body = {
+            input
+        };
+        return this.httpPostWithReturn(endpoint, body);
+    }
+
+    public validateProperties(connectorTypeId: string, input: Map<string, string>): Promise<PropertiesValidationResult> {
+        this.logger.info("[ConnectionService] Validating properties:", connectorTypeId);
+
+        const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/properties", { connectorTypeId });
+        const body = {
+            input
+        };
+        return this.httpPostWithReturn(endpoint, body);
     }
 
 }
