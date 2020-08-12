@@ -1,16 +1,18 @@
 import React from "react";
-import { CubesIcon } from '@patternfly/react-icons';
-import { Button, 
-         EmptyState, 
-         EmptyStateBody, 
-         EmptyStateIcon, 
-         Level, 
-         LevelItem, 
-         Title, 
-         PageSection, 
-         PageSectionVariants } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
-import '../../app.css';
+import { CubesIcon } from "@patternfly/react-icons";
+import {
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  Level,
+  LevelItem,
+  Title,
+  PageSection,
+  PageSectionVariants,
+} from "@patternfly/react-core";
+import { Link } from "react-router-dom";
+import "../../app.css";
 
 export const ConnectionsPage: React.FunctionComponent = () => {
   return (
@@ -42,8 +44,8 @@ export const ConnectionsPage: React.FunctionComponent = () => {
             No Connections Defined
           </Title>
           <EmptyStateBody>
-            There are no connections. Please click 'Create new connection' to create
-            a new connection.
+            There are no connections. Please click 'Create new connection' to
+            create a new connection.
           </EmptyStateBody>
         </EmptyState>
       </PageSection>
