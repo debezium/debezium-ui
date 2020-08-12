@@ -1,1 +1,4 @@
 io.debezium.configserver.service.postgres.PostgresConnectorIntegrator
+io.debezium.configserver.service.temp.MongoDbConnectorIntegrator
+io.debezium.configserver.service.temp.MySqlConnectorIntegrator
+io.debezium.configserver.service.temp.SqlServerConnectorIntegrator

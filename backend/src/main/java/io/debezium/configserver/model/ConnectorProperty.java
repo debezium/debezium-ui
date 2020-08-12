@@ -16,7 +16,7 @@ public class ConnectorProperty {
         this.displayName = displayName;
         this.description = description;
         this.type = type;
-        this.defaultValue = defaultValue;
+        this.defaultValue = defaultValue instanceof Class ? ((Class<?>)defaultValue).getName() : defaultValue;
     }
 
     public static enum Type {

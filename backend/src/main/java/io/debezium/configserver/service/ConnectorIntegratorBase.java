@@ -39,6 +39,7 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
             .values()
             .stream()
             .map(this::toConnectorProperty)
+            .filter(property -> !property.name.startsWith("internal"))
             .collect(Collectors.toList());
 
         return new ConnectorType(
