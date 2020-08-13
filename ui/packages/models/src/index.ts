@@ -15,6 +15,5 @@
  * limitations under the License.
  */
 
-export * from "./connection.model";
-export * from "./connectorType.model";
+export * from "./ui.model";
 export * from "./contentTypes.model";
