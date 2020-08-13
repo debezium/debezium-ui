@@ -21,7 +21,7 @@ Run below commands to build Debezium:
 
 ```
 mvn clean install -f support/ide-configs
-mvn clean install -f support/checkstyle/
+mvn clean install -f support/checkstyle
 mvn clean install -am -pl :debezium-core,:debezium-connector-postgres,:debezium-connector-mongodb,:debezium-connector-sqlserver,:debezium-connector-mysql -DskipTests=true -DskipITs=true -Dcheckstyle.skip=true
 ```
 
@@ -47,7 +47,7 @@ You can run it in development mode like so:
 mvn -pl backend compile quarkus:dev
 ```
 
-Swagger ui can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
+Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
 
 ## Contributing
 
