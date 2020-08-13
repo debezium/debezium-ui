@@ -15,4 +15,4 @@
  * limitations under the License.
  */
 
-export * from "./connection.service";
+export * from "./connector.service";

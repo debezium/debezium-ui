@@ -17,10 +17,10 @@
 
 
 /**
- * Model which represents a connection
+ * Model which represents a connector
  */
 // tslint:disable-next-line: interface-name
-export interface Connection {
+export interface Connector {
     className: string;
     displayName: string;
     version: string;

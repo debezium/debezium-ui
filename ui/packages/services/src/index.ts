@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export * from "./connection";
+export * from "./connector";
 export * from "./baseService";
 export * from "./config";
 export * from "./logger";

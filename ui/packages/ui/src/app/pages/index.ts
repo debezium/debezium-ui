@@ -1,2 +1,2 @@
-export * from './connections/ConnectionsPage';
-export * from './createConnection';
+export * from './connectors/ConnectorsPage';
+export * from './createConnector';

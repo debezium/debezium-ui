@@ -6,20 +6,23 @@ import {
   PageSectionVariants,
   Wizard,
 } from "@patternfly/react-core";
-import { SelectConnectorComponent } from "./connectionSteps";
-import './CreateConnectionPage.css'
+import { SelectConnectorTypeComponent } from "./connectorSteps";
+import './CreateConnectorPage.css'
+import { ConnectorTypeClass } from "src/app/shared";
 
-export const CreateConnectionPage: React.FunctionComponent = () => {
+export const CreateConnectorPage: React.FunctionComponent = () => {
   const [stepIdReached, setStepIdReached] = React.useState(1);
+  // Init selected connector type to postgres
+  const [selectedType, setSelectedType] = React.useState<string | undefined>(ConnectorTypeClass.POSTGRES);
 
   const onFinish = () => {
-    // TODO: Validate the connector entries.  Redirect to connections upon success, otherwise stay on page.
-    // history.push('/connections');
+    // TODO: Validate the connector entries.  Redirect to connectors upon success, otherwise stay on page.
+    // history.push('/connectors');
     alert("wizard finish");
   };
 
   const onCancel = () => {
-    // history.push('/connections');
+    // history.push('/connectors');
     alert("wizard cancel");
   };
 
@@ -27,22 +30,27 @@ export const CreateConnectionPage: React.FunctionComponent = () => {
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
   };
 
+  const onConnectorTypeChanged = async (cType: string | undefined): Promise<void> => {
+    setSelectedType(cType);
+  };
+
   const wizardSteps = [
     {
       id: 1,
-      name: "Select Connector",
-      component: <SelectConnectorComponent />,
+      name: "Connector Type",
+      component: <SelectConnectorTypeComponent initialSelection={selectedType} onSelectionChange={onConnectorTypeChanged} />,
+      enableNext: selectedType !== undefined
     },
     {
       id: 2,
-      name: "Configure Connector",
+      name: "Properties",
       component: <p>component for connector config</p>,
       canJumpTo: stepIdReached >= 2,
     },
     {
       id: 3,
-      name: "Select Tables",
-      component: <p>component for table selection</p>,
+      name: "Filters",
+      component: <p>component for defining table filters</p>,
       canJumpTo: stepIdReached >= 3,
     },
     {
@@ -67,8 +75,8 @@ export const CreateConnectionPage: React.FunctionComponent = () => {
         className="app-page-section-breadcrumb"
       >
         <Breadcrumb>
-          <BreadcrumbItem to="/">Connections</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>Create Connection</BreadcrumbItem>
+          <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>Create Connector</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
       <PageSection
@@ -81,7 +89,7 @@ export const CreateConnectionPage: React.FunctionComponent = () => {
           onSave={onFinish}
           steps={wizardSteps}
           height={400}
-          className="create-connection-page_wizard"
+          className="create-connector-page_wizard"
         />
       </PageSection>
     </>

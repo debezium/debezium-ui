@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {ConnectionService} from "./connection";
+import {ConnectorService} from "./connector";
 import {ConfigService} from "./config";
 import {GlobalsService} from "./globals";
 import {LoggerService} from "./logger";
 import {Service} from "./baseService";
 
 interface AllServices {
-    artifacts: ConnectionService;
+    connector: ConnectorService;
     config: ConfigService;
     globals: GlobalsService;
     logger: LoggerService;
@@ -32,8 +32,8 @@ interface AllServices {
  */
 export class Services {
 
-    public static getConnectionService(): ConnectionService {
-        return Services.all.connection;
+    public static getConnectorService(): ConnectorService {
+        return Services.all.connector;
     }
 
     public static getConfigService(): ConfigService {
@@ -50,7 +50,7 @@ export class Services {
 
     private static all: any = {
         config: new ConfigService(),
-        connection: new ConnectionService(),
+        connector: new ConnectorService(),
         globals: new GlobalsService(),
         logger: new LoggerService()
     };
