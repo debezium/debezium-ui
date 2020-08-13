@@ -16,6 +16,14 @@ Debezium is an open source project that provides a low latency data streaming pl
 This repository contains a proof-of-concept for a potential future web-based UI for Debezium.
 
 ## Build
+Before building the PoC, you need to build Debezium first. Take a checkout for DBZ [here](https://github.com/debezium/debezium)
+Run below commands to build Debezium:
+
+```
+mvn clean install -f support/ide-configs
+mvn clean install -f support/checkstyle/
+mvn clean install -am -pl :debezium-core,:debezium-connector-postgres,:debezium-connector-mongodb,:debezium-connector-sqlserver,:debezium-connector-mysql -DskipTests=true -DskipITs=true -Dcheckstyle.skip=true
+```
 
 The entire application (UI and backend) can be built via Maven:
 
@@ -38,6 +46,8 @@ You can run it in development mode like so:
 ```
 mvn -pl backend compile quarkus:dev
 ```
+
+Swagger ui can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
 
 ## Contributing
 
