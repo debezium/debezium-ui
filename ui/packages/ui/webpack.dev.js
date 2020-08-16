@@ -9,10 +9,10 @@ const PORT = process.env.PORT || "8888";
 module.exports = merge(common, {
   mode: "development",
   devtool: "eval-source-map",
-  // plugins: [
-  //   new CopyWebpackPlugin([{from: './src/version.js'}]),
-  //   new CopyWebpackPlugin([{from: './src/config.js'}])
-  // ],
+  plugins: [
+    new CopyWebpackPlugin([{from: './src/version.js'}]),
+    new CopyWebpackPlugin([{from: './src/config.js'}])
+  ],
   output: {
     publicPath: "/"
   },
