@@ -5,50 +5,35 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  Level,
-  LevelItem,
   Title,
   PageSection,
-  PageSectionVariants,
+  EmptyStateVariant,
+  Bullseye,
 } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
-import "../../app.css";
+import "./ConnectorsPage.css";
 
 export const ConnectorsPage: React.FunctionComponent = () => {
   return (
-    <>
-      <PageSection
-        variant={PageSectionVariants.light}
-        className="app-page-section-border-bottom"
-      >
-        <Level>
-          <LevelItem>
-            <Title headingLevel="h1" size="3xl">
-              Connectors
-            </Title>
-          </LevelItem>
-          <LevelItem className="app-button-group-md">
-            <Link to="/create-connector">
-              <Button variant="primary">Create new connector</Button>
-            </Link>
-          </LevelItem>
-        </Level>
-      </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        className="app-page-section-border-bottom"
-      >
-        <EmptyState>
+    <PageSection>
+      <Bullseye>
+        <EmptyState variant={EmptyStateVariant.large}>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h4" size="lg">
-            No Connectors Defined
+            Start from configuring a connector
           </Title>
           <EmptyStateBody>
-            There are no connectors. Please click 'Create new connector' to
+            There are no connectors. Please click 'Configure a connector' to
             create a new connector.
           </EmptyStateBody>
+          {/* <Button variant="primary" className="connectors-page_createButton">Configure a connector</Button> */}
+          <Link to="/create-connector">
+            <Button variant="primary" className="connectors-page_createButton">
+              Configure a connector
+            </Button>
+          </Link>
         </EmptyState>
-      </PageSection>
-    </>
+      </Bullseye>
+    </PageSection>
   );
 };
