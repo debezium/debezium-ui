@@ -39,7 +39,24 @@ module.exports = merge(common, {
           path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/styles/base.css'),
           path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/esm/@patternfly/patternfly')
         ],
-        use: ["style-loader", "css-loader"]
+        // use: ["style-loader", "css-loader", "postcss-loader"]
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {importLoaders: 1},
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: __dirname + '/postcss.config.js'
+              }
+            },
+          },
+        ],
       }
     ]
   }

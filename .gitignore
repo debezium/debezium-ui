@@ -3,6 +3,7 @@ activemq-data/
 *.iml
 *.ipr
 *.iws
+node_modules/
 .metadata/
 .recommenders/
 .classpath
@@ -23,7 +24,7 @@ log
 npm-debug.log
 .DS_Store
 phantomjsdriver.log
-
+yarn.lock
 generated-sources/
 
 /state/
