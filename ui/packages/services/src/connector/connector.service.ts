@@ -21,12 +21,12 @@ import {
 import {BaseService} from "../baseService";
 
 /**
- * The connection service.  Used to fetch connections and other connection operations.
+ * The connector service.  Used to fetch connectors and other connector operations.
  */
-export class ConnectionService extends BaseService {
+export class ConnectorService extends BaseService {
 
     public validateConnection(connectorTypeId: string, input: Map<string, string>): Promise<ConnectionValidationResult> {
-        this.logger.info("[ConnectionService] Validating connection:", connectorTypeId);
+        this.logger.info("[ConnectorService] Validating connection:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/connection", { connectorTypeId });
         const body = {
@@ -36,7 +36,7 @@ export class ConnectionService extends BaseService {
     }
 
     public validateFilters(connectorTypeId: string, input: Map<string, string>): Promise<FilterValidationResult> {
-        this.logger.info("[ConnectionService] Validating filters:", connectorTypeId);
+        this.logger.info("[ConnectorService] Validating filters:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/filters", { connectorTypeId });
         const body = {
@@ -46,7 +46,7 @@ export class ConnectionService extends BaseService {
     }
 
     public validateProperties(connectorTypeId: string, input: Map<string, string>): Promise<PropertiesValidationResult> {
-        this.logger.info("[ConnectionService] Validating properties:", connectorTypeId);
+        this.logger.info("[ConnectorService] Validating properties:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/properties", { connectorTypeId });
         const body = {

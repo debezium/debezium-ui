@@ -2,7 +2,7 @@ import React from "react";
 import { Page } from "@patternfly/react-core";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import AppHeader from "./appHeader";
-import { ConnectionsPage, CreateConnectionPage } from "./pages";
+import { ConnectorsPage, CreateConnectorPage } from "./pages";
 import "./app.css";
 import { WithErrorBoundary } from "./shared";
 
@@ -15,12 +15,12 @@ export const App: React.FunctionComponent = () => {
         className="app-page"
       >
         <WithErrorBoundary>
-          <Route path="/" exact={true} component={ConnectionsPage} />
-          <Route path="/connections" exact={true} component={ConnectionsPage} />
+          <Route path="/" exact={true} component={ConnectorsPage} />
+          <Route path="/connectors" exact={true} component={ConnectorsPage} />
           <Route
-            path="/create-connection"
+            path="/create-connector"
             exact={true}
-            component={CreateConnectionPage}
+            component={CreateConnectorPage}
           />
         </WithErrorBoundary>
       </Page>

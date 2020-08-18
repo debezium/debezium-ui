@@ -14,15 +14,15 @@ export enum ConnectorTypeClass {
  * @param connType the connector type
  */
 export function getConnectorTypeDescription(connType: ConnectorType): string {
+  const disabledText = connType.enabled ? '' : ' [unavailable]';
   if (connType.className === ConnectorTypeClass.MYSQL) {
-    return 'MySQL connector';
+    return `MySQL connector${disabledText}`;
   } else if(connType.className === ConnectorTypeClass.POSTGRES) {
-    return 'PostgreSQL connector';
+    return `PostgreSQL connector${disabledText}`;
   } else if(connType.className === ConnectorTypeClass.SQLSERVER) {
-    return 'SQLServer connector';
+    return `SQLServer connector${disabledText}`;
   } else if(connType.className === ConnectorTypeClass.MONGO) {
-    return 'MongoDB connector';
+    return `MongoDB connector${disabledText}`;
   }
   return 'Unknown connector type';
 }
-

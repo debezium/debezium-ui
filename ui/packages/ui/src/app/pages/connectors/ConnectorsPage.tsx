@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import "../../app.css";
 
-export const ConnectionsPage: React.FunctionComponent = () => {
+export const ConnectorsPage: React.FunctionComponent = () => {
   return (
     <>
       <PageSection
@@ -24,12 +24,12 @@ export const ConnectionsPage: React.FunctionComponent = () => {
         <Level>
           <LevelItem>
             <Title headingLevel="h1" size="3xl">
-              Connections
+              Connectors
             </Title>
           </LevelItem>
           <LevelItem className="app-button-group-md">
-            <Link to="/create-connection">
-              <Button variant="primary">Create new connection</Button>
+            <Link to="/create-connector">
+              <Button variant="primary">Create new connector</Button>
             </Link>
           </LevelItem>
         </Level>
@@ -41,11 +41,11 @@ export const ConnectionsPage: React.FunctionComponent = () => {
         <EmptyState>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h4" size="lg">
-            No Connections Defined
+            No Connectors Defined
           </Title>
           <EmptyStateBody>
-            There are no connections. Please click 'Create new connection' to
-            create a new connection.
+            There are no connectors. Please click 'Create new connector' to
+            create a new connector.
           </EmptyStateBody>
         </EmptyState>
       </PageSection>
