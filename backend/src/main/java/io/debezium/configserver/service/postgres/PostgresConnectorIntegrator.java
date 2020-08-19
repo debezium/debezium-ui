@@ -30,7 +30,6 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
             return FilterValidationResult.invalid(result.propertyValidationResults);
         }
 
-
         PostgresConnectorConfig config = new PostgresConnectorConfig(Configuration.from(properties));
 
         PostgresConnection connection = new PostgresConnection(config.jdbcConfig());
