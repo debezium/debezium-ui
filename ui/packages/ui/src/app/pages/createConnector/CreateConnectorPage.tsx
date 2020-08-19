@@ -7,13 +7,41 @@ import {
   Wizard,
 } from "@patternfly/react-core";
 import { SelectConnectorTypeComponent } from "./connectorSteps";
-import './CreateConnectorPage.css'
-import { ConnectorTypeClass } from "src/app/shared";
+import { Services } from "@debezium/ui-services";
+import { ConnectorType } from "@debezium/ui-models";
+import "./CreateConnectorPage.css";
+import { fetch_retry } from "src/app/shared";
+
+/**
+ * Put the enabled types first, then the disabled types.  alpha sort each group
+ * @param connectorTypes
+ */
+function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
+  const enabledTypes: ConnectorType[] = connectorTypes
+    .filter((cType) => cType.enabled)
+    .sort((thisType, thatType) => {
+      return thisType.displayName.localeCompare(thatType.displayName);
+    });
+
+  const disabledTypes: ConnectorType[] = connectorTypes
+    .filter((cType) => !cType.enabled)
+    .sort((thisType, thatType) => {
+      return thisType.displayName.localeCompare(thatType.displayName);
+    });
+
+  return [...enabledTypes, ...disabledTypes];
+}
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
+
   const [stepIdReached, setStepIdReached] = React.useState(1);
-  // Init selected connector type to postgres
-  const [selectedType, setSelectedType] = React.useState<string | undefined>(ConnectorTypeClass.POSTGRES);
+  const [selectedConnectorType, setSelectedConnectorType] = React.useState<string | undefined>();
+  const [connectorTypes, setConnectorTypes] = React.useState<ConnectorType[]>(
+    []
+  );
+  const [loading, setLoading] = React.useState(true);
+  const [apiError, setApiError] = React.useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
   const onFinish = () => {
     // TODO: Validate the connector entries.  Redirect to connectors upon success, otherwise stay on page.
@@ -30,16 +58,47 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
   };
 
-  const onConnectorTypeChanged = async (cType: string | undefined): Promise<void> => {
-    setSelectedType(cType);
+  const onConnectorTypeChanged = async (
+    cType: string | undefined
+  ): Promise<void> => {
+    setSelectedConnectorType(cType);
   };
+
+  React.useEffect(() => {
+    const globalsService = Services.getGlobalsService();
+    fetch_retry(globalsService.getConnectorTypes, globalsService)
+      .then((cTypes: ConnectorType[]) => {
+        setLoading(false);
+        setConnectorTypes(getSortedConnectorTypes(cTypes));
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        setApiError(true);
+        setErrorMsg(err);
+      });
+  }, [setConnectorTypes]);
+
+  // Init the selected connector type to first 'enabled' connectortype
+  React.useEffect(() => {
+    // tslint:disable-next-line: no-unused-expression
+    connectorTypes[0]?.className &&
+    setSelectedConnectorType(connectorTypes[0].className);
+  }, [connectorTypes]);
 
   const wizardSteps = [
     {
       id: 1,
       name: "Connector Type",
-      component: <SelectConnectorTypeComponent initialSelection={selectedType} onSelectionChange={onConnectorTypeChanged} />,
-      enableNext: selectedType !== undefined
+      component: (
+        <SelectConnectorTypeComponent
+          connectorTypesList={connectorTypes}
+          loading={loading}
+          apiError={apiError}
+          errorMsg={errorMsg}
+          selectedConnectorType={selectedConnectorType}
+          onSelectionChange={onConnectorTypeChanged}
+        />
+      ),
+      enableNext: selectedConnectorType !== undefined,
     },
     {
       id: 2,
