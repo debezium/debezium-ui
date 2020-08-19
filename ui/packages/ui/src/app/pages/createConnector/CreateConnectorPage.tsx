@@ -75,8 +75,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         className="app-page-section-breadcrumb"
       >
         <Breadcrumb>
-          <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>Create Connector</BreadcrumbItem>
+          <BreadcrumbItem to="/">Connections</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>Create Connection</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
       <PageSection
