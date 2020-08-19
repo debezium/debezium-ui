@@ -1,0 +1,6 @@
+:root{
+	--logo-width: 150px;
+}
+.brandLogo{
+	width: var(--logo-width)
+}

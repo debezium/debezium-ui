@@ -1,7 +1,6 @@
 :root {
   --myApp-global--spacer--md: 30px;
 }
-
 .app-container {
   display: flex;
   align-items: center;

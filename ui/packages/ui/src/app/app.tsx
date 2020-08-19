@@ -1,31 +1,26 @@
 import React from "react";
-import { Page } from "@patternfly/react-core";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import AppHeader from "./appHeader";
 import { ConnectorsPage, CreateConnectorPage } from "./pages";
-import "./app.css";
 import { WithErrorBoundary } from "./shared";
+import AppLayout from "./Layout/AppLayout";
+import "./app.css";
 
-export const App: React.FunctionComponent = () => {
-  return (
-    <Router>
-      <Page
-        isManagedSidebar={false}
-        header={<AppHeader />}
-        className="app-page"
-      >
-        <WithErrorBoundary>
-          <Route path="/" exact={true} component={ConnectorsPage} />
-          <Route path="/connectors" exact={true} component={ConnectorsPage} />
-          <Route
-            path="/create-connector"
-            exact={true}
-            component={CreateConnectorPage}
-          />
-        </WithErrorBoundary>
-      </Page>
-    </Router>
-  );
-};
-
+const App: React.FC = () => {
+	return (
+		<Router>
+			<AppLayout>
+				<WithErrorBoundary>
+					<Route path="/" exact={true} component={ConnectorsPage} />
+					<Route path="/connectors" exact={true} component={ConnectorsPage} />
+					<Route
+						path="/create-connector"
+						exact={true}
+						component={CreateConnectorPage}
+					/>
+				</WithErrorBoundary>
+			</AppLayout>
+		</Router>
+	);
+}
 export default App;
