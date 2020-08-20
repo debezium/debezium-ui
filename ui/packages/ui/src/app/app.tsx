@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import AppHeader from "./appHeader";
 import { ConnectorsPage, CreateConnectorPage } from "./pages";
 import { WithErrorBoundary } from "./shared";
 import AppLayout from "./Layout/AppLayout";

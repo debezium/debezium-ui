@@ -17,17 +17,16 @@ const MAX_RETRIES: number = 5;
  * @param connType the connector type
  */
 export function getConnectorTypeDescription(connType: ConnectorType): string {
-  const disabledText = connType.enabled ? '' : ' [unavailable]';
   if (connType.className === ConnectorTypeClass.MYSQL) {
-    return `MySQL connector${disabledText}`;
+    return "MySQL database";
   } else if(connType.className === ConnectorTypeClass.POSTGRES) {
-    return `PostgreSQL connector${disabledText}`;
+    return "PostgreSQL database";
   } else if(connType.className === ConnectorTypeClass.SQLSERVER) {
-    return `SQLServer connector${disabledText}`;
+    return "SQLServer database";
   } else if(connType.className === ConnectorTypeClass.MONGO) {
-    return `MongoDB connector${disabledText}`;
+    return "MongoDB database";
   }
-  return "Unknown connector type";
+  return "Unknown type";
 }
 
 /**
