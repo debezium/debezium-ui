@@ -6,11 +6,12 @@ import {
   PageSectionVariants,
   Wizard,
 } from "@patternfly/react-core";
-import { SelectConnectorTypeComponent } from "./connectorSteps";
+import { SelectConnectorTypeComponent, SelectTablesStep } from "./connectorSteps";
 import { Services } from "@debezium/ui-services";
 import { ConnectorType } from "@debezium/ui-models";
 import "./CreateConnectorPage.css";
 import { fetch_retry } from "src/app/shared";
+import useReactRouter from 'use-react-router';
 
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
@@ -34,6 +35,8 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
 
+  const { history, location, match } = useReactRouter();
+
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<string | undefined>();
   const [connectorTypes, setConnectorTypes] = React.useState<ConnectorType[]>(
@@ -50,8 +53,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   };
 
   const onCancel = () => {
-    // history.push('/connectors');
-    alert("wizard cancel");
+    history.push('/');
+    // alert("wizard cancel");
   };
 
   const onNext = ({ id }: any) => {
@@ -109,7 +112,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     {
       id: 3,
       name: "Filters",
-      component: <p>component for defining table filters</p>,
+      component: <SelectTablesStep/>,
       canJumpTo: stepIdReached >= 3,
     },
     {
