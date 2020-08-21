@@ -25,6 +25,23 @@ import {BaseService} from "../baseService";
  */
 export class ConnectorService extends BaseService {
 
+    /**
+     * Validate the connection properties for the supplied connection type
+     * Example usage:
+     * 
+     * const connectorService = Services.getConnectorService();
+     * const inputMap = new Map<string,string>();
+     * inputMap.set("oneParam","oneValue");
+     * inputMap.set("twoParam","twoValue");
+     * connectorService.validateConnection('postgres', inputMap)
+     *  .then((result: ConnectionValidationResult) => {
+     *    if (result.status === 'INVALID') {
+     *      alert('status is INVALID');
+     *    } else {
+     *      alert('status is VALID');
+     *    }
+     *  });
+     */
     public validateConnection(connectorTypeId: string, input: Map<string, string>): Promise<ConnectionValidationResult> {
         this.logger.info("[ConnectorService] Validating connection:", connectorTypeId);
 
@@ -35,6 +52,23 @@ export class ConnectorService extends BaseService {
         return this.httpPostWithReturn(endpoint, body);
     }
 
+    /**
+     * Validate the filters for the supplied connection type
+     * Example usage:
+     * 
+     * const connectorService = Services.getConnectorService();
+     * const inputMap = new Map<string,string>();
+     * inputMap.set("oneParam","oneValue");
+     * inputMap.set("twoParam","twoValue");
+     * connectorService.validateFilters('postgres', inputMap)
+     *  .then((result: FilterValidationResult) => {
+     *    if (result.status === 'INVALID') {
+     *      alert('status is INVALID');
+     *    } else {
+     *      alert('status is VALID');
+     *    }
+     *  });
+     */
     public validateFilters(connectorTypeId: string, input: Map<string, string>): Promise<FilterValidationResult> {
         this.logger.info("[ConnectorService] Validating filters:", connectorTypeId);
 
@@ -45,6 +79,23 @@ export class ConnectorService extends BaseService {
         return this.httpPostWithReturn(endpoint, body);
     }
 
+    /**
+     * Validate the properties for the supplied connection type
+     * Example usage:
+     * 
+     * const connectorService = Services.getConnectorService();
+     * const inputMap = new Map<string,string>();
+     * inputMap.set("oneParam","oneValue");
+     * inputMap.set("twoParam","twoValue");
+     * connectorService.validateProperties('postgres', inputMap)
+     *  .then((result: PropertiesValidationResult) => {
+     *    if (result.status === 'INVALID') {
+     *      alert('status is INVALID');
+     *    } else {
+     *      alert('status is VALID');
+     *    }
+     *  });
+     */
     public validateProperties(connectorTypeId: string, input: Map<string, string>): Promise<PropertiesValidationResult> {
         this.logger.info("[ConnectorService] Validating properties:", connectorTypeId);
 

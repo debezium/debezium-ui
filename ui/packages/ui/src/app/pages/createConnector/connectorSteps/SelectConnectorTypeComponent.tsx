@@ -18,7 +18,7 @@ import { ConnectorIcon } from "../../connectors/ConnectorIcon";
 
 export interface ISelectConnectorTypeComponentProps {
   selectedConnectorType?: string;
-  onSelectionChange: (connectorType: string | undefined) => Promise<void>;
+  onSelectionChange: (connectorType: string | undefined) => void;
   connectorTypesList: ConnectorType[];
   loading: boolean;
   apiError: boolean;
@@ -32,7 +32,7 @@ export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnec
     // The id is the connector className
     const newId = event.currentTarget.id;
     const selectedConn = props.connectorTypesList.find(
-      (cType) => cType.className === newId
+      (cType) => cType.id === newId
     );
 
     // Set selection undefined if connector is not enabled or no change in type (deselection)
@@ -58,18 +58,18 @@ export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnec
               className={"select-connector-type-component_cardItem"}
             >
               <Card
-                id={cType.className}
+                id={cType.id}
                 // tslint:disable-next-line: no-empty
                 onClick={cType.enabled ? onCardSelection : ()=>{}}
                 isSelectable={cType.enabled}
-                isSelected={props.selectedConnectorType === cType.className}
+                isSelected={props.selectedConnectorType === cType.id}
                 className={!cType.enabled ? 'select-connector-type-component_disableCard' : ''}
               >
                 <CardHeader>
                   <CardHeaderMain
                     className={"select-connector-type-component_dbIcon"}
                   >
-                    <ConnectorIcon connectorType={cType.className} alt={cType.displayName} width={50} />
+                    <ConnectorIcon connectorType={cType.id} alt={cType.displayName} width={50} />
                   </CardHeaderMain>
                 </CardHeader>
                 <CardTitle>{cType.displayName}</CardTitle>

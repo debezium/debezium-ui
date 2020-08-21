@@ -70,6 +70,7 @@ export interface ConnectorProperty {
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorType {
+    id: string;
     className: string;
     displayName: string;
     version: string;

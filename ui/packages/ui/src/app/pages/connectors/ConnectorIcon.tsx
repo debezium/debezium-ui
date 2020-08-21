@@ -4,7 +4,7 @@ import MongoIcon from '../../../../assets/images/mongodb-128x128.png'
 import MySqlIcon from '../../../../assets/images/mysql-170x115.png'
 import PostgresIcon from '../../../../assets/images/PostgreSQL-120x120.png'
 import SqlServerIcon from '../../../../assets/images/sql-server-144x144.png'
-import { ConnectorTypeClass } from 'src/app/shared';
+import { ConnectorTypeId } from 'src/app/shared';
 
 export interface IConnectorIconProps {
   connectorType: string;
@@ -19,13 +19,13 @@ export const ConnectorIcon: React.FunctionComponent<IConnectorIconProps> = (
 ) => {
 
   let connIcon = null;
-  if (props.connectorType === ConnectorTypeClass.MYSQL) {
+  if (props.connectorType === ConnectorTypeId.MYSQL) {
     connIcon = MySqlIcon;
-  } else if(props.connectorType === ConnectorTypeClass.POSTGRES) {
+  } else if(props.connectorType === ConnectorTypeId.POSTGRES) {
     connIcon = PostgresIcon;
-  } else if(props.connectorType === ConnectorTypeClass.SQLSERVER) {
+  } else if(props.connectorType === ConnectorTypeId.SQLSERVER) {
     connIcon = SqlServerIcon;
-  } else if(props.connectorType === ConnectorTypeClass.MONGO) {
+  } else if(props.connectorType === ConnectorTypeId.MONGO) {
     connIcon = MongoIcon;
   }
 
