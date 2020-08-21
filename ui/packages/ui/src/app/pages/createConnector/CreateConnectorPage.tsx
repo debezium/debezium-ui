@@ -58,9 +58,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
   };
 
-  const onConnectorTypeChanged = async (
+  const onConnectorTypeChanged = (
     cType: string | undefined
-  ): Promise<void> => {
+  ): void => {
     setSelectedConnectorType(cType);
   };
 
@@ -134,8 +134,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         className="app-page-section-breadcrumb"
       >
         <Breadcrumb>
-          <BreadcrumbItem to="/">Connections</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>Create Connection</BreadcrumbItem>
+          <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>Create Connector</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
       <PageSection

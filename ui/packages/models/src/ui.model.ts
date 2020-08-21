@@ -21,10 +21,9 @@
  */
 // tslint:disable-next-line: interface-name
 export interface Connector {
-    className: string;
-    displayName: string;
-    version: string;
-    enabled: boolean;
+    name: string;
+    description: string;
+    type: string;
 }
 
 /**

@@ -10,11 +10,11 @@ import {
 } from "@patternfly/react-core";
 import "./SelectConnectorTypeComponent.css";
 import { ConnectorType } from "@debezium/ui-models";
-import { DatabaseIcon } from "@patternfly/react-icons";
 import { getConnectorTypeDescription } from "../../../shared/Utils";
 import { WithLoader } from "src/app/shared/WithLoader";
 import { ApiError } from "src/app/shared";
 import { PageLoader } from "src/app/component";
+import { ConnectorIcon } from "../../connectors/ConnectorIcon";
 
 export interface ISelectConnectorTypeComponentProps {
   selectedConnectorType?: string;
@@ -69,7 +69,7 @@ export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnec
                   <CardHeaderMain
                     className={"select-connector-type-component_dbIcon"}
                   >
-                    <DatabaseIcon />
+                    <ConnectorIcon connectorType={cType.className} alt={cType.displayName} width={50} />
                   </CardHeaderMain>
                 </CardHeader>
                 <CardTitle>{cType.displayName}</CardTitle>
