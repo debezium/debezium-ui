@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import "./ConnectorsPage.css";
 import { Connector } from "@debezium/ui-models";
 import { ConnectorListItem } from "./ConnectorListItem";
-import { ConnectorTypeClass } from "src/app/shared";
+import { ConnectorTypeId } from "src/app/shared";
 
 /**
  * Sorts the connectors by name.
@@ -39,26 +39,26 @@ export const ConnectorsPage: React.FunctionComponent = () => {
       {
         name: "mongoTest",
         description: "MongoDB connector",
-        type: ConnectorTypeClass.MONGO
+        type: ConnectorTypeId.MONGO
       } as Connector,
       {
         name: "postgresTest",
         description: "PostgreSQL connector",
-        type: ConnectorTypeClass.POSTGRES
+        type: ConnectorTypeId.POSTGRES
       } as Connector,
       {
         name: "mySqlTest",
         description: "MySQL connector",
-        type: ConnectorTypeClass.MYSQL
+        type: ConnectorTypeId.MYSQL
       } as Connector,
       {
         name: "sqlServerTest",
         description: "SqlServer connector",
-        type: ConnectorTypeClass.SQLSERVER
+        type: ConnectorTypeId.SQLSERVER
       } as Connector
     ] as Connector[]
   );
-
+  
   return (
     <PageSection>
       <Flex>

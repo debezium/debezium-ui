@@ -1,10 +1,10 @@
 import { ConnectorType } from "@debezium/ui-models";
 
-export enum ConnectorTypeClass {
-  POSTGRES = "io.debezium.connector.postgresql.PostgresConnector",
-  MYSQL = "io.debezium.connector.mysql.MySqlConnector",
-  SQLSERVER = "io.debezium.connector.sqlserver.SqlServerConnector",
-  MONGO = "io.debezium.connector.mongodb.MongoDbConnector",
+export enum ConnectorTypeId {
+  POSTGRES = "postgres",
+  MYSQL = "mysql",
+  SQLSERVER = "sqlserver",
+  MONGO = "mongodb",
 }
 
 /**
@@ -13,17 +13,17 @@ export enum ConnectorTypeClass {
 const MAX_RETRIES: number = 5;
 
 /**
- * Get a description of the ConnectorType, based on the class
+ * Get a description of the ConnectorType, based on the id
  * @param connType the connector type
  */
 export function getConnectorTypeDescription(connType: ConnectorType): string {
-  if (connType.className === ConnectorTypeClass.MYSQL) {
+  if (connType.id === ConnectorTypeId.MYSQL) {
     return "MySQL database";
-  } else if(connType.className === ConnectorTypeClass.POSTGRES) {
+  } else if(connType.id === ConnectorTypeId.POSTGRES) {
     return "PostgreSQL database";
-  } else if(connType.className === ConnectorTypeClass.SQLSERVER) {
+  } else if(connType.id === ConnectorTypeId.SQLSERVER) {
     return "SQLServer database";
-  } else if(connType.className === ConnectorTypeClass.MONGO) {
+  } else if(connType.id === ConnectorTypeId.MONGO) {
     return "MongoDB database";
   }
   return "Unknown type";

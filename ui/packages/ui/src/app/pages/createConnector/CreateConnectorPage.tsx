@@ -80,8 +80,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   // Init the selected connector type to first 'enabled' connectortype
   React.useEffect(() => {
     // tslint:disable-next-line: no-unused-expression
-    connectorTypes[0]?.className &&
-    setSelectedConnectorType(connectorTypes[0].className);
+    connectorTypes[0]?.id &&
+    setSelectedConnectorType(connectorTypes[0].id);
   }, [connectorTypes]);
 
   const wizardSteps = [
