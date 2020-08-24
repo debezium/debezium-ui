@@ -10,7 +10,9 @@
     "nohoist": [
       "**/@patternfly/react-core",
       "**/@patternfly/react-core/**",
-      "**/patternfly"
+      "**/patternfly",
+      "**/react-router",
+      "**/react-router-dom"
     ]
   },
   "scripts": {

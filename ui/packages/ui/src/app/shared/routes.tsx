@@ -1,9 +1,8 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
 import { ConnectorsPage, CreateConnectorPage } from "../pages";
-import { PageNotFound } from "./PageNotFound";
+import { RenderRoutes } from "./RenderRoutes";
 
 export const ROUTES = [
+  // Login page can be added here in future 
   { path: "/", key: "ROOT", exact: true, component: ConnectorsPage },
   {
     path: "/app",
@@ -25,34 +24,3 @@ export const ROUTES = [
     ],
   },
 ];
-
-// export default ROUTES;
-
-/**
- * Render a route with potential sub routes
- * https://reacttraining.com/react-router/web/example/route-config
- */
-function RouteWithSubRoutes(route) {
-  return (
-    <Route
-      path={route.path}
-      exact={route.exact}
-      // tslint:disable-next-line: jsx-no-lambda
-      render={(props) => <route.component {...props} routes={route.routes} />}
-    />
-  );
-}
-
-/**
- * Use this component for any new section of routes (any config object that has a "routes" property
- */
-export function RenderRoutes({ routes }) {
-  return (
-    <Switch>
-      {routes.map((route, i) => {
-        return <RouteWithSubRoutes key={route.key} {...route} />;
-      })}
-      <Route component={PageNotFound} />
-    </Switch>
-  );
-}

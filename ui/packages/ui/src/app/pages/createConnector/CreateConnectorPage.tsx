@@ -11,7 +11,7 @@ import { Services } from "@debezium/ui-services";
 import { ConnectorType } from "@debezium/ui-models";
 import "./CreateConnectorPage.css";
 import { fetch_retry } from "src/app/shared";
-import useReactRouter from 'use-react-router';
+import { useHistory } from "react-router-dom";
 
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
@@ -35,7 +35,7 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
 
-  const { history, location, match } = useReactRouter();
+  // const { history, location, match } = useReactRouter();
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<string | undefined>();
@@ -46,15 +46,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
+  const history = useHistory();
+
   const onFinish = () => {
     // TODO: Validate the connector entries.  Redirect to connectors upon success, otherwise stay on page.
-    // history.push('/connectors');
-    alert("wizard finish");
+    history.push('/app');
   };
 
   const onCancel = () => {
-    history.push('/');
-    // alert("wizard cancel");
+    history.push('/app');
   };
 
   const onNext = ({ id }: any) => {

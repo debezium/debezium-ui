@@ -18,7 +18,7 @@ import { ConnectorIcon } from "../../connectors/ConnectorIcon";
 
 export interface ISelectConnectorTypeComponentProps {
   selectedConnectorType?: string;
-  onSelectionChange: (connectorType: string | undefined) => Promise<void>;
+  onSelectionChange: (connectorType: string | undefined) => void;
   connectorTypesList: ConnectorType[];
   loading: boolean;
   apiError: boolean;
