@@ -10,9 +10,16 @@ import {
   Button,
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { useHistory } from "react-router-dom";
 
-export const PageNotFound: React.FC = () => (
-    <React.Fragment>
+export const PageNotFound: React.FC = () => {
+
+    const history = useHistory();
+
+    const onHomeClick = () =>{
+        history.push('/app');
+    }
+    return(
     <PageSection className="ps_rules-header" variant={PageSectionVariants.light}>
         <EmptyState variant={EmptyStateVariant.full}>
             <EmptyStateIcon icon={ExclamationCircleIcon} />
@@ -22,8 +29,7 @@ export const PageNotFound: React.FC = () => (
             <EmptyStateBody>
                 This page couldn't be found.  If you think this is a bug, please report the issue.
             </EmptyStateBody>
-            <Button variant="primary" data-testid="error-btn-artifacts">Show all connections</Button>
+            <Button variant="primary" data-testid="error-btn-artifacts" onClick={onHomeClick}>Take back to home</Button>
         </EmptyState>
-    </PageSection>
-</React.Fragment>
-);
+    </PageSection>)
+};

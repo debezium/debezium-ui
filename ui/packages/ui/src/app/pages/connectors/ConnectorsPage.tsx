@@ -66,7 +66,7 @@ export const ConnectorsPage: React.FunctionComponent = () => {
           <Title headingLevel={"h1"}>Connectors</Title>
         </FlexItem>
         <FlexItem>
-          <Link to="/create-connector">
+          <Link to="/app/create-connector">
             <Button variant="primary" className="connectors-page_toolbarCreateButton">
               Create a connector
             </Button>

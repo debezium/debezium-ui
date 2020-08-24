@@ -97,7 +97,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
               enableFlip={true}
               content={<div id={"editTip"}>Edit the connector</div>}
             >
-              <Link to="/create-connector">
+              <Link to="/app/create-connector">
                 <Button
                   data-testid={"connector-list-item-edit-button"}
                   variant={"secondary"}
