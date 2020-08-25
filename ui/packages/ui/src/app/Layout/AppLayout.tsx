@@ -30,11 +30,9 @@ const AppLayout: React.FC = ({children}) => {
 				breadcrumb={breadcrumb}
 				className="app-page"
 			>
-				<div className="container">
-					<PageSection variant={PageSectionVariants.light}>
-						{children}
-					</PageSection>
-				</div>
+				<PageSection variant={PageSectionVariants.light}>
+					{children}
+				</PageSection>
 			</Page>
 		</AppLayoutContext.Provider>
 	)

@@ -32,7 +32,7 @@ export const DbzLabelIcon = () => {
         aria-describedby="simple-form-name"
         className="pf-c-form__group-label-help"
       >
-        <HelpIcon noVerticalAlign />
+        <HelpIcon />
       </button>
     </Popover>
   )
