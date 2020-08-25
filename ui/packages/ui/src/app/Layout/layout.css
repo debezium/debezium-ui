@@ -1,6 +1,11 @@
 :root{
 	--logo-width: 150px;
+	--container-2xl: var(--pf-global--breakpoint--2xl);
 }
 .brandLogo{
 	width: var(--logo-width)
+}
+.container{
+	width: var(--container-2xl);
+	margin: 0 auto;
 }

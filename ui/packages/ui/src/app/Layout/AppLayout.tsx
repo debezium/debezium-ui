@@ -22,6 +22,7 @@ const AppLayout: React.FC = ({children}) => {
 	);
 
 	return (
+		
 		<AppLayoutContext.Provider value={{ showBreadcrumb }}>
 			<Page
 				header={<AppHeader />}
@@ -29,9 +30,11 @@ const AppLayout: React.FC = ({children}) => {
 				breadcrumb={breadcrumb}
 				className="app-page"
 			>
-				<PageSection variant={PageSectionVariants.light}>
-					{children}
-				</PageSection>
+				<div className="container">
+					<PageSection variant={PageSectionVariants.light}>
+						{children}
+					</PageSection>
+				</div>
 			</Page>
 		</AppLayoutContext.Provider>
 	)

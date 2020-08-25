@@ -1,6 +1,7 @@
 :root {
   --myApp-global--spacer--md: 30px;
 }
+
 .app-container {
   display: flex;
   align-items: center;
@@ -14,6 +15,7 @@
 
 .app-page {
   height: 100vh;
+  background-color: white;
 }
 
 .app-page-section-border-bottom {
