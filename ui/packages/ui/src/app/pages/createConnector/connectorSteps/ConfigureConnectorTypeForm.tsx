@@ -61,7 +61,7 @@ const InnerForm = (props: FormikProps<FormValues>) => {
 
   return (
     <form className="pf-c-form" onSubmit={handleSubmit}>
-      <Accordion>
+      <Accordion asDefinitionList={true}>
         <AccordionItem>
           <AccordionToggle
             onClick={(e) => { onToggle(e, 'basic') }}
@@ -76,7 +76,7 @@ const InnerForm = (props: FormikProps<FormValues>) => {
             className="dbz-c-accordion__content"
             isHidden={expanded !== 'basic'}
           >
-          <Grid>
+          <Grid hasGutter={true}>
             <FormInputComponent 
               isRequired={true}
               label="Name" 
@@ -178,7 +178,7 @@ const InnerForm = (props: FormikProps<FormValues>) => {
             id="advance"
             isHidden={expanded !== 'advance'}
           >
-            <Grid>
+            <Grid hasGutter={true}>
               <Switch
                 id="database_tcpKeepAlive"
                 label="Disable TCP keep-alive"
