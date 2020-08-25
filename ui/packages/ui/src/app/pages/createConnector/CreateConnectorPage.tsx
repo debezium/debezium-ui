@@ -6,7 +6,7 @@ import {
   PageSectionVariants,
   Wizard,
 } from "@patternfly/react-core";
-import { SelectConnectorTypeComponent, SelectTablesStep } from "./connectorSteps";
+import { SelectConnectorTypeComponent, SelectTablesStep, ConfigureConnectorTypeComponent } from "./connectorSteps";
 import { Services } from "@debezium/ui-services";
 import { ConnectorType } from "@debezium/ui-models";
 import "./CreateConnectorPage.css";
@@ -106,7 +106,12 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     {
       id: 2,
       name: "Properties",
-      component: <p>component for connector config</p>,
+      component: (
+        <ConfigureConnectorTypeComponent 
+          connectorTypesList={connectorTypes} 
+          selectedConnectorType={selectedConnectorType}
+        />
+      ),
       canJumpTo: stepIdReached >= 2,
     },
     {
