@@ -14,9 +14,8 @@ export interface IConfigureConnectorTypeComponentProps{
 }
 
 export const ConfigureConnectorTypeComponent: React.FC<IConfigureConnectorTypeComponentProps> = (props) => {
-  const {connectorTypesList, selectedConnectorType, apiError, loading, errorMsg} = props;
-  let selectedConnector = connectorTypesList.filter(connector => connector.className === selectedConnectorType);
-  
+  const {apiError, loading, errorMsg} = props;
+ 
   return (
     <WithLoader
     error={apiError}
@@ -25,7 +24,7 @@ export const ConfigureConnectorTypeComponent: React.FC<IConfigureConnectorTypeCo
     errorChildren={<ApiError error={errorMsg} />}
   >
     {() => (
-      <ConfigureConnectorTypeForm connector={selectedConnector[0].properties} />
+      <ConfigureConnectorTypeForm />
     )}
   </WithLoader>
   );
