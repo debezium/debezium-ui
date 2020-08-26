@@ -1,7 +1,11 @@
-.connectors-page_createButton {
-  margin-top: var(--pf-c-empty-state__primary--MarginTop) !important;
-}
-
-.connectors-page_toolbarCreateButton {
-  margin-bottom: var(--pf-global--spacer--sm) !important;
+.connectors-page{
+  &_createButton {
+    margin-top: var(--pf-c-empty-state__primary--MarginTop);
+  }
+  &_toolbarCreateButton {
+    margin-bottom: var(--pf-global--spacer--sm);
+  }  
+  &_toolbarFlex {
+    justify-content: space-between;
+  }
 }

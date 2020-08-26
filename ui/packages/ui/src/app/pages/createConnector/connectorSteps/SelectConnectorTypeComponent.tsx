@@ -51,7 +51,7 @@ export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnec
       errorChildren={<ApiError error={props.errorMsg} />}
     >
       {() => (
-        <Flex>
+        <Flex className="select-connector-type-component_flex">
           {props.connectorTypesList.map((cType, index) => (
             <FlexItem
               key={index}

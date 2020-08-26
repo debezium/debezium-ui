@@ -1,7 +1,12 @@
 :root {
   --myApp-global--spacer--md: 30px;
 }
-
+body{
+  font-size: var(--pf-global--FontSize--lg);
+}
+*:focus{
+  outline: none;
+}
 .app-container {
   display: flex;
   align-items: center;
@@ -23,7 +28,7 @@
 }
 
 .app-page-section-breadcrumb {
-  padding-bottom: 0;
+  padding: 12px 12px 24px;
 }
 
 .app-page-section-height {

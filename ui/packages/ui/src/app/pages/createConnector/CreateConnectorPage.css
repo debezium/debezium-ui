@@ -1,4 +1,21 @@
-.create-connector-page_wizard{
-    height: auto !important;
-    min-height: 500px !important;
+.create-connector{
+    &-page_wizard{
+        height: auto;
+        min-height: calc(100vh - 200px);
+
+        .pf-c-wizard{
+            &__nav-list{
+                margin: 24px 5px;
+                padding: 0 40px;
+            }
+            &__nav-item{
+                margin-bottom: 30px;
+                .pf-m-disabled{
+                    &:before{
+                        background-color: var(--pf-global--disabled-color--300);
+                    }
+                }
+            }
+        }
+    }
 }
