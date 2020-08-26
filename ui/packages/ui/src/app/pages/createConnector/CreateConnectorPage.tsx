@@ -139,15 +139,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     <>
       <PageSection
         variant={PageSectionVariants.light}
-        className="app-page-section-breadcrumb"
+        className="app-page-section-breadcrumb app-page-section-border-bottom"
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
           <BreadcrumbItem isActive={true}>Create Connector</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
+      <div
         className="app-page-section-border-bottom"
       >
         <Wizard
@@ -155,10 +154,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           onNext={onNext}
           onSave={onFinish}
           steps={wizardSteps}
-          height={400}
           className="create-connector-page_wizard"
         />
-      </PageSection>
+      </div>
     </>
   );
 };

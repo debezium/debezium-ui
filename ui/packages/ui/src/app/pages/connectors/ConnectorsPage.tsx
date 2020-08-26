@@ -60,8 +60,8 @@ export const ConnectorsPage: React.FunctionComponent = () => {
   );
   
   return (
-    <PageSection>
-      <Flex>
+    <>
+      <Flex className="connectors-page_toolbarFlex">
         <FlexItem>
           <Title headingLevel={"h1"}>Connectors</Title>
         </FlexItem>
@@ -108,6 +108,6 @@ export const ConnectorsPage: React.FunctionComponent = () => {
           </EmptyState>
         </Bullseye>
       )}
-    </PageSection>
+    </>
   );
 };
