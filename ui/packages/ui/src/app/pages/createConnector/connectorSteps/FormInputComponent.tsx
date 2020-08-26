@@ -2,8 +2,8 @@ import {
   FormGroup,
   TextInput
 } from '@patternfly/react-core';
-import * as React from 'react';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import * as React from 'react';
 import { DbzLabelIcon } from './DbzLabelIcon';
 
 export const FormInputComponent: React.FunctionComponent = ({

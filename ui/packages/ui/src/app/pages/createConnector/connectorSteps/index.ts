@@ -1,3 +1,3 @@
-export * from './SelectConnectorTypeComponent';
-export * from './SelectTablesStep';
+export * from './ConnectorTypeStepComponent';
+export * from './FiltersStepComponent';
 export * from './ConfigureConnectorTypeComponent'

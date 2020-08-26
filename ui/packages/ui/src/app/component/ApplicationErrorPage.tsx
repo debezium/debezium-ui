@@ -1,18 +1,18 @@
 import {
+  Button,
   EmptyState,
   EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateSecondaryActions,
   EmptyStateVariant,
-  Title,
-  Text,
   PageSection,
   PageSectionVariants,
-  EmptyStateIcon,
-  Button,
-  EmptyStateSecondaryActions,
+  Text,
+  Title,
 } from "@patternfly/react-core";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 import { useState } from "react";
 import * as React from "react";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 import "./ApplicationErrorPage.css";
 
 export interface IApplicationErrorPageProps {

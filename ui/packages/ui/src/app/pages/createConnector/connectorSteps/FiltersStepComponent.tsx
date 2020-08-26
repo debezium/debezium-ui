@@ -1,22 +1,22 @@
-import React from "react";
 import {
-  Title,
-  Text,
-  TextVariants,
-  Flex,
-  FlexItem,
-  Radio,
-  InputGroup,
-  TextInput,
   Button,
   Divider,
+  Flex,
+  FlexItem,
+  InputGroup,
+  Radio,
+  Text,
+  TextInput,
+  TextVariants,
+  Title,
 } from "@patternfly/react-core";
-import "./SelectTablesStep.css";
 import { SearchIcon } from "@patternfly/react-icons";
+import React from "react";
+import "./FiltersStepComponent.css";
 
 // tslint:disable-next-line: no-empty-interface
-export interface ISelectTablesStepProps {}
-export const SelectTablesStep: React.FunctionComponent<ISelectTablesStepProps> = (
+export interface IFiltersStepComponentProps {}
+export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
   props
 ) => {
   return (
@@ -29,7 +29,7 @@ export const SelectTablesStep: React.FunctionComponent<ISelectTablesStepProps> =
         comma-separated list of regular expresion that match the names of
         schema, table or column.
       </Text>
-      <Flex className="select-tables-step_radioIcon">
+      <Flex className="filters-step-component_radioIcon">
         <FlexItem>
           <Radio
             isChecked={true}
@@ -57,7 +57,7 @@ export const SelectTablesStep: React.FunctionComponent<ISelectTablesStepProps> =
           />
         </FlexItem>
       </Flex>
-      <InputGroup className="select-tables-step_searchBar select-tables-step_radioIcon">
+      <InputGroup className="filters-step-component_searchBar filters-step-component_radioIcon">
         <TextInput
           name="textInput11"
           id="textInput11"

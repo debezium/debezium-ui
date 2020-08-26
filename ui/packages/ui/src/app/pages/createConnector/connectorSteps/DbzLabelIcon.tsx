@@ -1,8 +1,8 @@
-import React from 'react';
 import {
   Popover
 } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
+import React from 'react';
 
 export const DbzLabelIcon = () => {
   return (

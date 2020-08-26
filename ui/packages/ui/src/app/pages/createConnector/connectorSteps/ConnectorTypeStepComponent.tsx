@@ -1,22 +1,22 @@
-import React from "react";
+import { ConnectorType } from "@debezium/ui-models";
 import {
-  Flex,
-  FlexItem,
   Card,
+  CardBody,
   CardHeader,
   CardHeaderMain,
   CardTitle,
-  CardBody,
+  Flex,
+  FlexItem,
 } from "@patternfly/react-core";
-import "./SelectConnectorTypeComponent.css";
-import { ConnectorType } from "@debezium/ui-models";
-import { getConnectorTypeDescription } from "../../../shared/Utils";
-import { WithLoader } from "src/app/shared/WithLoader";
-import { ApiError } from "src/app/shared";
+import React from "react";
 import { PageLoader } from "src/app/component";
+import { ApiError } from "src/app/shared";
+import { WithLoader } from "src/app/shared/WithLoader";
+import { getConnectorTypeDescription } from "../../../shared/Utils";
 import { ConnectorIcon } from "../../connectors/ConnectorIcon";
+import "./ConnectorTypeStepComponent.css";
 
-export interface ISelectConnectorTypeComponentProps {
+export interface IConnectorTypeStepComponentProps {
   selectedConnectorType?: string;
   onSelectionChange: (connectorType: string | undefined) => void;
   connectorTypesList: ConnectorType[];
@@ -25,7 +25,7 @@ export interface ISelectConnectorTypeComponentProps {
   errorMsg: Error;
 }
 
-export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnectorTypeComponentProps> = (
+export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeStepComponentProps> = (
   props
 ) => {
   const onCardSelection = (event: { currentTarget: { id: string } }) => {
@@ -55,7 +55,7 @@ export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnec
           {props.connectorTypesList.map((cType, index) => (
             <FlexItem
               key={index}
-              className={"select-connector-type-component_cardItem"}
+              className={"connector-type-step-component_cardItem"}
             >
               <Card
                 id={cType.id}
@@ -63,11 +63,11 @@ export const SelectConnectorTypeComponent: React.FunctionComponent<ISelectConnec
                 onClick={cType.enabled ? onCardSelection : ()=>{}}
                 isSelectable={cType.enabled}
                 isSelected={props.selectedConnectorType === cType.id}
-                className={!cType.enabled ? 'select-connector-type-component_disableCard' : ''}
+                className={!cType.enabled ? 'connector-type-step-component_disableCard' : ''}
               >
                 <CardHeader>
                   <CardHeaderMain
-                    className={"select-connector-type-component_dbIcon"}
+                    className={"connector-type-step-component_dbIcon"}
                   >
                     <ConnectorIcon connectorType={cType.id} alt={cType.displayName} width={50} />
                   </CardHeaderMain>

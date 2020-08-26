@@ -1,20 +1,20 @@
-import React from 'react';
-import * as Yup from 'yup';
-import { withFormik, FormikProps } from 'formik';
 import {
   Accordion,
-  Switch,
-  Title, 
+  AccordionContent,
   AccordionItem, 
-  AccordionContent, 
+  AccordionToggle, 
+  Button, 
   Grid, 
   GridItem,
-  Button,
-  AccordionToggle } from '@patternfly/react-core';
+  Switch,
+  Title } from '@patternfly/react-core';
+import { FormikProps, withFormik } from 'formik';
+import React from 'react';
+import * as Yup from 'yup';
 import { FormInputComponent } from './FormInputComponent';
 
 // Shape of form values
-interface FormValues {
+interface IFormValues {
   connection_name: string;
   database_server_name: string;
   database_hostname: string;
@@ -36,7 +36,7 @@ interface FormValues {
 }
 
 // Aside: You may see InjectedFormikProps<OtherProps, FormValues> instead of what comes below in older code.. InjectedFormikProps was artifact of when Formik only exported a HoC. It is also less flexible as it MUST wrap all props (it passes them through).
-const InnerForm = (props: FormikProps<FormValues>) => {
+const InnerForm = (props: FormikProps<IFormValues>) => {
   const {
     values,
     touched,
@@ -292,12 +292,12 @@ const InnerForm = (props: FormikProps<FormValues>) => {
 };
 
 // The type of props MyForm receives
-interface MyFormProps {
+interface IMyFormProps {
   connection_name: string;
 }
 
 // Wrap our form with the withFormik HoC
-const MyForm = withFormik<MyFormProps, FormValues>({
+const MyForm = withFormik<IMyFormProps, FormValues>({
   mapPropsToValues: () => ({  
   connection_name:"",
   database_server_name: "",

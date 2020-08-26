@@ -1,0 +1,6 @@
+yarn run v1.22.4
+$ yarn lint
+$ lerna run --parallel --no-bail lint
+@debezium/ui-services: $ tslint -c ./tslint.json --project .
+@debezium/ui-models: $ tslint -c ./tslint.json --project .
+@debezium/ui: $ tslint -c ./tslint.json --project .

@@ -1,4 +1,5 @@
-import React from "react";
+import { ConnectorType } from "@debezium/ui-models";
+import { Services } from "@debezium/ui-services";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,12 +7,11 @@ import {
   PageSectionVariants,
   Wizard,
 } from "@patternfly/react-core";
-import { SelectConnectorTypeComponent, SelectTablesStep, ConfigureConnectorTypeComponent } from "./connectorSteps";
-import { Services } from "@debezium/ui-services";
-import { ConnectorType } from "@debezium/ui-models";
-import "./CreateConnectorPage.css";
-import { fetch_retry } from "src/app/shared";
+import React from "react";
 import { useHistory } from "react-router-dom";
+import { fetch_retry } from "src/app/shared";
+import { ConfigureConnectorTypeComponent, ConnectorTypeStepComponent, FiltersStepComponent } from "./connectorSteps";
+import "./CreateConnectorPage.css";
 
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
@@ -92,7 +92,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       id: 1,
       name: "Connector Type",
       component: (
-        <SelectConnectorTypeComponent
+        <ConnectorTypeStepComponent
           connectorTypesList={connectorTypes}
           loading={loading}
           apiError={apiError}
@@ -117,7 +117,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     {
       id: 3,
       name: "Filters",
-      component: <SelectTablesStep/>,
+      component: <FiltersStepComponent/>,
       canJumpTo: stepIdReached >= 3,
     },
     {

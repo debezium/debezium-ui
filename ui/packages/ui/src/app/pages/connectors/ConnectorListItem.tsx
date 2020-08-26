@@ -1,20 +1,20 @@
 import {
+  Button,
   DataListAction,
   DataListCell,
   DataListItem,
   DataListItemCells,
   DataListItemRow,
   Tooltip,
-  Button,
 } from "@patternfly/react-core";
 import * as React from "react";
-import { ConnectorIcon } from "./ConnectorIcon";
+import { Link } from "react-router-dom";
 import {
-  ConfirmationDialog,
   ConfirmationButtonStyle,
+  ConfirmationDialog,
   ConfirmationIconType,
 } from "src/app/shared";
-import { Link } from "react-router-dom";
+import { ConnectorIcon } from "./ConnectorIcon";
 
 export interface IConnectorListItemProps {
   connectorDescription?: string;

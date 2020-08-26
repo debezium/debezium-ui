@@ -1,11 +1,11 @@
-import * as React from 'react';
-import './layout.css';
 import {
 	Page,
 	PageSection,
 	PageSectionVariants,
 	SkipToContent,
 } from '@patternfly/react-core';
+import * as React from 'react';
+import './layout.css';
 
 import AppHeader from './appHeader';
 import { AppLayoutContext } from './AppLayoutContext';

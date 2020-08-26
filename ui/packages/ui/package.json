@@ -62,8 +62,8 @@
     "@debezium/ui-services": "^1.0.0",
     "@patternfly/react-core": "^4.32.1",
     "@patternfly/react-icons": "^4.5.0",
-    "@types/react-router": "^5.0.3",
-    "@types/react-router-dom": "^4.3.4",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-dom": "^5.1.5",
     "@types/yup": "^0.29.6",
     "autoprefixer": "^9.8.6",
     "formik": "^1.5.7",
@@ -73,8 +73,8 @@
     "react-ace": "8.1.0",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.4.0",
-    "react-router": "5.1.2",
-    "react-router-dom": "5.1.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "use-react-router": "^1.0.7",
     "yup": "^0.29.3"
   }

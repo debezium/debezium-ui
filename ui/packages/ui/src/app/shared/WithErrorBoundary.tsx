@@ -1,6 +1,6 @@
-import {ApplicationErrorPage} from '../component';
-import * as React from 'react';
 import { ErrorCircleOIcon } from '@patternfly/react-icons';
+import * as React from 'react';
+import {ApplicationErrorPage} from '../component';
 
 export interface IWithErrorBoundaryState {
   error?: Error;
