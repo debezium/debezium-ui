@@ -27,6 +27,15 @@ export interface Connector {
 }
 
 /**
+ * Model which represents the configuration for a connector
+ */
+// tslint:disable-next-line: interface-name
+export interface ConnectorConfiguration {
+    name: string;
+    config: Map<string,string>;
+}
+
+/**
  * Model which represents a property validation result
  */
 // tslint:disable-next-line: interface-name
@@ -59,6 +68,7 @@ export interface ConnectionValidationResult {
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorProperty {
+    category?: 'PROPS_BASIC' | 'PROPS_ADVANCED' | 'FILTERS';
     description: string;
     displayName: string;
     name: string;

@@ -106,4 +106,27 @@ export class ConnectorService extends BaseService {
         return this.httpPostWithReturn(endpoint, body);
     }
 
+    /**
+     * Create Connector using the supplied ConnectorConfiguration
+     * Example usage:
+     * 
+     * const connectorService = Services.getConnectorService();
+     * const configMap = new Map<string,string>();
+     * configMap.set("oneParam","oneValue");
+     * configMap.set("twoParam","twoValue");
+     * const config = new ConnectorConfiguration("connName", configMap);
+     * connectorService.createConnector(config)
+     *  .then((result: CreateConnectorResult) => {
+     *  });
+     */
+    // public createConnector(connectorConfig: ConnectorConfiguration): Promise<PropertiesValidationResult> {
+    //     this.logger.info("[ConnectorService] Creating a connector:", connectorConfig.name);
+
+    //     const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/properties", { connectorTypeId });
+    //     const body = {
+    //         input
+    //     };
+    //     return this.httpPostWithReturn(endpoint, body);
+    // }
+
 }
