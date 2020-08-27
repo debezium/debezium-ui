@@ -1,0 +1,6 @@
+.filters-step-component_radioIcon{
+    margin: var(--pf-global--spacer--md);
+}
+.filters-step-component_searchBar{
+    max-width: 50%;
+}

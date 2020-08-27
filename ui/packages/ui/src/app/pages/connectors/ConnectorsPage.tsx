@@ -1,23 +1,23 @@
-import React from "react";
-import { CubesIcon } from "@patternfly/react-icons";
+import { Connector } from "@debezium/ui-models";
 import {
+  Bullseye,
   Button,
   DataList,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  Title,
-  PageSection,
   EmptyStateVariant,
-  Bullseye,
   Flex,
   FlexItem,
+  PageSection,
+  Title,
 } from "@patternfly/react-core";
+import { CubesIcon } from "@patternfly/react-icons";
+import React from "react";
 import { Link } from "react-router-dom";
-import "./ConnectorsPage.css";
-import { Connector } from "@debezium/ui-models";
-import { ConnectorListItem } from "./ConnectorListItem";
 import { ConnectorTypeId } from "src/app/shared";
+import { ConnectorListItem } from "./ConnectorListItem";
+import "./ConnectorsPage.css";
 
 /**
  * Sorts the connectors by name.

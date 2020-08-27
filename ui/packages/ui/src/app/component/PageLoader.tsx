@@ -1,5 +1,5 @@
+import { Bullseye, PageSection, Spinner } from "@patternfly/react-core";
 import React from "react";
-import { PageSection, Bullseye, Spinner } from "@patternfly/react-core";
 
 export const PageLoader: React.FunctionComponent = () => {
   return (

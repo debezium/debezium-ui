@@ -1,16 +1,18 @@
-import * as React from "react";
+// tslint:disable-next-line: ordered-imports
 import {
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   PageSection,
   PageSectionVariants,
-  EmptyState,
-  EmptyStateVariant,
-  EmptyStateIcon,
   Title,
-  EmptyStateBody,
-  Button,
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
+
 
 export const PageNotFound: React.FC = () => {
 

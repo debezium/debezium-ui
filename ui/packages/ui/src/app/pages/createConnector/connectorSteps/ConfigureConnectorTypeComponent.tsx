@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ConfigureConnectorTypeForm } from './ConfigureConnectorTypeForm';
-import './ConfigureConnectorTypeComponent.css'
-import { WithLoader } from "src/app/shared/WithLoader";
-import { ApiError } from "src/app/shared";
 import { PageLoader } from "src/app/component";
+import { ApiError } from "src/app/shared";
+import { WithLoader } from "src/app/shared/WithLoader";
+import './ConfigureConnectorTypeComponent.css'
+import { ConfigureConnectorTypeForm } from './ConfigureConnectorTypeForm';
 
 export interface IConfigureConnectorTypeComponentProps{
   selectedConnectorType?: string;
