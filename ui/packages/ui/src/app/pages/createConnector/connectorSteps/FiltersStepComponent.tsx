@@ -1,3 +1,4 @@
+import { ConnectorProperty } from "@debezium/ui-models";
 import {
   Button,
   Divider,
@@ -15,10 +16,17 @@ import React from "react";
 import "./FiltersStepComponent.css";
 
 // tslint:disable-next-line: no-empty-interface
-export interface IFiltersStepComponentProps {}
+export interface IFiltersStepComponentProps {
+  propertyDefinitions: ConnectorProperty[];
+  propertyValues: Map<string,string>;
+  onValidateProperties: (connectorProperties: Map<string,string>) => void;
+  onSaveProperties: (connectorProperties: Map<string,string>) => void;
+}
+
 export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
   props
 ) => {
+
   return (
     <>
       <Title headingLevel="h2" size="3xl">
