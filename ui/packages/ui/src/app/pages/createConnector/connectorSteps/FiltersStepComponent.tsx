@@ -13,19 +13,28 @@ import {
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
 import React from "react";
+import { PropertyCategory } from 'src/app/shared';
 import "./FiltersStepComponent.css";
 
 // tslint:disable-next-line: no-empty-interface
 export interface IFiltersStepComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>) => void;
-  onSaveProperties: (connectorProperties: Map<string,string>) => void;
+  onValidateProperties: (connectorProperties: Map<string,string>, category: PropertyCategory) => void;
 }
 
 export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
   props
 ) => {
+
+  const handleValidation = () => {
+    // TODO: this is just an example.  Get the filter values from the form.
+    const filterValueMap = new Map<string,string>();
+    filterValueMap.set("schema.whitelist", "*");
+    filterValueMap.set("table.whitelist", "*");
+
+    props.onValidateProperties(filterValueMap, PropertyCategory.FILTERS);
+  }
 
   return (
     <>
@@ -37,6 +46,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         comma-separated list of regular expresion that match the names of
         schema, table or column.
       </Text>
+      <Button onClick={handleValidation}>Validate</Button>
       <Flex className="filters-step-component_radioIcon">
         <FlexItem>
           <Radio
