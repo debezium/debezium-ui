@@ -37,7 +37,7 @@ import {
 	const count = items.length;
 	return (
 	  <AppBreadcrumb>
-		<Level gutter={'md'}>
+		<Level hasGutter={true}>
 		  <LevelItem>
 			<PFBreadcrumb>{items}</PFBreadcrumb>
 		  </LevelItem>
