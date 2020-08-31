@@ -16,7 +16,7 @@
  */
 
 import {
-    ConnectionValidationResult, FilterValidationResult, PropertiesValidationResult
+    ConnectionValidationResult, FilterValidationResult, PropertiesValidationResult, ConnectorConfiguration
 } from "@debezium/ui-models";
 import {BaseService} from "../baseService";
 
@@ -119,14 +119,14 @@ export class ConnectorService extends BaseService {
      *  .then((result: CreateConnectorResult) => {
      *  });
      */
-    // public createConnector(connectorConfig: ConnectorConfiguration): Promise<PropertiesValidationResult> {
-    //     this.logger.info("[ConnectorService] Creating a connector:", connectorConfig.name);
+    public createConnector(connectorConfig: ConnectorConfiguration): Promise<void> {
+        this.logger.info("[ConnectorService] Creating a connector:", connectorConfig.name);
 
-    //     const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/properties", { connectorTypeId });
-    //     const body = {
-    //         input
-    //     };
-    //     return this.httpPostWithReturn(endpoint, body);
-    // }
+        const endpoint: string = this.endpoint("/connector");
+        const body = {
+            connectorConfig
+        };
+        return this.httpPostWithReturn(endpoint, body);
+    }
 
 }

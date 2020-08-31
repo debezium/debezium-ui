@@ -1,17 +1,11 @@
-import { ConnectorConfiguration, ConnectorType } from "@debezium/ui-models";
-import { ConnectorProperty } from '@debezium/ui-models';
+import { ConnectorProperty, ConnectorType } from "@debezium/ui-models";
+import { PropertyCategory } from '.';
 
 export enum ConnectorTypeId {
   POSTGRES = "postgres",
   MYSQL = "mysql",
   SQLSERVER = "sqlserver",
   MONGO = "mongodb",
-}
-
-export enum PropertyCategory {
-  PROPS_BASIC = "PROPS_BASIC",
-  PROPS_ADVANCED = "PROPS_ADVANCED",
-  FILTERS = "FILTERS",
 }
 
 /**
@@ -37,23 +31,6 @@ export function getConnectorTypeDescription(connType: ConnectorType): string {
 }
 
 /**
- * Get a new ConnectorConfiguration for the specified ConnectorType
- * @param connType the connector type
- */
-export function newConnectorConfiguration(connectorType: ConnectorType): ConnectorConfiguration {
-  let connectorConfig = null;
-  if (connectorType) {
-    connectorConfig = { 
-      "name": "tempName",
-      "config": {
-        "connector.class": connectorType.className
-      }
-    } as ConnectorConfiguration;
-  }
-  return connectorConfig;
-}
-
-/**
  * Get property definitions for the supplied category
  * @param propertyDefns the array of all ConnectorProperty objects
  * @param category the category for narrowing the ConnectorProperty objects
@@ -61,47 +38,15 @@ export function newConnectorConfiguration(connectorType: ConnectorType): Connect
 export function getPropertyDefinitions(propertyDefns: ConnectorProperty[], category: PropertyCategory): ConnectorProperty[] {
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
-    if (isInCategory(propDefn, category)) {
+    if (propDefn.category === category) {
       connProperties.push(propDefn);
     }
   }
   return connProperties;
 }
 
-export function isInCategory(propertyDefn: ConnectorProperty, category: PropertyCategory) {
-  if (category === PropertyCategory.PROPS_BASIC && 
-    ( propertyDefn.name === 'database.server.name' ||
-      propertyDefn.name === 'database.dbname' ||
-      propertyDefn.name === 'database.hostname' ||
-      propertyDefn.name === 'database.port' ||
-      propertyDefn.name === 'database.user' ||
-      propertyDefn.name === 'database.password')
-    ) {
-    return true;
-  } else if (category === PropertyCategory.PROPS_ADVANCED && 
-    ( propertyDefn.name === 'database.tcpKeepAlive' ||
-      propertyDefn.name === 'database.initial.statements' ||
-      propertyDefn.name === 'plugin.name' ||
-      propertyDefn.name === 'publication.name' ||
-      propertyDefn.name === 'publication.autocreate.mode' ||
-      propertyDefn.name === 'slot.name' ||
-      propertyDefn.name === 'slot.drop.on.stop' ||
-      propertyDefn.name === 'slot.stream.params' ||
-      propertyDefn.name === 'slot.max.retries' ||
-      propertyDefn.name === 'slot.retry.delay.ms')
-    ) {
-    return true;
-  } else if (category === PropertyCategory.FILTERS &&
-    ( propertyDefn.name === 'schema.whitelist' ||
-      propertyDefn.name === 'schema.blacklist' ||
-      propertyDefn.name === 'table.whitelist' ||
-      propertyDefn.name === 'table.blacklist' ||
-      propertyDefn.name === 'column.whitelist' ||
-      propertyDefn.name === 'column.blacklist')
-    ) {
-    return true;
-  }
-  return false;
+export function mapToObject(inputMap: Map<string,string>) {
+  const obj = {}; inputMap.forEach((value, key) =>{ obj[key] = value; }); return obj;
 }
 
 /**
