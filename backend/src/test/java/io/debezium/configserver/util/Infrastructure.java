@@ -2,7 +2,6 @@ package io.debezium.configserver.util;
 
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.debezium.testing.testcontainers.DebeziumContainer;
-import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -36,7 +35,6 @@ public class Infrastructure {
             .withLogConsumer(new Slf4jLogConsumer(LOGGER))
             .dependsOn(kafkaContainer);
 
-    @BeforeAll
     public static void startContainers(DATABASE database) {
         GenericContainer<?> dbContainer = null;
         switch (database) {
