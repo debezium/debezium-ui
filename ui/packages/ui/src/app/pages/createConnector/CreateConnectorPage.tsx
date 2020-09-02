@@ -30,6 +30,7 @@ import {
 import {
   ConfigureConnectorTypeComponent,
   ConnectorTypeStepComponent,
+  DataOptionsComponent,
   FiltersStepComponent,
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
@@ -280,7 +281,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     {
       id: 4,
       name: "Data Options",
-      component: <p>component for data options</p>,
+      component: <DataOptionsComponent />,
       canJumpTo: stepIdReached >= 4,
     },
     {

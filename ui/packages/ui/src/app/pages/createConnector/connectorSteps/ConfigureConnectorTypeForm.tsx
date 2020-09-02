@@ -11,7 +11,7 @@ import {
 import { FormikProps, withFormik } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
-import { FormInputComponent } from './FormInputComponent';
+import { FormInputComponent } from './shared';
 
 // Shape of form values
 interface IFormValues {
@@ -41,14 +41,13 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
     values,
     touched,
     errors,
-    isSubmitting,
     handleChange,
     handleBlur,
     handleSubmit
   } = props;
 
   const [expanded, setExpended] = React.useState('basic');
-  const dbzHandleChange = (val, e) => handleChange(e);
+  const dbzHandleChange = (e) => handleChange(e);
 
   const onToggle = (e, id) => {
     e.preventDefault();
@@ -286,7 +285,7 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      {/* <Button variant="primary" type="submit">Submit form</Button> */}
+      <Button variant="primary" type="submit">Submit form</Button>
     </form>
   );
 };
@@ -297,7 +296,7 @@ interface IMyFormProps {
 }
 
 // Wrap our form with the withFormik HoC
-const MyForm = withFormik<IMyFormProps, FormValues>({
+const ConfigureConnectorTypeFormik = withFormik<IMyFormProps, FormValues>({
   mapPropsToValues: () => ({  
   connection_name:"",
   database_server_name: "",
@@ -340,6 +339,6 @@ const MyForm = withFormik<IMyFormProps, FormValues>({
 export const ConfigureConnectorTypeForm:
   React.FC<IConfigureConnectorTypeComponentProps> = () => {
     return (
-      <MyForm />
+      <ConfigureConnectorTypeFormik />
     );
   }
