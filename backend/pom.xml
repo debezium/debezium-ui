@@ -9,6 +9,11 @@
   </parent>
   <artifactId>debezium-uipoc-backend</artifactId>
   <name>Debezium UI PoC Backend</name>
+
+  <properties>
+    <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -20,6 +25,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -32,27 +38,27 @@
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-core</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>${debezium.base.version}</version>
     </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-connector-mongodb</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>${debezium.base.version}</version>
     </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-connector-mysql</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>${debezium.base.version}</version>
     </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-connector-postgres</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>${debezium.base.version}</version>
     </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-connector-sqlserver</artifactId>
-      <version>1.3.0-SNAPSHOT</version>
+      <version>${debezium.base.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
@@ -77,7 +83,41 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>1.14.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>1.14.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.debezium</groupId>
+      <artifactId>debezium-testing-testcontainers</artifactId>
+      <version>${debezium.base.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <version>${testcontainers.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>jdbc</artifactId>
+      <version>${testcontainers.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -87,6 +127,8 @@
         <executions>
           <execution>
             <goals>
+              <goal>prepare</goal>
+              <goal>prepare-tests</goal>
               <goal>build</goal>
             </goals>
           </execution>
@@ -127,13 +169,53 @@
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
           <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <systemProperties>
+                <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
+                <maven.home>${maven.home}</maven.home>
+              </systemProperties>
+              <excludes>Native**Test.java</excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven.surefire.plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <skipTests>${skipITs}</skipTests>
+              <enableAssertions>true</enableAssertions>
+              <systemPropertyVariables>
+                <skipLongRunningTests>${skipLongRunningTests}</skipLongRunningTests>
+                <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
+                <maven.home>${maven.home}</maven.home>
+              </systemPropertyVariables>
+              <excludes>Native**IT.java</excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
+
   <profiles>
     <profile>
       <id>native</id>
@@ -145,6 +227,7 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <version>${maven.surefire.plugin.version}</version>
             <executions>
@@ -154,9 +237,12 @@
                   <goal>verify</goal>
                 </goals>
                 <configuration>
+                  <skipTests>${skipITs}</skipTests>
+                  <enableAssertions>true</enableAssertions>
                   <systemPropertyVariables>
+                    <skipLongRunningTests>${skipLongRunningTests}</skipLongRunningTests>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                    <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
                     <maven.home>${maven.home}</maven.home>
                   </systemPropertyVariables>
                 </configuration>
@@ -167,6 +253,20 @@
       </build>
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>skip-integration-tests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>skipITs</name>
+        </property>
+      </activation>
+      <properties>
+        <docker.skip>true</docker.skip>
       </properties>
     </profile>
   </profiles>

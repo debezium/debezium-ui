@@ -1,5 +1,6 @@
 package io.debezium.configserver.rest;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,14 +40,14 @@ import io.debezium.configserver.service.ConnectorIntegrator;
 @Path("/api")
 public class ConnectorResource {
 
+    public static final String PROPERTY_KAFKA_CONNECT_URI = "kafka.connect.uri";
+
     private static final Logger LOG = Logger.getLogger(ConnectorResource.class);
 
-    @ConfigProperty(name = "kafka.connect.uri", defaultValue = "http://localhost:9000")
-    private String kafkaConnectBaseUri = "http://localhost:9000";
+    @ConfigProperty(name = PROPERTY_KAFKA_CONNECT_URI, defaultValue = "http://localhost:8083")
+    String kafkaConnectBaseUri = "http://localhost:8083";
 
     private final Map<String, ConnectorIntegrator> integrators;
-
-    private final URI kafkaConnectURI;
 
     public ConnectorResource() {
         Map<String, ConnectorIntegrator> integrators = new HashMap<>();
@@ -54,12 +56,6 @@ public class ConnectorResource {
                 .forEach(integrator -> integrators.put(integrator.getDescriptor().id, integrator));
 
         this.integrators = Collections.unmodifiableMap(integrators);
-
-        try {
-            kafkaConnectURI = new URI(kafkaConnectBaseUri);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Invalid Kafka Connect URI configured!", e);
-        }
     }
 
     @Path("/connector-types")
@@ -112,7 +108,7 @@ public class ConnectorResource {
         }
         catch(DebeziumException e) {
             e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
+            return Response.serverError()
                     .entity(new ServerError("Failed to apply table filters", traceAsString(e)))
                     .build();
         }
@@ -174,14 +170,29 @@ public class ConnectorResource {
             return Response.status(Status.BAD_REQUEST).entity(validationResult).build();
         }
 
+        URI kafkaConnectURI;
+        try {
+            kafkaConnectURI = new URI(kafkaConnectBaseUri);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Invalid Kafka Connect URI configured!", e);
+        }
         KafkaConnectClient kafkaConnectClient = RestClientBuilder.newBuilder()
                 .baseUri(kafkaConnectURI)
                 .build(KafkaConnectClient.class);
 
         kafkaConnectConfig.config.put("connector.class", integrator.getDescriptor().className);
 
+        String result;
         LOG.debug("Sending valid connector config: " + kafkaConnectConfig);
-        var result = kafkaConnectClient.createConnector(kafkaConnectConfig);
+        try {
+            result = kafkaConnectClient.createConnector(kafkaConnectConfig);
+        } catch (ProcessingException | IOException e) {
+            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
+                    + kafkaConnectBaseUri + "\". (" + e.getLocalizedMessage() + ")";
+            LOG.error(errorMessage);
+            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
+        }
+        LOG.error("Kafka Connect Response: " + result);
 
         return Response.ok(result).build();
     }
