@@ -18,7 +18,7 @@ public class MultipleKafkaConnectClustersTestProfile implements QuarkusTestProfi
         Map<String, String> config = new HashMap<>();
         config.put(
                 ConnectorResource.PROPERTY_KAFKA_CONNECT_URI,
-                "http://localhost:1234, http://localhorst:4567"
+                "http://localhost:1234,http://localhorst:4567 , http://localhosst:7890"
         );
         return config;
     }

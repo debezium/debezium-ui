@@ -49,7 +49,7 @@ public class ConnectorResource {
      * A comma-separated list of Kafka Connect base URIs
      */
     @ConfigProperty(name = PROPERTY_KAFKA_CONNECT_URI, defaultValue = "http://localhost:8083")
-    String kafkaConnectBaseUris = "http://localhost:8083";
+    List<String> kafkaConnectBaseUris;
 
     private final Map<String, ConnectorIntegrator> integrators;
 
@@ -65,15 +65,21 @@ public class ConnectorResource {
     @Path("/connect-clusters")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> getClusters() {
-        return getAllKafkaConnectClusters();
+    public Response getClusters() {
+        try {
+            return Response.ok(getAllKafkaConnectClusters()).build();
+        } catch (RuntimeException | URISyntaxException e) {
+            String errorMessage = "Error with Kafka Connect cluster URI: " + e.getLocalizedMessage();
+            LOGGER.error(errorMessage);
+            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
+        }
+
     }
 
-    private List<String> getAllKafkaConnectClusters() {
-        String[] splittedKafkaConnectBaseURIs = kafkaConnectBaseUris.split(",");
-        List<String> kafkaConnectBaseURIsList = new ArrayList<>(splittedKafkaConnectBaseURIs.length);
-        for (String s : splittedKafkaConnectBaseURIs) {
-            kafkaConnectBaseURIsList.add(s.trim());
+    private List<URI> getAllKafkaConnectClusters() throws URISyntaxException {
+        List<URI> kafkaConnectBaseURIsList = new ArrayList<>(kafkaConnectBaseUris.size());
+        for (String s : kafkaConnectBaseUris) {
+            kafkaConnectBaseURIsList.add(new URI(s.trim()));
         }
         return kafkaConnectBaseURIsList;
     }
@@ -162,19 +168,14 @@ public class ConnectorResource {
      *
      * @return the URI for the selected cluster
      */
-    private URI getKafkaConnectURIforCluster(int cluster) throws RuntimeException {
-        List<String> baseURIsList = getAllKafkaConnectClusters();
+    private URI getKafkaConnectURIforCluster(int cluster) throws RuntimeException, URISyntaxException {
+        List<URI> baseURIsList = getAllKafkaConnectClusters();
 
         if (baseURIsList.size() < cluster) {
             throw new RuntimeException("Selected cluster is not available in the list of configured clusters.");
         }
 
-        String kafkaConnectBaseUri = baseURIsList.get(cluster - 1);
-        try {
-            return new URI(kafkaConnectBaseUri);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Invalid Kafka Connect URI configured!", e);
-        }
+        return baseURIsList.get(cluster - 1);
     }
 
     @Path("/connector/{cluster}/{connector-type-id}")
@@ -218,7 +219,7 @@ public class ConnectorResource {
             kafkaConnectClient = RestClientBuilder.newBuilder()
                     .baseUri(kafkaConnectURI)
                     .build(KafkaConnectClient.class);
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | URISyntaxException e) {
             String errorMessage = "Error on choosing the Kafka Connect cluster URI: " + e.getLocalizedMessage();
             LOGGER.error(errorMessage);
             return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
