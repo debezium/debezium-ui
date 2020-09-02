@@ -19,9 +19,10 @@ public class MultipleKafkaConnectClustersIT {
           .when().get("/api/connect-clusters")
           .then().log().all()
              .statusCode(200)
-             .body("size()", is(2))
+             .body("size()", is(3))
              .and().body("[0]", equalTo("http://localhost:1234"))
-             .and().body("[1]", equalTo("http://localhorst:4567"));
+             .and().body("[1]", equalTo("http://localhorst:4567"))
+             .and().body("[2]", equalTo("http://localhosst:7890"));
     }
 
 }
