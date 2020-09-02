@@ -1,23 +1,37 @@
-import { ConnectionValidationResult, ConnectorConfiguration, ConnectorType, FilterValidationResult } from "@debezium/ui-models";
-import { ConnectorProperty } from '@debezium/ui-models';
+import {
+  ConnectionValidationResult,
+  ConnectorConfiguration,
+  ConnectorType,
+  FilterValidationResult,
+} from "@debezium/ui-models";
+import { ConnectorProperty } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   Breadcrumb,
   BreadcrumbItem,
+  Level,
+  LevelItem,
   PageSection,
   PageSectionVariants,
+  TextContent,
+  Title,
+  TitleSizes,
   Wizard,
 } from "@patternfly/react-core";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { 
-  fetch_retry, 
-  getCategorizedPropertyDefinitions, 
-  getPropertyDefinitions, 
+import {
+  fetch_retry,
+  getCategorizedPropertyDefinitions,
+  getPropertyDefinitions,
   mapToObject,
-  PropertyCategory
+  PropertyCategory,
 } from "src/app/shared";
-import { ConfigureConnectorTypeComponent, ConnectorTypeStepComponent, FiltersStepComponent } from "./connectorSteps";
+import {
+  ConfigureConnectorTypeComponent,
+  ConnectorTypeStepComponent,
+  FiltersStepComponent,
+} from "./connectorSteps";
 import "./CreateConnectorPage.css";
 
 /**
@@ -41,16 +55,26 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 }
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
-
   const [stepIdReached, setStepIdReached] = React.useState(1);
-  const [selectedConnectorType, setSelectedConnectorType] = React.useState<string | undefined>();
-  const [selectedConnectorPropertyDefns, setSelectedConnectorPropertyDefns] = React.useState<ConnectorProperty[]>([]);
+  const [selectedConnectorType, setSelectedConnectorType] = React.useState<
+    string | undefined
+  >();
+  const [
+    selectedConnectorPropertyDefns,
+    setSelectedConnectorPropertyDefns,
+  ] = React.useState<ConnectorProperty[]>([]);
   const [connectorTypes, setConnectorTypes] = React.useState<ConnectorType[]>(
     []
   );
-  const [filterValues, setFilterValues] = React.useState<Map<string,string>>(new Map<string,string>());
-  const [basicPropValues, setBasicPropValues] = React.useState<Map<string,string>>(new Map<string,string>());
-  const [advancedPropValues, setAdvancedPropValues] = React.useState<Map<string,string>>(new Map<string,string>());
+  const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
+    new Map<string, string>()
+  );
+  const [basicPropValues, setBasicPropValues] = React.useState<
+    Map<string, string>
+  >(new Map<string, string>());
+  const [advancedPropValues, setAdvancedPropValues] = React.useState<
+    Map<string, string>
+  >(new Map<string, string>());
 
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
@@ -60,10 +84,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const onFinish = () => {
     // Merge the individual category properties values into a single map for the config
-    const allPropValues = new Map<string,string>();
-    basicPropValues.forEach((v,k)=>allPropValues.set(k,v));
-    advancedPropValues.forEach((v,k)=>allPropValues.set(k,v));
-    filterValues.forEach((v,k)=>allPropValues.set(k,v));
+    const allPropValues = new Map<string, string>();
+    basicPropValues.forEach((v, k) => allPropValues.set(k, v));
+    advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+    filterValues.forEach((v, k) => allPropValues.set(k, v));
 
     // TODO: Need to have a name input on one of the pages
     const connName = "myConnector";
@@ -71,9 +95,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     // ConnectorConfiguration for the create
     const connectorConfig = {
       name: connName,
-      config: mapToObject(allPropValues)
+      config: mapToObject(allPropValues),
     } as ConnectorConfiguration;
-    
+
     // TODO: On finish, create the connector.
     //   If valid, the connector will be created and redirect to connectors page.
     //   If invalid, the user is shown a list of issues that must be corrected.
@@ -85,84 +109,94 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     //   //  Do something
     // });
 
-    history.push('/app');
+    history.push("/app");
   };
 
   const onCancel = () => {
-    history.push('/app');
+    history.push("/app");
   };
 
   const onNext = ({ id }: any) => {
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
   };
 
-  const onConnectorTypeChanged = (
-    cType: string | undefined
-  ): void => {
+  const onConnectorTypeChanged = (cType: string | undefined): void => {
     setSelectedConnectorType(cType);
     // Categorize the properties and reset the overall state
-    const connType = connectorTypes.find(conn => conn.id === cType);
-    setSelectedConnectorPropertyDefns(getCategorizedPropertyDefinitions(connType!.properties));
+    const connType = connectorTypes.find((conn) => conn.id === cType);
+    setSelectedConnectorPropertyDefns(
+      getCategorizedPropertyDefinitions(connType!.properties)
+    );
     initPropertyValues();
   };
 
-  const initPropertyValues = ():void => {
-    setFilterValues(new Map<string,string>());
-    setBasicPropValues(new Map<string,string>());
-    setAdvancedPropValues(new Map<string,string>());
-  }
+  const initPropertyValues = (): void => {
+    setFilterValues(new Map<string, string>());
+    setBasicPropValues(new Map<string, string>());
+    setAdvancedPropValues(new Map<string, string>());
+  };
 
-  const handleValidateProperties = (propertyValues: Map<string,string>, category: PropertyCategory): void => {
+  const handleValidateProperties = (
+    propertyValues: Map<string, string>,
+    category: PropertyCategory
+  ): void => {
     // Update the state values for the submitted category
-    if(category === PropertyCategory.FILTERS) {
+    if (category === PropertyCategory.FILTERS) {
       setFilterValues(propertyValues);
-    } else if(category === PropertyCategory.PROPS_ADVANCED) {
+    } else if (category === PropertyCategory.PROPS_ADVANCED) {
       setAdvancedPropValues(propertyValues);
-    } else if(category === PropertyCategory.PROPS_BASIC) {
+    } else if (category === PropertyCategory.PROPS_BASIC) {
       setBasicPropValues(propertyValues);
     }
 
     // Filter Validation
     const connectorService = Services.getConnectorService();
-    if(category === PropertyCategory.FILTERS) {
-       connectorService.validateFilters('postgres', propertyValues)
-      .then((result: FilterValidationResult) => {
-        if (result.status === 'INVALID') {
-          let resultStr = "";
-          for(const e1 of result.propertyValidationResults) {
-            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+    if (category === PropertyCategory.FILTERS) {
+      connectorService
+        .validateFilters("postgres", propertyValues)
+        .then((result: FilterValidationResult) => {
+          if (result.status === "INVALID") {
+            let resultStr = "";
+            for (const e1 of result.propertyValidationResults) {
+              resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+            }
+            alert("filters are INVALID.  Results: \n" + resultStr);
+          } else {
+            alert("filters are VALID");
           }
-          alert('filters are INVALID.  Results: \n' + resultStr);
-        } else {
-          alert('filters are VALID');
-        }
-      })
-      .catch( error => {
-        alert('Error Validating Filters !: ' + JSON.stringify(error));
-      });
-    // Connector Property Validation
-    } else if(category === PropertyCategory.PROPS_BASIC || category === PropertyCategory.PROPS_ADVANCED) {
-      const combinedProps = new Map<string,string>();
-      basicPropValues.forEach((v,k)=>combinedProps.set(k,v));
-      advancedPropValues.forEach((v,k)=>combinedProps.set(k,v));
-  
-      connectorService.validateConnection('postgres', combinedProps)
-      .then((result: ConnectionValidationResult) => {
-        if (result.status === 'INVALID') {
-          let resultStr = "";
-          for(const e1 of result.propertyValidationResults) {
-            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+        })
+        .catch((error) => {
+          alert("Error Validating Filters !: " + JSON.stringify(error));
+        });
+      // Connector Property Validation
+    } else if (
+      category === PropertyCategory.PROPS_BASIC ||
+      category === PropertyCategory.PROPS_ADVANCED
+    ) {
+      const combinedProps = new Map<string, string>();
+      basicPropValues.forEach((v, k) => combinedProps.set(k, v));
+      advancedPropValues.forEach((v, k) => combinedProps.set(k, v));
+
+      connectorService
+        .validateConnection("postgres", combinedProps)
+        .then((result: ConnectionValidationResult) => {
+          if (result.status === "INVALID") {
+            let resultStr = "";
+            for (const e1 of result.propertyValidationResults) {
+              resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+            }
+            alert(
+              "connection props are INVALID. Property Results: \n" + resultStr
+            );
+          } else {
+            alert("connection props are VALID");
           }
-          alert('connection props are INVALID. Property Results: \n' + resultStr);
-        } else {
-          alert('connection props are VALID');
-        }
-     })
-     .catch( error => {
-       alert('Error Validation Connection Properties !: ' + error);
-     });
+        })
+        .catch((error) => {
+          alert("Error Validation Connection Properties !: " + error);
+        });
     }
-  }
+  };
 
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
@@ -180,12 +214,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   // Init the selected connector type to first 'enabled' connectortype
   React.useEffect(() => {
     // tslint:disable-next-line: no-unused-expression
-    connectorTypes[0]?.id && 
-    setSelectedConnectorType(connectorTypes[0].id);
+    connectorTypes[0]?.id && setSelectedConnectorType(connectorTypes[0].id);
 
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
-    setSelectedConnectorPropertyDefns(getCategorizedPropertyDefinitions(connectorTypes[0]!.properties));
+      setSelectedConnectorPropertyDefns(
+        getCategorizedPropertyDefinitions(connectorTypes[0]!.properties)
+      );
 
     // Init the connector property values
     initPropertyValues();
@@ -261,16 +296,23 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     <>
       <PageSection
         variant={PageSectionVariants.light}
-        className="app-page-section-breadcrumb app-page-section-border-bottom"
+        className="create-connector-page_breadcrumb"
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
           <BreadcrumbItem isActive={true}>Create Connector</BreadcrumbItem>
         </Breadcrumb>
+        <Level hasGutter={true}>
+          <LevelItem>
+            <TextContent>
+              <Title headingLevel="h3" size={TitleSizes["2xl"]}>
+                {"Configure a connector"}
+              </Title>
+            </TextContent>
+          </LevelItem>
+        </Level>
       </PageSection>
-      <div
-        className="app-page-section-border-bottom"
-      >
+      <div className="app-page-section-border-bottom">
         <Wizard
           onClose={onCancel}
           onNext={onNext}

@@ -13,8 +13,9 @@
 .connector-type-step-component_disableCard {
   color: var(--pf-global--disabled-color--100);
 }
-.select-connector-type-component_flex{
+.select-connector-type-component_flex {
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: row;
+  margin: 10px;
 }

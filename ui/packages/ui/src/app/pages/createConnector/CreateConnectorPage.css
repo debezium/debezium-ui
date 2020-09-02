@@ -1,21 +1,30 @@
-.create-connector{
-    &-page_wizard{
-        height: auto;
-        min-height: calc(100vh - 200px);
-
-        .pf-c-wizard{
-            &__nav-list{
-                margin: 24px 5px;
-                padding: 0 40px;
-            }
-            &__nav-item{
-                margin-bottom: 30px;
-                .pf-m-disabled{
-                    &:before{
-                        background-color: var(--pf-global--disabled-color--300);
-                    }
-                }
-            }
-        }
+.create-connector {
+  &-page_breadcrumb {
+    padding: 0px !important;
+    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+    .pf-l-level {
+      .pf-c-content {
+        padding: 15px 0px;
+      }
     }
+  }
+  &-page_wizard {
+    height: auto;
+    min-height: calc(100vh - 200px);
+
+    .pf-c-wizard {
+      &__nav-list {
+        margin: 24px 5px;
+        padding: 0 40px;
+      }
+      &__nav-item {
+        margin-bottom: 30px;
+        .pf-m-disabled {
+          &:before {
+            background-color: var(--pf-global--disabled-color--300);
+          }
+        }
+      }
+    }
+  }
 }
