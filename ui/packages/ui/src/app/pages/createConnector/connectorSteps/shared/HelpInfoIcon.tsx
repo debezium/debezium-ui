@@ -4,15 +4,20 @@ import {
 import { HelpIcon } from '@patternfly/react-icons';
 import React from 'react';
 
-export const DbzLabelIcon = ({label, description}) => {
+export interface IHelpInfoIconProps {
+  label: string,
+  description: string,
+}
+
+export const HelpInfoIcon = (props: IHelpInfoIconProps) => {
   return (
     <Popover
       headerContent={
         <div>
-          {label}
+          {props.label}
         </div>
       }
-      bodyContent={<div>{description}</div>}
+      bodyContent={<div>{props.description}</div>}
     >
       <button
         onClick={e => e.preventDefault()}

@@ -21,7 +21,6 @@ import React from "react";
 import { PropertyCategory } from "src/app/shared";
 import "./FiltersStepComponent.css";
 
-// tslint:disable-next-line: no-empty-interface
 export interface IFiltersStepComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;

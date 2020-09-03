@@ -8,7 +8,7 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 import * as React from 'react'
-import { DbzLabelIcon } from './DbzLabelIcon';
+import { HelpInfoIcon } from './HelpInfoIcon';
 
 export interface ISelectOptions {
   value: string,
@@ -60,7 +60,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     <FormGroup
       label={label}
       labelIcon={
-        <DbzLabelIcon label={label} description={description} />
+        <HelpInfoIcon label={label} description={description} />
       }
       helperTextInvalid={helperTextInvalid}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
