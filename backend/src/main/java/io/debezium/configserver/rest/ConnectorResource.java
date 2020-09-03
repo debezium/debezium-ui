@@ -13,6 +13,9 @@ import java.util.ServiceLoader;
 
 import io.debezium.configserver.model.ConnectorConfig;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.logging.Logger;
 import java.util.stream.Collectors;
@@ -65,13 +68,26 @@ public class ConnectorResource {
     @Path("/connect-clusters")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = List.class)
+            ))
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ServerError.class)
+            ))
     public Response getClusters() {
         try {
             return Response.ok(getAllKafkaConnectClusters()).build();
         } catch (RuntimeException | URISyntaxException e) {
             String errorMessage = "Error with Kafka Connect cluster URI: " + e.getLocalizedMessage();
             LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ServerError(errorMessage, traceAsString(e))).build();
         }
 
     }
@@ -98,6 +114,19 @@ public class ConnectorResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ConnectionValidationResult.class)
+            ))
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid connector type provided",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BadRequestResponse.class)
+            ))
     public Response validateConnectionProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
         ConnectorIntegrator integrator = integrators.get(connectorTypeId);
 
@@ -117,6 +146,26 @@ public class ConnectorResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = FilterValidationResult.class)
+            ))
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid connector type provided",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BadRequestResponse.class)
+            ))
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during validation",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ServerError.class)
+            ))
     public Response validateFilters(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
         ConnectorIntegrator integrator = integrators.get(connectorTypeId);
 
@@ -144,6 +193,19 @@ public class ConnectorResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PropertiesValidationResult.class)
+            ))
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid connector type provided",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BadRequestResponse.class)
+            ))
     public Response validateConnectorProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
         ConnectorIntegrator integrator = integrators.get(connectorTypeId);
 
@@ -182,6 +244,33 @@ public class ConnectorResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = FilterValidationResult.class)
+            ))
+    @APIResponse(
+            responseCode = "400",
+            description = "Missing or invalid properties or invalid connector type provided",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BadRequestResponse.class)
+            ))
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    @APIResponse(
+            responseCode = "503",
+            description = "Exception while trying to connect to the selected Kafka Conenct cluster",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ServerError.class)
+            ))
     public Response createConnector(
             @PathParam("cluster") int cluster,
             @PathParam("connector-type-id") String connectorTypeId,
@@ -222,7 +311,7 @@ public class ConnectorResource {
         } catch (RuntimeException | URISyntaxException e) {
             String errorMessage = "Error on choosing the Kafka Connect cluster URI: " + e.getLocalizedMessage();
             LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ServerError(errorMessage, traceAsString(e))).build();
         }
 
         kafkaConnectConfig.config.put("connector.class", integrator.getDescriptor().className);
