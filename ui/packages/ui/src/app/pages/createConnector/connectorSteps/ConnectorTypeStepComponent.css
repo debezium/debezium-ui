@@ -2,6 +2,7 @@
   text-align: center;
   cursor: pointer;
   flex-grow: 1;
+  margin: 10px;
 }
 .connector-type-step-component_dbIcon {
   width: 50%;
@@ -17,5 +18,4 @@
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: row;
-  margin: 10px;
 }
