@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import io.debezium.configserver.model.ConnectorConfig;
+import io.debezium.configserver.model.KafkaConnectClusterList;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -72,7 +73,7 @@ public class ConnectorResource {
             responseCode = "200",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = List.class)
+                    schema = @Schema(implementation = KafkaConnectClusterList.class)
             ))
     @APIResponse(
             responseCode = "500",
@@ -92,8 +93,8 @@ public class ConnectorResource {
 
     }
 
-    private List<URI> getAllKafkaConnectClusters() throws URISyntaxException {
-        List<URI> kafkaConnectBaseURIsList = new ArrayList<>(kafkaConnectBaseUris.size());
+    private KafkaConnectClusterList getAllKafkaConnectClusters() throws URISyntaxException {
+        KafkaConnectClusterList kafkaConnectBaseURIsList = new KafkaConnectClusterList(kafkaConnectBaseUris.size());
         for (String s : kafkaConnectBaseUris) {
             kafkaConnectBaseURIsList.add(new URI(s.trim()));
         }
@@ -231,7 +232,7 @@ public class ConnectorResource {
      * @return the URI for the selected cluster
      */
     private URI getKafkaConnectURIforCluster(int cluster) throws RuntimeException, URISyntaxException {
-        List<URI> baseURIsList = getAllKafkaConnectClusters();
+        KafkaConnectClusterList baseURIsList = getAllKafkaConnectClusters();
 
         if (baseURIsList.size() < cluster) {
             throw new RuntimeException("Selected cluster is not available in the list of configured clusters.");
