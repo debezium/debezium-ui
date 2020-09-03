@@ -71,14 +71,14 @@ public class ConnectorResource {
     @APIResponse(
             responseCode = "200",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = List.class)
             ))
     @APIResponse(
             responseCode = "500",
             description = "Exception during Kafka Connect URI validation",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
     public Response getClusters() {
@@ -117,14 +117,14 @@ public class ConnectorResource {
     @APIResponse(
             responseCode = "200",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ConnectionValidationResult.class)
             ))
     @APIResponse(
             responseCode = "400",
             description = "Invalid connector type provided",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = BadRequestResponse.class)
             ))
     public Response validateConnectionProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
@@ -149,21 +149,21 @@ public class ConnectorResource {
     @APIResponse(
             responseCode = "200",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = FilterValidationResult.class)
             ))
     @APIResponse(
             responseCode = "400",
             description = "Invalid connector type provided",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = BadRequestResponse.class)
             ))
     @APIResponse(
             responseCode = "500",
             description = "Exception during validation",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
     public Response validateFilters(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
@@ -196,14 +196,14 @@ public class ConnectorResource {
     @APIResponse(
             responseCode = "200",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = PropertiesValidationResult.class)
             ))
     @APIResponse(
             responseCode = "400",
             description = "Invalid connector type provided",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = BadRequestResponse.class)
             ))
     public Response validateConnectorProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
@@ -247,28 +247,28 @@ public class ConnectorResource {
     @APIResponse(
             responseCode = "200",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = FilterValidationResult.class)
             ))
     @APIResponse(
             responseCode = "400",
             description = "Missing or invalid properties or invalid connector type provided",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = BadRequestResponse.class)
             ))
     @APIResponse(
             responseCode = "500",
             description = "Exception during Kafka Connect URI validation",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
     @APIResponse(
             responseCode = "503",
             description = "Exception while trying to connect to the selected Kafka Conenct cluster",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
     public Response createConnector(
