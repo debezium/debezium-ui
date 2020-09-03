@@ -34,7 +34,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.7.1.Final</quarkus.platform.version>
     <testcontainers.version>1.14.3</testcontainers.version>
-    <debezium.base.version>1.3.0-SNAPSHOT</debezium.base.version>
+    <debezium.base.version>1.3.0.Beta1</debezium.base.version>
   </properties>
 
   <modules>
