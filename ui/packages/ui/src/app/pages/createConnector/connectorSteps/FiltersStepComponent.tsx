@@ -1,40 +1,106 @@
 import { ConnectorProperty } from "@debezium/ui-models";
 import {
+  ActionGroup,
+  Alert,
+  AlertActionCloseButton,
   Button,
   Divider,
   Flex,
   FlexItem,
-  InputGroup,
-  Radio,
+  Form,
+  FormGroup,
+  Switch,
   Text,
   TextInput,
   TextVariants,
   Title,
+  TreeView,
 } from "@patternfly/react-core";
-import { SearchIcon } from "@patternfly/react-icons";
+import { InfoCircleIcon } from "@patternfly/react-icons";
 import React from "react";
-import { PropertyCategory } from 'src/app/shared';
+import { PropertyCategory } from "src/app/shared";
 import "./FiltersStepComponent.css";
 
 // tslint:disable-next-line: no-empty-interface
 export interface IFiltersStepComponentProps {
   propertyDefinitions: ConnectorProperty[];
-  propertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>, category: PropertyCategory) => void;
+  propertyValues: Map<string, string>;
+  onValidateProperties: (
+    connectorProperties: Map<string, string>,
+    category: PropertyCategory
+  ) => void;
 }
 
-export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
-  props
-) => {
+export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = () => {
+  const [schemaFilter, setSchemaFilter] = React.useState<string>("");
+  const [tableFilter, setTableFilter] = React.useState<string>("");
+  const [schemaExclusion, setSchemaExclusion] = React.useState<boolean>(false);
+  const [tableExclusion, setTableExclusion] = React.useState<boolean>(false);
 
-  const handleValidation = () => {
-    // TODO: this is just an example.  Get the filter values from the form.
-    const filterValueMap = new Map<string,string>();
-    filterValueMap.set("schema.whitelist", "*");
-    filterValueMap.set("table.whitelist", "*");
+  const [apply, setApply] = React.useState<boolean>(false);
 
-    props.onValidateProperties(filterValueMap, PropertyCategory.FILTERS);
-  }
+  const handleSchemaFilter = (val: string) => {
+    setSchemaFilter(val);
+  };
+  const handleTableFilter = (val: string) => {
+    setTableFilter(val);
+  };
+
+  const handleSchemaExclusion = (isChecked: boolean) => {
+    setSchemaExclusion(isChecked);
+  };
+  const handleTableExclusion = (isChecked: boolean) => {
+    setTableExclusion(isChecked);
+  };
+
+  const [activeItems, setActiveItems] = React.useState<any>();
+
+  const onClick = (evt: any, treeViewItem: any, parentItem: any) => {
+    setActiveItems([treeViewItem, parentItem]);
+  };
+
+  const options = [
+    {
+      name: "ApplicationLauncher",
+      id: "AppLaunch",
+      children: [
+        {
+          name: "Application 1",
+          id: "App1",
+        },
+        {
+          name: "Application 2",
+          id: "App2",
+        },
+      ],
+      defaultExpanded: true,
+    },
+    {
+      name: "Cost Management",
+      id: "Cost",
+      children: [
+        {
+          name: "Application 3",
+          id: "App3",
+        },
+      ],
+    },
+    {
+      name: "Sources",
+      id: "Sources",
+      children: [
+        {
+          name: "Application 4",
+          id: "App4",
+        },
+      ],
+    },
+    {
+      name: "newTest",
+      id: "Long",
+      children: [{ name: "Application 5", id: "App5" }],
+    },
+  ];
 
   return (
     <>
@@ -46,48 +112,114 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         comma-separated list of regular expresion that match the names of
         schema, table or column.
       </Text>
-      <Button onClick={handleValidation}>Validate</Button>
-      <Flex className="filters-step-component_radioIcon">
-        <FlexItem>
-          <Radio
-            isChecked={true}
-            name="radio-inclusion"
-            // tslint:disable-next-line
-            onChange={() => {
-              // tslint:disable-next-line
-              console.log("");
-            }}
-            label="Inclusion"
-            id="radio-inclusion"
-          />
-        </FlexItem>
-        <FlexItem>
-          <Radio
-            isChecked={false}
-            name="radio-exclusion"
-            // tslint:disable-next-line
-            onChange={() => {
-              // tslint:disable-next-line
-              console.log("");
-            }}
-            label="Exclusion"
-            id="radio-exclusion"
-          />
-        </FlexItem>
-      </Flex>
-      <InputGroup className="filters-step-component_searchBar filters-step-component_radioIcon">
-        <TextInput
-          name="textInput11"
-          id="textInput11"
-          type="search"
-          aria-label="search input example"
-          placeholder="Filter by expression, enter * for all schemas and tables"
-        />
-        <Button variant="control" aria-label="search button for search input">
-          <SearchIcon />
-        </Button>
-      </InputGroup>
+      <Form isHorizontal={true} className="filters-step-component_form">
+        <FormGroup
+          label="Schema filter"
+          fieldId="schema_filter"
+          helperText={
+            schemaExclusion ? (
+              <Text
+                component={TextVariants.h4}
+                className="filters-step-component_info"
+              >
+                <InfoCircleIcon />
+                This filter will exclude the schema that matches the expression.
+              </Text>
+            ) : (
+              ""
+            )
+          }
+        >
+          <Flex>
+            <FlexItem>
+              <TextInput
+                value={schemaFilter}
+                type="text"
+                id="schema_filter"
+                aria-describedby="schema_filter-helper"
+                name="schema_filter"
+                onChange={handleSchemaFilter}
+                placeholder="Include the schemas that match the regular expresson"
+              />
+            </FlexItem>
+            <FlexItem>
+              <Switch
+                id="schema-switch"
+                label="Exclusion"
+                labelOff="Exclusion"
+                isChecked={schemaExclusion}
+                onChange={handleSchemaExclusion}
+              />
+            </FlexItem>
+          </Flex>
+        </FormGroup>
+        <FormGroup
+          label="Table filter"
+          fieldId="table_filter"
+          helperText={
+            tableExclusion ? (
+              <Text
+                component={TextVariants.h4}
+                className="filters-step-component_info"
+              >
+                <InfoCircleIcon />
+                This filter will exclude the tables that matches the expression.
+              </Text>
+            ) : (
+              ""
+            )
+          }
+        >
+          <Flex>
+            <FlexItem>
+              <TextInput
+                value={tableFilter}
+                onChange={handleTableFilter}
+                type="text"
+                id="table_filter"
+                name="table_filter"
+                placeholder="Include the tables that match the regular expresson"
+              />
+            </FlexItem>
+            <FlexItem>
+              <Switch
+                id="table-switch"
+                label="Exclusion"
+                labelOff="Exclusion"
+                isChecked={tableExclusion}
+                onChange={handleTableExclusion}
+              />
+            </FlexItem>
+          </Flex>
+        </FormGroup>
+        <ActionGroup>
+          <Button variant="primary" onClick={() => {setApply(!apply)}}>Apply</Button>
+        </ActionGroup>
+      </Form>
       <Divider />
+      {apply && <Alert
+        isInline={true}
+        variant="info"
+        title="Result shows the schema and tables that you want to capture data changes."
+        actionClose={
+          <AlertActionCloseButton
+            onClose={() => alert("Clicked the close button")}
+          />
+        }
+      >
+        <p>
+          <a href="#">20 tables</a> have been excluded by the filtering. You
+          could also find all the schema and table by clicking{" "}
+          <a href="#">Clean the filters</a>
+        </p>
+      </Alert>}
+      
+      <TreeView
+        data={options}
+        activeItems={activeItems}
+        onSelect={onClick}
+        hasBadges={true}
+      />
     </>
   );
 };
