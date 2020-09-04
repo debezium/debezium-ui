@@ -21,7 +21,7 @@ export const ConfigureConnectorTypeComponent: React.FC<IConfigureConnectorTypeCo
     basicValueMap.set("database.name", "aName");
     basicValueMap.set("database.user", "aUser");
 
-    props.onValidateProperties(basicValueMap, PropertyCategory.PROPS_BASIC);
+    props.onValidateProperties(basicValueMap, PropertyCategory.BASIC);
   }
 
   return (

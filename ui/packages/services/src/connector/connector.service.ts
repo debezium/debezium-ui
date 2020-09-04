@@ -30,10 +30,8 @@ export class ConnectorService extends BaseService {
      * Example usage:
      * 
      * const connectorService = Services.getConnectorService();
-     * const inputMap = new Map<string,string>();
-     * inputMap.set("oneParam","oneValue");
-     * inputMap.set("twoParam","twoValue");
-     * connectorService.validateConnection('postgres', inputMap)
+     * const body = { "oneParm: oneValue", "twoParam: twoValue"}
+     * connectorService.validateConnection('postgres', body)
      *  .then((result: ConnectionValidationResult) => {
      *    if (result.status === 'INVALID') {
      *      alert('status is INVALID');
@@ -42,13 +40,10 @@ export class ConnectorService extends BaseService {
      *    }
      *  });
      */
-    public validateConnection(connectorTypeId: string, input: Map<string, string>): Promise<ConnectionValidationResult> {
+    public validateConnection(connectorTypeId: string, body: any): Promise<ConnectionValidationResult> {
         this.logger.info("[ConnectorService] Validating connection:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/connection", { connectorTypeId });
-        const body = {
-            input
-        };
         return this.httpPostWithReturn(endpoint, body);
     }
 
@@ -57,10 +52,8 @@ export class ConnectorService extends BaseService {
      * Example usage:
      * 
      * const connectorService = Services.getConnectorService();
-     * const inputMap = new Map<string,string>();
-     * inputMap.set("oneParam","oneValue");
-     * inputMap.set("twoParam","twoValue");
-     * connectorService.validateFilters('postgres', inputMap)
+     * const body = { "oneParm: oneValue", "twoParam: twoValue"}
+     * connectorService.validateFilters('postgres', body)
      *  .then((result: FilterValidationResult) => {
      *    if (result.status === 'INVALID') {
      *      alert('status is INVALID');
@@ -69,13 +62,10 @@ export class ConnectorService extends BaseService {
      *    }
      *  });
      */
-    public validateFilters(connectorTypeId: string, input: Map<string, string>): Promise<FilterValidationResult> {
+    public validateFilters(connectorTypeId: string, body: any): Promise<FilterValidationResult> {
         this.logger.info("[ConnectorService] Validating filters:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/filters", { connectorTypeId });
-        const body = {
-            input
-        };
         return this.httpPostWithReturn(endpoint, body);
     }
 
@@ -84,10 +74,8 @@ export class ConnectorService extends BaseService {
      * Example usage:
      * 
      * const connectorService = Services.getConnectorService();
-     * const inputMap = new Map<string,string>();
-     * inputMap.set("oneParam","oneValue");
-     * inputMap.set("twoParam","twoValue");
-     * connectorService.validateProperties('postgres', inputMap)
+     * const body = { "oneParm: oneValue", "twoParam: twoValue"}
+     * connectorService.validateProperties('postgres', body)
      *  .then((result: PropertiesValidationResult) => {
      *    if (result.status === 'INVALID') {
      *      alert('status is INVALID');
@@ -96,13 +84,10 @@ export class ConnectorService extends BaseService {
      *    }
      *  });
      */
-    public validateProperties(connectorTypeId: string, input: Map<string, string>): Promise<PropertiesValidationResult> {
+    public validateProperties(connectorTypeId: string, body: any): Promise<PropertiesValidationResult> {
         this.logger.info("[ConnectorService] Validating properties:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/properties", { connectorTypeId });
-        const body = {
-            input
-        };
         return this.httpPostWithReturn(endpoint, body);
     }
 

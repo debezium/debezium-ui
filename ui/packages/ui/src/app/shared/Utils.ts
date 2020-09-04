@@ -31,14 +31,75 @@ export function getConnectorTypeDescription(connType: ConnectorType): string {
 }
 
 /**
- * Get property definitions for the supplied category
+ * Get the basic properties
  * @param propertyDefns the array of all ConnectorProperty objects
- * @param category the category for narrowing the ConnectorProperty objects
  */
-export function getPropertyDefinitions(propertyDefns: ConnectorProperty[], category: PropertyCategory): ConnectorProperty[] {
+export function getBasicPropertyDefinitions(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
-    if (propDefn.category === category) {
+    if (propDefn.category === PropertyCategory.BASIC) {
+      connProperties.push(propDefn);
+    }
+  }
+  return connProperties;
+}
+
+/**
+ * Get the advanced properties
+ * @param propertyDefns the array of all ConnectorProperty objects
+ */
+export function getAdvancedPropertyDefinitions(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+  const connProperties: ConnectorProperty[] = [];
+  for (const propDefn of propertyDefns) {
+    if (propDefn.category === PropertyCategory.ADVANCED_GENERAL ||
+       propDefn.category === PropertyCategory.ADVANCED_PUBLICATION ||
+       propDefn.category === PropertyCategory.ADVANCED_REPLICATION
+      ) {
+      connProperties.push(propDefn);
+    }
+  }
+  return connProperties;
+}
+
+/**
+ * Get the filter properties
+ * @param propertyDefns the array of all ConnectorProperty objects
+ */
+export function getFilterPropertyDefinitions(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+  const connProperties: ConnectorProperty[] = [];
+  for (const propDefn of propertyDefns) {
+    if (propDefn.category === PropertyCategory.FILTERS) {
+      connProperties.push(propDefn);
+    }
+  }
+  return connProperties;
+}
+
+/**
+ * Get the options properties
+ * @param propertyDefns the array of all ConnectorProperty objects
+ */
+export function getOptionsPropertyDefinitions(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+  const connProperties: ConnectorProperty[] = [];
+  for (const propDefn of propertyDefns) {
+    if (propDefn.category === PropertyCategory.OPTIONS_TYPE_HANDLING ||
+      propDefn.category === PropertyCategory.OPTIONS_COLUMNS ||
+      propDefn.category === PropertyCategory.OPTIONS_SNAPSHOT
+     ) {
+     connProperties.push(propDefn);
+ }
+}
+  return connProperties;
+}
+
+/**
+ * Get the runtime properties
+ * @param propertyDefns the array of all ConnectorProperty objects
+ */
+export function getRuntimePropertyDefinitons(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+  const connProperties: ConnectorProperty[] = [];
+  for (const propDefn of propertyDefns) {
+    if (propDefn.category === PropertyCategory.RUNTIME) {
       connProperties.push(propDefn);
     }
   }

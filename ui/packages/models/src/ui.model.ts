@@ -68,10 +68,20 @@ export interface ConnectionValidationResult {
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorProperty {
-    category?: 'PROPS_BASIC' | 'PROPS_ADVANCED' | 'FILTERS';
+    category?: 'BASIC' | 
+    'ADVANCED_GENERAL' | 
+    'ADVANCED_REPLICATION' | 
+    'ADVANCED_PUBLICATION' | 
+    'FILTERS' |
+    'OPTIONS_TYPE_HANDLING' | 
+    'OPTIONS_COLUMNS' | 
+    'OPTIONS_SNAPSHOT' | 
+    'RUNTIME'
+    ;
     description: string;
     displayName: string;
     name: string;
+    required?: boolean;
     type: 'BOOLEAN' | 'STRING' | 'INT' | 'SHORT' | 'LONG' | 'DOUBLE' | 'LIST' | 'CLASS' | 'PASSWORD';
 }
 

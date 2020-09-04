@@ -22,8 +22,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import {
   fetch_retry,
+  getAdvancedPropertyDefinitions,
+  getBasicPropertyDefinitions,
   getCategorizedPropertyDefinitions,
-  getPropertyDefinitions,
+  getFilterPropertyDefinitions,
+  getOptionsPropertyDefinitions,
   mapToObject,
   PropertyCategory,
 } from "src/app/shared";
@@ -74,6 +77,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     Map<string, string>
   >(new Map<string, string>());
   const [advancedPropValues, setAdvancedPropValues] = React.useState<
+    Map<string, string>
+  >(new Map<string, string>());
+  const [optionsPropValues, setOptionsPropValues] = React.useState<
     Map<string, string>
   >(new Map<string, string>());
 
@@ -135,6 +141,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setFilterValues(new Map<string, string>());
     setBasicPropValues(new Map<string, string>());
     setAdvancedPropValues(new Map<string, string>());
+    setOptionsPropValues(new Map<string,string>())
   };
 
   const handleValidateProperties = (
@@ -144,9 +151,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     // Update the state values for the submitted category
     if (category === PropertyCategory.FILTERS) {
       setFilterValues(propertyValues);
-    } else if (category === PropertyCategory.PROPS_ADVANCED) {
+    } else if (category === PropertyCategory.ADVANCED_GENERAL ||
+               category === PropertyCategory.ADVANCED_PUBLICATION ||
+               category === PropertyCategory.ADVANCED_REPLICATION) {
       setAdvancedPropValues(propertyValues);
-    } else if (category === PropertyCategory.PROPS_BASIC) {
+    } else if (category === PropertyCategory.BASIC) {
       setBasicPropValues(propertyValues);
     }
 
@@ -154,7 +163,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     const connectorService = Services.getConnectorService();
     if (category === PropertyCategory.FILTERS) {
       connectorService
-        .validateFilters("postgres", propertyValues)
+        .validateFilters("postgres", mapToObject(propertyValues))
         .then((result: FilterValidationResult) => {
           if (result.status === "INVALID") {
             let resultStr = "";
@@ -171,15 +180,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         });
       // Connector Property Validation
     } else if (
-      category === PropertyCategory.PROPS_BASIC ||
-      category === PropertyCategory.PROPS_ADVANCED
+      category === PropertyCategory.BASIC ||
+      category === PropertyCategory.ADVANCED_GENERAL ||
+      category === PropertyCategory.ADVANCED_PUBLICATION ||
+      category === PropertyCategory.ADVANCED_REPLICATION
     ) {
-      const combinedProps = new Map<string, string>();
-      basicPropValues.forEach((v, k) => combinedProps.set(k, v));
-      advancedPropValues.forEach((v, k) => combinedProps.set(k, v));
-
       connectorService
-        .validateConnection("postgres", combinedProps)
+        .validateConnection("postgres", mapToObject(propertyValues))
         .then((result: ConnectionValidationResult) => {
           if (result.status === "INVALID") {
             let resultStr = "";
@@ -248,14 +255,12 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Properties",
       component: (
         <ConfigureConnectorTypeComponent
-          basicPropertyDefinitions={getPropertyDefinitions(
-            selectedConnectorPropertyDefns,
-            PropertyCategory.PROPS_BASIC
+          basicPropertyDefinitions={getBasicPropertyDefinitions(
+            selectedConnectorPropertyDefns
           )}
           basicPropertyValues={basicPropValues}
-          advancedPropertyDefinitions={getPropertyDefinitions(
-            selectedConnectorPropertyDefns,
-            PropertyCategory.PROPS_ADVANCED
+          advancedPropertyDefinitions={getAdvancedPropertyDefinitions(
+            selectedConnectorPropertyDefns
           )}
           advancedPropertyValues={advancedPropValues}
           onValidateProperties={handleValidateProperties}
@@ -268,9 +273,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Filters",
       component: (
         <FiltersStepComponent
-          propertyDefinitions={getPropertyDefinitions(
-            selectedConnectorPropertyDefns,
-            PropertyCategory.FILTERS
+          propertyDefinitions={getFilterPropertyDefinitions(
+            selectedConnectorPropertyDefns
           )}
           propertyValues={filterValues}
           onValidateProperties={handleValidateProperties}
@@ -281,7 +285,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     {
       id: 4,
       name: "Data Options",
-      component: <DataOptionsComponent />,
+      component: (
+        <DataOptionsComponent
+          propertyDefinitions={getOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
+          propertyValues={optionsPropValues}
+          onValidateProperties={handleValidateProperties} 
+        />
+      ),
       canJumpTo: stepIdReached >= 4,
     },
     {

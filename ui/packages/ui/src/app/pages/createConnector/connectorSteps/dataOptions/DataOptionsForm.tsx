@@ -327,7 +327,6 @@ const DataOptionsFormik = withFormik<IMyFormProps, FormValues>({
   displayName: 'DataOptionsFormik'
 })(InnerForm);
 
-
 export const DataOptionsForm:
   React.FC = () => {
     return (

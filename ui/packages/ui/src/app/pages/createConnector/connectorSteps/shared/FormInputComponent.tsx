@@ -4,7 +4,7 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
-import { DbzLabelIcon } from './DbzLabelIcon';
+import { HelpInfoIcon } from './HelpInfoIcon';
 
 export const FormInputComponent: React.FunctionComponent = ({
     label,
@@ -24,7 +24,7 @@ export const FormInputComponent: React.FunctionComponent = ({
       label={label}
       isRequired={isRequired !== undefined ? true: false}
       labelIcon={
-        <DbzLabelIcon />
+        <HelpInfoIcon label={label} description={'description'} />
       }
       helperTextInvalid={helperTextInvalid}
       helperTextInvalidIcon={<ExclamationCircleIcon />}

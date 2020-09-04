@@ -8,7 +8,6 @@ import {
   Tooltip,
 } from "@patternfly/react-core";
 import * as React from "react";
-import { Link } from "react-router-dom";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -92,20 +91,6 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
             aria-label={"Actions"}
             className={"connector-list-item__actions"}
           >
-            <Tooltip
-              position={"top"}
-              enableFlip={true}
-              content={<div id={"editTip"}>Edit the connector</div>}
-            >
-              <Link to="/app/create-connector">
-                <Button
-                  data-testid={"connector-list-item-edit-button"}
-                  variant={"secondary"}
-                >
-                  Edit
-                </Button>
-              </Link>
-            </Tooltip>
             <Tooltip
               position={"top"}
               enableFlip={true}
