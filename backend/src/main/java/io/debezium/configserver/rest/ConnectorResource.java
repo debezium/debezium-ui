@@ -3,7 +3,6 @@ package io.debezium.configserver.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,10 +41,18 @@ import io.debezium.configserver.rest.model.BadRequestResponse;
 import io.debezium.configserver.rest.model.ServerError;
 import io.debezium.configserver.service.ConnectorIntegrator;
 
-@Path("/api")
+@Path(ConnectorResource.API_PREFIX)
 public class ConnectorResource {
 
     public static final String PROPERTY_KAFKA_CONNECT_URI = "kafka.connect.uri";
+    public static final String API_PREFIX = "/api";
+    public static final String CONNECT_CLUSTERS_ENDPOINT = "/connect-clusters";
+    public static final String CONNECTOR_TYPES_ENDPOINT = "/connector-types";
+    public static final String CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR = "/connector-types/{id}";
+    public static final String CONNECTION_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/connection";
+    public static final String FILTERS_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/filters";
+    public static final String PROPERTIES_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/properties";
+    public static final String CREATE_CONNECTOR_ENDPOINT = "/connector/{cluster}/{connector-type-id}";
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
 
@@ -66,7 +73,7 @@ public class ConnectorResource {
         this.integrators = Collections.unmodifiableMap(integrators);
     }
 
-    @Path("/connect-clusters")
+    @Path(CONNECT_CLUSTERS_ENDPOINT)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(
@@ -101,7 +108,7 @@ public class ConnectorResource {
         return kafkaConnectBaseURIsList;
     }
 
-    @Path("/connector-types")
+    @Path(CONNECTOR_TYPES_ENDPOINT)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ConnectorType> getConnectorTypes() {
@@ -111,7 +118,41 @@ public class ConnectorResource {
                 .collect(Collectors.toList());
     }
 
-    @Path("/connector-types/{id}/validation/connection")
+    @Path(CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ConnectorType.class)
+            ))
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid connector type provided",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = BadRequestResponse.class)
+            ))
+    public Response getConnectorTypes(@PathParam("id") String connectorTypeId) {
+        if (null == connectorTypeId || "".equals(connectorTypeId)) {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new BadRequestResponse("You have to specify a connector type!"))
+                    .build();
+        }
+
+        ConnectorIntegrator integrator = integrators.get(connectorTypeId);
+
+        if (integrator == null) {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new BadRequestResponse("Unknown connector type: " + connectorTypeId))
+                    .build();
+        }
+
+        return Response.ok(integrator.getDescriptor()).build();
+    }
+
+    @Path(CONNECTION_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -143,7 +184,7 @@ public class ConnectorResource {
                 .build();
     }
 
-    @Path("/connector-types/{id}/validation/filters")
+    @Path(FILTERS_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -190,7 +231,7 @@ public class ConnectorResource {
         }
     }
 
-    @Path("/connector-types/{id}/validation/properties")
+    @Path(PROPERTIES_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -241,7 +282,7 @@ public class ConnectorResource {
         return baseURIsList.get(cluster - 1);
     }
 
-    @Path("/connector/{cluster}/{connector-type-id}")
+    @Path(CREATE_CONNECTOR_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

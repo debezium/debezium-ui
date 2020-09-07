@@ -3,10 +3,13 @@ package io.debezium.configserver.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.debezium.config.EnumeratedValue;
+import io.debezium.configserver.model.AdditionalPropertyMetadata;
 import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.ConfigKey;
@@ -22,12 +25,34 @@ import io.debezium.configserver.model.GenericValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertyValidationResult;
 import io.debezium.connector.postgresql.PostgresConnectorConfig;
+import org.jboss.logging.Logger;
 
 public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
+
+    private static final Logger LOGGER = Logger.getLogger(ConnectorIntegratorBase.class);
 
     protected abstract ConnectorDescriptor getConnectorDescriptor();
 
     protected abstract SourceConnector getConnector();
+
+    public static List<String> enumArrayToList(EnumeratedValue[] input) {
+        List<String> result = new ArrayList<>();
+        for (EnumeratedValue value : input) {
+            result.add(value.getValue());
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, AdditionalPropertyMetadata> allPropertiesWithAdditionalMetadata() {
+        LOGGER.error(this.getClass().getName() + " must implement ConnectorIntegrator#getAllConnectorProperties!");
+
+        AdditionalPropertyMetadata defaultMetadata = new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR);
+        Map<String, AdditionalPropertyMetadata> result = new HashMap<>();
+        getConnector().config().configKeys().values()
+                .forEach(configKey -> result.put(configKey.name, defaultMetadata));
+        return result;
+    }
 
     @Override
     public ConnectorType getDescriptor() {
@@ -38,8 +63,9 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
             .configKeys()
             .values()
             .stream()
-            .map(this::toConnectorProperty)
+            .filter(configKey -> allPropertiesWithAdditionalMetadata().containsKey(configKey.name))
             .filter(property -> !property.name.startsWith("internal"))
+            .map(this::toConnectorProperty)
             .collect(Collectors.toList());
 
         return new ConnectorType(
@@ -99,12 +125,26 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
     }
 
     private ConnectorProperty toConnectorProperty(ConfigKey configKey) {
+        boolean isMandatory = false;
+        ConnectorProperty.Category category = ConnectorProperty.Category.CONNECTOR;
+        List<String> allowedValues = null;
+
+        AdditionalPropertyMetadata additionalMetadata = allPropertiesWithAdditionalMetadata().get(configKey.name);
+        if (additionalMetadata != null) {
+            isMandatory = additionalMetadata.isMandatory;
+            category = additionalMetadata.category;
+            allowedValues = additionalMetadata.allowedValues;
+        }
+
         return new ConnectorProperty(
                 configKey.name,
                 configKey.displayName,
                 configKey.documentation,
                 toConnectorPropertyType(configKey.type()),
-                configKey.defaultValue
+                configKey.defaultValue,
+                isMandatory,
+                category,
+                allowedValues
         );
     }
 
