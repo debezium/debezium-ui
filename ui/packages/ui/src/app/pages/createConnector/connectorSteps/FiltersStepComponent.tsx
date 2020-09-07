@@ -1,4 +1,9 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import {
+  ConnectorProperty,
+  DataCollection,
+  FilterValidationResult,
+} from "@debezium/ui-models";
+import { Services } from "@debezium/ui-services";
 import {
   ActionGroup,
   Alert,
@@ -14,21 +19,43 @@ import {
   TextInput,
   TextVariants,
   Title,
-  TreeView,
 } from "@patternfly/react-core";
 import { InfoCircleIcon } from "@patternfly/react-icons";
+import _ from "lodash";
 import React from "react";
-import { PropertyCategory } from "src/app/shared";
+import { FilterTreeComponent } from "src/app/components";
+import { fetch_retry, mapToObject } from "src/app/shared";
 import "./FiltersStepComponent.css";
 
 export interface IFiltersStepComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
-  onValidateProperties: (
-    connectorProperties: Map<string, string>,
-    category: PropertyCategory
-  ) => void;
 }
+
+const formatResponceData = (data: DataCollection[]) => {
+  return data.reduce((acc: any, next) => {
+    const inx = _.findIndex(acc, { name: next.namespace, id: next.namespace });
+    if (inx !== -1) {
+      acc[inx].children.push({
+        name: next.name,
+        id: next.namespace + "_" + next.name,
+      });
+    } else {
+      const newObj = {
+        name: next.namespace,
+        id: next.namespace,
+        children: [
+          {
+            name: next.name,
+            id: next.namespace + "_" + next.name,
+          },
+        ],
+      };
+      acc.push(newObj);
+    }
+    return acc;
+  }, []);
+};
 
 export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = () => {
   const [schemaFilter, setSchemaFilter] = React.useState<string>("");
@@ -37,6 +64,12 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
   const [tableExclusion, setTableExclusion] = React.useState<boolean>(false);
 
   const [apply, setApply] = React.useState<boolean>(false);
+
+  const [treeData, setTreeData] = React.useState<any[]>([]);
+
+  const [loading, setLoading] = React.useState(true);
+  const [apiError, setApiError] = React.useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
   const handleSchemaFilter = (val: string) => {
     setSchemaFilter(val);
@@ -52,54 +85,39 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
     setTableExclusion(isChecked);
   };
 
-  const [activeItems, setActiveItems] = React.useState<any>();
+  const connectorService = Services.getConnectorService();
 
-  const onClick = (evt: any, treeViewItem: any, parentItem: any) => {
-    setActiveItems([treeViewItem, parentItem]);
-  };
+  //Hard coding the propertyValues, later it will be passed from CreateConnectorPage 
+  const propertyValues: Map<string, string> = new Map();
+  propertyValues.set("database.hostname", "192.168.122.1");
+  propertyValues.set("database.port", "5432");
+  propertyValues.set("database.user", "postgres");
+  propertyValues.set("database.password", "indra");
+  propertyValues.set("database.dbname", "postgres");
+  propertyValues.set("database.server.name", "fullfillment");
 
-  const options = [
-    {
-      name: "ApplicationLauncher",
-      id: "AppLaunch",
-      children: [
-        {
-          name: "Application 1",
-          id: "App1",
-        },
-        {
-          name: "Application 2",
-          id: "App2",
-        },
-      ],
-      defaultExpanded: true,
-    },
-    {
-      name: "Cost Management",
-      id: "Cost",
-      children: [
-        {
-          name: "Application 3",
-          id: "App3",
-        },
-      ],
-    },
-    {
-      name: "Sources",
-      id: "Sources",
-      children: [
-        {
-          name: "Application 4",
-          id: "App4",
-        },
-      ],
-    },
-    {
-      name: "newTest",
-      id: "Long",
-      children: [{ name: "Application 5", id: "App5" }],
-    },
-  ];
+  React.useEffect(() => {
+    fetch_retry(connectorService.validateFilters, connectorService, [
+      "postgres",
+      mapToObject(propertyValues),
+    ])
+      .then((result: FilterValidationResult) => {
+        setLoading(false);
+        if (result.status === "INVALID") {
+          let resultStr = "";
+          for (const e1 of result.propertyValidationResults) {
+            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+          }
+          alert("filters are INVALID.  Results: \n" + resultStr);
+        } else {
+          setTreeData(formatResponceData(result.matchedCollections));
+        }
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        setApiError(true);
+        setErrorMsg(err);
+      });
+  }, []);
 
   return (
     <>
@@ -125,8 +143,8 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 This filter will exclude the schema that matches the expression.
               </Text>
             ) : (
-              ""
-            )
+                ""
+              )
           }
         >
           <Flex>
@@ -165,8 +183,8 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 This filter will exclude the tables that matches the expression.
               </Text>
             ) : (
-              ""
-            )
+                ""
+              )
           }
         >
           <Flex>
@@ -192,32 +210,41 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           </Flex>
         </FormGroup>
         <ActionGroup>
-          <Button variant="primary" onClick={() => {setApply(!apply)}}>Apply</Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setApply(!apply);
+            }}
+          >
+            Apply
+          </Button>
         </ActionGroup>
       </Form>
       <Divider />
-      {apply && <Alert
-        isInline={true}
-        variant="info"
-        title="Result shows the schema and tables that you want to capture data changes."
-        actionClose={
-          <AlertActionCloseButton
-            onClose={() => alert("Clicked the close button")}
-          />
-        }
-      >
-        <p>
-          <a href="#">20 tables</a> have been excluded by the filtering. You
-          could also find all the schema and table by clicking{" "}
-          <a href="#">Clean the filters</a>
-        </p>
-      </Alert>}
-      
-      <TreeView
-        data={options}
-        activeItems={activeItems}
-        onSelect={onClick}
-        hasBadges={true}
+      {apply && (
+        <Alert
+          isInline={true}
+          variant="info"
+          title="Result shows the schema and tables that you want to capture data changes."
+          actionClose={
+            <AlertActionCloseButton
+              onClose={() => alert("Clicked the close button")}
+            />
+          }
+        >
+          <p>
+            <a href="#">20 tables</a> have been excluded by the filtering. You
+            could also find all the schema and table by clicking{" "}
+            <a href="#">Clean the filters</a>
+          </p>
+        </Alert>
+      )}
+
+      <FilterTreeComponent
+        treeData={treeData}
+        loading={loading}
+        apiError={apiError}
+        errorMsg={errorMsg}
       />
     </>
   );
