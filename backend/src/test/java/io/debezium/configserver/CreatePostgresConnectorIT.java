@@ -1,5 +1,6 @@
 package io.debezium.configserver;
 
+import io.debezium.configserver.rest.ConnectorResource;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
@@ -19,15 +20,15 @@ public class CreatePostgresConnectorIT {
     @Test
     public void testPostgresClustersEndpoint() {
         given()
-                .when().get("/api/connect-clusters")
+                .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECT_CLUSTERS_ENDPOINT)
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1))
                 .and().body(
-                        "[0]",
-                        equalTo("http://" + Infrastructure.getDebeziumContainer().getHost()
-                                + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8083)
-                        )
+                    "[0]",
+                    equalTo("http://" + Infrastructure.getDebeziumContainer().getHost()
+                            + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8083)
+                    )
         );
     }
 
@@ -39,7 +40,7 @@ public class CreatePostgresConnectorIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
-                .post("/api/connector/{cluster}/{connector-type-id}", 1, "postgres")
+                .post(ConnectorResource.API_PREFIX + ConnectorResource.CREATE_CONNECTOR_ENDPOINT, 1, "postgres")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("name", equalTo("my-postgres-connector"))

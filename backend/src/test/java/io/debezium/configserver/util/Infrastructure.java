@@ -25,7 +25,7 @@ public class Infrastructure {
 
     private static final KafkaContainer kafkaContainer = new KafkaContainer().withNetwork(network);
 
-    private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("debezium/postgres:11")
+    private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("debezium/example-postgres:1.3")
             .withNetwork(network)
             .withNetworkAliases("postgres");
 
