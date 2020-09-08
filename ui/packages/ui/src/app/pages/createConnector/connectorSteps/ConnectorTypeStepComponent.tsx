@@ -9,7 +9,7 @@ import {
   FlexItem,
 } from "@patternfly/react-core";
 import React from "react";
-import { PageLoader } from "src/app/component";
+import { PageLoader } from "src/app/components";
 import { ApiError } from "src/app/shared";
 import { WithLoader } from "src/app/shared/WithLoader";
 import { getConnectorTypeDescription } from "../../../shared/Utils";
