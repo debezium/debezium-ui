@@ -5,10 +5,20 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { HelpInfoIcon } from './HelpInfoIcon';
-import { Form, Formik, FormikProps, useField } from 'formik';
+import { useField } from 'formik';
 
-
-export const FormInputComponent = props => {
+export interface IFormInputComponentProps {
+  label: string;
+  infoText: string | '';
+  fieldId: string;
+  name: string;
+  infoTitle: string | '';
+  helperTextInvalid?: any;
+  type: any;
+  isRequired?: boolean | undefined;
+  validated?: "default" | "success" | "warning" | "error" | undefined
+}
+export const FormInputComponent: React.FunctionComponent<IFormInputComponentProps> = props => {
   const [field] = useField(props);
   return (
     <FormGroup 
@@ -23,7 +33,7 @@ export const FormInputComponent = props => {
       validated={props.validated}
     >
       <TextInput {...field} onChange={e => {field.onChange(field.name)(e);
-      }} aria-label={field.name} type={props.type === undefined ? "text": props.type} validated={props.validated} />
+      }} aria-label={field.name} validated={props.validated}  type={props.type} />
     </FormGroup>
   );
 };

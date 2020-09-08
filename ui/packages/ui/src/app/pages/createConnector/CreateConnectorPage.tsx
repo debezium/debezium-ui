@@ -1,7 +1,7 @@
 import {
   ConnectionValidationResult,
   ConnectorConfiguration,
-  ConnectorType,
+  ConnectorType
 } from "@debezium/ui-models";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
@@ -147,6 +147,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     propertyValues: Map<string, string>,
     category: PropertyCategory
   ): void => {
+    console.log(propertyValues)
     // Update the state values for the submitted category
     if (category === PropertyCategory.FILTERS) {
       setFilterValues(propertyValues);
@@ -167,7 +168,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       category === PropertyCategory.ADVANCED_REPLICATION
     ) {
       connectorService
-        .validateConnection("postgres", mapToObject(propertyValues))
+        .validateConnection("postgres", propertyValues)
         .then((result: ConnectionValidationResult) => {
           if (result.status === "INVALID") {
             let resultStr = "";
