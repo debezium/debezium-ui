@@ -2,7 +2,6 @@ import {
   ConnectionValidationResult,
   ConnectorConfiguration,
   ConnectorType,
-  FilterValidationResult,
 } from "@debezium/ui-models";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
@@ -216,6 +215,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     initPropertyValues();
   }, [connectorTypes]);
 
+  const filterValuesTemp: Map<string, string> = new Map();
+  filterValuesTemp.set("database.hostname", "192.168.122.1");
+  filterValuesTemp.set("database.port", "5432");
+  filterValuesTemp.set("database.user", "postgres");
+  filterValuesTemp.set("database.password", "indra");
+  filterValuesTemp.set("database.dbname", "postgres");
+  filterValuesTemp.set("database.server.name", "fullfillment");
+
   const wizardSteps = [
     {
       id: 1,
@@ -258,7 +265,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           propertyDefinitions={getFilterPropertyDefinitions(
             selectedConnectorPropertyDefns
           )}
-          propertyValues={filterValues}
+          propertyValues={filterValuesTemp}
         />
       ),
       canJumpTo: stepIdReached >= 3,

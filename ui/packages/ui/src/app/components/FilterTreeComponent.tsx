@@ -11,9 +11,11 @@ import React from "react";
 import { PageLoader } from ".";
 import { ApiError } from "../shared";
 import { WithLoader } from "../shared/WithLoader";
+import './FilterTreeComponent.css';
 
 export interface IFilterTreeComponentProps {
   treeData: any[];
+  invalidMsg: string;
   loading: boolean;
   apiError: boolean;
   errorMsg: Error;
@@ -45,11 +47,13 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
             <EmptyState variant={EmptyStateVariant.small}>
               <EmptyStateIcon icon={CubesIcon} />
               <Title headingLevel="h4" size="lg">
-                No content
-            </Title>
-              <EmptyStateBody>
-                No schema and tables present to capture data changes
-            </EmptyStateBody>
+                {props.invalidMsg ? 'Invalid Filters' : 'No content'}
+              </Title>
+              <EmptyStateBody className="filter-tree-component_emptyBody">
+
+                {props.invalidMsg || 'No schema and tables present to capture data changes'}
+
+              </EmptyStateBody>
             </EmptyState>
           )
       }

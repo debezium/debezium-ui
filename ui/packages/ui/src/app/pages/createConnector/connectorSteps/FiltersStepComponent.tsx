@@ -7,7 +7,6 @@ import { Services } from "@debezium/ui-services";
 import {
   ActionGroup,
   Alert,
-  AlertActionCloseButton,
   Button,
   Divider,
   Flex,
@@ -57,15 +56,17 @@ const formatResponceData = (data: DataCollection[]) => {
   }, []);
 };
 
-export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = () => {
+export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (props) => {
   const [schemaFilter, setSchemaFilter] = React.useState<string>("");
   const [tableFilter, setTableFilter] = React.useState<string>("");
   const [schemaExclusion, setSchemaExclusion] = React.useState<boolean>(false);
   const [tableExclusion, setTableExclusion] = React.useState<boolean>(false);
 
+  const [formData, setFormData] = React.useState<Map<string, string>>(new Map());
   const [apply, setApply] = React.useState<boolean>(false);
-
   const [treeData, setTreeData] = React.useState<any[]>([]);
+  const [invalidMsg, setInvalidMsg] = React.useState<string>('');
+  const [tableNo, setTableNo] = React.useState<number>(0);
 
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
@@ -87,19 +88,23 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
 
   const connectorService = Services.getConnectorService();
 
-  //Hard coding the propertyValues, later it will be passed from CreateConnectorPage 
-  const propertyValues: Map<string, string> = new Map();
-  propertyValues.set("database.hostname", "192.168.122.1");
-  propertyValues.set("database.port", "5432");
-  propertyValues.set("database.user", "postgres");
-  propertyValues.set("database.password", "indra");
-  propertyValues.set("database.dbname", "postgres");
-  propertyValues.set("database.server.name", "fullfillment");
+  const applyFilter = () => {
+    setApply(true);
+    getFilterSchema();
+  }
 
-  React.useEffect(() => {
+  const clearFilter = () => {
+    setSchemaExclusion(false);
+    setTableExclusion(false);
+    setSchemaFilter("");
+    setTableFilter("");
+    setFormData(new Map());
+  }
+
+  const getFilterSchema = () => {
     fetch_retry(connectorService.validateFilters, connectorService, [
       "postgres",
-      mapToObject(propertyValues),
+      mapToObject(new Map(function* () { yield* props.propertyValues; yield* formData; }())),
     ])
       .then((result: FilterValidationResult) => {
         setLoading(false);
@@ -108,15 +113,46 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           for (const e1 of result.propertyValidationResults) {
             resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
           }
-          alert("filters are INVALID.  Results: \n" + resultStr);
+          setInvalidMsg(resultStr);
         } else {
-          setTreeData(formatResponceData(result.matchedCollections));
+          setInvalidMsg('');
         }
+        setTableNo(result.matchedCollections.length);
+        setTreeData(formatResponceData(result.matchedCollections));
+
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
         setErrorMsg(err);
       });
+  }
+
+  React.useEffect(() => {
+    const formDataCopy = new Map(formData)
+    if (schemaExclusion) {
+      formDataCopy.delete("schema.include.list")
+      schemaFilter ? formDataCopy.set("schema.exclude.list", schemaFilter) : formDataCopy.delete("schema.exclude.list")
+    } else {
+      formDataCopy.delete("schema.exclude.list")
+      schemaFilter ? formDataCopy.set("schema.include.list", schemaFilter) : formDataCopy.delete("schema.include.list")
+    }
+    setFormData(formDataCopy);
+  }, [schemaExclusion, schemaFilter]);
+
+  React.useEffect(() => {
+    const formDataCopy = new Map(formData);
+    if (tableExclusion) {
+      formDataCopy.delete("table.include.list")
+      tableFilter ? formDataCopy.set("table.exclude.list", tableFilter) : formDataCopy.delete("table.exclude.list")
+    } else {
+      formDataCopy.delete("table.exclude.list")
+      tableFilter ? formDataCopy.set("table.include.list", tableFilter) : formDataCopy.delete("table.include.list")
+    }
+    setFormData(formDataCopy);
+  }, [tableExclusion, tableFilter]);
+
+  React.useEffect(() => {
+    getFilterSchema()
   }, []);
 
   return (
@@ -212,39 +248,39 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         <ActionGroup>
           <Button
             variant="primary"
-            onClick={() => {
-              setApply(!apply);
-            }}
+            onClick={applyFilter}
           >
             Apply
           </Button>
+          <Button variant="link" isInline onClick={clearFilter}>
+            Clear filters
+    </Button>
         </ActionGroup>
       </Form>
       <Divider />
-      {apply && (
+      {apply ? (
         <Alert
-          isInline={true}
           variant="info"
-          title="Result shows the schema and tables that you want to capture data changes."
-          actionClose={
-            <AlertActionCloseButton
-              onClose={() => alert("Clicked the close button")}
-            />
-          }
+          title={`There are ${treeData.length} schemas and ${tableNo} tables that match the filters.`}
+
         >
-          <p>
-            <a href="#">20 tables</a> have been excluded by the filtering. You
-            could also find all the schema and table by clicking{" "}
-            <a href="#">Clean the filters</a>
-          </p>
+          <p>You can also find all the schemas and tables by clicking <a>Clean the filters</a></p>
         </Alert>
-      )}
+      ) : (
+
+          <Alert
+            variant="info"
+            title={`There are ${treeData.length} schemas and ${tableNo} tables available for capturing the data change. You can select schema and tables by filtering.`}
+
+          />
+        )}
 
       <FilterTreeComponent
         treeData={treeData}
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}
+        invalidMsg={invalidMsg}
       />
     </>
   );

@@ -10,6 +10,7 @@
     "jsx": "react",
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
