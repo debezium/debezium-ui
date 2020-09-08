@@ -5,41 +5,25 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { HelpInfoIcon } from './HelpInfoIcon';
+import { Form, Formik, FormikProps, useField } from 'formik';
 
-export const FormInputComponent: React.FunctionComponent = ({
-    label,
-    name,
-    fieldId,
-    type,
-    validated,
-    value,
-    dbzHandleChange,  
-    helperTextInvalid,
-    isRequired,
-    onBlur,
-  }) => {
 
+export const FormInputComponent = props => {
+  const [field] = useField(props);
   return (
-    <FormGroup
-      label={label}
-      isRequired={isRequired !== undefined ? true: false}
+    <FormGroup 
+      label={props.label}
+      isRequired={props.isRequired !== undefined ? true: false}
       labelIcon={
-        <HelpInfoIcon label={label} description={'description'} />
+        <HelpInfoIcon label={props.label} description={props.infoText} />
       }
-      helperTextInvalid={helperTextInvalid}
+      helperTextInvalid={props.helperTextInvalid}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
-      fieldId={name}
-      validated={validated}
+      fieldId={field.name}
+      validated={props.validated}
     >
-      <TextInput
-        type={type === undefined ? "text": type}
-        id={fieldId}
-        name={fieldId}
-        value={value}
-        validated={validated}
-        onChange={dbzHandleChange}
-        onBlur={onBlur}
-      />
+      <TextInput {...field} onChange={e => {field.onChange(field.name)(e);
+      }} aria-label={field.name} type={props.type === undefined ? "text": props.type} validated={props.validated} />
     </FormGroup>
-  )
-}
+  );
+};
