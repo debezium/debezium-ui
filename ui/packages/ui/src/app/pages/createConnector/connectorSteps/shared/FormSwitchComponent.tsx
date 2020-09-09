@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { Switch } from '@patternfly/react-core';
 import { useField } from 'formik';
+import * as React from 'react';
 
 export interface IFormSwitchComponentProps {
   label: string;

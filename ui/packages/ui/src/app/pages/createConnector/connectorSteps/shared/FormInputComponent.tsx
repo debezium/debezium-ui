@@ -3,9 +3,9 @@ import {
   TextInput
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { useField } from 'formik';
 import * as React from 'react';
 import { HelpInfoIcon } from './HelpInfoIcon';
-import { useField } from 'formik';
 
 export interface IFormInputComponentProps {
   label: string;
