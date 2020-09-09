@@ -7,7 +7,6 @@
   },
   "rules": {
     "jsx-no-lambda": false,
-    "ordered-imports": false,
     "object-literal-sort-keys": false
   }
 }

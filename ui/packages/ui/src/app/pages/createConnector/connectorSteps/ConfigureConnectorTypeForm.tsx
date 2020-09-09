@@ -1,8 +1,4 @@
 import { ConnectorProperty } from '@debezium/ui-models/dist/js/ui.model';
-import { Form, Formik } from 'formik';
-import * as React from 'react';
-import { FormInputComponent, FormSwitchComponent } from './shared';
-import { PropertyCategory } from 'src/app/shared';
 import {
   Accordion,
   AccordionContent,
@@ -12,8 +8,12 @@ import {
   Grid,
   GridItem
 } from '@patternfly/react-core';
+import { Form, Formik } from 'formik';
+import _ from 'lodash';
+import * as React from 'react';
+import { PropertyCategory } from 'src/app/shared';
 import * as Yup from 'yup';
-import _ from 'lodash'
+import { FormInputComponent, FormSwitchComponent } from './shared';
 
 export interface IConfigureConnectorTypeFormProps {
   basicPropertyDefinitions: ConnectorProperty[];
