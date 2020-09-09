@@ -12,7 +12,8 @@
       "**/@patternfly/react-core/**",
       "**/patternfly",
       "**/react-router",
-      "**/react-router-dom"
+      "**/react-router-dom",
+      "**/formik"
     ]
   },
   "scripts": {

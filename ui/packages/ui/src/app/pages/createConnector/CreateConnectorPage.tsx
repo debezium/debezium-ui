@@ -1,9 +1,7 @@
 import {
   ConnectionValidationResult,
-  ConnectorConfiguration,
-  ConnectorType,
+  ConnectorConfiguration, ConnectorProperty, ConnectorType
 } from "@debezium/ui-models";
-import { ConnectorProperty } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   Breadcrumb,
@@ -15,7 +13,7 @@ import {
   TextContent,
   Title,
   TitleSizes,
-  Wizard,
+  Wizard
 } from "@patternfly/react-core";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -27,13 +25,13 @@ import {
   getFilterPropertyDefinitions,
   getOptionsPropertyDefinitions,
   mapToObject,
-  PropertyCategory,
+  PropertyCategory
 } from "src/app/shared";
 import {
   ConfigureConnectorTypeComponent,
   ConnectorTypeStepComponent,
   DataOptionsComponent,
-  FiltersStepComponent,
+  FiltersStepComponent
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
 
@@ -167,7 +165,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       category === PropertyCategory.ADVANCED_REPLICATION
     ) {
       connectorService
-        .validateConnection("postgres", mapToObject(propertyValues))
+        .validateConnection("postgres", propertyValues)
         .then((result: ConnectionValidationResult) => {
           if (result.status === "INVALID") {
             let resultStr = "";

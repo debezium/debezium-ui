@@ -68,7 +68,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/yup": "^0.29.6",
     "autoprefixer": "^9.8.6",
-    "formik": "^1.5.7",
+    "formik": "^2.1.5",
     "lodash": "^4.17.20",
     "postcss-loader": "^3.0.0",
     "postcss-nested": "^4.2.3",
