@@ -252,7 +252,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           >
             Apply
           </Button>
-          <Button variant="link" isInline onClick={clearFilter}>
+          <Button variant="link" isInline={true} onClick={clearFilter}>
             Clear filters
     </Button>
         </ActionGroup>
