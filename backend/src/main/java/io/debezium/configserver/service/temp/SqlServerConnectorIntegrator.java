@@ -25,4 +25,6 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
     protected SourceConnector getConnector() {
         return new SqlServerConnector();
     }
+
+    // TODO implement io.debezium.configserver.service.ConnectorIntegratorBase.allPropertiesWithAdditionalMetadata
 }

@@ -25,4 +25,6 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
     protected SourceConnector getConnector() {
         return new MongoDbConnector();
     }
+
+    // TODO implement io.debezium.configserver.service.ConnectorIntegratorBase.allPropertiesWithAdditionalMetadata
 }

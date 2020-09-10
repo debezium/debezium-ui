@@ -16,7 +16,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 
 @QuarkusTest
 @TestProfile(PostgresInfrastructureTestProfile.class)
@@ -45,7 +44,7 @@ public class ValidatePostgresFiltersIT {
                         Map.of("namespace", "inventory", "name", "customers"),
                         Map.of("namespace", "inventory", "name", "orders"),
                         Map.of("namespace", "inventory", "name", "products")
-                    ));;
+                    ));
     }
 
     @Test

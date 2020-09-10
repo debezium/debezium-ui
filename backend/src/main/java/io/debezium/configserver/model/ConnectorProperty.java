@@ -9,20 +9,17 @@ public class ConnectorProperty {
     }
 
     public enum Category {
-        GENERIC, GENERIC_ADVANCED, CONNECTION, CONNECTION_ADVANCED, CONNECTOR, CONNECTOR_ADVANCED, ADVANCED
+        CONNECTION, CONNECTION_ADVANCED, CONNECTION_ADVANCED_REPLICATION, CONNECTION_ADVANCED_PUBLICATION, FILTERS, CONNECTOR, CONNECTOR_SNAPSHOT, CONNECTOR_ADVANCED, ADVANCED, ADVANCED_HEARTBEAT
     }
 
-    public String name;
-    public String displayName;
-    public String description;
-    public Type type;
-    public Object defaultValue;
-    public boolean isMandatory;
-    public Category category;
-    public List<String> allowedValues;
-
-    public ConnectorProperty() {
-    }
+    public final String name;
+    public final String displayName;
+    public final String description;
+    public final Type type;
+    public final Object defaultValue;
+    public final boolean isMandatory;
+    public final Category category;
+    public final List<String> allowedValues;
 
     public ConnectorProperty(String name, String displayName, String description, Type type, Object defaultValue, boolean isMandatory, Category category, List<String> allowedValues) {
         this.name = name;
