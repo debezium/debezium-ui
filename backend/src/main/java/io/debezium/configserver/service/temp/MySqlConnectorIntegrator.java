@@ -25,4 +25,6 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
     protected SourceConnector getConnector() {
         return new MySqlConnector();
     }
+
+    // TODO implement io.debezium.configserver.service.ConnectorIntegratorBase.allPropertiesWithAdditionalMetadata
 }

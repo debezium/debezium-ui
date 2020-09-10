@@ -3,7 +3,6 @@ package io.debezium.configserver.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,13 +44,9 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
 
     @Override
     public Map<String, AdditionalPropertyMetadata> allPropertiesWithAdditionalMetadata() {
-        LOGGER.error(this.getClass().getName() + " must implement ConnectorIntegrator#getAllConnectorProperties!");
-
-        AdditionalPropertyMetadata defaultMetadata = new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR);
-        Map<String, AdditionalPropertyMetadata> result = new HashMap<>();
-        getConnector().config().configKeys().values()
-                .forEach(configKey -> result.put(configKey.name, defaultMetadata));
-        return result;
+        AdditionalPropertyMetadata defaultMetadata = new AdditionalPropertyMetadata(false, ConnectorProperty.Category.FILTERS);
+        return getConnector().config().configKeys().values()
+                .stream().collect(Collectors.toMap(configKey -> configKey.name, configKey -> defaultMetadata));
     }
 
     @Override
@@ -59,14 +54,18 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
         ConnectorDescriptor descriptor = getConnectorDescriptor();
         SourceConnector instance = getConnector();
 
-        List<ConnectorProperty> properties = instance.config()
+        Map<String, ConnectorProperty> properties = instance.config()
             .configKeys()
             .values()
             .stream()
             .filter(configKey -> allPropertiesWithAdditionalMetadata().containsKey(configKey.name))
             .filter(property -> !property.name.startsWith("internal"))
             .map(this::toConnectorProperty)
-            .collect(Collectors.toList());
+            .collect(Collectors.toMap(connectorProperty -> connectorProperty.name, connectorProperty -> connectorProperty));
+
+        // apply sorting of properties provided by {@link #allPropertiesWithAdditionalMetadata()}
+        ArrayList<ConnectorProperty> sortedProperties = allPropertiesWithAdditionalMetadata().keySet()
+                .stream().map(properties::get).collect(Collectors.toCollection(ArrayList::new));
 
         return new ConnectorType(
                 descriptor.id,
@@ -74,7 +73,7 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
                 descriptor.name,
                 instance.version(),
                 descriptor.enabled,
-                properties
+                sortedProperties
         );
     }
 
@@ -112,12 +111,11 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
     }
 
     private List<PropertyValidationResult> toPropertyValidationResults(Config result) {
-        List<PropertyValidationResult> propertyResults = result.configValues()
+        return result.configValues()
                 .stream()
                 .filter(cv -> !cv.errorMessages().isEmpty())
                 .map(cv -> new PropertyValidationResult(cv.name(), cv.errorMessages().get(0)))
                 .collect(Collectors.toList());
-        return propertyResults;
     }
 
     private String traceAsString(Exception e) {
