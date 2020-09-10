@@ -51,11 +51,10 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
       errorChildren={<ApiError error={props.errorMsg} />}
     >
       {() => (
-        <Flex className="select-connector-type-component_flex">
+        <Flex className="connector-type-step-component_flex">
           {props.connectorTypesList.map((cType, index) => (
             <FlexItem
               key={index}
-              className={"connector-type-step-component_cardItem"}
             >
               <Card
                 id={cType.id}
@@ -63,7 +62,7 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
                 onClick={cType.enabled ? onCardSelection : ()=>{}}
                 isSelectable={cType.enabled}
                 isSelected={props.selectedConnectorType === cType.id}
-                className={!cType.enabled ? 'connector-type-step-component_disableCard' : ''}
+                className={!cType.enabled ? 'connector-type-step-component_flex_disableCard' : ''}
               >
                 <CardHeader>
                   <CardHeaderMain

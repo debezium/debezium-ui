@@ -13,13 +13,15 @@ import {
   FlexItem,
   Form,
   FormGroup,
-  Switch,
+  Popover,
   Text,
   TextInput,
   TextVariants,
   Title,
+  ToggleGroup,
+  ToggleGroupItem,
 } from "@patternfly/react-core";
-import { InfoCircleIcon } from "@patternfly/react-icons";
+import { HelpIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import _ from "lodash";
 import React from "react";
 import { FilterTreeComponent } from "src/app/components";
@@ -29,9 +31,11 @@ import "./FiltersStepComponent.css";
 export interface IFiltersStepComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  filterValues: Map<string, string>;
+  updateFilterValues: (data: Map<string, string>) => void;
 }
 
-const formatResponceData = (data: DataCollection[]) => {
+const formatResponseData = (data: DataCollection[]) => {
   return data.reduce((acc: any, next) => {
     const inx = _.findIndex(acc, { name: next.namespace, id: next.namespace });
     if (inx !== -1) {
@@ -56,16 +60,41 @@ const formatResponceData = (data: DataCollection[]) => {
   }, []);
 };
 
-export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (props) => {
-  const [schemaFilter, setSchemaFilter] = React.useState<string>("");
-  const [tableFilter, setTableFilter] = React.useState<string>("");
-  const [schemaExclusion, setSchemaExclusion] = React.useState<boolean>(false);
-  const [tableExclusion, setTableExclusion] = React.useState<boolean>(false);
+const getSchemaExpression = (data: Map<string, string>): string => {
+  return (
+    data.get("schema.exclude.list") || data.get("schema.include.list") || ""
+  );
+};
 
-  const [formData, setFormData] = React.useState<Map<string, string>>(new Map());
-  const [apply, setApply] = React.useState<boolean>(false);
+const getTableExpression = (data: Map<string, string>): string => {
+  return data.get("table.exclude.list") || data.get("table.include.list") || "";
+};
+
+export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
+  props
+) => {
+  const [schemaFilter, setSchemaFilter] = React.useState<string>(
+    getSchemaExpression(props.filterValues)
+  );
+  const [tableFilter, setTableFilter] = React.useState<string>(
+    getTableExpression(props.filterValues)
+  );
+  const [schemaSelected, setSchemaSelected] = React.useState<string>(
+    props.filterValues.has("schema.exclude.list")
+      ? "schemaExclude"
+      : "schemaInclude"
+  );
+  const [tableSelected, setTableSelected] = React.useState<string>(
+    props.filterValues.has("schema.exclude.list")
+      ? "tableExclude"
+      : "tableInclude"
+  );
+
+  const [formData, setFormData] = React.useState<Map<string, string>>(
+    new Map()
+  );
   const [treeData, setTreeData] = React.useState<any[]>([]);
-  const [invalidMsg, setInvalidMsg] = React.useState<string>('');
+  const [invalidMsg, setInvalidMsg] = React.useState<string>("");
   const [tableNo, setTableNo] = React.useState<number>(0);
 
   const [loading, setLoading] = React.useState(true);
@@ -79,32 +108,45 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
     setTableFilter(val);
   };
 
-  const handleSchemaExclusion = (isChecked: boolean) => {
-    setSchemaExclusion(isChecked);
+  const handleSchemaToggle = (isSelected: any, event: any) => {
+    const id = event.currentTarget.id;
+    setSchemaSelected(id);
   };
-  const handleTableExclusion = (isChecked: boolean) => {
-    setTableExclusion(isChecked);
+
+  const handleTableToggle = (isSelected: any, event: any) => {
+    const id = event.currentTarget.id;
+    setTableSelected(id);
   };
 
   const connectorService = Services.getConnectorService();
 
   const applyFilter = () => {
-    setApply(true);
-    getFilterSchema();
-  }
+    getFilterSchema(true);
+  };
 
   const clearFilter = () => {
-    setSchemaExclusion(false);
-    setTableExclusion(false);
+    setSchemaSelected("schemaInclude");
+    setTableSelected("tableInclude");
     setSchemaFilter("");
     setTableFilter("");
     setFormData(new Map());
-  }
+    getFilterSchema(true, new Map());
+  };
 
-  const getFilterSchema = () => {
+  const getFilterSchema = (
+    saveFilter: boolean,
+    filterExpression: Map<string, string> = formData
+  ) => {
     fetch_retry(connectorService.validateFilters, connectorService, [
       "postgres",
-      mapToObject(new Map(function* () { yield* props.propertyValues; yield* formData; }())),
+      mapToObject(
+        new Map(
+          (function*() {
+            yield* props.propertyValues;
+            yield* filterExpression;
+          })()
+        )
+      ),
     ])
       .then((result: FilterValidationResult) => {
         setLoading(false);
@@ -115,44 +157,53 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           }
           setInvalidMsg(resultStr);
         } else {
-          setInvalidMsg('');
+          // tslint:disable-next-line: no-unused-expression
+          saveFilter && props.updateFilterValues(filterExpression);
+          setInvalidMsg("");
+          setTableNo(result.matchedCollections.length);
+          setTreeData(formatResponseData(result.matchedCollections));
         }
-        setTableNo(result.matchedCollections.length);
-        setTreeData(formatResponceData(result.matchedCollections));
-
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
         setErrorMsg(err);
       });
-  }
-
-  React.useEffect(() => {
-    const formDataCopy = new Map(formData)
-    if (schemaExclusion) {
-      formDataCopy.delete("schema.include.list")
-      schemaFilter ? formDataCopy.set("schema.exclude.list", schemaFilter) : formDataCopy.delete("schema.exclude.list")
-    } else {
-      formDataCopy.delete("schema.exclude.list")
-      schemaFilter ? formDataCopy.set("schema.include.list", schemaFilter) : formDataCopy.delete("schema.include.list")
-    }
-    setFormData(formDataCopy);
-  }, [schemaExclusion, schemaFilter]);
+  };
 
   React.useEffect(() => {
     const formDataCopy = new Map(formData);
-    if (tableExclusion) {
-      formDataCopy.delete("table.include.list")
-      tableFilter ? formDataCopy.set("table.exclude.list", tableFilter) : formDataCopy.delete("table.exclude.list")
+    if (schemaSelected === "schemaExclude") {
+      formDataCopy.delete("schema.include.list");
+      schemaFilter
+        ? formDataCopy.set("schema.exclude.list", schemaFilter)
+        : formDataCopy.delete("schema.exclude.list");
     } else {
-      formDataCopy.delete("table.exclude.list")
-      tableFilter ? formDataCopy.set("table.include.list", tableFilter) : formDataCopy.delete("table.include.list")
+      formDataCopy.delete("schema.exclude.list");
+      schemaFilter
+        ? formDataCopy.set("schema.include.list", schemaFilter)
+        : formDataCopy.delete("schema.include.list");
     }
     setFormData(formDataCopy);
-  }, [tableExclusion, tableFilter]);
+  }, [schemaSelected, schemaFilter]);
 
   React.useEffect(() => {
-    getFilterSchema()
+    const formDataCopy = new Map(formData);
+    if (tableSelected === "tableExclude") {
+      formDataCopy.delete("table.include.list");
+      tableFilter
+        ? formDataCopy.set("table.exclude.list", tableFilter)
+        : formDataCopy.delete("table.exclude.list");
+    } else {
+      formDataCopy.delete("table.exclude.list");
+      tableFilter
+        ? formDataCopy.set("table.include.list", tableFilter)
+        : formDataCopy.delete("table.include.list");
+    }
+    setFormData(formDataCopy);
+  }, [tableSelected, tableFilter]);
+
+  React.useEffect(() => {
+    getFilterSchema(false, props.filterValues);
   }, []);
 
   return (
@@ -161,8 +212,8 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         Select tables
       </Title>
       <Text component={TextVariants.h2}>
-        Start from filtering schemas; tables and colums by entring a
-        comma-separated list of regular expresion that match the names of
+        Start from filtering schemas; tables and columns by entering a
+        comma-separated list of regular expression that match the names of
         schema, table or column.
       </Text>
       <Form isHorizontal={true} className="filters-step-component_form">
@@ -170,7 +221,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           label="Schema filter"
           fieldId="schema_filter"
           helperText={
-            schemaExclusion ? (
+            schemaSelected === "schemaExclude" ? (
               <Text
                 component={TextVariants.h4}
                 className="filters-step-component_info"
@@ -179,8 +230,20 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 This filter will exclude the schema that matches the expression.
               </Text>
             ) : (
-                ""
-              )
+              ""
+            )
+          }
+          labelIcon={
+            <Popover bodyContent={<div>e.g schema1,schema2</div>}>
+              <button
+                aria-label="More info for schema filter field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="simple-form-schema"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign={true} />
+              </button>
+            </Popover>
           }
         >
           <Flex>
@@ -192,17 +255,28 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 aria-describedby="schema_filter-helper"
                 name="schema_filter"
                 onChange={handleSchemaFilter}
-                placeholder="Include the schemas that match the regular expresson"
+                placeholder="Include the schemas that match the regular expression"
               />
             </FlexItem>
             <FlexItem>
-              <Switch
-                id="schema-switch"
-                label="Exclusion"
-                labelOff="Exclusion"
-                isChecked={schemaExclusion}
-                onChange={handleSchemaExclusion}
-              />
+              <ToggleGroup aria-label="Default with single selectable">
+                <ToggleGroupItem
+                  buttonId="schemaInclude"
+                  isSelected={schemaSelected === "schemaInclude"}
+                  onChange={handleSchemaToggle}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Include
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  buttonId="schemaExclude"
+                  isSelected={schemaSelected === "schemaExclude"}
+                  onChange={handleSchemaToggle}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Exclude
+                </ToggleGroupItem>
+              </ToggleGroup>
             </FlexItem>
           </Flex>
         </FormGroup>
@@ -210,7 +284,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           label="Table filter"
           fieldId="table_filter"
           helperText={
-            tableExclusion ? (
+            tableSelected === "tableExclude" ? (
               <Text
                 component={TextVariants.h4}
                 className="filters-step-component_info"
@@ -219,8 +293,20 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 This filter will exclude the tables that matches the expression.
               </Text>
             ) : (
-                ""
-              )
+              ""
+            )
+          }
+          labelIcon={
+            <Popover bodyContent={<div>e.g schema1.*,schema2.table1</div>}>
+              <button
+                aria-label="More info for table filter field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="simple-form-table"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign={true} />
+              </button>
+            </Popover>
           }
         >
           <Flex>
@@ -231,56 +317,75 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 type="text"
                 id="table_filter"
                 name="table_filter"
-                placeholder="Include the tables that match the regular expresson"
+                placeholder="Include the tables that match the regular expression"
               />
             </FlexItem>
             <FlexItem>
-              <Switch
-                id="table-switch"
-                label="Exclusion"
-                labelOff="Exclusion"
-                isChecked={tableExclusion}
-                onChange={handleTableExclusion}
-              />
+              <ToggleGroup aria-label="Default with single selectable">
+                <ToggleGroupItem
+                  buttonId="tableInclude"
+                  isSelected={tableSelected === "tableInclude"}
+                  onChange={handleTableToggle}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Include
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  buttonId="tableExclude"
+                  isSelected={tableSelected === "tableExclude"}
+                  onChange={handleTableToggle}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Exclude
+                </ToggleGroupItem>
+              </ToggleGroup>
             </FlexItem>
           </Flex>
         </FormGroup>
         <ActionGroup>
-          <Button
-            variant="primary"
-            onClick={applyFilter}
-          >
+          <Button variant="primary" onClick={applyFilter}>
             Apply
           </Button>
           <Button variant="link" isInline={true} onClick={clearFilter}>
             Clear filters
-    </Button>
+          </Button>
         </ActionGroup>
       </Form>
       <Divider />
-      {apply ? (
+      {invalidMsg !== "" ? (
         <Alert
-          variant="info"
-          title={`There are ${treeData.length} schemas and ${tableNo} tables that match the filters.`}
-
+          variant={"danger"}
+          isInline={true}
+          title={"The input expression for filtering tables are invalid."}
+        />
+      ) : props.filterValues.size !== 0 ? (
+        <Alert
+          variant={tableNo !== 0 ? "info" : "warning"}
+          isInline={true}
+          title={
+            tableNo !== 0
+              ? `The specified filters result in ${tableNo} tables for which changes will be captured`
+              : "The specified filters do not result in any matching tables"
+          }
         >
-          <p>You can also find all the schemas and tables by clicking <a>Clean the filters</a></p>
+          <p>
+            You can also find all the schemas and tables by clicking{" "}
+            <a onClick={clearFilter}>All tables</a>
+          </p>
         </Alert>
       ) : (
-
-          <Alert
-            variant="info"
-            title={`There are ${treeData.length} schemas and ${tableNo} tables available for capturing the data change. You can select schema and tables by filtering.`}
-
-          />
-        )}
+        <Alert
+          variant="info"
+          isInline={true}
+          title={`There are ${tableNo} tables available for capturing the data change. You can also select schema and tables by filtering.`}
+        />
+      )}
 
       <FilterTreeComponent
         treeData={treeData}
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}
-        invalidMsg={invalidMsg}
       />
     </>
   );
