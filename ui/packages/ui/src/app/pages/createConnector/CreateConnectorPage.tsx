@@ -24,8 +24,9 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getCategorizedPropertyDefinitions,
+  getDataOptionsPropertyDefinitions,
   getFilterPropertyDefinitions,
-  getOptionsPropertyDefinitions,
+  getRuntimeOptionsPropertyDefinitions,
   mapToObject,
   PropertyCategory,
 } from "src/app/shared";
@@ -34,6 +35,7 @@ import {
   ConnectorTypeStepComponent,
   DataOptionsComponent,
   FiltersStepComponent,
+  RuntimeOptionsComponent
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
 
@@ -151,8 +153,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     if (
       category === PropertyCategory.ADVANCED_GENERAL ||
       category === PropertyCategory.ADVANCED_PUBLICATION ||
-      category === PropertyCategory.ADVANCED_REPLICATION
-    ) {
+      category === PropertyCategory.ADVANCED_REPLICATION ||
+      category === PropertyCategory.ADVANCED_SSL ) {
       setAdvancedPropValues(propertyValues);
     } else if (category === PropertyCategory.BASIC) {
       setBasicPropValues(propertyValues);
@@ -164,7 +166,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       category === PropertyCategory.BASIC ||
       category === PropertyCategory.ADVANCED_GENERAL ||
       category === PropertyCategory.ADVANCED_PUBLICATION ||
-      category === PropertyCategory.ADVANCED_REPLICATION
+      category === PropertyCategory.ADVANCED_REPLICATION ||
+      category === PropertyCategory.ADVANCED_SSL
     ) {
       connectorService
         .validateConnection("postgres", propertyValues)
@@ -282,9 +285,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Data Options",
       component: (
         <DataOptionsComponent
-          propertyDefinitions={getOptionsPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
+          propertyDefinitions={getDataOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
           propertyValues={optionsPropValues}
           onValidateProperties={handleValidateProperties}
         />
@@ -293,8 +294,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     },
     {
       id: 5,
-      name: "Set Target",
-      component: <p>component for set target</p>,
+      name: "Runtime Options",
+      component: (
+        <RuntimeOptionsComponent
+          propertyDefinitions={getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
+          propertyValues={optionsPropValues}
+          onValidateProperties={handleValidateProperties}
+        />
+      ),
       canJumpTo: stepIdReached >= 5,
       nextButtonText: "Finish",
     },

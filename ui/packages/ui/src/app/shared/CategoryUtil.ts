@@ -35,6 +35,9 @@ export enum PropertyName {
   COLUMN_TRUNCATE_PREFIX = "column.truncate.to",
   INCLUDE_UNKNOWN_DATATYPES = "include.unknown.datatypes",
   TOASTED_VALUE_PLACEHOLDER = "toasted.value.placeholder",
+  PROVIDE_TRANSACTION_METADATA = "provide.transaction.metadata",
+  SCHEMA_REFRESH_MODE = "schema.refresh.mode",
+  SANITIZE_FIELD_NAMES = "sanitize.field.names",
   SNAPSHOT_MODE = "snapshot.mode",
   SNAPSHOT_DELAY_MS = "snapshot.delay.ms",
   SNAPSHOT_FETCH_SIZE = "snapshot.fetch.size",
@@ -47,7 +50,13 @@ export enum PropertyName {
   POLL_INTERVAL_MS = "poll.interval.ms",
   HEARTBEAT_INTERVAL_MS = "heartbeat.interval.ms",
   HEARTBEAT_TOPICS_PREFIX = "heartbeat.topics.prefix",
-  HEARTBEAT_ACTION_QUERY = "heartbeat.action.query"
+  HEARTBEAT_ACTION_QUERY = "heartbeat.action.query",
+  DATABASE_SSLMODE = "database.sslmode",
+  DATABASE_SSLCERT = "database.sslcert",
+  DATABASE_SSLPASSWORD = "database.sslpassword",
+  DATABASE_SSLROOTCERT = "database.sslrootcert",
+  DATABASE_SSLKEY = "database.sslkey",
+  DATABASE_SSLFACTORY = "database.sslfactory"
 }
 
 export enum PropertyCategory {
@@ -55,11 +64,12 @@ export enum PropertyCategory {
   ADVANCED_GENERAL = "ADVANCED_GENERAL",
   ADVANCED_REPLICATION = "ADVANCED_REPLICATION",
   ADVANCED_PUBLICATION = "ADVANCED_PUBLICATION",
+  ADVANCED_SSL = "ADVANCED_SSL",
   FILTERS = "FILTERS",
-  OPTIONS_TYPE_HANDLING = "OPTIONS_TYPE_HANDLING",
-  OPTIONS_COLUMNS = "OPTIONS_COLUMNS",
-  OPTIONS_SNAPSHOT = "OPTIONS_SNAPSHOT",
-  RUNTIME = "RUNTIME"
+  DATA_OPTIONS_TYPE_MAPPING = "DATA_OPTIONS_TYPE_MAPPING",
+  DATA_OPTIONS_SNAPSHOT = "DATA_OPTIONS_SNAPSHOT",
+  RUNTIME_OPTIONS_ENGINE = "RUNTIME_OPTIONS_ENGINE",
+  RUNTIME_OPTIONS_HEARTBEAT = "RUNTIME_OPTIONS_HEARTBEAT"
 }
 
 export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
@@ -86,13 +96,13 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       catProp.category = PropertyCategory.ADVANCED_GENERAL;
     // ADVANCED PUBLICATION PROPS
     } else if (
-      catProp.name === PropertyName.PLUGIN_NAME ||
       catProp.name === PropertyName.PUBLICATION_NAME ||
       catProp.name === PropertyName.PUBLICATION_AUTOCREATE_MODE
     ) {
       catProp.category = PropertyCategory.ADVANCED_PUBLICATION;
     // ADVANCED REPLICATION PROPS
     } else if (
+      catProp.name === PropertyName.PLUGIN_NAME ||
       catProp.name === PropertyName.SLOT_NAME ||
       catProp.name === PropertyName.SLOT_DROP_ON_STOP ||
       catProp.name === PropertyName.SLOT_STREAM_PARAMS ||
@@ -100,6 +110,16 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       catProp.name === PropertyName.SLOT_RETRY_DELAY_MS
     ) {
       catProp.category = PropertyCategory.ADVANCED_REPLICATION;
+    // ADVANCED SSL
+    } else if (
+      catProp.name === PropertyName.DATABASE_SSLMODE ||
+      catProp.name === PropertyName.DATABASE_SSLCERT ||
+      catProp.name === PropertyName.DATABASE_SSLPASSWORD ||
+      catProp.name === PropertyName.DATABASE_SSLROOTCERT ||
+      catProp.name === PropertyName.DATABASE_SSLKEY ||
+      catProp.name === PropertyName.DATABASE_SSLFACTORY
+    ) {
+      catProp.category = PropertyCategory.ADVANCED_SSL;
     // FILTER PROPS
     } else if (
       catProp.name === PropertyName.SCHEMA_WHITELIST ||
@@ -110,27 +130,26 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       catProp.name === PropertyName.COLUMN_BLACKLIST
     ) {
       catProp.category = PropertyCategory.FILTERS;
-    // OPTIONS TYPE_HANDLING PROPS
+    // DATA OPTIONS TYPE MAPPING PROPS
     } else if (
       catProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
       catProp.name === PropertyName.HSTORE_HANDLING_MODE ||
       catProp.name === PropertyName.BINARY_HANDLING_MODE ||
       catProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
       catProp.name === PropertyName.TIME_PRECISION_MODE ||
-      catProp.name === PropertyName.TOMBSTONES_ON_DELETE
-    ) {
-      catProp.category = PropertyCategory.OPTIONS_TYPE_HANDLING;
-    // OPTIONS COLUMNS PROPS
-    } else if (
+      catProp.name === PropertyName.TOMBSTONES_ON_DELETE ||
       catProp.name === PropertyName.MESSAGE_KEY_COLUMNS ||
       catProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ||
       catProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ||
       catProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ||
       catProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ||
-      catProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER
+      catProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER ||
+      catProp.name === PropertyName.PROVIDE_TRANSACTION_METADATA ||
+      catProp.name === PropertyName.SCHEMA_REFRESH_MODE ||
+      catProp.name === PropertyName.SANITIZE_FIELD_NAMES
     ) {
-      catProp.category = PropertyCategory.OPTIONS_COLUMNS;
-    // OPTIONS SNAPSHOT PROPS
+      catProp.category = PropertyCategory.DATA_OPTIONS_TYPE_MAPPING;
+    // DATA OPTIONS SNAPSHOT PROPS
     } else if (
       catProp.name === PropertyName.SNAPSHOT_MODE ||
       catProp.name === PropertyName.SNAPSHOT_DELAY_MS ||
@@ -139,18 +158,21 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       catProp.name === PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS ||
       catProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS
     ) {
-      catProp.category = PropertyCategory.OPTIONS_SNAPSHOT;
-    // RUNTIME
+      catProp.category = PropertyCategory.DATA_OPTIONS_SNAPSHOT;
+    // RUNTIME ENGINE PROPS
     } else if (
-      catProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ||
-      catProp.name === PropertyName.MAX_BATCH_SIZE ||
-      catProp.name === PropertyName.MAX_QUEUE_SIZE ||
-      catProp.name === PropertyName.POLL_INTERVAL_MS ||
       catProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ||
       catProp.name === PropertyName.HEARTBEAT_TOPICS_PREFIX ||
       catProp.name === PropertyName.HEARTBEAT_ACTION_QUERY
     ) {
-      catProp.category = PropertyCategory.RUNTIME;
+      catProp.category = PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT;
+    } else if (
+      catProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ||
+      catProp.name === PropertyName.MAX_BATCH_SIZE ||
+      catProp.name === PropertyName.MAX_QUEUE_SIZE ||
+      catProp.name === PropertyName.POLL_INTERVAL_MS
+    ) {
+      catProp.category = PropertyCategory.RUNTIME_OPTIONS_ENGINE;
     }
   }
 
@@ -243,19 +265,7 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       } else if ( orderedProp.name === PropertyName.COLUMN_BLACKLIST ) {
         orderedProp.orderInCategory = 6;
       }
-    } else if ( orderedProp.category === PropertyCategory.OPTIONS_COLUMNS ) {
-      if ( orderedProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ) {
-        orderedProp.orderInCategory = 1;
-      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ) {
-        orderedProp.orderInCategory = 2;
-      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ) {
-        orderedProp.orderInCategory = 3;
-      } else if ( orderedProp.name === PropertyName.MESSAGE_KEY_COLUMNS ) {
-        orderedProp.orderInCategory = 4;
-      } else if ( orderedProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ) {
-        orderedProp.orderInCategory = 5;
-      }
-    } else if ( orderedProp.category === PropertyCategory.OPTIONS_TYPE_HANDLING ) {
+    } else if ( orderedProp.category === PropertyCategory.DATA_OPTIONS_TYPE_MAPPING ) {
       if ( orderedProp.name === PropertyName.TIME_PRECISION_MODE ) {
         orderedProp.orderInCategory = 1;
       } else if ( orderedProp.name === PropertyName.BINARY_HANDLING_MODE ) {
@@ -266,8 +276,28 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
         orderedProp.orderInCategory = 4;
       } else if ( orderedProp.name === PropertyName.HSTORE_HANDLING_MODE ) {
         orderedProp.orderInCategory = 5;
+      } else if( orderedProp.name.startsWith(PropertyName.TOMBSTONES_ON_DELETE) ) {
+        orderedProp.orderInCategory = 6;
+      } else if( orderedProp.name.startsWith(PropertyName.MESSAGE_KEY_COLUMNS) ) {
+        orderedProp.orderInCategory = 7;
+      } else if( orderedProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ) {
+        orderedProp.orderInCategory = 8;
+      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ) {
+        orderedProp.orderInCategory = 9;
+      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ) {
+        orderedProp.orderInCategory = 10;
+      } else if ( orderedProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ) {
+        orderedProp.orderInCategory = 11;
+      } else if ( orderedProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER ) {
+        orderedProp.orderInCategory = 12;
+      } else if ( orderedProp.name === PropertyName.PROVIDE_TRANSACTION_METADATA ) {
+        orderedProp.orderInCategory = 13;
+      } else if ( orderedProp.name === PropertyName.SCHEMA_REFRESH_MODE ) {
+        orderedProp.orderInCategory = 14;
+      } else if ( orderedProp.name === PropertyName.SANITIZE_FIELD_NAMES ) {
+        orderedProp.orderInCategory = 15;
       }
-    } else if ( orderedProp.category === PropertyCategory.OPTIONS_SNAPSHOT ) {
+    } else if ( orderedProp.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT ) {
       if ( orderedProp.name === PropertyName.SNAPSHOT_MODE ) {
         orderedProp.orderInCategory = 1;
       } else if ( orderedProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS ) {
@@ -281,7 +311,7 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       } else if ( orderedProp.name === PropertyName.SNAPSHOT_FETCH_SIZE ) {
         orderedProp.orderInCategory = 6;
       }
-    } else if ( orderedProp.category === PropertyCategory.RUNTIME ) {
+    } else if ( orderedProp.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE ) {
       if ( orderedProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ) {
         orderedProp.orderInCategory = 1;
       } else if ( orderedProp.name === PropertyName.MAX_QUEUE_SIZE ) {
@@ -290,12 +320,14 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
         orderedProp.orderInCategory = 3;
       } else if ( orderedProp.name === PropertyName.POLL_INTERVAL_MS ) {
         orderedProp.orderInCategory = 4;
-      } else if ( orderedProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ) {
-        orderedProp.orderInCategory = 5;
+      } 
+    } else if ( orderedProp.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT ) {
+      if ( orderedProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ) {
+        orderedProp.orderInCategory = 1;
       } else if ( orderedProp.name === PropertyName.HEARTBEAT_TOPICS_PREFIX ) {
-        orderedProp.orderInCategory = 6;
+        orderedProp.orderInCategory = 2;
       } else if ( orderedProp.name === PropertyName.HEARTBEAT_ACTION_QUERY ) {
-        orderedProp.orderInCategory = 7;
+        orderedProp.orderInCategory = 3;
       }
     }
   }
