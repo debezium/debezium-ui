@@ -28,14 +28,17 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   const basicValidationSchema = {};
 
   const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-    return propertyValues.map((key: { name: string }) => {
+    const orderedPropertyDefinitions = propertyValues.sort((a, b) => (
+      {orderInCategory: Number.MAX_VALUE, ...a}.orderInCategory -
+      {orderInCategory: Number.MAX_VALUE, ...b}.orderInCategory));
+
+    return orderedPropertyDefinitions.map((key: { name: string }) => {
       key.name = key.name.replace(/\./g, '_');
       return key;
     })
   }
   const basicPropertyDefinitions = formatPropertyDefinitions(props.basicPropertyDefinitions)
   const advancedPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions)
-
 
   // Just added String and Password type
   basicPropertyDefinitions.map((key: any) => {
@@ -73,7 +76,7 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   }
 
   const initialValues = getInitialValues(_.union(basicPropertyDefinitions, advancedPropertyDefinitions));
-
+ 
   return (
     <div>
       <Formik

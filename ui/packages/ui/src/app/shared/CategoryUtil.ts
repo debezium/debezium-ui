@@ -1,5 +1,55 @@
 import { ConnectorProperty } from '@debezium/ui-models';
 
+export enum PropertyName {
+  DATABASE_SERVER_NAME = 'database.server.name',
+  DATABASE_DBNAME = "database.dbname",
+  DATABASE_HOSTNAME = "database.hostname",
+  DATABASE_PORT = "database.port",
+  DATABASE_USER = "database.user",
+  DATABASE_PASSWORD = "database.password",
+  DATABASE_TCPKEEPALIVE = "database.tcpKeepAlive",
+  DATABASE_INITIAL_STATEMENTS = "database.initial.statements",
+  PLUGIN_NAME = "plugin.name",
+  PUBLICATION_NAME = "publication.name",
+  PUBLICATION_AUTOCREATE_MODE = "publication.autocreate.mode",
+  SLOT_NAME = "slot.name",
+  SLOT_DROP_ON_STOP = "slot.drop.on.stop",
+  SLOT_STREAM_PARAMS = "slot.stream.params",
+  SLOT_MAX_RETRIES = "slot.max.retries",
+  SLOT_RETRY_DELAY_MS = "slot.retry.delay.ms",
+  SCHEMA_WHITELIST = "schema.whitelist",
+  SCHEMA_BLACKLIST = "schema.blacklist",
+  TABLE_WHITELIST = "table.whitelist",
+  TABLE_BLACKLIST = "table.blacklist",
+  COLUMN_WHITELIST = "column.whitelist",
+  COLUMN_BLACKLIST = "column.blacklist",
+  DECIMAL_HANDLING_MODE = "decimal.handling.mode",
+  HSTORE_HANDLING_MODE = "hstore.handling.mode",
+  BINARY_HANDLING_MODE = "binary.handling.mode",
+  INTERVAL_HANDLING_MODE = "interval.handling.mode",
+  TIME_PRECISION_MODE = "time.precision.mode",
+  TOMBSTONES_ON_DELETE = "tombstones.on.delete",
+  MESSAGE_KEY_COLUMNS = "message.key.columns",
+  COLUMN_MASK_HASH_PREFIX = "column.mask.hash",
+  COLUMN_MASK_WITH_PREFIX = "column.mask.with",
+  COLUMN_TRUNCATE_PREFIX = "column.truncate.to",
+  INCLUDE_UNKNOWN_DATATYPES = "include.unknown.datatypes",
+  TOASTED_VALUE_PLACEHOLDER = "toasted.value.placeholder",
+  SNAPSHOT_MODE = "snapshot.mode",
+  SNAPSHOT_DELAY_MS = "snapshot.delay.ms",
+  SNAPSHOT_FETCH_SIZE = "snapshot.fetch.size",
+  SNAPSHOT_SELECT_STATEMENT_OVERRIDES = "snapshot.select.statement.overrides",
+  SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms",
+  SNAPSHOT_CUSTOM_CLASS = "snapshot.custom.class",
+  EVENT_PROCESSING_FAILURE_HANDLING_MODE = "event.processing.failure.handling.mode",
+  MAX_BATCH_SIZE = "max.batch.size",
+  MAX_QUEUE_SIZE = "max.queue.size",
+  POLL_INTERVAL_MS = "poll.interval.ms",
+  HEARTBEAT_INTERVAL_MS = "heartbeat.interval.ms",
+  HEARTBEAT_TOPICS_PREFIX = "heartbeat.topics.prefix",
+  HEARTBEAT_ACTION_QUERY = "heartbeat.action.query"
+}
+
 export enum PropertyCategory {
   BASIC = "BASIC",
   ADVANCED_GENERAL = "ADVANCED_GENERAL",
@@ -20,85 +70,85 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
   for (const catProp of categorizedProps) {
     // BASIC PROPS
     if (
-      catProp.name === "database.server.name" ||
-      catProp.name === "database.dbname" ||
-      catProp.name === "database.hostname" ||
-      catProp.name === "database.port" ||
-      catProp.name === "database.user" ||
-      catProp.name === "database.password"
+      catProp.name === PropertyName.DATABASE_SERVER_NAME ||
+      catProp.name === PropertyName.DATABASE_DBNAME ||
+      catProp.name === PropertyName.DATABASE_HOSTNAME ||
+      catProp.name === PropertyName.DATABASE_PORT ||
+      catProp.name === PropertyName.DATABASE_USER ||
+      catProp.name === PropertyName.DATABASE_PASSWORD
     ) {
       catProp.category = PropertyCategory.BASIC;
     // ADVANCED GENERAL PROPS
     } else if (
-      catProp.name === "database.tcpKeepAlive" ||
-      catProp.name === "database.initial.statements"
+      catProp.name === PropertyName.DATABASE_TCPKEEPALIVE ||
+      catProp.name === PropertyName.DATABASE_INITIAL_STATEMENTS
     ) {
       catProp.category = PropertyCategory.ADVANCED_GENERAL;
     // ADVANCED PUBLICATION PROPS
     } else if (
-      catProp.name === "plugin.name" ||
-      catProp.name === "publication.name" ||
-      catProp.name === "publication.autocreate.mode"
+      catProp.name === PropertyName.PLUGIN_NAME ||
+      catProp.name === PropertyName.PUBLICATION_NAME ||
+      catProp.name === PropertyName.PUBLICATION_AUTOCREATE_MODE
     ) {
       catProp.category = PropertyCategory.ADVANCED_PUBLICATION;
     // ADVANCED REPLICATION PROPS
     } else if (
-      catProp.name === "slot.name" ||
-      catProp.name === "slot.drop.on.stop" ||
-      catProp.name === "slot.stream.params" ||
-      catProp.name === "slot.max.retries" ||
-      catProp.name === "slot.retry.delay.ms"
+      catProp.name === PropertyName.SLOT_NAME ||
+      catProp.name === PropertyName.SLOT_DROP_ON_STOP ||
+      catProp.name === PropertyName.SLOT_STREAM_PARAMS ||
+      catProp.name === PropertyName.SLOT_MAX_RETRIES ||
+      catProp.name === PropertyName.SLOT_RETRY_DELAY_MS
     ) {
       catProp.category = PropertyCategory.ADVANCED_REPLICATION;
     // FILTER PROPS
     } else if (
-      catProp.name === "schema.whitelist" ||
-      catProp.name === "schema.blacklist" ||
-      catProp.name === "table.whitelist" ||
-      catProp.name === "table.blacklist" ||
-      catProp.name === "column.whitelist" ||
-      catProp.name === "column.blacklist"
+      catProp.name === PropertyName.SCHEMA_WHITELIST ||
+      catProp.name === PropertyName.SCHEMA_BLACKLIST ||
+      catProp.name === PropertyName.TABLE_WHITELIST ||
+      catProp.name === PropertyName.TABLE_BLACKLIST ||
+      catProp.name === PropertyName.COLUMN_WHITELIST ||
+      catProp.name === PropertyName.COLUMN_BLACKLIST
     ) {
       catProp.category = PropertyCategory.FILTERS;
     // OPTIONS TYPE_HANDLING PROPS
     } else if (
-      catProp.name === "decimal.handling.mode" ||
-      catProp.name === "hstore.handling.mode" ||
-      catProp.name === "binary.handling.mode" ||
-      catProp.name === "interval.handling.mode" ||
-      catProp.name === "time.precision.mode" ||
-      catProp.name === "tombstones.on.delete"
+      catProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
+      catProp.name === PropertyName.HSTORE_HANDLING_MODE ||
+      catProp.name === PropertyName.BINARY_HANDLING_MODE ||
+      catProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
+      catProp.name === PropertyName.TIME_PRECISION_MODE ||
+      catProp.name === PropertyName.TOMBSTONES_ON_DELETE
     ) {
       catProp.category = PropertyCategory.OPTIONS_TYPE_HANDLING;
     // OPTIONS COLUMNS PROPS
     } else if (
-      catProp.name === "message.key.columns" ||
-      catProp.name === "column.mask.hash.([^.]+).with.salt.(.+)" ||
-      catProp.name === "column.mask.with.(d+).chars" ||
-      catProp.name === "column.truncate.to.(d+).chars" ||
-      catProp.name === "include.unknown.datatypes" ||
-      catProp.name === "toasted.value.placeholder"
+      catProp.name === PropertyName.MESSAGE_KEY_COLUMNS ||
+      catProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ||
+      catProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ||
+      catProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ||
+      catProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ||
+      catProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER
     ) {
       catProp.category = PropertyCategory.OPTIONS_COLUMNS;
     // OPTIONS SNAPSHOT PROPS
     } else if (
-      catProp.name === "snapshot.mode" ||
-      catProp.name === "snapshot.delay.ms" ||
-      catProp.name === "snapshot.fetch.size" ||
-      catProp.name === "snapshot.select.statement.overrides" ||
-      catProp.name === "snapshot.lock.timeout.ms" ||
-      catProp.name === "snapshot.custom.class"
+      catProp.name === PropertyName.SNAPSHOT_MODE ||
+      catProp.name === PropertyName.SNAPSHOT_DELAY_MS ||
+      catProp.name === PropertyName.SNAPSHOT_FETCH_SIZE ||
+      catProp.name === PropertyName.SNAPSHOT_SELECT_STATEMENT_OVERRIDES ||
+      catProp.name === PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS ||
+      catProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS
     ) {
       catProp.category = PropertyCategory.OPTIONS_SNAPSHOT;
     // RUNTIME
     } else if (
-      catProp.name === "event.processing.failure.handling.mode" ||
-      catProp.name === "max.batch.size" ||
-      catProp.name === "max.queue.size" ||
-      catProp.name === "poll.interval.ms" ||
-      catProp.name === "heartbeat.interval.ms" ||
-      catProp.name === "heartbeat.topics.prefix" ||
-      catProp.name === "heartbeat.action.query"
+      catProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ||
+      catProp.name === PropertyName.MAX_BATCH_SIZE ||
+      catProp.name === PropertyName.MAX_QUEUE_SIZE ||
+      catProp.name === PropertyName.POLL_INTERVAL_MS ||
+      catProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ||
+      catProp.name === PropertyName.HEARTBEAT_TOPICS_PREFIX ||
+      catProp.name === PropertyName.HEARTBEAT_ACTION_QUERY
     ) {
       catProp.category = PropertyCategory.RUNTIME;
     }
@@ -110,23 +160,23 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
   const requiredProps = [...categorizedProps];
   for (const reqProp of requiredProps) {
     if (
-      reqProp.name === "database.server.name" ||
-      reqProp.name === "database.dbname" ||
-      reqProp.name === "database.hostname" ||
-      reqProp.name === "database.port" ||
-      reqProp.name === "database.user" ||
-      reqProp.name === "database.password" ||
-      reqProp.name === "database.tcpKeepAlive" ||
-      reqProp.name === "plugin.name" ||
-      reqProp.name === "publication.name" ||
-      reqProp.name === "publication.autocreate.mode" ||
-      reqProp.name === "slot.name" ||
-      reqProp.name === "slot.drop.on.stop" ||
-      reqProp.name === "decimal.handling.mode" ||
-      reqProp.name === "hstore.handling.mode" ||
-      reqProp.name === "binary.handling.mode" ||
-      reqProp.name === "interval.handling.mode" ||
-      reqProp.name === "time.precision.mode"
+      reqProp.name === PropertyName.DATABASE_SERVER_NAME ||
+      reqProp.name === PropertyName.DATABASE_DBNAME ||
+      reqProp.name === PropertyName.DATABASE_HOSTNAME ||
+      reqProp.name === PropertyName.DATABASE_PORT ||
+      reqProp.name === PropertyName.DATABASE_USER ||
+      reqProp.name === PropertyName.DATABASE_PASSWORD ||
+      reqProp.name === PropertyName.DATABASE_TCPKEEPALIVE ||
+      reqProp.name === PropertyName.PLUGIN_NAME ||
+      reqProp.name === PropertyName.PUBLICATION_NAME ||
+      reqProp.name === PropertyName.PUBLICATION_AUTOCREATE_MODE ||
+      reqProp.name === PropertyName.SLOT_NAME ||
+      reqProp.name === PropertyName.SLOT_DROP_ON_STOP ||
+      reqProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
+      reqProp.name === PropertyName.HSTORE_HANDLING_MODE ||
+      reqProp.name === PropertyName.BINARY_HANDLING_MODE ||
+      reqProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
+      reqProp.name === PropertyName.TIME_PRECISION_MODE
     ) {
       reqProp.required = true;
     } else {
@@ -134,5 +184,121 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
     }
   }
 
-  return requiredProps;
+  // ---------------------------------------
+  // Set property ordering within category
+  // ---------------------------------------
+  const orderedProps = [...requiredProps];
+  for (const orderedProp of orderedProps) {
+    if ( orderedProp.category === PropertyCategory.BASIC ) {
+      if ( orderedProp.name === PropertyName.DATABASE_HOSTNAME ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.DATABASE_PORT ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.DATABASE_USER ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.DATABASE_PASSWORD ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.DATABASE_DBNAME ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.DATABASE_SERVER_NAME ) {
+        orderedProp.orderInCategory = 6;
+      }
+    } else if ( orderedProp.category === PropertyCategory.ADVANCED_GENERAL ) {
+      if ( orderedProp.name === PropertyName.DATABASE_TCPKEEPALIVE ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.DATABASE_INITIAL_STATEMENTS ) {
+        orderedProp.orderInCategory = 2;
+      }
+    } else if ( orderedProp.category === PropertyCategory.ADVANCED_REPLICATION ) {
+      if ( orderedProp.name === PropertyName.PLUGIN_NAME ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.SLOT_NAME ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.SLOT_DROP_ON_STOP ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.SLOT_STREAM_PARAMS ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.SLOT_MAX_RETRIES ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.SLOT_RETRY_DELAY_MS ) {
+        orderedProp.orderInCategory = 6;
+      }
+    } else if ( orderedProp.category === PropertyCategory.ADVANCED_PUBLICATION ) {
+      if ( orderedProp.name === PropertyName.PUBLICATION_NAME ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.PUBLICATION_AUTOCREATE_MODE ) {
+        orderedProp.orderInCategory = 2;
+      }
+    } else if ( orderedProp.category === PropertyCategory.FILTERS ) {
+      if ( orderedProp.name === PropertyName.SCHEMA_WHITELIST ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.SCHEMA_BLACKLIST ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.TABLE_WHITELIST ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.TABLE_BLACKLIST ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.COLUMN_WHITELIST ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.COLUMN_BLACKLIST ) {
+        orderedProp.orderInCategory = 6;
+      }
+    } else if ( orderedProp.category === PropertyCategory.OPTIONS_COLUMNS ) {
+      if ( orderedProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.MESSAGE_KEY_COLUMNS ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ) {
+        orderedProp.orderInCategory = 5;
+      }
+    } else if ( orderedProp.category === PropertyCategory.OPTIONS_TYPE_HANDLING ) {
+      if ( orderedProp.name === PropertyName.TIME_PRECISION_MODE ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.BINARY_HANDLING_MODE ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.DECIMAL_HANDLING_MODE ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.INTERVAL_HANDLING_MODE ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.HSTORE_HANDLING_MODE ) {
+        orderedProp.orderInCategory = 5;
+      }
+    } else if ( orderedProp.category === PropertyCategory.OPTIONS_SNAPSHOT ) {
+      if ( orderedProp.name === PropertyName.SNAPSHOT_MODE ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_SELECT_STATEMENT_OVERRIDES ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_DELAY_MS ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_FETCH_SIZE ) {
+        orderedProp.orderInCategory = 6;
+      }
+    } else if ( orderedProp.category === PropertyCategory.RUNTIME ) {
+      if ( orderedProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ) {
+        orderedProp.orderInCategory = 1;
+      } else if ( orderedProp.name === PropertyName.MAX_QUEUE_SIZE ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.MAX_BATCH_SIZE ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.POLL_INTERVAL_MS ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.HEARTBEAT_TOPICS_PREFIX ) {
+        orderedProp.orderInCategory = 6;
+      } else if ( orderedProp.name === PropertyName.HEARTBEAT_ACTION_QUERY ) {
+        orderedProp.orderInCategory = 7;
+      }
+    }
+  }
+
+  return orderedProps;
 }
