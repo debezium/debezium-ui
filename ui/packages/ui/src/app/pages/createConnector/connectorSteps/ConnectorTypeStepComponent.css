@@ -1,21 +1,25 @@
-.connector-type-step-component_cardItem {
-  text-align: center;
-  cursor: pointer;
-  flex-grow: 1;
-  margin: 10px;
-}
-.connector-type-step-component_dbIcon {
-  width: 50%;
-  margin: 0 auto;
-}
-.connector-type-step-component_dbIcon svg {
-  font-size: xx-large;
-}
-.connector-type-step-component_disableCard {
-  color: var(--pf-global--disabled-color--100);
-}
-.select-connector-type-component_flex {
-  flex-wrap: wrap;
-  justify-content: space-between;
-  flex-direction: row;
+.connector-type-step-component {
+  &_flex {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-direction: row;
+    & > div {
+      text-align: center;
+      cursor: pointer;
+      flex-grow: 1;
+      margin: 10px;
+    }
+    &_disableCard {
+      color: var(--pf-global--disabled-color--100);
+      background: var(--pf-global--palette--black-150);
+    }
+  }
+  &_dbIcon {
+    width: 50%;
+    margin: 0 auto;
+
+    & > svg {
+      font-size: xx-large;
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import {
   ConnectionValidationResult,
-  ConnectorConfiguration, ConnectorProperty, ConnectorType
+  ConnectorConfiguration,
+  ConnectorProperty,
+  ConnectorType,
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
@@ -13,7 +15,7 @@ import {
   TextContent,
   Title,
   TitleSizes,
-  Wizard
+  Wizard,
 } from "@patternfly/react-core";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -25,13 +27,13 @@ import {
   getFilterPropertyDefinitions,
   getOptionsPropertyDefinitions,
   mapToObject,
-  PropertyCategory
+  PropertyCategory,
 } from "src/app/shared";
 import {
   ConfigureConnectorTypeComponent,
   ConnectorTypeStepComponent,
   DataOptionsComponent,
-  FiltersStepComponent
+  FiltersStepComponent,
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
 
@@ -138,7 +140,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setFilterValues(new Map<string, string>());
     setBasicPropValues(new Map<string, string>());
     setAdvancedPropValues(new Map<string, string>());
-    setOptionsPropValues(new Map<string, string>())
+    setOptionsPropValues(new Map<string, string>());
   };
 
   const handleValidateProperties = (
@@ -146,11 +148,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     category: PropertyCategory
   ): void => {
     // Update the state values for the submitted category
-    if (category === PropertyCategory.FILTERS) {
-      setFilterValues(propertyValues);
-    } else if (category === PropertyCategory.ADVANCED_GENERAL ||
+    if (
+      category === PropertyCategory.ADVANCED_GENERAL ||
       category === PropertyCategory.ADVANCED_PUBLICATION ||
-      category === PropertyCategory.ADVANCED_REPLICATION) {
+      category === PropertyCategory.ADVANCED_REPLICATION
+    ) {
       setAdvancedPropValues(propertyValues);
     } else if (category === PropertyCategory.BASIC) {
       setBasicPropValues(propertyValues);
@@ -179,11 +181,16 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             alert("connection props are VALID");
           }
         })
-        .catch((error) => {
+        .catch((error: any) => {
           alert("Error Validation Connection Properties !: " + error);
         });
     }
   };
+
+  // Update the filter values
+  const handleFilterUpdate = (filterValue: Map<string,string>) => {
+    setFilterValues(new Map(filterValue));
+  }
 
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
@@ -213,13 +220,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     initPropertyValues();
   }, [connectorTypes]);
 
-  const filterValuesTemp: Map<string, string> = new Map();
-  filterValuesTemp.set("database.hostname", "192.168.122.1");
-  filterValuesTemp.set("database.port", "5432");
-  filterValuesTemp.set("database.user", "postgres");
-  filterValuesTemp.set("database.password", "indra");
-  filterValuesTemp.set("database.dbname", "postgres");
-  filterValuesTemp.set("database.server.name", "fullfillment");
+  const basicPropValuesTemp: Map<string, string> = new Map();
+  basicPropValuesTemp.set("database.hostname", "192.168.122.1");
+  basicPropValuesTemp.set("database.port", "5432");
+  basicPropValuesTemp.set("database.user", "postgres");
+  basicPropValuesTemp.set("database.password", "indra");
+  basicPropValuesTemp.set("database.dbname", "postgres");
+  basicPropValuesTemp.set("database.server.name", "fullfillment");
 
   const wizardSteps = [
     {
@@ -263,7 +270,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           propertyDefinitions={getFilterPropertyDefinitions(
             selectedConnectorPropertyDefns
           )}
-          propertyValues={filterValuesTemp}
+          propertyValues={basicPropValuesTemp}
+          filterValues={filterValues}
+          updateFilterValues={handleFilterUpdate}
         />
       ),
       canJumpTo: stepIdReached >= 3,
@@ -273,7 +282,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Data Options",
       component: (
         <DataOptionsComponent
-          propertyDefinitions={getOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
+          propertyDefinitions={getOptionsPropertyDefinitions(
+            selectedConnectorPropertyDefns
+          )}
           propertyValues={optionsPropValues}
           onValidateProperties={handleValidateProperties}
         />
