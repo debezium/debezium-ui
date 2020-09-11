@@ -92,7 +92,8 @@ export function getDataOptionsPropertyDefinitions(
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
     if (
-      propDefn.category === PropertyCategory.DATA_OPTIONS_TYPE_MAPPING ||
+      propDefn.category === PropertyCategory.DATA_OPTIONS_GENERAL ||
+      propDefn.category === PropertyCategory.DATA_OPTIONS_ADVANCED ||
       propDefn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
     ) {
       connProperties.push(propDefn);

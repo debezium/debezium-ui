@@ -21,7 +21,8 @@ export interface IFormSelectComponentProps {
     fieldId: string,
     helperTextInvalid: string,
     isRequired: boolean,
-    options: ISelectOptions[]
+    options: ISelectOptions[],
+    propertyChange: (name: string, selection: any) => void;
 }
 
 export const FormSelectComponent = (props: IFormSelectComponentProps) => {
@@ -31,30 +32,30 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     fieldId,
     helperTextInvalid,
     options,
-    setFieldValue
+    propertyChange
   } = props;
   
   const [isOpen, setOpen] = React.useState<boolean>(false)
-  const [selected, setSelected] = React.useState<boolean>(null)
+  const [selected, setSelected] = React.useState<boolean>(false)
   const [field] = useField(props);
 
-  const onToggle = (open) => {
+  const onToggle = (open: boolean) => {
     setOpen(open)
   };
 
   const clearSelection = () => {
-    setSelected(null)
+    setSelected(false)
     setOpen(false)
   };  
 
-  const onSelect = (e, selection, isPlaceholder) => {
+  const onSelect = (e, selection: boolean, isPlaceholder: boolean) => {
     if (isPlaceholder) {
       clearSelection();
     }
     else {
       setSelected(selection)
       setOpen(false)
-      setFieldValue(field.name, selection);
+      propertyChange(field.name, selection);
     }
   };
 

@@ -56,160 +56,34 @@ export enum PropertyName {
   DATABASE_SSLPASSWORD = "database.sslpassword",
   DATABASE_SSLROOTCERT = "database.sslrootcert",
   DATABASE_SSLKEY = "database.sslkey",
-  DATABASE_SSLFACTORY = "database.sslfactory"
+  DATABASE_SSLFACTORY = "database.sslfactory",
+  SKIPPED_OPERATIONS = "skipped.operations",
+  RETRIABLE_RESTART_CONNECTOR_WAIT_MS = "retriable.restart.connector.wait.ms",
+  SOURCE_STRUCT_VERSION = "source.struct.version",
+  STATUS_UPDATE_INTERVAL_MS = "status.update.interval.ms",
+  XMIN_FETCH_INTERVAL_MS = "xmin.fetch.interval.ms",
+  CONVERTERS = "converters"
 }
 
 export enum PropertyCategory {
-  BASIC = "BASIC",
-  ADVANCED_GENERAL = "ADVANCED_GENERAL",
-  ADVANCED_REPLICATION = "ADVANCED_REPLICATION",
-  ADVANCED_PUBLICATION = "ADVANCED_PUBLICATION",
-  ADVANCED_SSL = "ADVANCED_SSL",
+  BASIC = "CONNECTION",
+  ADVANCED_GENERAL = "CONNECTION_ADVANCED",
+  ADVANCED_REPLICATION = "CONNECTION_ADVANCED_REPLICATION",
+  ADVANCED_PUBLICATION = "CONNECTION_ADVANCED_PUBLICATION",
+  ADVANCED_SSL = "CONNECTION_ADVANCED_SSL",
   FILTERS = "FILTERS",
-  DATA_OPTIONS_TYPE_MAPPING = "DATA_OPTIONS_TYPE_MAPPING",
-  DATA_OPTIONS_SNAPSHOT = "DATA_OPTIONS_SNAPSHOT",
-  RUNTIME_OPTIONS_ENGINE = "RUNTIME_OPTIONS_ENGINE",
-  RUNTIME_OPTIONS_HEARTBEAT = "RUNTIME_OPTIONS_HEARTBEAT"
+  DATA_OPTIONS_GENERAL = "CONNECTOR",
+  DATA_OPTIONS_SNAPSHOT = "CONNECTOR_SNAPSHOT",
+  DATA_OPTIONS_ADVANCED = "CONNECTOR_ADVANCED",
+  RUNTIME_OPTIONS_ENGINE = "ADVANCED",
+  RUNTIME_OPTIONS_HEARTBEAT = "ADVANCED_HEARTBEAT"
 }
 
 export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
-  const categorizedProps = [...propertyDefns];
-  // ------------------
-  // Set the categories
-  // ------------------
-  for (const catProp of categorizedProps) {
-    // BASIC PROPS
-    if (
-      catProp.name === PropertyName.DATABASE_SERVER_NAME ||
-      catProp.name === PropertyName.DATABASE_DBNAME ||
-      catProp.name === PropertyName.DATABASE_HOSTNAME ||
-      catProp.name === PropertyName.DATABASE_PORT ||
-      catProp.name === PropertyName.DATABASE_USER ||
-      catProp.name === PropertyName.DATABASE_PASSWORD
-    ) {
-      catProp.category = PropertyCategory.BASIC;
-    // ADVANCED GENERAL PROPS
-    } else if (
-      catProp.name === PropertyName.DATABASE_TCPKEEPALIVE ||
-      catProp.name === PropertyName.DATABASE_INITIAL_STATEMENTS
-    ) {
-      catProp.category = PropertyCategory.ADVANCED_GENERAL;
-    // ADVANCED PUBLICATION PROPS
-    } else if (
-      catProp.name === PropertyName.PUBLICATION_NAME ||
-      catProp.name === PropertyName.PUBLICATION_AUTOCREATE_MODE
-    ) {
-      catProp.category = PropertyCategory.ADVANCED_PUBLICATION;
-    // ADVANCED REPLICATION PROPS
-    } else if (
-      catProp.name === PropertyName.PLUGIN_NAME ||
-      catProp.name === PropertyName.SLOT_NAME ||
-      catProp.name === PropertyName.SLOT_DROP_ON_STOP ||
-      catProp.name === PropertyName.SLOT_STREAM_PARAMS ||
-      catProp.name === PropertyName.SLOT_MAX_RETRIES ||
-      catProp.name === PropertyName.SLOT_RETRY_DELAY_MS
-    ) {
-      catProp.category = PropertyCategory.ADVANCED_REPLICATION;
-    // ADVANCED SSL
-    } else if (
-      catProp.name === PropertyName.DATABASE_SSLMODE ||
-      catProp.name === PropertyName.DATABASE_SSLCERT ||
-      catProp.name === PropertyName.DATABASE_SSLPASSWORD ||
-      catProp.name === PropertyName.DATABASE_SSLROOTCERT ||
-      catProp.name === PropertyName.DATABASE_SSLKEY ||
-      catProp.name === PropertyName.DATABASE_SSLFACTORY
-    ) {
-      catProp.category = PropertyCategory.ADVANCED_SSL;
-    // FILTER PROPS
-    } else if (
-      catProp.name === PropertyName.SCHEMA_WHITELIST ||
-      catProp.name === PropertyName.SCHEMA_BLACKLIST ||
-      catProp.name === PropertyName.TABLE_WHITELIST ||
-      catProp.name === PropertyName.TABLE_BLACKLIST ||
-      catProp.name === PropertyName.COLUMN_WHITELIST ||
-      catProp.name === PropertyName.COLUMN_BLACKLIST
-    ) {
-      catProp.category = PropertyCategory.FILTERS;
-    // DATA OPTIONS TYPE MAPPING PROPS
-    } else if (
-      catProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
-      catProp.name === PropertyName.HSTORE_HANDLING_MODE ||
-      catProp.name === PropertyName.BINARY_HANDLING_MODE ||
-      catProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
-      catProp.name === PropertyName.TIME_PRECISION_MODE ||
-      catProp.name === PropertyName.TOMBSTONES_ON_DELETE ||
-      catProp.name === PropertyName.MESSAGE_KEY_COLUMNS ||
-      catProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ||
-      catProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ||
-      catProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ||
-      catProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ||
-      catProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER ||
-      catProp.name === PropertyName.PROVIDE_TRANSACTION_METADATA ||
-      catProp.name === PropertyName.SCHEMA_REFRESH_MODE ||
-      catProp.name === PropertyName.SANITIZE_FIELD_NAMES
-    ) {
-      catProp.category = PropertyCategory.DATA_OPTIONS_TYPE_MAPPING;
-    // DATA OPTIONS SNAPSHOT PROPS
-    } else if (
-      catProp.name === PropertyName.SNAPSHOT_MODE ||
-      catProp.name === PropertyName.SNAPSHOT_DELAY_MS ||
-      catProp.name === PropertyName.SNAPSHOT_FETCH_SIZE ||
-      catProp.name === PropertyName.SNAPSHOT_SELECT_STATEMENT_OVERRIDES ||
-      catProp.name === PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS ||
-      catProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS
-    ) {
-      catProp.category = PropertyCategory.DATA_OPTIONS_SNAPSHOT;
-    // RUNTIME ENGINE PROPS
-    } else if (
-      catProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ||
-      catProp.name === PropertyName.HEARTBEAT_TOPICS_PREFIX ||
-      catProp.name === PropertyName.HEARTBEAT_ACTION_QUERY
-    ) {
-      catProp.category = PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT;
-    } else if (
-      catProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ||
-      catProp.name === PropertyName.MAX_BATCH_SIZE ||
-      catProp.name === PropertyName.MAX_QUEUE_SIZE ||
-      catProp.name === PropertyName.POLL_INTERVAL_MS
-    ) {
-      catProp.category = PropertyCategory.RUNTIME_OPTIONS_ENGINE;
-    }
-  }
-
-  // --------------------------------
-  // Identify the required properties
-  // --------------------------------
-  const requiredProps = [...categorizedProps];
-  for (const reqProp of requiredProps) {
-    if (
-      reqProp.name === PropertyName.DATABASE_SERVER_NAME ||
-      reqProp.name === PropertyName.DATABASE_DBNAME ||
-      reqProp.name === PropertyName.DATABASE_HOSTNAME ||
-      reqProp.name === PropertyName.DATABASE_PORT ||
-      reqProp.name === PropertyName.DATABASE_USER ||
-      reqProp.name === PropertyName.DATABASE_PASSWORD ||
-      reqProp.name === PropertyName.DATABASE_TCPKEEPALIVE ||
-      reqProp.name === PropertyName.PLUGIN_NAME ||
-      reqProp.name === PropertyName.PUBLICATION_NAME ||
-      reqProp.name === PropertyName.PUBLICATION_AUTOCREATE_MODE ||
-      reqProp.name === PropertyName.SLOT_NAME ||
-      reqProp.name === PropertyName.SLOT_DROP_ON_STOP ||
-      reqProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
-      reqProp.name === PropertyName.HSTORE_HANDLING_MODE ||
-      reqProp.name === PropertyName.BINARY_HANDLING_MODE ||
-      reqProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
-      reqProp.name === PropertyName.TIME_PRECISION_MODE
-    ) {
-      reqProp.required = true;
-    } else {
-      reqProp.required = false;
-    }
-  }
-
   // ---------------------------------------
   // Set input type
   // ---------------------------------------
-  const setInputTypeProps = [...categorizedProps];
+  const setInputTypeProps = [...propertyDefns];
   for (const inputProp of setInputTypeProps) {
     if (
       inputProp.name === PropertyName.PLUGIN_NAME ||
@@ -243,20 +117,20 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
   // ---------------------------------------
   // Set property ordering within category
   // ---------------------------------------
-  const orderedProps = [...requiredProps];
+  const orderedProps = [...setInputTypeProps];
   for (const orderedProp of orderedProps) {
     if ( orderedProp.category === PropertyCategory.BASIC ) {
-      if ( orderedProp.name === PropertyName.DATABASE_HOSTNAME ) {
+      if ( orderedProp.name === PropertyName.DATABASE_SERVER_NAME ) {
         orderedProp.orderInCategory = 1;
-      } else if ( orderedProp.name === PropertyName.DATABASE_PORT ) {
+      } else if ( orderedProp.name === PropertyName.DATABASE_HOSTNAME ) {
         orderedProp.orderInCategory = 2;
-      } else if ( orderedProp.name === PropertyName.DATABASE_USER ) {
+      } else if ( orderedProp.name === PropertyName.DATABASE_PORT ) {
         orderedProp.orderInCategory = 3;
-      } else if ( orderedProp.name === PropertyName.DATABASE_PASSWORD ) {
+      } else if ( orderedProp.name === PropertyName.DATABASE_USER ) {
         orderedProp.orderInCategory = 4;
-      } else if ( orderedProp.name === PropertyName.DATABASE_DBNAME ) {
+      } else if ( orderedProp.name === PropertyName.DATABASE_PASSWORD ) {
         orderedProp.orderInCategory = 5;
-      } else if ( orderedProp.name === PropertyName.DATABASE_SERVER_NAME ) {
+      } else if ( orderedProp.name === PropertyName.DATABASE_DBNAME ) {
         orderedProp.orderInCategory = 6;
       }
     } else if ( orderedProp.category === PropertyCategory.ADVANCED_GENERAL ) {
@@ -270,14 +144,18 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
         orderedProp.orderInCategory = 1;
       } else if ( orderedProp.name === PropertyName.SLOT_NAME ) {
         orderedProp.orderInCategory = 2;
-      } else if ( orderedProp.name === PropertyName.SLOT_DROP_ON_STOP ) {
-        orderedProp.orderInCategory = 3;
       } else if ( orderedProp.name === PropertyName.SLOT_STREAM_PARAMS ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.SLOT_DROP_ON_STOP ) {
         orderedProp.orderInCategory = 4;
       } else if ( orderedProp.name === PropertyName.SLOT_MAX_RETRIES ) {
         orderedProp.orderInCategory = 5;
       } else if ( orderedProp.name === PropertyName.SLOT_RETRY_DELAY_MS ) {
         orderedProp.orderInCategory = 6;
+      } else if ( orderedProp.name === PropertyName.STATUS_UPDATE_INTERVAL_MS ) {
+        orderedProp.orderInCategory = 7;
+      } else if ( orderedProp.name === PropertyName.XMIN_FETCH_INTERVAL_MS ) {
+        orderedProp.orderInCategory = 8;
       }
     } else if ( orderedProp.category === PropertyCategory.ADVANCED_PUBLICATION ) {
       if ( orderedProp.name === PropertyName.PUBLICATION_NAME ) {
@@ -299,61 +177,71 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       } else if ( orderedProp.name === PropertyName.COLUMN_BLACKLIST ) {
         orderedProp.orderInCategory = 6;
       }
-    } else if ( orderedProp.category === PropertyCategory.DATA_OPTIONS_TYPE_MAPPING ) {
-      if ( orderedProp.name === PropertyName.TIME_PRECISION_MODE ) {
+    } else if ( orderedProp.category === PropertyCategory.DATA_OPTIONS_GENERAL ) {
+      if( orderedProp.name === PropertyName.TOMBSTONES_ON_DELETE ) {
         orderedProp.orderInCategory = 1;
-      } else if ( orderedProp.name === PropertyName.BINARY_HANDLING_MODE ) {
-        orderedProp.orderInCategory = 2;
       } else if ( orderedProp.name === PropertyName.DECIMAL_HANDLING_MODE ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.TIME_PRECISION_MODE ) {
         orderedProp.orderInCategory = 3;
       } else if ( orderedProp.name === PropertyName.INTERVAL_HANDLING_MODE ) {
         orderedProp.orderInCategory = 4;
-      } else if ( orderedProp.name === PropertyName.HSTORE_HANDLING_MODE ) {
+      } else if ( orderedProp.name === PropertyName.BINARY_HANDLING_MODE ) {
         orderedProp.orderInCategory = 5;
-      } else if( orderedProp.name.startsWith(PropertyName.TOMBSTONES_ON_DELETE) ) {
+      } else if ( orderedProp.name === PropertyName.HSTORE_HANDLING_MODE ) {
         orderedProp.orderInCategory = 6;
-      } else if( orderedProp.name.startsWith(PropertyName.MESSAGE_KEY_COLUMNS) ) {
-        orderedProp.orderInCategory = 7;
-      } else if( orderedProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ) {
-        orderedProp.orderInCategory = 8;
-      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ) {
-        orderedProp.orderInCategory = 9;
-      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ) {
-        orderedProp.orderInCategory = 10;
-      } else if ( orderedProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ) {
-        orderedProp.orderInCategory = 11;
-      } else if ( orderedProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER ) {
-        orderedProp.orderInCategory = 12;
-      } else if ( orderedProp.name === PropertyName.PROVIDE_TRANSACTION_METADATA ) {
-        orderedProp.orderInCategory = 13;
+      } 
+    } else if ( orderedProp.category === PropertyCategory.DATA_OPTIONS_ADVANCED ) {
+      if ( orderedProp.name === PropertyName.CONVERTERS ) {
+        orderedProp.orderInCategory = 1;
       } else if ( orderedProp.name === PropertyName.SCHEMA_REFRESH_MODE ) {
-        orderedProp.orderInCategory = 14;
+        orderedProp.orderInCategory = 2;
+      } else if( orderedProp.name.startsWith(PropertyName.COLUMN_TRUNCATE_PREFIX) ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_WITH_PREFIX) ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name.startsWith(PropertyName.COLUMN_MASK_HASH_PREFIX) ) {
+        orderedProp.orderInCategory = 5;
+      } else if( orderedProp.name === PropertyName.MESSAGE_KEY_COLUMNS ) {
+        orderedProp.orderInCategory = 6;
+      } else if ( orderedProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES ) {
+        orderedProp.orderInCategory = 7;
+      } else if ( orderedProp.name === PropertyName.TOASTED_VALUE_PLACEHOLDER ) {
+        orderedProp.orderInCategory = 8;
+      } else if ( orderedProp.name === PropertyName.PROVIDE_TRANSACTION_METADATA ) {
+        orderedProp.orderInCategory = 9;
       } else if ( orderedProp.name === PropertyName.SANITIZE_FIELD_NAMES ) {
-        orderedProp.orderInCategory = 15;
+        orderedProp.orderInCategory = 10;
       }
     } else if ( orderedProp.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT ) {
       if ( orderedProp.name === PropertyName.SNAPSHOT_MODE ) {
         orderedProp.orderInCategory = 1;
-      } else if ( orderedProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS ) {
-        orderedProp.orderInCategory = 2;
-      } else if ( orderedProp.name === PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS ) {
-        orderedProp.orderInCategory = 3;
-      } else if ( orderedProp.name === PropertyName.SNAPSHOT_SELECT_STATEMENT_OVERRIDES ) {
-        orderedProp.orderInCategory = 4;
-      } else if ( orderedProp.name === PropertyName.SNAPSHOT_DELAY_MS ) {
-        orderedProp.orderInCategory = 5;
       } else if ( orderedProp.name === PropertyName.SNAPSHOT_FETCH_SIZE ) {
+        orderedProp.orderInCategory = 2;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_DELAY_MS ) {
+        orderedProp.orderInCategory = 3;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS ) {
+        orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_SELECT_STATEMENT_OVERRIDES ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.SNAPSHOT_CUSTOM_CLASS ) {
         orderedProp.orderInCategory = 6;
       }
     } else if ( orderedProp.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE ) {
-      if ( orderedProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ) {
+      if ( orderedProp.name === PropertyName.SKIPPED_OPERATIONS ) {
         orderedProp.orderInCategory = 1;
-      } else if ( orderedProp.name === PropertyName.MAX_QUEUE_SIZE ) {
+      } else if ( orderedProp.name === PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE ) {
         orderedProp.orderInCategory = 2;
       } else if ( orderedProp.name === PropertyName.MAX_BATCH_SIZE ) {
         orderedProp.orderInCategory = 3;
-      } else if ( orderedProp.name === PropertyName.POLL_INTERVAL_MS ) {
+      } else if ( orderedProp.name === PropertyName.MAX_QUEUE_SIZE ) {
         orderedProp.orderInCategory = 4;
+      } else if ( orderedProp.name === PropertyName.POLL_INTERVAL_MS ) {
+        orderedProp.orderInCategory = 5;
+      } else if ( orderedProp.name === PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS ) {
+        orderedProp.orderInCategory = 6;
+      } else if ( orderedProp.name === PropertyName.SOURCE_STRUCT_VERSION ) {
+        orderedProp.orderInCategory = 7;
       } 
     } else if ( orderedProp.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT ) {
       if ( orderedProp.name === PropertyName.HEARTBEAT_INTERVAL_MS ) {
