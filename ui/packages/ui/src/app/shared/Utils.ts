@@ -83,18 +83,17 @@ export function getFilterPropertyDefinitions(
 }
 
 /**
- * Get the options properties
+ * Get the data options properties
  * @param propertyDefns the array of all ConnectorProperty objects
  */
-export function getOptionsPropertyDefinitions(
+export function getDataOptionsPropertyDefinitions(
   propertyDefns: ConnectorProperty[]
 ): ConnectorProperty[] {
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
     if (
-      propDefn.category === PropertyCategory.OPTIONS_TYPE_HANDLING ||
-      propDefn.category === PropertyCategory.OPTIONS_COLUMNS ||
-      propDefn.category === PropertyCategory.OPTIONS_SNAPSHOT
+      propDefn.category === PropertyCategory.DATA_OPTIONS_TYPE_MAPPING ||
+      propDefn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
     ) {
       connProperties.push(propDefn);
     }
@@ -103,15 +102,18 @@ export function getOptionsPropertyDefinitions(
 }
 
 /**
- * Get the runtime properties
+ * Get the runtime options properties
  * @param propertyDefns the array of all ConnectorProperty objects
  */
-export function getRuntimePropertyDefinitons(
+export function getRuntimeOptionsPropertyDefinitions(
   propertyDefns: ConnectorProperty[]
 ): ConnectorProperty[] {
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
-    if (propDefn.category === PropertyCategory.RUNTIME) {
+    if (
+      propDefn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
+      propDefn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
+    ) {
       connProperties.push(propDefn);
     }
   }

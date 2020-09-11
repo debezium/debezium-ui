@@ -72,11 +72,12 @@ export interface ConnectorProperty {
     'ADVANCED_GENERAL' | 
     'ADVANCED_REPLICATION' | 
     'ADVANCED_PUBLICATION' | 
+    'ADVANCED_SSL' | 
     'FILTERS' |
-    'OPTIONS_TYPE_HANDLING' | 
-    'OPTIONS_COLUMNS' | 
-    'OPTIONS_SNAPSHOT' | 
-    'RUNTIME'
+    'DATA_OPTIONS_TYPE_HANDLING' | 
+    'DATA_OPTIONS_SNAPSHOT' | 
+    'RUNTIME_OPTIONS_ENGINE' | 
+    'RUNTIME_OPTIONS_HEARTBEAT'
     ;
     description: string;
     displayName: string;

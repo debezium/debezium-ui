@@ -143,10 +143,10 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                   id="advanced"
                   className="dbz-c-accordion"
                 >
-                  Advance Properties
+                  Advanced Properties
                 </AccordionToggle>
                 <AccordionContent
-                  id="advance"
+                  id="advanced"
                   isHidden={!expanded.includes("advanced")}
                 >
                   <Grid hasGutter={true}>
