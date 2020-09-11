@@ -1,28 +1,27 @@
-import { Switch } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core';
 import { useField } from 'formik';
 import * as React from 'react';
 
-export interface IFormSwitchComponentProps {
+export interface IFormCheckboxComponentProps {
   label: string;
   name: string;
   isChecked: boolean
 }
 
-export const FormSwitchComponent: React.FunctionComponent<IFormSwitchComponentProps> = props => {
-  const [isSwitched, setSwitched] = React.useState(true);
+export const FormCheckboxComponent: React.FunctionComponent<IFormCheckboxComponentProps> = props => {
+  const [checked, setChecked] = React.useState(true);
   const [field] = useField(props);
   
   const handleChange = (v) => {
-    setSwitched(v);
+    setChecked(v);
   };
     return (
-      <Switch
+      <Checkbox
         id={field.name}
         name={field.name}
         aria-label={props.label}
         label={props.label}
-        labelOff={props.label}
-        isChecked={isSwitched}
+        isChecked={checked}
         onChange={handleChange}
       />
     );

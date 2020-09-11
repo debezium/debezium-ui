@@ -1,7 +1,7 @@
 import { ConnectorProperty } from "@debezium/ui-models";
 import * as React from 'react';
 import { PropertyCategory } from "src/app/shared";
-import './DataOptionsComponent.css'
+import './DataOptionsComponent.css';
 import { DataOptionsForm } from './DataOptionsForm';
 
 export interface IDataOptionsComponentProps {
@@ -12,10 +12,12 @@ export interface IDataOptionsComponentProps {
     category: PropertyCategory
   ) => void;
 }
-
 export const DataOptionsComponent: React.FC<IDataOptionsComponentProps> = (props) => {
  
   return (
-      <DataOptionsForm />
+      <DataOptionsForm       
+      propertyDefinitions={props.propertyDefinitions}
+      propertyValues={props.propertyValues}
+      onValidateProperties={props.onValidateProperties} />
   );
 }
