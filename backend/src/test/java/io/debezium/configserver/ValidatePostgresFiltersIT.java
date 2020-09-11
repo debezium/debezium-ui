@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
@@ -95,6 +96,22 @@ public class ValidatePostgresFiltersIT {
                         Map.of("namespace", "inventory", "name", "orders"),
                         Map.of("namespace", "inventory", "name", "products")
                     ));
+    }
+
+    @Test
+    public void testSchemaIncludeListPatternException() {
+        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
+            Infrastructure.getPostgresConnectorConfiguration(1)
+                .with("database.hostname", "localhost")
+                .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
+                .with("schema.include.list", "+")
+        );
+
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "postgres")
+            .then().log().all()
+            .statusCode(500)
+            .assertThat().body("details", containsString("Dangling meta character '+' near index 0"));
     }
 
 }
