@@ -77,8 +77,6 @@ public class ValidatePostgresFiltersIT {
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
                 .with("schema.include.list", "inventory")
-                .with("table.include.list", "") // @FIXME currently needed because validation fails because of dependent field
-                .with("table.whitelist", "") // @FIXME same here, gives: "table.include.list is referred in the dependents, but not defined."
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
