@@ -1,14 +1,14 @@
-import { 
-  FormGroup, 
-  Select, 
-  SelectOption, 
-  SelectVariant, 
+import {
+  FormGroup,
+  Select,
+  SelectOption,
+  SelectVariant
 } from '@patternfly/react-core';
-
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-
-import * as React from 'react'
+import { useField } from 'formik';
+import * as React from 'react';
 import { HelpInfoIcon } from './HelpInfoIcon';
+
 
 export interface ISelectOptions {
   value: string,
@@ -16,11 +16,12 @@ export interface ISelectOptions {
 }
 export interface IFormSelectComponentProps {
     label: string,
+    name: string;
     description: string,
     fieldId: string,
     helperTextInvalid: string,
     isRequired: boolean,
-    options: ISelectOptions[]
+    options: ISelectOptions[],
 }
 
 export const FormSelectComponent = (props: IFormSelectComponentProps) => {
@@ -30,13 +31,14 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     fieldId,
     helperTextInvalid,
     options,
-    dbzHandleChange
+    setFieldValue
   } = props;
 
   const [isOpen, setOpen] = React.useState<boolean>(false)
   const [selected, setSelected] = React.useState<boolean>(null)
-  
-  const onToggle = () => {
+  const [field] = useField(props);
+// tslint:disable: no-shadowed-variable
+  const onToggle = (isOpen) => {
     setOpen(isOpen)
   };
 
@@ -45,16 +47,17 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     setOpen(false)
   };  
 
-  const onSelect = (event, selection, isPlaceholder) => {
+  const onSelect = (e, selection, isPlaceholder) => {
     if (isPlaceholder) {
       clearSelection();
     }
     else {
       setSelected(selection)
       setOpen(false)
-      dbzHandleChange(selection)
+      setFieldValue(field.name, selection);
     }
   };
+
 
   return (
     <FormGroup

@@ -39,7 +39,6 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   }
   const basicPropertyDefinitions = formatPropertyDefinitions(props.basicPropertyDefinitions)
   const advancedPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions)
-
   // Just added String and Password type
   basicPropertyDefinitions.map((key: any) => {
     if (key.type === "STRING") {
@@ -143,16 +142,16 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                   id="advanced"
                   className="dbz-c-accordion"
                 >
-                  Advanced Properties
+                  Advance Properties
                 </AccordionToggle>
                 <AccordionContent
-                  id="advanced"
+                  id="advance"
                   isHidden={!expanded.includes("advanced")}
                 >
                   <Grid hasGutter={true}>
                     {advancedPropertyDefinitions.map(
                       (propertyDefinition: ConnectorProperty, index) => {
-                        if(propertyDefinition.type === "BOOLEAN"){
+                        if(propertyDefinition.isSwitch){
                           return(
                             <GridItem key={index}>
                               <FormSwitchComponent label={propertyDefinition.displayName} />

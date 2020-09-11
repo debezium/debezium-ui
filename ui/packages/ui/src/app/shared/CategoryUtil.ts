@@ -207,6 +207,39 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
   }
 
   // ---------------------------------------
+  // Set input type
+  // ---------------------------------------
+  const setInputTypeProps = [...categorizedProps];
+  for (const inputProp of setInputTypeProps) {
+    if (
+      inputProp.name === PropertyName.PLUGIN_NAME ||
+      inputProp.name === PropertyName.TIME_PRECISION_MODE ||
+      inputProp.name === PropertyName.BINARY_HANDLING_MODE ||
+      inputProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
+      inputProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
+      inputProp.name === PropertyName.HSTORE_HANDLING_MODE
+    ) {
+      inputProp.isSelect = true;
+    }else if(
+      inputProp.name === PropertyName.DATABASE_TCPKEEPALIVE ||
+      inputProp.name === PropertyName.SLOT_DROP_ON_STOP
+    ){
+      inputProp.isSwitch = true;
+    }else if(
+      inputProp.name === PropertyName.TOMBSTONES_ON_DELETE ||
+      inputProp.name === PropertyName.INCLUDE_UNKNOWN_DATATYPES
+    ){
+      inputProp.isCheck = true;
+    }else if(
+      inputProp.name === PropertyName.DATABASE_PASSWORD
+    ){
+      inputProp.isPassword = true;
+    }else{
+      inputProp.isText = true;
+    }
+  }  
+
+  // ---------------------------------------
   // Set property ordering within category
   // ---------------------------------------
   const orderedProps = [...requiredProps];
