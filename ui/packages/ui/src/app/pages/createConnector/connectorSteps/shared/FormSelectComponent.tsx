@@ -21,7 +21,7 @@ export interface IFormSelectComponentProps {
     fieldId: string,
     helperTextInvalid: string,
     isRequired: boolean,
-    options: ISelectOptions[],
+    options: ISelectOptions[]
 }
 
 export const FormSelectComponent = (props: IFormSelectComponentProps) => {
@@ -33,13 +33,13 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     options,
     setFieldValue
   } = props;
-
+  
   const [isOpen, setOpen] = React.useState<boolean>(false)
   const [selected, setSelected] = React.useState<boolean>(null)
   const [field] = useField(props);
-// tslint:disable: no-shadowed-variable
-  const onToggle = (isOpen) => {
-    setOpen(isOpen)
+
+  const onToggle = (open) => {
+    setOpen(open)
   };
 
   const clearSelection = () => {
@@ -58,7 +58,10 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     }
   };
 
-
+  const options = options.map((value) => {
+    return {'value': value.charAt(0).toUpperCase() + value.slice(1)}
+  })
+  
   return (
     <FormGroup
       label={label}

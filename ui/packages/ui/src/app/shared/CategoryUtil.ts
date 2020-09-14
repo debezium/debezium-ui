@@ -217,7 +217,8 @@ export function getCategorizedPropertyDefinitions(propertyDefns: ConnectorProper
       inputProp.name === PropertyName.BINARY_HANDLING_MODE ||
       inputProp.name === PropertyName.DECIMAL_HANDLING_MODE ||
       inputProp.name === PropertyName.INTERVAL_HANDLING_MODE ||
-      inputProp.name === PropertyName.HSTORE_HANDLING_MODE
+      inputProp.name === PropertyName.HSTORE_HANDLING_MODE ||
+      inputProp.name === PropertyName.SNAPSHOT_MODE
     ) {
       inputProp.isSelect = true;
     }else if(
