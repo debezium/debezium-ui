@@ -43,7 +43,7 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
     } else if (key.type === "INT") {
       basicValidationSchema[key.name] = Yup.string();
     }
-    if (key.required) {
+    if (key.isMandatory) {
       basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.name} is required`);
     }
   })
@@ -92,7 +92,7 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
                   return (
                     <GridItem key={index}>
                       <FormInputComponent
-                        isRequired={propertyDefinition.required}
+                        isRequired={propertyDefinition.isMandatory}
                         label={propertyDefinition.displayName}
                         fieldId={propertyDefinition.name}
                         name={propertyDefinition.name}

@@ -33,9 +33,9 @@ export const DataOptionsForm: React.FunctionComponent<IDataOptionsFormProps> = (
       return key;
     })
   }
-  const mappingPropertyDefinitions = formatPropertyDefinitions(props.propertyDefinitions.filter(defn => defn.category === PropertyCategory.DATA_OPTIONS_TYPE_MAPPING));
+  const mappingPropertyDefinitions = formatPropertyDefinitions(props.propertyDefinitions.filter(defn => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL || defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED));
   const snapshotPropertyDefinitions = formatPropertyDefinitions(props.propertyDefinitions.filter(defn => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT));
-  
+ 
   const toggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
     e.preventDefault();
     const index = expanded.indexOf(id);
@@ -72,7 +72,7 @@ export const DataOptionsForm: React.FunctionComponent<IDataOptionsFormProps> = (
 
           props.onValidateProperties(
             basicValueMap,
-            PropertyCategory.DATA_OPTIONS_TYPE_MAPPING
+            PropertyCategory.DATA_OPTIONS_GENERAL
           );
         }}
       >

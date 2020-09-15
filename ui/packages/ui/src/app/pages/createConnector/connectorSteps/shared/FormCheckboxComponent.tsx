@@ -6,14 +6,16 @@ export interface IFormCheckboxComponentProps {
   label: string;
   name: string;
   isChecked: boolean
+  propertyChange: (name: string, selection: any) => void;
 }
 
 export const FormCheckboxComponent: React.FunctionComponent<IFormCheckboxComponentProps> = props => {
   const [checked, setChecked] = React.useState(true);
   const [field] = useField(props);
   
-  const handleChange = (v) => {
-    setChecked(v);
+  const handleChange = (value: boolean) => {
+    setChecked(value);
+    props.propertyChange(field.name, value);
   };
     return (
       <Checkbox

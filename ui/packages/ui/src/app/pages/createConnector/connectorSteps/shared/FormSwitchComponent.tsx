@@ -6,14 +6,16 @@ export interface IFormSwitchComponentProps {
   label: string;
   name: string;
   isChecked: boolean
+  propertyChange: (name: string, selection: any) => void;
 }
 
 export const FormSwitchComponent: React.FunctionComponent<IFormSwitchComponentProps> = props => {
   const [isSwitched, setSwitched] = React.useState(true);
   const [field] = useField(props);
   
-  const handleChange = (v) => {
-    setSwitched(v);
+  const handleChange = (value: boolean) => {
+    setSwitched(value);
+    props.propertyChange(field.name, value);
   };
     return (
       <Switch

@@ -6,14 +6,16 @@ import {
   AccordionToggle,
   Button,
   Grid,
-  GridItem
+  GridItem,
+  Title
 } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import _ from 'lodash';
 import * as React from 'react';
-import { PropertyCategory } from 'src/app/shared';
+import { PropertyCategory, PropertyName } from 'src/app/shared';
 import * as Yup from 'yup';
-import { FormInputComponent, FormSwitchComponent } from './shared';
+import "./ConfigureConnectorTypeForm.css";
+import { FormComponent } from './shared';
 
 export interface IConfigureConnectorTypeFormProps {
   basicPropertyDefinitions: ConnectorProperty[];
@@ -25,6 +27,8 @@ export interface IConfigureConnectorTypeFormProps {
 
 export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConnectorTypeFormProps> = (props) => {
   const [expanded, setExpanded] = React.useState<string>('basic');
+  const [showPublication, setShowPublication] = React.useState(true);
+
   const basicValidationSchema = {};
 
   const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
@@ -37,8 +41,11 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
       return key;
     })
   }
-  const basicPropertyDefinitions = formatPropertyDefinitions(props.basicPropertyDefinitions)
-  const advancedPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions)
+  const basicPropertyDefinitions = formatPropertyDefinitions(props.basicPropertyDefinitions);
+  const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions.filter(defn => defn.category === PropertyCategory.ADVANCED_GENERAL));
+  const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions.filter(defn => defn.category === PropertyCategory.ADVANCED_REPLICATION));
+  const advancedPublicationPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions.filter(defn => defn.category === PropertyCategory.ADVANCED_PUBLICATION));
+
   // Just added String and Password type
   basicPropertyDefinitions.map((key: any) => {
     if (key.type === "STRING") {
@@ -48,8 +55,8 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
     } else if (key.type === "INT") {
       basicValidationSchema[key.name] = Yup.string();
     }
-    if (key.required) {
-      basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.name} is required`);
+    if (key.isMandatory) {
+      basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.displayName} is required`);
     }
   })
 
@@ -73,22 +80,34 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
     })
     return combinedValue;
   }
+  
+  const handlePropertyChange = (propName: string, propValue: any) => {
+    propName = propName.replace(/\_/g, '.');
+    if(propName === PropertyName.PLUGIN_NAME) {
+      setShowPublication( propValue === "Pgoutput" );
+    }
+  }
 
-  const initialValues = getInitialValues(_.union(basicPropertyDefinitions, advancedPropertyDefinitions));
+  const initialValues = getInitialValues(_.union(basicPropertyDefinitions, 
+                                                 advancedGeneralPropertyDefinitions, 
+                                                 advancedReplicationPropertyDefinitions, 
+                                                 advancedPublicationPropertyDefinitions));
  
   return (
     <div>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={values => {
+        onSubmit={(values) => {
+          let basicValueMap = new Map<string, string>();
+          basicValueMap = _.transform(
+            values,
+            (result, val: string, key: string) => {
+              result[key.replace(/_/g, ".")] = val;
+            }
+          );
 
-          let basicValueMap = new Map<string,string>();
-          basicValueMap = _.transform(values, (result, val: string, key: string) => {
-            result[key.replace(/_/g, '.')] = val;
-          });
-
-          props.onValidateProperties(basicValueMap, PropertyCategory.BASIC)
+          props.onValidateProperties(basicValueMap, PropertyCategory.BASIC);
         }}
       >
         {({ errors, touched, handleChange, isSubmitting }) => (
@@ -115,19 +134,21 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                       (propertyDefinition: ConnectorProperty, index) => {
                         return (
                           <GridItem key={index}>
-                            <FormInputComponent
-                              isRequired={propertyDefinition.required}
-                              label={propertyDefinition.displayName}
-                              fieldId={propertyDefinition.name}
-                              name={propertyDefinition.name}
-                              type={propertyDefinition.type}
-                              helperTextInvalid={errors[propertyDefinition.name]}
-                              infoTitle={propertyDefinition.displayName}
-                              infoText={propertyDefinition.description}
-                              validated={errors[propertyDefinition.name] && touched[propertyDefinition.name] ? 'error' : 'default'}
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              propertyChange={handlePropertyChange}
+                              helperTextInvalid={
+                                errors[propertyDefinition.name]
+                              }
+                              validated={
+                                errors[propertyDefinition.name] &&
+                                touched[propertyDefinition.name]
+                                  ? "error"
+                                  : "default"
+                              }
                             />
                           </GridItem>
-                        )
+                        );
                       }
                     )}
                   </Grid>
@@ -142,49 +163,110 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                   id="advanced"
                   className="dbz-c-accordion"
                 >
-                  Advance Properties
+                  Advanced Properties
                 </AccordionToggle>
                 <AccordionContent
                   id="advance"
                   isHidden={!expanded.includes("advanced")}
                 >
                   <Grid hasGutter={true}>
-                    {advancedPropertyDefinitions.map(
+                    {advancedGeneralPropertyDefinitions.map(
                       (propertyDefinition: ConnectorProperty, index) => {
-                        if(propertyDefinition.isSwitch){
-                          return(
-                            <GridItem key={index}>
-                              <FormSwitchComponent label={propertyDefinition.displayName} />
-                            </GridItem>
-                          )
-                        }else{
-                          return (
-                            <GridItem key={index}>
-                              <FormInputComponent
-                                label={propertyDefinition.displayName}
-                                fieldId={propertyDefinition.name}
-                                name={propertyDefinition.name}
-                                type={propertyDefinition.type}
-                                infoTitle={propertyDefinition.displayName}
-                                infoText={propertyDefinition.description}
-                              />
-                            </GridItem>
-                          )
-                        }
+                        return (
+                          <GridItem key={index}>
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              propertyChange={handlePropertyChange}
+                              helperTextInvalid={
+                                errors[propertyDefinition.name]
+                              }
+                              validated={
+                                errors[propertyDefinition.name] &&
+                                touched[propertyDefinition.name]
+                                  ? "error"
+                                  : "default"
+                              }
+                            />
+                          </GridItem>
+                        );
                       }
                     )}
                   </Grid>
+                  <Title
+                    headingLevel="h2"
+                    className="configure-connector-type-form-grouping"
+                  >
+                    Replication
+                  </Title>
+                  <Grid hasGutter={true}>
+                    {advancedReplicationPropertyDefinitions.map(
+                      (propertyDefinition: ConnectorProperty, index) => {
+                        return (
+                          <GridItem key={index}>
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              propertyChange={handlePropertyChange}
+                              helperTextInvalid={
+                                errors[propertyDefinition.name]
+                              }
+                              validated={
+                                errors[propertyDefinition.name] &&
+                                touched[propertyDefinition.name]
+                                  ? "error"
+                                  : "default"
+                              }
+                            />
+                          </GridItem>
+                        );
+                      }
+                    )}
+                  </Grid>
+                  {showPublication && (
+                    <>
+                      <Title
+                        headingLevel="h2"
+                        className="configure-connector-type-form-grouping"
+                      >
+                        Publication
+                      </Title>
+                      <Grid hasGutter={true}>
+                        {advancedPublicationPropertyDefinitions.map(
+                          (propertyDefinition: ConnectorProperty, index) => {
+                            return (
+                              <GridItem key={index}>
+                                <FormComponent
+                                  propertyDefinition={propertyDefinition}
+                                  propertyChange={handlePropertyChange}
+                                  helperTextInvalid={
+                                    errors[propertyDefinition.name]
+                                  }
+                                  validated={
+                                    errors[propertyDefinition.name] &&
+                                    touched[propertyDefinition.name]
+                                      ? "error"
+                                      : "default"
+                                  }
+                                />
+                              </GridItem>
+                            );
+                          }
+                        )}
+                      </Grid>
+                    </>
+                  )}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
             <Grid hasGutter={true}>
               <GridItem>
-                <Button variant="primary" type="submit" disabled={isSubmitting}>Validate</Button>
+                <Button variant="primary" type="submit" disabled={isSubmitting}>
+                  Validate
+                </Button>
               </GridItem>
             </Grid>
           </Form>
         )}
       </Formik>
     </div>
-  )
+  );
 };

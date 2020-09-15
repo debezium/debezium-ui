@@ -68,22 +68,24 @@ export interface ConnectionValidationResult {
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorProperty {
-    category?: 'BASIC' | 
-    'ADVANCED_GENERAL' | 
-    'ADVANCED_REPLICATION' | 
-    'ADVANCED_PUBLICATION' | 
-    'ADVANCED_SSL' | 
+    allowedValues: string[];
+    category: 'CONNECTION' | 
+    'CONNECTION_ADVANCED' | 
+    'CONNECTION_ADVANCED_REPLICATION' | 
+    'CONNECTION_ADVANCED_PUBLICATION' | 
+    'CONNECTION_ADVANCED_SSL' | 
     'FILTERS' |
-    'DATA_OPTIONS_TYPE_HANDLING' | 
-    'DATA_OPTIONS_SNAPSHOT' | 
-    'RUNTIME_OPTIONS_ENGINE' | 
-    'RUNTIME_OPTIONS_HEARTBEAT'
+    'CONNECTOR' |
+    'CONNECTOR_ADVANCED' | 
+    'CONNECTOR_SNAPSHOT' | 
+    'ADVANCED' | 
+    'ADVANCED_HEARTBEAT'
     ;
     description: string;
     displayName: string;
     name: string;
     orderInCategory?: number;
-    required?: boolean;
+    isMandatory: boolean;
     type: 'BOOLEAN' | 'STRING' | 'INT' | 'SHORT' | 'LONG' | 'DOUBLE' | 'LIST' | 'CLASS' | 'PASSWORD';
 }
 
