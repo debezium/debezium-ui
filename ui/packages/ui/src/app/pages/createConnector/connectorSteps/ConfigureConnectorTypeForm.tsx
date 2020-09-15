@@ -1,4 +1,4 @@
-import { ConnectorProperty } from '@debezium/ui-models/dist/js/ui.model';
+import { ConnectorProperty } from "@debezium/ui-models/dist/js/ui.model";
 import {
   Accordion,
   AccordionContent,
@@ -7,44 +7,63 @@ import {
   Button,
   Grid,
   GridItem,
-  Title
-} from '@patternfly/react-core';
-import { Form, Formik } from 'formik';
-import _ from 'lodash';
-import * as React from 'react';
-import { PropertyCategory, PropertyName } from 'src/app/shared';
-import * as Yup from 'yup';
+  Title,
+} from "@patternfly/react-core";
+import { Form, Formik } from "formik";
+import _ from "lodash";
+import * as React from "react";
+import { PropertyCategory, PropertyName } from "src/app/shared";
+import * as Yup from "yup";
 import "./ConfigureConnectorTypeForm.css";
-import { FormComponent } from './shared';
+import { FormComponent } from "./shared";
 
 export interface IConfigureConnectorTypeFormProps {
   basicPropertyDefinitions: ConnectorProperty[];
-  basicPropertyValues: Map<string,string>;
+  basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
-  advancedPropertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>, category: PropertyCategory) => void;
+  advancedPropertyValues: Map<string, string>;
+  onValidateProperties: (basicPropertyValues: Map<string,string>,advancePropertyValues:Map<string,string>) => void;
 }
 
-export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConnectorTypeFormProps> = (props) => {
-  const [expanded, setExpanded] = React.useState<string>('basic');
+export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConnectorTypeFormProps> = (
+  props
+) => {
+  const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
   const [showPublication, setShowPublication] = React.useState(true);
 
   const basicValidationSchema = {};
 
   const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-    const orderedPropertyDefinitions = propertyValues.sort((a, b) => (
-      {orderInCategory: Number.MAX_VALUE, ...a}.orderInCategory -
-      {orderInCategory: Number.MAX_VALUE, ...b}.orderInCategory));
+    const propertyValuesCopy = JSON.parse(JSON.stringify(propertyValues));
+    const orderedPropertyDefinitions = propertyValuesCopy.sort(
+      (a, b) =>
+        ({ orderInCategory: Number.MAX_VALUE, ...a }.orderInCategory -
+        { orderInCategory: Number.MAX_VALUE, ...b }.orderInCategory)
+    );
 
     return orderedPropertyDefinitions.map((key: { name: string }) => {
-      key.name = key.name.replace(/\./g, '_');
+      key.name = key.name.replace(/\./g, "_");
       return key;
-    })
-  }
-  const basicPropertyDefinitions = formatPropertyDefinitions(props.basicPropertyDefinitions);
-  const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions.filter(defn => defn.category === PropertyCategory.ADVANCED_GENERAL));
-  const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions.filter(defn => defn.category === PropertyCategory.ADVANCED_REPLICATION));
-  const advancedPublicationPropertyDefinitions = formatPropertyDefinitions(props.advancedPropertyDefinitions.filter(defn => defn.category === PropertyCategory.ADVANCED_PUBLICATION));
+    });
+  };
+  const basicPropertyDefinitions = formatPropertyDefinitions(
+    props.basicPropertyDefinitions
+  );
+  const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(
+    props.advancedPropertyDefinitions.filter(
+      (defn) => defn.category === PropertyCategory.ADVANCED_GENERAL
+    )
+  );
+  const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(
+    props.advancedPropertyDefinitions.filter(
+      (defn) => defn.category === PropertyCategory.ADVANCED_REPLICATION
+    )
+  );
+  const advancedPublicationPropertyDefinitions = formatPropertyDefinitions(
+    props.advancedPropertyDefinitions.filter(
+      (defn) => defn.category === PropertyCategory.ADVANCED_PUBLICATION
+    )
+  );
 
   // Just added String and Password type
   basicPropertyDefinitions.map((key: any) => {
@@ -56,58 +75,83 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
       basicValidationSchema[key.name] = Yup.string();
     }
     if (key.isMandatory) {
-      basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.displayName} is required`);
+      basicValidationSchema[key.name] = basicValidationSchema[
+        key.name
+      ].required(`${key.displayName} is required`);
     }
-  })
+  });
 
   const validationSchema = Yup.object().shape({ ...basicValidationSchema });
 
-  const toggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
+  const toggle = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string
+  ) => {
     e.preventDefault();
     const index = expanded.indexOf(id);
     const newExpanded =
-      index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
+      index >= 0
+        ? [
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length),
+          ]
+        : [...expanded, id];
     setExpanded(newExpanded);
   };
-  
+
   const getInitialValues = (combined: any) => {
     const combinedValue: any = {};
-    
-    combined.map((key: { name: string; defaultValue: string}) => {
+
+    combined.map((key: { name: string; defaultValue: string }) => {
       if (!combinedValue[key.name]) {
         combinedValue[key.name] = key.defaultValue || "";
       }
-    })
+    });
     return combinedValue;
-  }
-  
-  const handlePropertyChange = (propName: string, propValue: any) => {
-    propName = propName.replace(/\_/g, '.');
-    if(propName === PropertyName.PLUGIN_NAME) {
-      setShowPublication( propValue === "Pgoutput" );
-    }
-  }
+  };
 
-  const initialValues = getInitialValues(_.union(basicPropertyDefinitions, 
-                                                 advancedGeneralPropertyDefinitions, 
-                                                 advancedReplicationPropertyDefinitions, 
-                                                 advancedPublicationPropertyDefinitions));
- 
+  const handlePropertyChange = (propName: string, propValue: any) => {
+    propName = propName.replace(/\_/g, ".");
+    if (propName === PropertyName.PLUGIN_NAME) {
+      setShowPublication(propValue === "Pgoutput");
+    }
+  };
+
+  const initialValues = getInitialValues(
+    _.union(
+      basicPropertyDefinitions,
+      advancedGeneralPropertyDefinitions,
+      advancedReplicationPropertyDefinitions,
+      advancedPublicationPropertyDefinitions
+    )
+  );
+
+  const handleSubmit = (valueMap: Map<string, string>) => {
+    // the basic properties
+    const basicValueMap: Map<string, string> = new Map();
+    for (const basicVal of props.basicPropertyDefinitions) {
+      basicValueMap.set(basicVal.name, valueMap[basicVal.name]);
+    }
+    // the advance properties
+    const advancedValueMap: Map<string, string> = new Map();
+    for (const advancedValue of props.advancedPropertyDefinitions) {
+      advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
+    }
+    props.onValidateProperties(basicValueMap, advancedValueMap);
+
+  };
+
   return (
     <div>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          let basicValueMap = new Map<string, string>();
-          basicValueMap = _.transform(
-            values,
-            (result, val: string, key: string) => {
-              result[key.replace(/_/g, ".")] = val;
-            }
-          );
-
-          props.onValidateProperties(basicValueMap, PropertyCategory.BASIC);
+          let valueMap = new Map<string, string>();
+          valueMap = _.transform(values, (result, val: string, key: string) => {
+            result[key.replace(/_/g, ".")] = val;
+          });
+          handleSubmit(valueMap);
         }}
       >
         {({ errors, touched, handleChange, isSubmitting }) => (
@@ -131,7 +175,7 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                 >
                   <Grid hasGutter={true}>
                     {basicPropertyDefinitions.map(
-                      (propertyDefinition: ConnectorProperty, index) => {
+                      (propertyDefinition: ConnectorProperty, index: any) => {
                         return (
                           <GridItem key={index}>
                             <FormComponent
@@ -171,7 +215,7 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                 >
                   <Grid hasGutter={true}>
                     {advancedGeneralPropertyDefinitions.map(
-                      (propertyDefinition: ConnectorProperty, index) => {
+                      (propertyDefinition: ConnectorProperty, index: any) => {
                         return (
                           <GridItem key={index}>
                             <FormComponent
@@ -200,7 +244,7 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                   </Title>
                   <Grid hasGutter={true}>
                     {advancedReplicationPropertyDefinitions.map(
-                      (propertyDefinition: ConnectorProperty, index) => {
+                      (propertyDefinition: ConnectorProperty, index: any) => {
                         return (
                           <GridItem key={index}>
                             <FormComponent
@@ -231,7 +275,10 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
                       </Title>
                       <Grid hasGutter={true}>
                         {advancedPublicationPropertyDefinitions.map(
-                          (propertyDefinition: ConnectorProperty, index) => {
+                          (
+                            propertyDefinition: ConnectorProperty,
+                            index: any
+                          ) => {
                             return (
                               <GridItem key={index}>
                                 <FormComponent

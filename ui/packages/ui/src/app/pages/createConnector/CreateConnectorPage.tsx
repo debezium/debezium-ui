@@ -35,7 +35,7 @@ import {
   ConnectorTypeStepComponent,
   DataOptionsComponent,
   FiltersStepComponent,
-  RuntimeOptionsComponent
+  RuntimeOptionsComponent,
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
 
@@ -145,55 +145,57 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setOptionsPropValues(new Map<string, string>());
   };
 
+  const handleConnectionProperties = (
+    basicPropertyValues: Map<string, string>,
+    advancePropertyValues: Map<string, string>
+  ): void => {
+    setBasicPropValues(basicPropertyValues);
+    setAdvancedPropValues(advancePropertyValues);
+    validateProperties(
+      new Map(
+        (function*() {
+          yield* basicPropertyValues;
+          yield* advancePropertyValues;
+        })()
+      )
+    );
+  };
+
   const handleValidateProperties = (
     propertyValues: Map<string, string>,
     category: PropertyCategory
   ): void => {
-    // Update the state values for the submitted category
-    if (
-      category === PropertyCategory.ADVANCED_GENERAL ||
-      category === PropertyCategory.ADVANCED_PUBLICATION ||
-      category === PropertyCategory.ADVANCED_REPLICATION ||
-      category === PropertyCategory.ADVANCED_SSL ) {
-      setAdvancedPropValues(propertyValues);
-    } else if (category === PropertyCategory.BASIC) {
-      setBasicPropValues(propertyValues);
-    }
+    validateProperties(propertyValues);
+  };
 
+  const validateProperties = (propertyValues: Map<string, string>) => {
     const connectorService = Services.getConnectorService();
-    // Connector Property Validation
-    if (
-      category === PropertyCategory.BASIC ||
-      category === PropertyCategory.ADVANCED_GENERAL ||
-      category === PropertyCategory.ADVANCED_PUBLICATION ||
-      category === PropertyCategory.ADVANCED_REPLICATION ||
-      category === PropertyCategory.ADVANCED_SSL
-    ) {
-      connectorService
-        .validateConnection("postgres", propertyValues)
-        .then((result: ConnectionValidationResult) => {
-          if (result.status === "INVALID") {
-            let resultStr = "";
-            for (const e1 of result.propertyValidationResults) {
-              resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
-            }
-            alert(
-              "connection props are INVALID. Property Results: \n" + resultStr
-            );
-          } else {
-            alert("connection props are VALID");
+    fetch_retry(connectorService.validateConnection, connectorService, [
+      "postgres",
+      mapToObject(new Map(propertyValues)),
+    ])
+      .then((result: ConnectionValidationResult) => {
+        if (result.status === "INVALID") {
+          let resultStr = "";
+          for (const e1 of result.propertyValidationResults) {
+            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
           }
-        })
-        .catch((error: any) => {
-          alert("Error Validation Connection Properties !: " + error);
-        });
-    }
+          alert(
+            "connection props are INVALID. Property Results: \n" + resultStr
+          );
+        } else {
+          alert("connection props are VALID");
+        }
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        alert("Error Validation Connection Properties !: " + err);
+      });
   };
 
   // Update the filter values
-  const handleFilterUpdate = (filterValue: Map<string,string>) => {
+  const handleFilterUpdate = (filterValue: Map<string, string>) => {
     setFilterValues(new Map(filterValue));
-  }
+  };
 
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
@@ -222,14 +224,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     // Init the connector property values
     initPropertyValues();
   }, [connectorTypes]);
-
-  const basicPropValuesTemp: Map<string, string> = new Map();
-  basicPropValuesTemp.set("database.hostname", "192.168.122.1");
-  basicPropValuesTemp.set("database.port", "5432");
-  basicPropValuesTemp.set("database.user", "postgres");
-  basicPropValuesTemp.set("database.password", "indra");
-  basicPropValuesTemp.set("database.dbname", "postgres");
-  basicPropValuesTemp.set("database.server.name", "fullfillment");
 
   const wizardSteps = [
     {
@@ -260,7 +254,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             selectedConnectorPropertyDefns
           )}
           advancedPropertyValues={advancedPropValues}
-          onValidateProperties={handleValidateProperties}
+          onValidateProperties={handleConnectionProperties}
         />
       ),
       canJumpTo: stepIdReached >= 2,
@@ -273,7 +267,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           propertyDefinitions={getFilterPropertyDefinitions(
             selectedConnectorPropertyDefns
           )}
-          propertyValues={basicPropValuesTemp}
+          propertyValues={basicPropValues}
           filterValues={filterValues}
           updateFilterValues={handleFilterUpdate}
         />
@@ -285,7 +279,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Data Options",
       component: (
         <DataOptionsComponent
-          propertyDefinitions={getDataOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
+          propertyDefinitions={getDataOptionsPropertyDefinitions(
+            selectedConnectorPropertyDefns
+          )}
           propertyValues={optionsPropValues}
           onValidateProperties={handleValidateProperties}
         />
@@ -297,7 +293,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Runtime Options",
       component: (
         <RuntimeOptionsComponent
-          propertyDefinitions={getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
+          propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
+            selectedConnectorPropertyDefns
+          )}
           propertyValues={optionsPropValues}
           onValidateProperties={handleValidateProperties}
         />
