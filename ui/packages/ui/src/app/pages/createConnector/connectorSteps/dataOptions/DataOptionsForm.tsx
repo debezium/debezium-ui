@@ -12,7 +12,7 @@ import { Form, Formik } from 'formik';
 import _ from 'lodash';
 import * as React from 'react';
 import { PropertyCategory } from 'src/app/shared';
-import { FormCheckboxComponent, FormInputComponent, FormSelectComponent } from '../shared';
+import { FormComponent } from '../shared';
 
 export interface IDataOptionsFormProps {
   propertyDefinitions: ConnectorProperty[];
@@ -49,6 +49,10 @@ export const DataOptionsForm: React.FunctionComponent<IDataOptionsFormProps> = (
       }
     })
     return combinedValue;
+  }
+
+  const handlePropertyChange = (propName: string, propValue: any) => {
+    // TODO: handling for property change if needed.
   }
 
   const initialValues = getInitialValues(_.union(mappingPropertyDefinitions, snapshotPropertyDefinitions));
@@ -94,45 +98,23 @@ export const DataOptionsForm: React.FunctionComponent<IDataOptionsFormProps> = (
                   <Grid hasGutter={true}>
                     {snapshotPropertyDefinitions.map(
                       (propertyDefinition: ConnectorProperty, index) => {
-                        if(propertyDefinition.isCheck){
-                          return (
-                            <GridItem key={index}>
-                              <FormCheckboxComponent                         
-                                label={propertyDefinition.displayName}
-                                name={propertyDefinition.name}
-                                setFieldValue={setFieldValue}
-                              />
-                          </GridItem>
-                          )
-                        }
-                        if(propertyDefinition.isSelect){
-                          return (
-                            <GridItem key={index}>
-                              <FormSelectComponent
-                              label={propertyDefinition.displayName}
-                              name={propertyDefinition.name}
-                              setFieldValue={setFieldValue}
-                              options={propertyDefinition.allowedValues} 
+                        return (
+                          <GridItem key={index}>
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              propertyChange={handlePropertyChange}
+                              helperTextInvalid={
+                                errors[propertyDefinition.name]
+                              }
+                              validated={
+                                errors[propertyDefinition.name] &&
+                                touched[propertyDefinition.name]
+                                  ? "error"
+                                  : "default"
+                              }
                             />
                           </GridItem>
-                          )
-                        }
-                        if(propertyDefinition.isText){
-                          return (
-                            <GridItem key={index}>
-                              <FormInputComponent
-                                isRequired={propertyDefinition.required}
-                                label={propertyDefinition.displayName}
-                                fieldId={propertyDefinition.name}
-                                name={propertyDefinition.name}
-                                type={propertyDefinition.type}
-                                helperTextInvalid={errors[propertyDefinition.name]}
-                                infoTitle={propertyDefinition.displayName || propertyDefinition.name}
-                                infoText={propertyDefinition.description}
-                              />
-                            </GridItem>
-                          );
-                        }
+                        );
                       }
                     )}
                   </Grid>
@@ -153,61 +135,42 @@ export const DataOptionsForm: React.FunctionComponent<IDataOptionsFormProps> = (
                   id="advance"
                   isHidden={!expanded.includes("advanced")}
                 >
-            <Grid hasGutter={true}>
-              {mappingPropertyDefinitions.map(
-                (propertyDefinition: ConnectorProperty, index) => {
-                  if(propertyDefinition.isCheck){
-                    return (
-                      <GridItem key={index}>
-                        <FormCheckboxComponent                         
-                          label={propertyDefinition.displayName}
-                          name={propertyDefinition.name}
-                          setFieldValue={setFieldValue}
-                        />
-                    </GridItem>
-                    )
-                  }
-                  if(propertyDefinition.isSelect){
-                    return (
-                      <GridItem key={index}>
-                        <FormSelectComponent
-                        label={propertyDefinition.displayName}
-                        name={propertyDefinition.name}
-                        setFieldValue={setFieldValue}
-                        options={propertyDefinition.allowedValues}
-                      />
-                    </GridItem>
-                    )
-                  }
-                  if(propertyDefinition.isText){
-                    return (
-                      <GridItem key={index}>
-                        <FormInputComponent
-                          isRequired={propertyDefinition.required}
-                          label={propertyDefinition.displayName}
-                          fieldId={propertyDefinition.name}
-                          name={propertyDefinition.name}
-                          type={propertyDefinition.type}
-                          helperTextInvalid={errors[propertyDefinition.name]}
-                          infoTitle={propertyDefinition.displayName || propertyDefinition.name}
-                          infoText={propertyDefinition.description}
-                        />
-                      </GridItem>
-                    );
-                  }
-                }
-              )}
-            </Grid>
+                  <Grid hasGutter={true}>
+                    {mappingPropertyDefinitions.map(
+                      (propertyDefinition: ConnectorProperty, index) => {
+                        return (
+                          <GridItem key={index}>
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              // propertyChange={handlePropertyChange}
+                              helperTextInvalid={
+                                errors[propertyDefinition.name]
+                              }
+                              validated={
+                                errors[propertyDefinition.name] &&
+                                touched[propertyDefinition.name]
+                                  ? "error"
+                                  : "default"
+                              }
+                              propertyChange={handlePropertyChange}
+                            />
+                          </GridItem>
+                        );
+                      }
+                    )}
+                  </Grid>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
             <Grid hasGutter={true}>
               <GridItem>
-                <Button variant="primary" type="submit" disabled={isSubmitting}>Validate</Button>
+                <Button variant="primary" type="submit" disabled={isSubmitting}>
+                  Validate
+                </Button>
               </GridItem>
             </Grid>
           </Form>
-          )}
+        )}
       </Formik>
     </div>
   );

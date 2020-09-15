@@ -23,7 +23,6 @@ import {
   fetch_retry,
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
-  getCategorizedPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
   getFilterPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
@@ -132,9 +131,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setSelectedConnectorType(cType);
     // Categorize the properties and reset the overall state
     const connType = connectorTypes.find((conn) => conn.id === cType);
-    setSelectedConnectorPropertyDefns(
-      getCategorizedPropertyDefinitions(connType!.properties)
-    );
+    setSelectedConnectorPropertyDefns(connType!.properties);
     initPropertyValues();
   };
 
@@ -217,9 +214,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
-      setSelectedConnectorPropertyDefns(
-        getCategorizedPropertyDefinitions(connectorTypes[0]!.properties)
-      );
+      setSelectedConnectorPropertyDefns(connectorTypes[0]!.properties);
 
     // Init the connector property values
     initPropertyValues();

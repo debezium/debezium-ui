@@ -10,7 +10,7 @@ import _ from 'lodash';
 import * as React from 'react';
 import { PropertyCategory } from 'src/app/shared';
 import * as Yup from 'yup';
-import { FormInputComponent, FormSwitchComponent } from '../shared';
+import { FormComponent } from '../shared';
 
 export interface IRuntimeOptionsFormProps {
   propertyDefinitions: ConnectorProperty[];
@@ -46,6 +46,10 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
 
   const validationSchema = Yup.object().shape({ ...basicValidationSchema });
   
+  const handlePropertyChange = (propName: string, propValue: any) => {
+    // TODO: handling for property change if needed.
+  }
+
   const getInitialValues = (combined: any) => {
     const combinedValue: any = {};
     
@@ -87,21 +91,17 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
                 (propertyDefinition: ConnectorProperty, index) => {
                   return (
                     <GridItem key={index}>
-                      <FormInputComponent
-                        isRequired={propertyDefinition.isMandatory}
-                        label={propertyDefinition.displayName}
-                        fieldId={propertyDefinition.name}
-                        name={propertyDefinition.name}
-                        type={propertyDefinition.type}
+                      <FormComponent
+                        propertyDefinition={propertyDefinition}
+                        // propertyChange={handlePropertyChange}
                         helperTextInvalid={errors[propertyDefinition.name]}
-                        infoTitle={propertyDefinition.displayName}
-                        infoText={propertyDefinition.description}
                         validated={
                           errors[propertyDefinition.name] &&
                           touched[propertyDefinition.name]
                             ? "error"
                             : "default"
                         }
+                        propertyChange={handlePropertyChange}
                       />
                     </GridItem>
                   );
@@ -112,28 +112,21 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
             <Grid hasGutter={true}>
               {heartbeatPropertyDefinitions.map(
                 (propertyDefinition: ConnectorProperty, index) => {
-                  if (propertyDefinition.type === "BOOLEAN") {
-                    return (
-                      <GridItem key={index}>
-                        <FormSwitchComponent
-                          label={propertyDefinition.displayName}
-                        />
-                      </GridItem>
-                    );
-                  } else {
-                    return (
-                      <GridItem key={index}>
-                        <FormInputComponent
-                          label={propertyDefinition.displayName}
-                          fieldId={propertyDefinition.name}
-                          name={propertyDefinition.name}
-                          type={propertyDefinition.type}
-                          infoTitle={propertyDefinition.displayName}
-                          infoText={propertyDefinition.description}
-                        />
-                      </GridItem>
-                    );
-                  }
+                  return (
+                    <GridItem key={index}>
+                      <FormComponent
+                        propertyDefinition={propertyDefinition}
+                        propertyChange={handlePropertyChange}
+                        helperTextInvalid={errors[propertyDefinition.name]}
+                        validated={
+                          errors[propertyDefinition.name] &&
+                          touched[propertyDefinition.name]
+                            ? "error"
+                            : "default"
+                        }
+                      />
+                    </GridItem>
+                  );
                 }
               )}
             </Grid>
