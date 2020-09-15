@@ -10,7 +10,7 @@ export interface IConfigureConnectorTypeComponentProps{
   basicPropertyValues: Map<string,string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>, category: PropertyCategory) => void;
+  onValidateProperties: (basicPropertyValues: Map<string,string>,advancePropertyValues:Map<string,string>) => void;
 }
 
 export const ConfigureConnectorTypeComponent: React.FC<IConfigureConnectorTypeComponentProps> = (props) => {

@@ -145,46 +145,51 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setOptionsPropValues(new Map<string, string>());
   };
 
+  const handleConnectionProperties = (
+    basicPropertyValues: Map<string, string>,
+    advancePropertyValues: Map<string, string>
+  ): void => {
+    setBasicPropValues(basicPropertyValues);
+    setAdvancedPropValues(advancePropertyValues);
+    validateProperties(
+      new Map(
+        (function*() {
+          yield* basicPropertyValues;
+          yield* advancePropertyValues;
+        })()
+      )
+    );
+  };
+
   const handleValidateProperties = (
     propertyValues: Map<string, string>,
     category: PropertyCategory
   ): void => {
-    // Update the state values for the submitted category
-    if (
-      category === PropertyCategory.ADVANCED_GENERAL 
-    ) {
-      setAdvancedPropValues(propertyValues);
-    } else if (category === PropertyCategory.BASIC) {
-      setBasicPropValues(propertyValues);
-    }
+    validateProperties(propertyValues);
+  };
 
+  const validateProperties = (propertyValues: Map<string, string>) => {
     const connectorService = Services.getConnectorService();
-    // Connector Property Validation
-    if (
-      category === PropertyCategory.BASIC ||
-      category === PropertyCategory.ADVANCED_GENERAL
-    ) {
-      fetch_retry(connectorService.validateConnection, connectorService, [
-        "postgres",
-        mapToObject(new Map(propertyValues)),
-      ])
-        .then((result: ConnectionValidationResult) => {
-          if (result.status === "INVALID") {
-            let resultStr = "";
-            for (const e1 of result.propertyValidationResults) {
-              resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
-            }
-            alert(
-              "connection props are INVALID. Property Results: \n" + resultStr
-            );
-          } else {
-            alert("connection props are VALID");
+    fetch_retry(connectorService.validateConnection, connectorService, [
+      "postgres",
+      mapToObject(new Map(propertyValues)),
+    ])
+      .then((result: ConnectionValidationResult) => {
+        if (result.status === "INVALID") {
+          let resultStr = "";
+          for (const e1 of result.propertyValidationResults) {
+            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
           }
-        })
-        .catch((err: React.SetStateAction<Error>) => {
-          alert("Error Validation Connection Properties !: " + err);
-        });
-    }
+          alert(
+            "connection props are INVALID. Property Results: \n" + resultStr
+          );
+        } else {
+          alert("connection props are VALID");
+        }
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        alert("Error Validation Connection Properties !: " + err);
+      });
   };
 
   // Update the filter values
@@ -249,7 +254,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             selectedConnectorPropertyDefns
           )}
           advancedPropertyValues={advancedPropValues}
-          onValidateProperties={handleValidateProperties}
+          onValidateProperties={handleConnectionProperties}
         />
       ),
       canJumpTo: stepIdReached >= 2,

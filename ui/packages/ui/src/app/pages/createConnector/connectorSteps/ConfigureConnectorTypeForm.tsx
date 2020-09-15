@@ -22,10 +22,7 @@ export interface IConfigureConnectorTypeFormProps {
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
-  onValidateProperties: (
-    connectorProperties: Map<string, string>,
-    category: PropertyCategory
-  ) => void;
+  onValidateProperties: (basicPropertyValues: Map<string,string>,advancePropertyValues:Map<string,string>) => void;
 }
 
 export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConnectorTypeFormProps> = (
@@ -130,19 +127,17 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   );
 
   const handleSubmit = (valueMap: Map<string, string>) => {
-    // Validate the basic properties
+    // the basic properties
     const basicValueMap: Map<string, string> = new Map();
     for (const basicVal of props.basicPropertyDefinitions) {
       basicValueMap.set(basicVal.name, valueMap[basicVal.name]);
     }
-    props.onValidateProperties(basicValueMap, PropertyCategory.BASIC);
-
-    // Validate the advance properties
+    // the advance properties
     const advancedValueMap: Map<string, string> = new Map();
     for (const advancedValue of props.advancedPropertyDefinitions) {
       advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
     }
-    props.onValidateProperties(advancedValueMap, PropertyCategory.ADVANCED_GENERAL);
+    props.onValidateProperties(basicValueMap, advancedValueMap);
 
   };
 
