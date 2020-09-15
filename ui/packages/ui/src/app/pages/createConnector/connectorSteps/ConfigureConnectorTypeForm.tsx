@@ -34,14 +34,7 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   const basicValidationSchema = {};
 
   const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-    const propertyValuesCopy = JSON.parse(JSON.stringify(propertyValues));
-    const orderedPropertyDefinitions = propertyValuesCopy.sort(
-      (a, b) =>
-        ({ orderInCategory: Number.MAX_VALUE, ...a }.orderInCategory -
-        { orderInCategory: Number.MAX_VALUE, ...b }.orderInCategory)
-    );
-
-    return orderedPropertyDefinitions.map((key: { name: string }) => {
+    return propertyValues.map((key: { name: string }) => {
       key.name = key.name.replace(/\./g, "_");
       return key;
     });

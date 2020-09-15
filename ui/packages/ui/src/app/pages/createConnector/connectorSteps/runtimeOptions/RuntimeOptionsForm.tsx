@@ -22,11 +22,7 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
   const basicValidationSchema = {};
 
   const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-    const orderedPropertyDefinitions = propertyValues.sort((a, b) => (
-      {orderInCategory: Number.MAX_VALUE, ...a}.orderInCategory -
-      {orderInCategory: Number.MAX_VALUE, ...b}.orderInCategory));
-
-    return orderedPropertyDefinitions.map((key: { name: string }) => {
+    return propertyValues.map((key: { name: string }) => {
       key.name = key.name.replace(/\./g, '_');
       return key;
     })

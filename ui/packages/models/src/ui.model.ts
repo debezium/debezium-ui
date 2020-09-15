@@ -84,7 +84,6 @@ export interface ConnectorProperty {
     description: string;
     displayName: string;
     name: string;
-    orderInCategory?: number;
     isMandatory: boolean;
     type: 'BOOLEAN' | 'STRING' | 'INT' | 'SHORT' | 'LONG' | 'DOUBLE' | 'LIST' | 'CLASS' | 'PASSWORD';
 }
