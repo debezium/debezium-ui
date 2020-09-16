@@ -81,7 +81,7 @@ export interface IConfirmationDialogProps {
   /**
    * The icon type to use, or unset for no icon
    */
-  icon: ConfirmationIconType;
+  icon?: ConfirmationIconType;
 
   /**
    * A callback for when the cancel button is clicked. Caller should hide dialog.

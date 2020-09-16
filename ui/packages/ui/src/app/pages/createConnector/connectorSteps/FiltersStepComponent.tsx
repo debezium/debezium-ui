@@ -25,7 +25,13 @@ import { HelpIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import _ from "lodash";
 import React from "react";
 import { FilterTreeComponent } from "src/app/components";
-import { fetch_retry, mapToObject } from "src/app/shared";
+import {
+  ConfirmationButtonStyle,
+  ConfirmationDialog,
+  ConfirmationIconType,
+  fetch_retry,
+  mapToObject,
+} from "src/app/shared";
 import "./FiltersStepComponent.css";
 
 export interface IFiltersStepComponentProps {
@@ -96,6 +102,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
   const [treeData, setTreeData] = React.useState<any[]>([]);
   const [invalidMsg, setInvalidMsg] = React.useState<string>("");
   const [tableNo, setTableNo] = React.useState<number>(0);
+  const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
@@ -125,12 +132,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
   };
 
   const clearFilter = () => {
-    setSchemaSelected("schemaInclude");
-    setTableSelected("tableInclude");
-    setSchemaFilter("");
-    setTableFilter("");
-    setFormData(new Map());
-    getFilterSchema(true, new Map());
+    setShowClearDialog(true);
   };
 
   const getFilterSchema = (
@@ -168,6 +170,20 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         setApiError(true);
         setErrorMsg(err);
       });
+  };
+
+  const doCancel = () => {
+    setShowClearDialog(false);
+  };
+
+  const doClear = () => {
+    setSchemaSelected("schemaInclude");
+    setTableSelected("tableInclude");
+    setSchemaFilter("");
+    setTableFilter("");
+    setFormData(new Map());
+    getFilterSchema(true, new Map());
+    setShowClearDialog(false);
   };
 
   React.useEffect(() => {
@@ -386,6 +402,18 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}
+      />
+      <ConfirmationDialog
+        buttonStyle={ConfirmationButtonStyle.NORMAL}
+        i18nCancelButtonText={"Cancel"}
+        i18nConfirmButtonText={"Clear"}
+        i18nConfirmationMessage={
+          "You will clear all the filtering expression if you perform the clear filters. \nAre you sure you want to clear."
+        }
+        i18nTitle={"Clear all filters?"}
+        showDialog={showClearDialog}
+        onCancel={doCancel}
+        onConfirm={doClear}
       />
     </>
   );
