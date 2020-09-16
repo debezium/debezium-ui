@@ -15,7 +15,7 @@ export interface IFormInputComponentProps {
   infoTitle: string | '';
   helperTextInvalid?: any;
   type: any;
-  isRequired?: boolean | undefined;
+  isRequired: boolean;
   validated?: "default" | "success" | "warning" | "error" | undefined
 }
 export const FormInputComponent: React.FunctionComponent<IFormInputComponentProps> = props => {
@@ -23,7 +23,7 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
   return (
     <FormGroup 
       label={props.label}
-      isRequired={props.isRequired !== undefined ? true: false}
+      isRequired={props.isRequired}
       labelIcon={
         <HelpInfoIcon label={props.label} description={props.infoText} />
       }

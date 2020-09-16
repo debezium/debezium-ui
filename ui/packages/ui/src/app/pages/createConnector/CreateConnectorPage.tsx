@@ -166,6 +166,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   };
 
   const validateProperties = (propertyValues: Map<string, string>) => {
+    // alert("Validate Properties: " + JSON.stringify(mapToObject(propertyValues)));
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.validateConnection, connectorService, [
       "postgres",

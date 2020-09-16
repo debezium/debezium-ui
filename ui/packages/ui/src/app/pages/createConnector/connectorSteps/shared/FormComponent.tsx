@@ -32,7 +32,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   } else if (props.propertyDefinition.type === "BOOLEAN") {
     return (
       <FormCheckboxComponent
-        isChecked={props.propertyDefinition.defaultValue || false}
+        isChecked={typeof props.propertyDefinition.defaultValue !== 'undefined' && props.propertyDefinition.defaultValue === true}
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
