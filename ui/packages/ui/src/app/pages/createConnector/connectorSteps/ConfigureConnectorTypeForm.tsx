@@ -34,7 +34,8 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   const basicValidationSchema = {};
 
   const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-    return propertyValues.map((key: { name: string }) => {
+    const propertyValuesCopy = JSON.parse(JSON.stringify(propertyValues));
+    return propertyValuesCopy.map((key: { name: string }) => {
       key.name = key.name.replace(/\./g, "_");
       return key;
     });
