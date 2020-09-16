@@ -107,7 +107,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         "advancedReplicationProperty": advancedReplicationProperty,
         "advancedPublicationProperty": advancedPublicationProperty
       });
-
+      
       setFormInitialValues(getInitialValues(_.union(
         basicProperty,
         advancedGeneralProperty,
@@ -121,7 +121,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           basicValidationSchema[key.name] = Yup.string();
         } else if (key.type === "PASSWORD") {
           basicValidationSchema[key.name] = Yup.string();
-        } else if (key.type === "INT") {
+        }else if (key.type === "INT") {
           basicValidationSchema[key.name] = Yup.string();
         }
         if (key.isMandatory) {
@@ -314,7 +314,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   basicPropValuesTemp.set("database.password", "indra");
   basicPropValuesTemp.set("database.dbname", "postgres");
   basicPropValuesTemp.set("database.server.name", "fullfillment");
-
+  console.log(formProperties)
   return (
     <>
       <PageSection
@@ -474,11 +474,11 @@ export const CustomFooter = ({ handleSubmit, validateForm }) => {
     <WizardFooter>
       <WizardContextConsumer>
         {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
-          const validateAndContinue = (onNext) => {
+          const validateAndContinue = (goToNext) => {
             validateForm().then((err) => {
               handleSubmit();
               if (_.isEmpty(err)) {
-                onNext();
+                goToNext();
               }
             })
           };
