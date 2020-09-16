@@ -30,4 +30,10 @@ export class GlobalsService extends BaseService {
         return this.httpGet<ConnectorType[]>(endpoint);
     }
 
+    public getConnectCluster(): Promise<string[]> {
+        this.logger.info("[GlobalsService] Getting the list of connector cluster.");
+        const endpoint: string = this.endpoint("/connect-clusters");
+        return this.httpGet<string[]>(endpoint);
+    }
+
 }

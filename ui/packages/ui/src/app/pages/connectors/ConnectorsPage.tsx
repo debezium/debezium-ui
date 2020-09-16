@@ -1,4 +1,5 @@
 import { Connector } from "@debezium/ui-models";
+import { Services } from "@debezium/ui-services";
 import {
   Bullseye,
   Button,
@@ -9,11 +10,18 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
+  Form,
+  FormGroup,
+  FormSelect,
+  FormSelectOption,
   Title,
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 import React from "react";
 import { Link } from "react-router-dom";
+import { PageLoader } from "src/app/components";
+import { ApiError, fetch_retry } from "src/app/shared";
+import { WithLoader } from "src/app/shared/WithLoader";
 import { ConnectorListItem } from "./ConnectorListItem";
 import "./ConnectorsPage.css";
 
@@ -38,60 +46,114 @@ export const ConnectorsPage: React.FunctionComponent = () => {
     //   type: ConnectorTypeId.POSTGRES
     // } as Connector,
   ] as Connector[]);
+  const [connectCluster, setConnectCluster] = React.useState<string>("");
+  const [connectClusters, setConnectClusters] = React.useState<string[]>([""]);
+
+  const [loading, setLoading] = React.useState(true);
+  const [apiError, setApiError] = React.useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
+
+  const onChange = (value: string, event: any) => {
+    setConnectCluster(value);
+  };
+
+  React.useEffect(() => {
+    const globalsService = Services.getGlobalsService();
+    fetch_retry(globalsService.getConnectCluster, globalsService)
+      .then((cClusters: string[]) => {
+        setLoading(false);
+        setConnectClusters([...cClusters]);
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        setApiError(true);
+        setErrorMsg(err);
+      });
+  }, [setConnectClusters]);
 
   return (
-    <>
-      {connectors.length > 0 ? (
+    <WithLoader
+      error={apiError}
+      loading={loading}
+      loaderChildren={<PageLoader />}
+      errorChildren={<ApiError error={errorMsg} />}
+    >
+      {() => (
         <>
-          <Flex className="connectors-page_toolbarFlex">
-            <FlexItem>
-              <Title headingLevel={"h1"}>Connectors</Title>
-            </FlexItem>
-            <FlexItem>
-              <Link to="/app/create-connector">
-                <Button
-                  variant="primary"
-                  className="connectors-page_toolbarCreateButton"
-                >
-                  Create a connector
-                </Button>
-              </Link>
-            </FlexItem>
-          </Flex>
-          <DataList aria-label={"connector list"}>
-            {getSortedConnectors(connectors).map((conn, index) => {
-              return (
-                <ConnectorListItem
-                  key={index}
-                  connectorName={conn.name}
-                  connectorType={conn.type}
-                  connectorDescription={conn.description}
-                />
-              );
-            })}
-          </DataList>
-        </>
-      ) : (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.large}>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              No connectors
-            </Title>
-            <EmptyStateBody>
-              Please click 'Create a connector' to create a new connector.
-            </EmptyStateBody>
-            <Link to="/app/create-connector">
-              <Button
-                variant="primary"
-                className="connectors-page_createButton"
+          <Form>
+            <FormGroup
+              label="Kafka connect cluster"
+              fieldId="kafka-connect-cluster"
+            >
+              <FormSelect
+                value={connectCluster}
+                onChange={onChange}
+                id="kafka-connect-cluster"
+                name="kafka-connect-cluster"
+                aria-label="Your title"
               >
-                Create a connector
-              </Button>
-            </Link>
-          </EmptyState>
-        </Bullseye>
+                {connectClusters.map((cCluster, index) => (
+                  <FormSelectOption
+                    key={index}
+                    value={cCluster}
+                    label={cCluster}
+                  />
+                ))}
+              </FormSelect>
+            </FormGroup>
+          </Form>
+          {connectors.length > 0 ? (
+            <>
+              <Flex className="connectors-page_toolbarFlex">
+                <FlexItem>
+                  <Title headingLevel={"h1"}>Connectors</Title>
+                </FlexItem>
+                <FlexItem>
+                  <Link to="/app/create-connector">
+                    <Button
+                      variant="primary"
+                      className="connectors-page_toolbarCreateButton"
+                    >
+                      Create a connector
+                    </Button>
+                  </Link>
+                </FlexItem>
+              </Flex>
+              <DataList aria-label={"connector list"}>
+                {getSortedConnectors(connectors).map((conn, index) => {
+                  return (
+                    <ConnectorListItem
+                      key={index}
+                      connectorName={conn.name}
+                      connectorType={conn.type}
+                      connectorDescription={conn.description}
+                    />
+                  );
+                })}
+              </DataList>
+            </>
+          ) : (
+            <Bullseye>
+              <EmptyState variant={EmptyStateVariant.large}>
+                <EmptyStateIcon icon={CubesIcon} />
+                <Title headingLevel="h4" size="lg">
+                  No connectors
+                </Title>
+                <EmptyStateBody>
+                  Please click 'Create a connector' to create a new connector.
+                </EmptyStateBody>
+                <Link to="/app/create-connector">
+                  <Button
+                    variant="primary"
+                    className="connectors-page_createButton"
+                  >
+                    Create a connector
+                  </Button>
+                </Link>
+              </EmptyState>
+            </Bullseye>
+          )}
+        </>
       )}
-    </>
+    </WithLoader>
   );
 };
