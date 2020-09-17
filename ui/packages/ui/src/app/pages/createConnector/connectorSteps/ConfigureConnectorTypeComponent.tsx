@@ -6,13 +6,12 @@ import {
   AccordionToggle,
   Grid,
   GridItem,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
 import { PropertyCategory, PropertyName } from "src/app/shared";
-
 import * as Yup from "yup";
 import "./ConfigureConnectorTypeComponent.css";
 import { FormComponent } from "./shared";
@@ -113,7 +112,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
 
       combined.map((key: { name: string; defaultValue: string }) => {
         if (!combinedValue[key.name]) {
-          combinedValue[key.name] = key.defaultValue || "";
+          key.defaultValue === undefined ? combinedValue[key.name] = "" : combinedValue[key.name] = key.defaultValue
         }
       });
       return combinedValue;
@@ -134,7 +133,6 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
         advancedPublicationPropertyDefinitions
       )
     );
-
     const handleSubmit = (valueMap: Map<string, string>) => {
       // the basic properties
       const basicValueMap: Map<string, string> = new Map();
