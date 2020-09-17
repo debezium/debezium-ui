@@ -68,7 +68,7 @@ export interface ConnectionValidationResult {
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorProperty {
-    allowedValues: string[];
+    allowedValues?: string[];
     category: 'CONNECTION' | 
     'CONNECTION_ADVANCED' | 
     'CONNECTION_ADVANCED_REPLICATION' | 
@@ -81,6 +81,7 @@ export interface ConnectorProperty {
     'ADVANCED' | 
     'ADVANCED_HEARTBEAT'
     ;
+    defaultValue?: any;
     description: string;
     displayName: string;
     name: string;

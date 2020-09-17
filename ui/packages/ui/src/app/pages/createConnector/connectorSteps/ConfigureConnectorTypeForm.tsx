@@ -123,16 +123,19 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   const handleSubmit = (valueMap: Map<string, string>) => {
     // the basic properties
     const basicValueMap: Map<string, string> = new Map();
-    for (const basicVal of props.basicPropertyDefinitions) {
-      basicValueMap.set(basicVal.name, valueMap[basicVal.name]);
+    for (const basicProp of props.basicPropertyDefinitions) {
+      if ( typeof basicProp.defaultValue === 'undefined' || basicProp.defaultValue !== valueMap[basicProp.name] ) {
+        basicValueMap.set(basicProp.name, valueMap[basicProp.name]);
+      }
     }
     // the advance properties
     const advancedValueMap: Map<string, string> = new Map();
-    for (const advancedValue of props.advancedPropertyDefinitions) {
-      advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
+    for (const advancedProp of props.advancedPropertyDefinitions) {
+      if ( typeof advancedProp.defaultValue === 'undefined' || advancedProp.defaultValue !== valueMap[advancedProp.name] ) {
+        advancedValueMap.set(advancedProp.name, valueMap[advancedProp.name]);
+      }
     }
     props.onValidateProperties(basicValueMap, advancedValueMap);
-
   };
 
   return (
