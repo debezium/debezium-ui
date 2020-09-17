@@ -33,7 +33,7 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
       validated={props.validated}
     >
       <TextInput {...field} onChange={e => {field.onChange(field.name)(e);
-      }} aria-label={field.name} validated={props.validated}  type={props.type} />
+      }} aria-label={field.name} validated={props.validated} type={props.type} />
     </FormGroup>
   );
 };

@@ -2,13 +2,13 @@ import {
   ConnectionValidationResult,
   ConnectorConfiguration,
   ConnectorProperty,
-  ConnectorType,
+  ConnectorType
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  Level,
+  Button, Level,
   LevelItem,
   PageSection,
   PageSectionVariants,
@@ -16,7 +16,11 @@ import {
   Title,
   TitleSizes,
   Wizard,
+
+  WizardContextConsumer, WizardFooter
 } from "@patternfly/react-core";
+import { Formik } from 'formik';
+import _ from 'lodash';
 import React from "react";
 import { useHistory } from "react-router-dom";
 import {
@@ -27,17 +31,17 @@ import {
   getFilterPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
   mapToObject,
-  PropertyCategory,
+  PropertyCategory
 } from "src/app/shared";
+import * as Yup from 'yup';
 import {
   ConfigureConnectorTypeComponent,
   ConnectorTypeStepComponent,
   DataOptionsComponent,
   FiltersStepComponent,
-  RuntimeOptionsComponent,
+  RuntimeOptionsComponent
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
-
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
  * @param connectorTypes
@@ -67,9 +71,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     selectedConnectorPropertyDefns,
     setSelectedConnectorPropertyDefns,
   ] = React.useState<ConnectorProperty[]>([]);
-  const [connectorTypes, setConnectorTypes] = React.useState<ConnectorType[]>(
-    []
-  );
+  const [connectorTypes, setConnectorTypes] = React.useState<ConnectorType[]>([]);
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
     new Map<string, string>()
   );
@@ -87,6 +89,70 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
+  const [validationSchema, setValidationSchema] = React.useState({})
+  const [formProperties, setFormProperties] = React.useState({})
+  const [formInitialValues, setFormInitialValues] = React.useState({})
+
+  React.useEffect(() => {
+
+    if (stepIdReached === 2) {
+      const basicProperty = formatPropertyDefinitions(getBasicPropertyDefinitions(selectedConnectorPropertyDefns));
+      const advancedGeneralProperty = formatPropertyDefinitions(getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.ADVANCED_GENERAL));
+      const advancedReplicationProperty = formatPropertyDefinitions(getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.ADVANCED_REPLICATION));
+      const advancedPublicationProperty = formatPropertyDefinitions(getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.ADVANCED_PUBLICATION));
+
+      setFormProperties({
+        "basicProperty": basicProperty,
+        "advancedGeneralProperty": advancedGeneralProperty,
+        "advancedReplicationProperty": advancedReplicationProperty,
+        "advancedPublicationProperty": advancedPublicationProperty
+      });
+
+      setFormInitialValues(getInitialValues(_.union(
+        basicProperty,
+        advancedGeneralProperty,
+        advancedReplicationProperty,
+        advancedPublicationProperty)));
+
+      // Just added String and Password type
+      const basicValidationSchema = {};
+      basicProperty.map((key: any) => {
+        if (key.type === "STRING") {
+          basicValidationSchema[key.name] = Yup.string();
+        } else if (key.type === "PASSWORD") {
+          basicValidationSchema[key.name] = Yup.string();
+        } else if (key.type === "INT") {
+          basicValidationSchema[key.name] = Yup.string();
+        }
+        if (key.isMandatory) {
+          basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.displayName} is required`);
+        }
+      })
+      setValidationSchema(Yup.object().shape({ ...basicValidationSchema }));
+
+    } else if (stepIdReached === 4) {
+      const mappingProperty = formatPropertyDefinitions(getDataOptionsPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL || defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED));
+      const snapshotProperty = formatPropertyDefinitions(getDataOptionsPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT));
+
+      setFormProperties({
+        "mappingProperty": mappingProperty,
+        "snapshotProperty": snapshotProperty
+      });
+      setFormInitialValues(getInitialValues(_.union(mappingProperty, snapshotProperty)));
+      setValidationSchema(Yup.object().shape({}));
+
+    } else if (stepIdReached === 5) {
+      const engineProperty = formatPropertyDefinitions(getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE));
+      const heartbeatProperty = formatPropertyDefinitions(getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT));
+
+      setFormProperties({
+        "engineProperty": engineProperty,
+        "heartbeatProperty": heartbeatProperty
+      });
+      setFormInitialValues(getInitialValues(_.union(engineProperty, heartbeatProperty)));
+      setValidationSchema(Yup.object().shape({}));
+    }
+  }, [stepIdReached]);
   const history = useHistory();
 
   const onFinish = () => {
@@ -123,10 +189,30 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     history.push("/app");
   };
 
+  const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
+    const orderedPropertyDefinitions = propertyValues.sort((a, b) => (
+      { orderInCategory: Number.MAX_VALUE, ...a }.orderInCategory -
+      { orderInCategory: Number.MAX_VALUE, ...b }.orderInCategory));
+
+    return orderedPropertyDefinitions.map((key: { name: string }) => {
+      key.name = key.name.replace(/\./g, '_');
+      return key;
+    })
+  }
+
   const onNext = ({ id }: any) => {
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
   };
+  const getInitialValues = (combined: any) => {
+    const combinedValue: any = {};
 
+    combined.map((key: { name: string; defaultValue: string }) => {
+      if (!combinedValue[key.name]) {
+        combinedValue[key.name] = key.defaultValue || "";
+      }
+    })
+    return combinedValue;
+  }
   const onConnectorTypeChanged = (cType: string | undefined): void => {
     setSelectedConnectorType(cType);
     // Categorize the properties and reset the overall state
@@ -150,7 +236,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setAdvancedPropValues(advancePropertyValues);
     validateProperties(
       new Map(
-        (function*() {
+        (function* () {
           yield* basicPropertyValues;
           yield* advancePropertyValues;
         })()
@@ -221,85 +307,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     initPropertyValues();
   }, [connectorTypes]);
 
-  const wizardSteps = [
-    {
-      id: 1,
-      name: "Connector Type",
-      component: (
-        <ConnectorTypeStepComponent
-          connectorTypesList={connectorTypes}
-          loading={loading}
-          apiError={apiError}
-          errorMsg={errorMsg}
-          selectedConnectorType={selectedConnectorType}
-          onSelectionChange={onConnectorTypeChanged}
-        />
-      ),
-      enableNext: selectedConnectorType !== undefined,
-    },
-    {
-      id: 2,
-      name: "Properties",
-      component: (
-        <ConfigureConnectorTypeComponent
-          basicPropertyDefinitions={getBasicPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          basicPropertyValues={basicPropValues}
-          advancedPropertyDefinitions={getAdvancedPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          advancedPropertyValues={advancedPropValues}
-          onValidateProperties={handleConnectionProperties}
-        />
-      ),
-      canJumpTo: stepIdReached >= 2,
-    },
-    {
-      id: 3,
-      name: "Filters",
-      component: (
-        <FiltersStepComponent
-          propertyDefinitions={getFilterPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          propertyValues={basicPropValues}
-          filterValues={filterValues}
-          updateFilterValues={handleFilterUpdate}
-        />
-      ),
-      canJumpTo: stepIdReached >= 3,
-    },
-    {
-      id: 4,
-      name: "Data Options",
-      component: (
-        <DataOptionsComponent
-          propertyDefinitions={getDataOptionsPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          propertyValues={optionsPropValues}
-          onValidateProperties={handleValidateProperties}
-        />
-      ),
-      canJumpTo: stepIdReached >= 4,
-    },
-    {
-      id: 5,
-      name: "Runtime Options",
-      component: (
-        <RuntimeOptionsComponent
-          propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          propertyValues={optionsPropValues}
-          onValidateProperties={handleValidateProperties}
-        />
-      ),
-      canJumpTo: stepIdReached >= 5,
-      nextButtonText: "Finish",
-    },
-  ];
+  const basicPropValuesTemp: Map<string, string> = new Map();
+  basicPropValuesTemp.set("database.hostname", "192.168.122.1");
+  basicPropValuesTemp.set("database.port", "5432");
+  basicPropValuesTemp.set("database.user", "postgres");
+  basicPropValuesTemp.set("database.password", "indra");
+  basicPropValuesTemp.set("database.dbname", "postgres");
+  basicPropValuesTemp.set("database.server.name", "fullfillment");
 
   return (
     <>
@@ -321,15 +335,203 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           </LevelItem>
         </Level>
       </PageSection>
+
       <div className="app-page-section-border-bottom">
-        <Wizard
-          onClose={onCancel}
-          onNext={onNext}
-          onSave={onFinish}
-          steps={wizardSteps}
-          className="create-connector-page_wizard"
-        />
+        <Formik
+          enableReinitialize={true}
+          initialValues={formInitialValues}
+          validationSchema={validationSchema}
+          onSubmit={values => {
+            let basicValueMap = new Map<string, string>();
+            basicValueMap = _.transform(
+              values,
+              (result, val: string, key: string) => {
+                result[key.replace(/_/g, ".")] = val;
+              }
+            );
+
+            if (stepIdReached === 3) {
+              handleValidateProperties(
+                basicValueMap,
+                PropertyCategory.BASIC
+              );
+            } else if (stepIdReached === 5) {
+              handleValidateProperties(
+                basicValueMap,
+                PropertyCategory.DATA_OPTIONS_GENERAL
+              );
+            } else if (stepIdReached === 6) {
+              handleValidateProperties(
+                basicValueMap,
+                PropertyCategory.RUNTIME_OPTIONS_ENGINE
+              );
+            }
+          }}
+        >
+          {({
+            errors,
+            touched,
+            handleSubmit,
+            setFieldValue,
+            validateForm
+          }) => {
+
+            const wizardSteps = [
+              {
+                id: 1,
+                name: "Connector Type",
+                component: (
+                  <ConnectorTypeStepComponent
+                    connectorTypesList={connectorTypes}
+                    loading={loading}
+                    apiError={apiError}
+                    errorMsg={errorMsg}
+                    selectedConnectorType={selectedConnectorType}
+                    onSelectionChange={onConnectorTypeChanged}
+                  />
+                ),
+                enableNext: selectedConnectorType !== undefined,
+              },
+              {
+                id: 2,
+                name: "Properties",
+                component: (
+                  <ConfigureConnectorTypeComponent
+                    formPropertiesDef={formProperties}
+                    errors={errors}
+                    touched={touched}
+                    setFieldValue={setFieldValue}
+                    onValidateProperties={handleConnectionProperties}
+                  />
+                ),
+                canJumpTo: stepIdReached >= 2,
+              },
+              {
+                id: 3,
+                name: "Filters",
+                component: (
+                  <FiltersStepComponent
+                    propertyDefinitions={getFilterPropertyDefinitions(
+                      selectedConnectorPropertyDefns
+                    )}
+                    propertyValues={basicPropValuesTemp}
+                    filterValues={filterValues}
+                    updateFilterValues={handleFilterUpdate}
+                  />
+                ),
+                canJumpTo: stepIdReached >= 3,
+              },
+              {
+                id: 4,
+                name: "Data Options",
+                component: (
+                  <DataOptionsComponent
+                    formPropertiesDef={formProperties}
+                    errors={errors}
+                    touched={touched}
+                    setFieldValue={setFieldValue}
+                  />
+                ),
+                canJumpTo: stepIdReached >= 4,
+              },
+              {
+                id: 5,
+                name: "Runtime Options",
+                component: (
+                  <RuntimeOptionsComponent
+                    formPropertiesDef={formProperties}
+                    errors={errors}
+                    touched={touched}
+                    setFieldValue={setFieldValue}
+                  />
+                ),
+                canJumpTo: stepIdReached >= 5
+              },
+            ];
+            return (
+              <Wizard
+                onClose={onCancel}
+                onNext={onNext}
+                onSave={onFinish}
+                steps={wizardSteps}
+                className="create-connector-page_wizard"
+                nextButtonText="Validate & Continue"
+                footer={<CustomFooter handleSubmit={handleSubmit} validateForm={validateForm} />}
+              />
+            )
+          }}
+        </Formik>
       </div>
     </>
   );
 };
+
+export const CustomFooter = ({ handleSubmit, validateForm }) => {
+  return (
+    <WizardFooter>
+      <WizardContextConsumer>
+        {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
+          const validateAndContinue = (goToNext) => {
+            validateForm().then((err) => {
+              handleSubmit();
+              if (_.isEmpty(err)) {
+                goToNext();
+              }
+            })
+          };
+          const customBack = (e, goBack) => {
+            e.preventDefault();
+            goBack()
+          }
+          const customCancel = (e, goCancel) => {
+            e.preventDefault();
+            goCancel()
+          }
+          if (activeStep.name === 'Connector Type') {
+            return (
+              <>
+                <Button variant="primary" type="button" onClick={onNext} >
+                  Next
+              </Button>
+                <Button variant="secondary" onClick={(e) => { customBack(e, onBack) }} className={activeStep.name === 'Connector Type' ? 'pf-m-disabled' : ''}>
+                  Back
+              </Button>
+                <Button variant="link" onClick={(e) => { customCancel(e, onBack) }}>
+                  Cancel
+              </Button>
+              </>
+            )
+          }
+          if (activeStep.name === 'Runtime Options') {
+            return (
+              <>
+                <Button variant="primary" type="button" onClick={onNext} >
+                  Finish
+              </Button>
+                <Button variant="secondary" onClick={(e) => { customBack(e, onBack) }} className={activeStep.name === 'Connector Type' ? 'pf-m-disabled' : ''}>
+                  Back
+              </Button>
+                <Button variant="link" onClick={(e) => { customCancel(e, onClose) }}>
+                  Cancel
+              </Button>
+              </>
+            )
+          }
+          return (
+            <>
+              <Button variant="primary" type="button" onClick={() => validateAndContinue(onNext)}>
+                Continue
+              </Button>
+              <Button variant="secondary" onClick={(e) => { customBack(e, onBack) }} className={activeStep.name === 'Connector Type' ? 'pf-m-disabled' : ''}>
+                Back
+              </Button>
+              <Button variant="link" onClick={(e) => { customCancel(e, onClose) }}>
+                Cancel
+              </Button>
+            </>
+          )
+        }}
+      </WizardContextConsumer>
+    </WizardFooter>
+  )
+}

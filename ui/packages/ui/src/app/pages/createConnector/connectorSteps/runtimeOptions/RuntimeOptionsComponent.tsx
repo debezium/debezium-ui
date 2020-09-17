@@ -1,9 +1,9 @@
 import { ConnectorProperty } from "@debezium/ui-models";
+import { Form } from 'formik';
 import * as React from 'react';
 import { PropertyCategory } from "src/app/shared";
-import './RuntimeOptionsComponent.css'
+import './RuntimeOptionsComponent.css';
 import { RuntimeOptionsForm } from './RuntimeOptionsForm';
-
 export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
@@ -16,10 +16,6 @@ export interface IRuntimeOptionsComponentProps {
 export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = (props) => {
  
   return (
-    <RuntimeOptionsForm 
-      propertyDefinitions={props.propertyDefinitions}
-      propertyValues={props.propertyValues}
-      onValidateProperties={props.onValidateProperties}
-    />
+    <Form className="pf-c-form"><RuntimeOptionsForm {...props} /></Form>
   );
 }

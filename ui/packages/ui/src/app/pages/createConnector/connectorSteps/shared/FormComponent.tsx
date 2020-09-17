@@ -26,6 +26,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
         options={props.propertyDefinition.allowedValues}
+        setFieldValue={props.setFieldValue}
       />
     );
     // Boolean - checkbox
@@ -36,6 +37,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
+        setFieldValue={props.setFieldValue}
       />
     );
     // Any other - Text input
@@ -53,6 +55,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         }
         infoText={props.propertyDefinition.description}
         validated={props.validated}
+        setFieldValue={props.setFieldValue}
       />
     );
   }
