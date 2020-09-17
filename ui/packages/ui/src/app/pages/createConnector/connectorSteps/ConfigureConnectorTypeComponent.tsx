@@ -146,7 +146,12 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
       for (const advancedValue of props.advancedPropertyDefinitions) {
         advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
       }
-      props.onValidateProperties(basicValueMap, advancedValueMap);
+      // To-do: Temp commented out
+      // props.onValidateProperties(basicValueMap, advancedValueMap);
+      
+      // To-do: Remove this after un-commenting above line 
+      props.onValidateProperties(basicValueMap, new Map());
+      
     };
 
     return (

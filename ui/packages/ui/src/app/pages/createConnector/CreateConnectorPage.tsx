@@ -132,11 +132,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     history.push("/app");
   };
 
-  // const onNext = ({ id }: any) => {
-  //   childRef.current?.getAlert();
-  //   setStepIdReached(stepIdReached < id ? id : stepIdReached);
-  // };
-
   const validateLastStep = (onNext: () => void) => {
     childRef.current?.validate();
     if (!isFormValid) {
@@ -201,7 +196,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             "connection props are INVALID. Property Results: \n" + resultStr
           );
         } else {
-          alert("connection props are VALID");
           setIsFormValid(true);
         }
       })
@@ -262,14 +256,22 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Properties",
       component: (
         <>
-          {stepsValid === 1 && (
-            <div style={{ padding: "15px 0" }}>
-              <Alert
-                variant="danger"
-                title="Validation failed, please try again"
-              />
-            </div>
-          )}
+          {stepsValid === 1 &&
+            (!isFormValid ? (
+              <div style={{ padding: "15px 0" }}>
+                <Alert
+                  variant="danger"
+                  title="Validation failed, please try again."
+                />
+              </div>
+            ) : (
+              <div style={{ padding: "15px 0" }}>
+                <Alert
+                  variant="success"
+                  title="Entered details are valid, please move to next step."
+                />
+              </div>
+            ))}
           <ConfigureConnectorTypeComponent
             basicPropertyDefinitions={getBasicPropertyDefinitions(
               selectedConnectorPropertyDefns
@@ -343,11 +345,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           onBack,
           onClose,
         }) => {
-          if (activeStep.name !== "Properties") {
+          if (activeStep.name === "Properties" && !isFormValid) {
             return (
               <>
-                <Button variant="primary" type="submit" onClick={onNext}>
-                  Next
+                <Button onClick={() => validateLastStep(onNext)}>
+                  Validate
                 </Button>
                 <Button
                   variant="secondary"
@@ -367,19 +369,19 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           // Final step buttons
           return (
             <>
-              <Button onClick={() => validateLastStep(onNext)}>Next</Button>
+              <Button variant="primary" type="submit" onClick={onNext}>
+                Next
+              </Button>
               <Button
-                  variant="secondary"
-                  onClick={onBack}
-                  className={
-                    activeStep.name === "Step 1" ? "pf-m-disabled" : ""
-                  }
-                >
-                  Back
-                </Button>
-                <Button variant="link" onClick={onClose}>
-                  Cancel
-                </Button>
+                variant="secondary"
+                onClick={onBack}
+                className={activeStep.name === "Step 1" ? "pf-m-disabled" : ""}
+              >
+                Back
+              </Button>
+              <Button variant="link" onClick={onClose}>
+                Cancel
+              </Button>
             </>
           );
         }}
