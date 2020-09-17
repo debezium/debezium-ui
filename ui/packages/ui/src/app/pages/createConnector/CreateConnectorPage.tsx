@@ -19,7 +19,7 @@ import {
 
   WizardContextConsumer, WizardFooter
 } from "@patternfly/react-core";
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import _ from 'lodash';
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -107,7 +107,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         "advancedReplicationProperty": advancedReplicationProperty,
         "advancedPublicationProperty": advancedPublicationProperty
       });
-      
+
       setFormInitialValues(getInitialValues(_.union(
         basicProperty,
         advancedGeneralProperty,
@@ -121,7 +121,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           basicValidationSchema[key.name] = Yup.string();
         } else if (key.type === "PASSWORD") {
           basicValidationSchema[key.name] = Yup.string();
-        }else if (key.type === "INT") {
+        } else if (key.type === "INT") {
           basicValidationSchema[key.name] = Yup.string();
         }
         if (key.isMandatory) {
@@ -236,7 +236,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setAdvancedPropValues(advancePropertyValues);
     validateProperties(
       new Map(
-        (function*() {
+        (function* () {
           yield* basicPropertyValues;
           yield* advancePropertyValues;
         })()
@@ -275,7 +275,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         alert("Error Validation Connection Properties !: " + err);
       });
   };
-  
+
   // Update the filter values
   const handleFilterUpdate = (filterValue: Map<string, string>) => {
     setFilterValues(new Map(filterValue));
@@ -314,7 +314,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   basicPropValuesTemp.set("database.password", "indra");
   basicPropValuesTemp.set("database.dbname", "postgres");
   basicPropValuesTemp.set("database.server.name", "fullfillment");
-  console.log(formProperties)
+
   return (
     <>
       <PageSection
@@ -401,6 +401,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                     errors={errors}
                     touched={touched}
                     setFieldValue={setFieldValue}
+                    onValidateProperties={handleConnectionProperties}
                   />
                 ),
                 canJumpTo: stepIdReached >= 2,
@@ -436,7 +437,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               {
                 id: 5,
                 name: "Runtime Options",
-                type: 'button',
                 component: (
                   <RuntimeOptionsComponent
                     formPropertiesDef={formProperties}
@@ -445,22 +445,19 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                     setFieldValue={setFieldValue}
                   />
                 ),
-                canJumpTo: stepIdReached >= 5,
-                nextButtonText: "Finish",
+                canJumpTo: stepIdReached >= 5
               },
             ];
             return (
-              <Form className="pf-c-form">
-                <Wizard
-                  onClose={onCancel}
-                  onNext={onNext}
-                  onSave={onFinish}
-                  steps={wizardSteps}
-                  className="create-connector-page_wizard"
-                  nextButtonText="Validate & Continue"
-                  footer={<CustomFooter handleSubmit={handleSubmit} validateForm={validateForm} />}
-                />
-              </Form>
+              <Wizard
+                onClose={onCancel}
+                onNext={onNext}
+                onSave={onFinish}
+                steps={wizardSteps}
+                className="create-connector-page_wizard"
+                nextButtonText="Validate & Continue"
+                footer={<CustomFooter handleSubmit={handleSubmit} validateForm={validateForm} />}
+              />
             )
           }}
         </Formik>
@@ -482,17 +479,39 @@ export const CustomFooter = ({ handleSubmit, validateForm }) => {
               }
             })
           };
-
+          const customBack = (e, goBack) => {
+            e.preventDefault();
+            goBack()
+          }
+          const customCancel = (e, goCancel) => {
+            e.preventDefault();
+            goCancel()
+          }
           if (activeStep.name === 'Connector Type') {
             return (
               <>
                 <Button variant="primary" type="button" onClick={onNext} >
                   Next
               </Button>
-                <Button variant="secondary" onClick={onBack}>
+                <Button variant="secondary" onClick={(e) => { customBack(e, onBack) }} className={activeStep.name === 'Connector Type' ? 'pf-m-disabled' : ''}>
                   Back
               </Button>
-                <Button variant="link" onClick={onClose}>
+                <Button variant="link" onClick={(e) => { customCancel(e, onBack) }}>
+                  Cancel
+              </Button>
+              </>
+            )
+          }
+          if (activeStep.name === 'Runtime Options') {
+            return (
+              <>
+                <Button variant="primary" type="button" onClick={onNext} >
+                  Finish
+              </Button>
+                <Button variant="secondary" onClick={(e) => { customBack(e, onBack) }} className={activeStep.name === 'Connector Type' ? 'pf-m-disabled' : ''}>
+                  Back
+              </Button>
+                <Button variant="link" onClick={(e) => { customCancel(e, onClose) }}>
                   Cancel
               </Button>
               </>
@@ -503,10 +522,10 @@ export const CustomFooter = ({ handleSubmit, validateForm }) => {
               <Button variant="primary" type="button" onClick={() => validateAndContinue(onNext)}>
                 Continue
               </Button>
-              <Button variant="secondary" onClick={onBack}>
+              <Button variant="secondary" onClick={(e) => { customBack(e, onBack) }} className={activeStep.name === 'Connector Type' ? 'pf-m-disabled' : ''}>
                 Back
               </Button>
-              <Button variant="link" onClick={onClose}>
+              <Button variant="link" onClick={(e) => { customCancel(e, onClose) }}>
                 Cancel
               </Button>
             </>

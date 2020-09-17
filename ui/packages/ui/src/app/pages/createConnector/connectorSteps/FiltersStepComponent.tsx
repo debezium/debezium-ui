@@ -1,7 +1,7 @@
 import {
   ConnectorProperty,
   DataCollection,
-  FilterValidationResult,
+  FilterValidationResult
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
@@ -19,7 +19,7 @@ import {
   TextVariants,
   Title,
   ToggleGroup,
-  ToggleGroupItem,
+  ToggleGroupItem
 } from "@patternfly/react-core";
 import { HelpIcon, InfoCircleIcon } from "@patternfly/react-icons";
 import _ from "lodash";
@@ -28,9 +28,9 @@ import { FilterTreeComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
-  ConfirmationIconType,
+
   fetch_retry,
-  mapToObject,
+  mapToObject
 } from "src/app/shared";
 import "./FiltersStepComponent.css";
 
@@ -133,6 +133,12 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
 
   const clearFilter = () => {
     setShowClearDialog(true);
+    setSchemaSelected("schemaInclude");
+    setTableSelected("tableInclude");
+    setSchemaFilter("");
+    setTableFilter("");
+    setFormData(new Map());
+    getFilterSchema(true, new Map());
   };
 
   const getFilterSchema = (
