@@ -1,18 +1,25 @@
-.pf-c-accordion__expanded-content-body{
-    &:before{
-        background: none
-    }
+.pf-c-accordion__expanded-content-body {
+  &:before {
+    background: none;
+  }
 }
-.dbz-c-accordion{
-    font-weight: bold;
-    font-size: var(--pf-global--FontSize--lg);
-    &:before{
-        background: none
-    }
-    &:focus{
-        outline: none;
-    }
-    &__content{
-        margin-bottom: var(--pf-global--spacer--lg);
-    }
+.dbz-c-accordion {
+  font-weight: bold;
+  font-size: var(--pf-global--FontSize--lg);
+  &:before {
+    background: none;
+  }
+  &:focus {
+    outline: none;
+  }
+  &__content {
+    margin-bottom: var(--pf-global--spacer--lg);
+  }
+}
+
+.configure-connector-type-form {
+  &-grouping {
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
 }

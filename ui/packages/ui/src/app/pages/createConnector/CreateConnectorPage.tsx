@@ -6,8 +6,10 @@ import {
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
+  Alert,
   Breadcrumb,
   BreadcrumbItem,
+  Button,
   Level,
   LevelItem,
   PageSection,
@@ -16,6 +18,8 @@ import {
   Title,
   TitleSizes,
   Wizard,
+  WizardContextConsumer,
+  WizardFooter,
 } from "@patternfly/react-core";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -87,7 +91,12 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
+  const [stepsValid, setStepsValid] = React.useState<number>(0);
+  const [isFormValid, setIsFormValid] = React.useState<boolean>(false);
+
   const history = useHistory();
+
+  const childRef = React.useRef();
 
   const onFinish = () => {
     // Merge the individual category properties values into a single map for the config
@@ -123,8 +132,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     history.push("/app");
   };
 
-  const onNext = ({ id }: any) => {
-    setStepIdReached(stepIdReached < id ? id : stepIdReached);
+  // const onNext = ({ id }: any) => {
+  //   childRef.current?.getAlert();
+  //   setStepIdReached(stepIdReached < id ? id : stepIdReached);
+  // };
+
+  const validateLastStep = (onNext: () => void) => {
+    childRef.current?.validate();
+    if (!isFormValid) {
+      setStepsValid(1);
+    } else {
+      onNext();
+    }
   };
 
   const onConnectorTypeChanged = (cType: string | undefined): void => {
@@ -183,6 +202,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           );
         } else {
           alert("connection props are VALID");
+          setIsFormValid(true);
         }
       })
       .catch((err: React.SetStateAction<Error>) => {
@@ -241,17 +261,28 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       id: 2,
       name: "Properties",
       component: (
-        <ConfigureConnectorTypeComponent
-          basicPropertyDefinitions={getBasicPropertyDefinitions(
-            selectedConnectorPropertyDefns
+        <>
+          {stepsValid === 1 && (
+            <div style={{ padding: "15px 0" }}>
+              <Alert
+                variant="danger"
+                title="Validation failed, please try again"
+              />
+            </div>
           )}
-          basicPropertyValues={basicPropValues}
-          advancedPropertyDefinitions={getAdvancedPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          advancedPropertyValues={advancedPropValues}
-          onValidateProperties={handleConnectionProperties}
-        />
+          <ConfigureConnectorTypeComponent
+            basicPropertyDefinitions={getBasicPropertyDefinitions(
+              selectedConnectorPropertyDefns
+            )}
+            basicPropertyValues={basicPropValues}
+            advancedPropertyDefinitions={getAdvancedPropertyDefinitions(
+              selectedConnectorPropertyDefns
+            )}
+            advancedPropertyValues={advancedPropValues}
+            onValidateProperties={handleConnectionProperties}
+            ref={childRef}
+          />
+        </>
       ),
       canJumpTo: stepIdReached >= 2,
     },
@@ -301,6 +332,61 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     },
   ];
 
+  const CustomFooter = (
+    <WizardFooter>
+      <WizardContextConsumer>
+        {({
+          activeStep,
+          goToStepByName,
+          goToStepById,
+          onNext,
+          onBack,
+          onClose,
+        }) => {
+          if (activeStep.name !== "Properties") {
+            return (
+              <>
+                <Button variant="primary" type="submit" onClick={onNext}>
+                  Next
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={onBack}
+                  className={
+                    activeStep.name === "Step 1" ? "pf-m-disabled" : ""
+                  }
+                >
+                  Back
+                </Button>
+                <Button variant="link" onClick={onClose}>
+                  Cancel
+                </Button>
+              </>
+            );
+          }
+          // Final step buttons
+          return (
+            <>
+              <Button onClick={() => validateLastStep(onNext)}>Next</Button>
+              <Button
+                  variant="secondary"
+                  onClick={onBack}
+                  className={
+                    activeStep.name === "Step 1" ? "pf-m-disabled" : ""
+                  }
+                >
+                  Back
+                </Button>
+                <Button variant="link" onClick={onClose}>
+                  Cancel
+                </Button>
+            </>
+          );
+        }}
+      </WizardContextConsumer>
+    </WizardFooter>
+  );
+
   return (
     <>
       <PageSection
@@ -324,8 +410,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       <div className="app-page-section-border-bottom">
         <Wizard
           onClose={onCancel}
-          onNext={onNext}
-          onSave={onFinish}
+          footer={CustomFooter}
           steps={wizardSteps}
           className="create-connector-page_wizard"
         />
