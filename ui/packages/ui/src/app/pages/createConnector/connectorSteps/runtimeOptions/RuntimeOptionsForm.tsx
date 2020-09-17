@@ -55,7 +55,7 @@ export const RuntimeOptionsForm: React.FunctionComponent<IRuntimeOptionsFormProp
     
     combined.map((key: { name: string; defaultValue: string}) => {
       if (!combinedValue[key.name]) {
-        combinedValue[key.name] = key.defaultValue || "";
+        key.defaultValue === undefined ? combinedValue[key.name] = "" : combinedValue[key.name] = key.defaultValue
       }
     })
     return combinedValue;
