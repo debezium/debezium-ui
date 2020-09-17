@@ -3,6 +3,7 @@ import {
   ConnectorConfiguration,
   ConnectorProperty,
   ConnectorType,
+  PropertiesValidationResult,
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
@@ -83,7 +84,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [advancedPropValues, setAdvancedPropValues] = React.useState<
     Map<string, string>
   >(new Map<string, string>());
-  const [optionsPropValues, setOptionsPropValues] = React.useState<
+  const [dataOptionsPropValues, setDataOptionsPropValues] = React.useState<
+    Map<string, string>
+  >(new Map<string, string>());
+  const [runtimeOptionsPropValues, setRuntimeOptionsPropValues] = React.useState<
     Map<string, string>
   >(new Map<string, string>());
 
@@ -92,40 +96,48 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
   const [stepsValid, setStepsValid] = React.useState<number>(0);
-  const [isFormValid, setIsFormValid] = React.useState<boolean>(false);
+  const [connectionPropsValid, setConnectionPropsValid] = React.useState<boolean>(false);
+  const [dataOptionsValid, setDataOptionsValid] = React.useState<boolean>(false);
+  const [runtimeOptionsValid, setRuntimeOptionsValid] = React.useState<boolean>(false);
+  const [connectorCreateFailed, setConnectorCreateFailed] = React.useState<boolean>(false);
 
   const history = useHistory();
 
   const childRef = React.useRef();
 
   const onFinish = () => {
+    setConnectorCreateFailed(false);
+
     // Merge the individual category properties values into a single map for the config
     const allPropValues = new Map<string, string>();
     basicPropValues.forEach((v, k) => allPropValues.set(k, v));
     advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
     filterValues.forEach((v, k) => allPropValues.set(k, v));
+    dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+    runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
 
     // TODO: Need to have a name input on one of the pages
     const connName = "myConnector";
 
-    // ConnectorConfiguration for the create
-    const connectorConfig = {
-      name: connName,
-      config: mapToObject(allPropValues),
-    } as ConnectorConfiguration;
-
-    // TODO: On finish, create the connector.
-    //   If valid, the connector will be created and redirect to connectors page.
-    //   If invalid, the user is shown a list of issues that must be corrected.
-    alert(JSON.stringify(connectorConfig));
-
-    // const connectorService = Services.getConnectorService();
-    // connectorService.createConnector(connectorConfig)
-    //  .then(() => {
-    //   //  Do something
-    // });
-
-    history.push("/app");
+    // TODO: The cluster and connector type supplied below should not be hardcoded.  Use inputs.
+    const connectorService = Services.getConnectorService();
+    fetch_retry(connectorService.createConnector, connectorService, [
+      1,
+      "postgres",
+      {
+        name: connName,
+        config: mapToObject(allPropValues)
+      }
+    ])
+      .then(() => {
+        // On success, redirect to connectors page
+        history.push("/app");
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        setConnectorCreateFailed(true);
+        setApiError(true);
+        setErrorMsg(err);
+      });
   };
 
   const onCancel = () => {
@@ -134,7 +146,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const validateLastStep = (onNext: () => void) => {
     childRef.current?.validate();
-    if (!isFormValid) {
+    if (!connectionPropsValid) {
       setStepsValid(1);
     } else {
       onNext();
@@ -153,16 +165,17 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setFilterValues(new Map<string, string>());
     setBasicPropValues(new Map<string, string>());
     setAdvancedPropValues(new Map<string, string>());
-    setOptionsPropValues(new Map<string, string>());
+    setDataOptionsPropValues(new Map<string, string>());
+    setRuntimeOptionsPropValues(new Map<string, string>());
   };
 
-  const handleConnectionProperties = (
+  const handleValidateConnectionProperties = (
     basicPropertyValues: Map<string, string>,
     advancePropertyValues: Map<string, string>
   ): void => {
     setBasicPropValues(basicPropertyValues);
     setAdvancedPropValues(advancePropertyValues);
-    validateProperties(
+    validateConnectionProperties(
       new Map(
         (function*() {
           yield* basicPropertyValues;
@@ -172,15 +185,16 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     );
   };
 
-  const handleValidateProperties = (
-    propertyValues: Map<string, string>,
-    category: PropertyCategory
+  const handleValidateOptionProperties = (
+    propertyValues: Map<string, string>, propertyCategory: PropertyCategory
   ): void => {
-    validateProperties(propertyValues);
+    validateOptionProperties(propertyValues, propertyCategory);
   };
 
-  const validateProperties = (propertyValues: Map<string, string>) => {
+  const validateConnectionProperties = (propertyValues: Map<string, string>) => {
     // alert("Validate Properties: " + JSON.stringify(mapToObject(propertyValues)));
+    // TODO: The connector type should not be hardcode.  Use type selected.
+
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.validateConnection, connectorService, [
       "postgres",
@@ -196,7 +210,41 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             "connection props are INVALID. Property Results: \n" + resultStr
           );
         } else {
-          setIsFormValid(true);
+          setConnectionPropsValid(true);
+        }
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        alert("Error Validation Connection Properties !: " + err);
+      });
+  };
+
+  const validateOptionProperties = (propertyValues: Map<string, string>, propertyCategory: PropertyCategory) => {
+    // alert("Validate Option Properties: " + JSON.stringify(mapToObject(propertyValues)));
+
+    // TODO: The connector type should not be hardcode.  Use type selected.
+    const connectorService = Services.getConnectorService();
+    fetch_retry(connectorService.validateProperties, connectorService, [
+      "postgres",
+      mapToObject(new Map(propertyValues)),
+    ])
+      .then((result: PropertiesValidationResult) => {
+        if (result.status === "INVALID") {
+          let resultStr = "";
+          for (const e1 of result.propertyValidationResults) {
+            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+          }
+          alert(
+            "connection props are INVALID. Property Results: \n" + resultStr
+          );
+        } else {
+          if (propertyCategory === PropertyCategory.DATA_OPTIONS_GENERAL || 
+              propertyCategory === PropertyCategory.DATA_OPTIONS_ADVANCED ||
+              propertyCategory === PropertyCategory.DATA_OPTIONS_SNAPSHOT) {
+            setDataOptionsValid(true);
+          } else if (propertyCategory === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
+                     propertyCategory === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT) {
+            setRuntimeOptionsValid(true);
+          }
         }
       })
       .catch((err: React.SetStateAction<Error>) => {
@@ -257,7 +305,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       component: (
         <>
           {stepsValid === 1 &&
-            (!isFormValid ? (
+            (!connectionPropsValid ? (
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
@@ -281,7 +329,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               selectedConnectorPropertyDefns
             )}
             advancedPropertyValues={advancedPropValues}
-            onValidateProperties={handleConnectionProperties}
+            onValidateProperties={handleValidateConnectionProperties}
             ref={childRef}
           />
         </>
@@ -311,8 +359,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           propertyDefinitions={getDataOptionsPropertyDefinitions(
             selectedConnectorPropertyDefns
           )}
-          propertyValues={optionsPropValues}
-          onValidateProperties={handleValidateProperties}
+          propertyValues={dataOptionsPropValues}
+          onValidateProperties={handleValidateOptionProperties}
+          ref={childRef}
         />
       ),
       canJumpTo: stepIdReached >= 4,
@@ -321,13 +370,24 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       id: 5,
       name: "Runtime Options",
       component: (
-        <RuntimeOptionsComponent
-          propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
-            selectedConnectorPropertyDefns
-          )}
-          propertyValues={optionsPropValues}
-          onValidateProperties={handleValidateProperties}
-        />
+        <>
+          {connectorCreateFailed &&
+              <div style={{ padding: "15px 0" }}>
+                <Alert
+                  variant="danger"
+                  title="Create of the connector failed."
+                />
+              </div>
+          }
+          <RuntimeOptionsComponent
+            propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
+              selectedConnectorPropertyDefns
+            )}
+            propertyValues={runtimeOptionsPropValues}
+            onValidateProperties={handleValidateOptionProperties}
+            ref={childRef}
+          />
+        </>
       ),
       canJumpTo: stepIdReached >= 5,
       nextButtonText: "Finish",
@@ -345,7 +405,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           onBack,
           onClose,
         }) => {
-          if (activeStep.name === "Properties" && !isFormValid) {
+          if ( activeStep.name === "Properties" && !connectionPropsValid ) {
             return (
               <>
                 <Button onClick={() => validateLastStep(onNext)}>
@@ -369,9 +429,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           // Final step buttons
           return (
             <>
-              <Button variant="primary" type="submit" onClick={onNext}>
-                Next
-              </Button>
+              {activeStep.name === "Runtime Options" ? (
+                <Button variant="primary" type="submit" onClick={onFinish}>
+                  Finish
+                </Button>
+              ) : (
+                <Button variant="primary" type="submit" onClick={onNext}>
+                  Next
+                </Button>
+              )}
               <Button
                 variant="secondary"
                 onClick={onBack}
