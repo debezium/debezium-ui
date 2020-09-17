@@ -139,6 +139,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         "snapshotProperty": snapshotProperty
       });
       setFormInitialValues(getInitialValues(_.union(mappingProperty, snapshotProperty)));
+      setValidationSchema(Yup.object().shape({}));
+
+    } else if (stepIdReached === 5) {
+      const engineProperty = formatPropertyDefinitions(getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE));
+      const heartbeatProperty = formatPropertyDefinitions(getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns).filter(defn => defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT));
+
+      setFormProperties({
+        "engineProperty": engineProperty,
+        "heartbeatProperty": heartbeatProperty
+      });
+      setFormInitialValues(getInitialValues(_.union(engineProperty, heartbeatProperty)));
+      setValidationSchema(Yup.object().shape({}));
     }
   }, [stepIdReached]);
   const history = useHistory();
@@ -224,7 +236,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setAdvancedPropValues(advancePropertyValues);
     validateProperties(
       new Map(
-        (function* () {
+        (function*() {
           yield* basicPropertyValues;
           yield* advancePropertyValues;
         })()
@@ -263,7 +275,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         alert("Error Validation Connection Properties !: " + err);
       });
   };
-
+  
   // Update the filter values
   const handleFilterUpdate = (filterValue: Map<string, string>) => {
     setFilterValues(new Map(filterValue));
@@ -306,7 +318,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   console.log(formProperties)
   console.log(validationSchema)
   console.log(formInitialValues)
-
+  
   return (
     <>
       <PageSection
@@ -334,7 +346,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           initialValues={formInitialValues}
           validationSchema={validationSchema}
           onSubmit={values => {
-            console.log(JSON.stringify(values, null, 2));
             let basicValueMap = new Map<string, string>();
             basicValueMap = _.transform(
               values,
@@ -342,10 +353,23 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 result[key.replace(/_/g, ".")] = val;
               }
             );
-            handleValidateProperties(
-              basicValueMap,
-              PropertyCategory.BASIC
-            );
+
+            if (stepIdReached === 3) {
+              handleValidateProperties(
+                basicValueMap,
+                PropertyCategory.BASIC
+              );
+            } else if (stepIdReached === 5) {
+              handleValidateProperties(
+                basicValueMap,
+                PropertyCategory.DATA_OPTIONS_GENERAL
+              );
+            } else if (stepIdReached === 6) {
+              handleValidateProperties(
+                basicValueMap,
+                PropertyCategory.RUNTIME_OPTIONS_ENGINE
+              );
+            }
           }}
         >
           {({
@@ -355,7 +379,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             setFieldValue,
             validateForm
           }) => {
-
 
             const wizardSteps = [
               {
@@ -420,9 +443,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 type: 'button',
                 component: (
                   <RuntimeOptionsComponent
-                    propertyDefinitions={getRuntimeOptionsPropertyDefinitions(selectedConnectorPropertyDefns)}
-                    propertyValues={optionsPropValues}
-                    onValidateProperties={handleValidateProperties}
+                    formPropertiesDef={formProperties}
+                    errors={errors}
+                    touched={touched}
+                    setFieldValue={setFieldValue}
                   />
                 ),
                 canJumpTo: stepIdReached >= 5,

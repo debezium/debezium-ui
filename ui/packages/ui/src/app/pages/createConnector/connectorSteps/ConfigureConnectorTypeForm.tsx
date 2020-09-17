@@ -28,10 +28,18 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   const [showPublication, setShowPublication] = React.useState(true);
 
   const handlePropertyChange = (propName: string, propValue: any) => {
-    propName = propName.replace(/\_/g, ".");
+    propName = propName.replace(/\_/g, '.');
     if (propName === PropertyName.PLUGIN_NAME) {
       setShowPublication(propValue === "Pgoutput");
     }
+  }
+
+  const toggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
+    e.preventDefault();
+    const index = expanded.indexOf(id);
+    const newExpanded =
+      index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
+    setExpanded(newExpanded);
   };
   
   const { formPropertiesDef, errors, touched, setFieldValue } = props;
