@@ -315,10 +315,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   basicPropValuesTemp.set("database.dbname", "postgres");
   basicPropValuesTemp.set("database.server.name", "fullfillment");
 
-  console.log(formProperties)
-  console.log(validationSchema)
-  console.log(formInitialValues)
-  
   return (
     <>
       <PageSection
@@ -505,7 +501,7 @@ export const CustomFooter = ({ handleSubmit, validateForm }) => {
           return (
             <>
               <Button variant="primary" type="button" onClick={() => validateAndContinue(onNext)}>
-                Validate & Continue
+                Continue
               </Button>
               <Button variant="secondary" onClick={onBack}>
                 Back
