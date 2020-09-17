@@ -15,9 +15,6 @@ export interface IDataOptionsComponentProps {
 export const DataOptionsComponent: React.FC<IDataOptionsComponentProps> = (props) => {
  
   return (
-      <DataOptionsForm       
-      propertyDefinitions={props.propertyDefinitions}
-      propertyValues={props.propertyValues}
-      onValidateProperties={props.onValidateProperties} />
+      <DataOptionsForm {...props} />
   );
 }

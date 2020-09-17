@@ -4,16 +4,12 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionToggle,
-  Button,
   Grid,
   GridItem,
-  Title,
+  Title
 } from "@patternfly/react-core";
-import { Form, Formik } from "formik";
-import _ from "lodash";
 import * as React from "react";
-import { PropertyCategory, PropertyName } from "src/app/shared";
-import * as Yup from "yup";
+import { PropertyName } from "src/app/shared";
 import "./ConfigureConnectorTypeForm.css";
 import { FormComponent } from "./shared";
 
@@ -22,7 +18,7 @@ export interface IConfigureConnectorTypeFormProps {
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
-  onValidateProperties: (basicPropertyValues: Map<string,string>,advancePropertyValues:Map<string,string>) => void;
+  onValidateProperties: (basicPropertyValues: Map<string, string>, advancePropertyValues: Map<string, string>) => void;
 }
 
 export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConnectorTypeFormProps> = (
@@ -31,286 +27,165 @@ export const ConfigureConnectorTypeForm: React.FunctionComponent<IConfigureConne
   const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
   const [showPublication, setShowPublication] = React.useState(true);
 
-  const basicValidationSchema = {};
-
-  const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-    const propertyValuesCopy = JSON.parse(JSON.stringify(propertyValues));
-    return propertyValuesCopy.map((key: { name: string }) => {
-      key.name = key.name.replace(/\./g, "_");
-      return key;
-    });
-  };
-  const basicPropertyDefinitions = formatPropertyDefinitions(
-    props.basicPropertyDefinitions
-  );
-  const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(
-    props.advancedPropertyDefinitions.filter(
-      (defn) => defn.category === PropertyCategory.ADVANCED_GENERAL
-    )
-  );
-  const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(
-    props.advancedPropertyDefinitions.filter(
-      (defn) => defn.category === PropertyCategory.ADVANCED_REPLICATION
-    )
-  );
-  const advancedPublicationPropertyDefinitions = formatPropertyDefinitions(
-    props.advancedPropertyDefinitions.filter(
-      (defn) => defn.category === PropertyCategory.ADVANCED_PUBLICATION
-    )
-  );
-
-  // Just added String and Password type
-  basicPropertyDefinitions.map((key: any) => {
-    if (key.type === "STRING") {
-      basicValidationSchema[key.name] = Yup.string();
-    } else if (key.type === "PASSWORD") {
-      basicValidationSchema[key.name] = Yup.string();
-    } else if (key.type === "INT") {
-      basicValidationSchema[key.name] = Yup.string();
-    }
-    if (key.isMandatory) {
-      basicValidationSchema[key.name] = basicValidationSchema[
-        key.name
-      ].required(`${key.displayName} is required`);
-    }
-  });
-
-  const validationSchema = Yup.object().shape({ ...basicValidationSchema });
-
-  const toggle = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: string
-  ) => {
-    e.preventDefault();
-    const index = expanded.indexOf(id);
-    const newExpanded =
-      index >= 0
-        ? [
-            ...expanded.slice(0, index),
-            ...expanded.slice(index + 1, expanded.length),
-          ]
-        : [...expanded, id];
-    setExpanded(newExpanded);
-  };
-
-  const getInitialValues = (combined: any) => {
-    const combinedValue: any = {};
-
-    combined.map((key: { name: string; defaultValue: string }) => {
-      if (!combinedValue[key.name]) {
-        combinedValue[key.name] = key.defaultValue || "";
-      }
-    });
-    return combinedValue;
-  };
-
   const handlePropertyChange = (propName: string, propValue: any) => {
     propName = propName.replace(/\_/g, ".");
     if (propName === PropertyName.PLUGIN_NAME) {
       setShowPublication(propValue === "Pgoutput");
     }
   };
-
-  const initialValues = getInitialValues(
-    _.union(
-      basicPropertyDefinitions,
-      advancedGeneralPropertyDefinitions,
-      advancedReplicationPropertyDefinitions,
-      advancedPublicationPropertyDefinitions
-    )
-  );
-
-  const handleSubmit = (valueMap: Map<string, string>) => {
-    // the basic properties
-    const basicValueMap: Map<string, string> = new Map();
-    for (const basicProp of props.basicPropertyDefinitions) {
-      if ( typeof basicProp.defaultValue === 'undefined' || basicProp.defaultValue !== valueMap[basicProp.name] ) {
-        basicValueMap.set(basicProp.name, valueMap[basicProp.name]);
-      }
-    }
-    // the advance properties
-    const advancedValueMap: Map<string, string> = new Map();
-    for (const advancedProp of props.advancedPropertyDefinitions) {
-      if ( typeof advancedProp.defaultValue === 'undefined' || advancedProp.defaultValue !== valueMap[advancedProp.name] ) {
-        advancedValueMap.set(advancedProp.name, valueMap[advancedProp.name]);
-      }
-    }
-    props.onValidateProperties(basicValueMap, advancedValueMap);
-  };
-
+  
+  const { formPropertiesDef, errors, touched, setFieldValue } = props;
   return (
-    <div>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={(values) => {
-          let valueMap = new Map<string, string>();
-          valueMap = _.transform(values, (result, val: string, key: string) => {
-            result[key.replace(/_/g, ".")] = val;
-          });
-          handleSubmit(valueMap);
-        }}
-      >
-        {({ errors, touched, handleChange, isSubmitting }) => (
-          <Form className="pf-c-form">
-            <Accordion asDefinitionList={true}>
-              <AccordionItem>
-                <AccordionToggle
-                  onClick={(e) => {
-                    toggle(e, "basic");
-                  }}
-                  isExpanded={expanded.includes("basic")}
-                  id="basic"
-                  className="dbz-c-accordion"
-                >
-                  Basic Properties
-                </AccordionToggle>
-                <AccordionContent
-                  id="basic"
-                  className="dbz-c-accordion__content"
-                  isHidden={!expanded.includes("basic")}
-                >
-                  <Grid hasGutter={true}>
-                    {basicPropertyDefinitions.map(
-                      (propertyDefinition: ConnectorProperty, index: any) => {
-                        return (
-                          <GridItem key={index}>
-                            <FormComponent
-                              propertyDefinition={propertyDefinition}
-                              propertyChange={handlePropertyChange}
-                              helperTextInvalid={
-                                errors[propertyDefinition.name]
-                              }
-                              validated={
-                                errors[propertyDefinition.name] &&
+    <Accordion asDefinitionList={true}>
+      <AccordionItem>
+        <AccordionToggle
+          onClick={(e) => {
+            toggle(e, "basic");
+          }}
+          isExpanded={expanded.includes("basic")}
+          id="basic"
+          className="dbz-c-accordion"
+        >
+          Basic Properties
+        </AccordionToggle>
+        <AccordionContent
+          id="basic"
+          className="dbz-c-accordion__content"
+          isHidden={!expanded.includes("basic")}
+        >
+          <Grid hasGutter={true}>
+            {formPropertiesDef.basicProperty !== undefined ?
+              formPropertiesDef.basicProperty.map(
+                (propertyDefinition: ConnectorProperty, index) => {
+                  return (
+                    <GridItem key={index}>
+                      <FormComponent
+                        setFieldValue={setFieldValue}
+                        propertyDefinition={propertyDefinition}
+                        propertyChange={handlePropertyChange}
+                        helperTextInvalid={
+                          errors[propertyDefinition.name]
+                        }
+
+                        validated={
+                          errors[propertyDefinition.name] &&
+                            touched[propertyDefinition.name]
+                            ? "error"
+                            : "default"
+                        }
+                      />
+                    </GridItem>
+                  );
+                }
+              ) : null}
+          </Grid>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem>
+        <AccordionToggle
+          onClick={(e) => {
+            toggle(e, "advanced");
+          }}
+          isExpanded={expanded.includes("advanced")}
+          id="advanced"
+          className="dbz-c-accordion"
+        >
+          Advanced Properties
+        </AccordionToggle>
+        <AccordionContent
+          id="advance"
+          isHidden={!expanded.includes("advanced")}
+        >
+          <Grid hasGutter={true}>
+            {formPropertiesDef.advancedGeneralProperty !== undefined ?
+              formPropertiesDef.advancedGeneralProperty.map(
+                (propertyDefinition: ConnectorProperty, index) => {
+                  return (
+                    <GridItem key={index}>
+                      <FormComponent
+                        setFieldValue={setFieldValue}
+                        propertyDefinition={propertyDefinition}
+                        propertyChange={handlePropertyChange}
+                        helperTextInvalid={
+                          errors[propertyDefinition.name]
+                        }
+                        validated={
+                          errors[propertyDefinition.name] &&
+                            touched[propertyDefinition.name]
+                            ? "error"
+                            : "default"
+                        }
+                      />
+                    </GridItem>
+                  );
+                }) : null}
+          </Grid>
+          <Title
+            headingLevel="h2"
+            className="configure-connector-type-form-grouping"
+          >
+            Replication
+          </Title>
+          <Grid hasGutter={true}>
+            {formPropertiesDef.advancedReplicationProperty !== undefined ?
+              formPropertiesDef.advancedReplicationProperty.map(
+                (propertyDefinition: ConnectorProperty, index) => {
+                  return (
+                    <GridItem key={index}>
+                      <FormComponent
+                        setFieldValue={setFieldValue}
+                        propertyDefinition={propertyDefinition}
+                        propertyChange={handlePropertyChange}
+                        helperTextInvalid={
+                          errors[propertyDefinition.name]
+                        }
+                        validated={
+                          errors[propertyDefinition.name] &&
+                            touched[propertyDefinition.name]
+                            ? "error"
+                            : "default"
+                        }
+                      />
+                    </GridItem>
+                  );
+                }) : null}
+          </Grid>
+          {showPublication && (
+            <>
+              <Title
+                headingLevel="h2"
+                className="configure-connector-type-form-grouping"
+              >
+                Publication
+              </Title>
+              <Grid hasGutter={true}>
+                {formPropertiesDef.advancedPublicationProperty !== undefined ?
+                  formPropertiesDef.advancedPublicationProperty.map(
+                    (propertyDefinition: ConnectorProperty, index) => {
+                      return (
+                        <GridItem key={index}>
+                          <FormComponent
+                            setFieldValue={setFieldValue}
+                            propertyDefinition={propertyDefinition}
+                            propertyChange={handlePropertyChange}
+                            helperTextInvalid={
+                              errors[propertyDefinition.name]
+                            }
+                            validated={
+                              errors[propertyDefinition.name] &&
                                 touched[propertyDefinition.name]
-                                  ? "error"
-                                  : "default"
-                              }
-                            />
-                          </GridItem>
-                        );
-                      }
-                    )}
-                  </Grid>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem>
-                <AccordionToggle
-                  onClick={(e) => {
-                    toggle(e, "advanced");
-                  }}
-                  isExpanded={expanded.includes("advanced")}
-                  id="advanced"
-                  className="dbz-c-accordion"
-                >
-                  Advanced Properties
-                </AccordionToggle>
-                <AccordionContent
-                  id="advance"
-                  isHidden={!expanded.includes("advanced")}
-                >
-                  <Grid hasGutter={true}>
-                    {advancedGeneralPropertyDefinitions.map(
-                      (propertyDefinition: ConnectorProperty, index: any) => {
-                        return (
-                          <GridItem key={index}>
-                            <FormComponent
-                              propertyDefinition={propertyDefinition}
-                              propertyChange={handlePropertyChange}
-                              helperTextInvalid={
-                                errors[propertyDefinition.name]
-                              }
-                              validated={
-                                errors[propertyDefinition.name] &&
-                                touched[propertyDefinition.name]
-                                  ? "error"
-                                  : "default"
-                              }
-                            />
-                          </GridItem>
-                        );
-                      }
-                    )}
-                  </Grid>
-                  <Title
-                    headingLevel="h2"
-                    className="configure-connector-type-form-grouping"
-                  >
-                    Replication
-                  </Title>
-                  <Grid hasGutter={true}>
-                    {advancedReplicationPropertyDefinitions.map(
-                      (propertyDefinition: ConnectorProperty, index: any) => {
-                        return (
-                          <GridItem key={index}>
-                            <FormComponent
-                              propertyDefinition={propertyDefinition}
-                              propertyChange={handlePropertyChange}
-                              helperTextInvalid={
-                                errors[propertyDefinition.name]
-                              }
-                              validated={
-                                errors[propertyDefinition.name] &&
-                                touched[propertyDefinition.name]
-                                  ? "error"
-                                  : "default"
-                              }
-                            />
-                          </GridItem>
-                        );
-                      }
-                    )}
-                  </Grid>
-                  {showPublication && (
-                    <>
-                      <Title
-                        headingLevel="h2"
-                        className="configure-connector-type-form-grouping"
-                      >
-                        Publication
-                      </Title>
-                      <Grid hasGutter={true}>
-                        {advancedPublicationPropertyDefinitions.map(
-                          (
-                            propertyDefinition: ConnectorProperty,
-                            index: any
-                          ) => {
-                            return (
-                              <GridItem key={index}>
-                                <FormComponent
-                                  propertyDefinition={propertyDefinition}
-                                  propertyChange={handlePropertyChange}
-                                  helperTextInvalid={
-                                    errors[propertyDefinition.name]
-                                  }
-                                  validated={
-                                    errors[propertyDefinition.name] &&
-                                    touched[propertyDefinition.name]
-                                      ? "error"
-                                      : "default"
-                                  }
-                                />
-                              </GridItem>
-                            );
-                          }
-                        )}
-                      </Grid>
-                    </>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-            <Grid hasGutter={true}>
-              <GridItem>
-                <Button variant="primary" type="submit" disabled={isSubmitting}>
-                  Validate
-                </Button>
-              </GridItem>
-            </Grid>
-          </Form>
-        )}
-      </Formik>
-    </div>
+                                ? "error"
+                                : "default"
+                            }
+                          />
+                        </GridItem>
+                      );
+                    }) : null}
+              </Grid>
+            </>
+          )}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
