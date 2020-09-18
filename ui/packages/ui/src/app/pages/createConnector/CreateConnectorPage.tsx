@@ -2,7 +2,7 @@ import {
   ConnectionValidationResult,
   ConnectorProperty,
   ConnectorType,
-  PropertiesValidationResult,
+  PropertiesValidationResult
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
@@ -19,10 +19,10 @@ import {
   TitleSizes,
   Wizard,
   WizardContextConsumer,
-  WizardFooter,
+  WizardFooter
 } from "@patternfly/react-core";
 import React, { Dispatch, SetStateAction } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   fetch_retry,
   getAdvancedPropertyDefinitions,
@@ -30,14 +30,14 @@ import {
   getDataOptionsPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
   mapToObject,
-  PropertyCategory,
+  PropertyCategory
 } from "src/app/shared";
 import {
   ConfigureConnectorTypeComponent,
   ConnectorTypeStepComponent,
   DataOptionsComponent,
   FiltersStepComponent,
-  RuntimeOptionsComponent,
+  RuntimeOptionsComponent
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
 
@@ -113,7 +113,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   >(false);
 
   const history = useHistory();
-
+  const location = useLocation();
   const connectionPropsRef = React.useRef();
   const dataOptionRef = React.useRef();
   const runtimeOptionRef = React.useRef();
@@ -131,10 +131,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
     // TODO: Need to have a name input on one of the pages
     const connName = "myConnector";
-
+    const clusterID =  location.state.value;
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.createConnector, connectorService, [
-      1,
+      clusterID,
       selectedConnectorType,
       {
         name: connName,
