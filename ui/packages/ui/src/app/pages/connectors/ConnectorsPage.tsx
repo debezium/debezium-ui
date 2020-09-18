@@ -11,15 +11,12 @@ import {
   Flex,
   FlexItem,
   Form,
-  FormGroup,
-  FormSelect,
-  FormSelectOption,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 import React from "react";
-import { Link } from "react-router-dom";
-import { PageLoader } from "src/app/components";
+import { useHistory } from "react-router-dom";
+import { BasicSelectInput, PageLoader } from "src/app/components";
 import { ApiError, fetch_retry } from "src/app/shared";
 import { WithLoader } from "src/app/shared/WithLoader";
 import { ConnectorListItem } from "./ConnectorListItem";
@@ -52,10 +49,26 @@ export const ConnectorsPage: React.FunctionComponent = () => {
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
+  const history = useHistory();
 
   const onChange = (value: string, event: any) => {
     setConnectCluster(value);
   };
+
+  const createConnector = () => {
+    if(connectCluster === "" ){
+      setConnectCluster(connectClusters[0])
+      history.push({
+        pathname: "/app/create-connector",
+        state: { value: 1 }
+      })
+    }else{
+      history.push({
+        pathname: "/app/create-connector",
+        state: { value: connectClusters.indexOf(connectCluster) + 1 }
+      })
+    }
+  }
 
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
@@ -80,26 +93,12 @@ export const ConnectorsPage: React.FunctionComponent = () => {
       {() => (
         <>
           <Form>
-            <FormGroup
+            <BasicSelectInput 
+              options={connectClusters} 
               label="Kafka connect cluster"
               fieldId="kafka-connect-cluster"
-            >
-              <FormSelect
-                value={connectCluster}
-                onChange={onChange}
-                id="kafka-connect-cluster"
-                name="kafka-connect-cluster"
-                aria-label="Your title"
-              >
-                {connectClusters.map((cCluster, index) => (
-                  <FormSelectOption
-                    key={index}
-                    value={cCluster}
-                    label={cCluster}
-                  />
-                ))}
-              </FormSelect>
-            </FormGroup>
+              propertyChange={onChange}
+            />
           </Form>
           {connectors.length > 0 ? (
             <>
@@ -108,14 +107,13 @@ export const ConnectorsPage: React.FunctionComponent = () => {
                   <Title headingLevel={"h1"}>Connectors</Title>
                 </FlexItem>
                 <FlexItem>
-                  <Link to="/app/create-connector">
-                    <Button
-                      variant="primary"
-                      className="connectors-page_toolbarCreateButton"
-                    >
-                      Create a connector
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="primary"
+                    onClick={createConnector}
+                    className="connectors-page_toolbarCreateButton"
+                  >
+                    Create a connector
+                  </Button>
                 </FlexItem>
               </Flex>
               <DataList aria-label={"connector list"}>
@@ -141,14 +139,13 @@ export const ConnectorsPage: React.FunctionComponent = () => {
                 <EmptyStateBody>
                   Please click 'Create a connector' to create a new connector.
                 </EmptyStateBody>
-                <Link to="/app/create-connector">
                   <Button
+                    onClick={createConnector}
                     variant="primary"
                     className="connectors-page_createButton"
                   >
                     Create a connector
                   </Button>
-                </Link>
               </EmptyState>
             </Bullseye>
           )}
