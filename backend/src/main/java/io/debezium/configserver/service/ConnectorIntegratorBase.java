@@ -113,8 +113,8 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
     private List<PropertyValidationResult> toPropertyValidationResults(Config result) {
         return result.configValues()
                 .stream()
-                .filter(ConfigValue::visible)
                 .filter(cv -> !cv.errorMessages().isEmpty())
+                .filter(cv -> !cv.errorMessages().get(0).equals(cv.name() + " is referred in the dependents, but not defined."))
                 .map(cv -> new PropertyValidationResult(cv.name(), cv.errorMessages().get(0)))
                 .collect(Collectors.toList());
     }

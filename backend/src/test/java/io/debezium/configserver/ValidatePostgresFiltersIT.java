@@ -98,7 +98,7 @@ public class ValidatePostgresFiltersIT {
     }
 
     @Test
-    public void testSchemaIncludeListPatternException() {
+    public void testSchemaIncludeListPatternInvalid() {
         ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
             Infrastructure.getPostgresConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
@@ -115,6 +115,27 @@ public class ValidatePostgresFiltersIT {
                 .body("matchedCollections.size()", is(0))
                 .rootPath("propertyValidationResults[0]")
                 .body("property", equalTo("schema.include.list"))
+                .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
+    }
+
+    @Test
+    public void testSchemaExcludeListPatternInvalid() {
+        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
+            Infrastructure.getPostgresConnectorConfiguration(1)
+                .with("database.hostname", "localhost")
+                .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
+                .with("schema.exclude.list", "+")
+        );
+
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "postgres")
+            .then().log().all()
+            .statusCode(200)
+            .assertThat().body("status", equalTo("INVALID"))
+                .body("propertyValidationResults.size()", is(1))
+                .body("matchedCollections.size()", is(0))
+                .rootPath("propertyValidationResults[0]")
+                .body("property", equalTo("schema.exclude.list"))
                 .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
     }
 
