@@ -139,6 +139,8 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
     saveFilter: boolean,
     filterExpression: Map<string, string> = formData
   ) => {
+    // TODO: The connector type should not be hardcode.  Use type selected.
+
     fetch_retry(connectorService.validateFilters, connectorService, [
       "postgres",
       mapToObject(

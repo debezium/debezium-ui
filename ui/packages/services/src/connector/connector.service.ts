@@ -104,13 +104,10 @@ export class ConnectorService extends BaseService {
      *  .then((result: CreateConnectorResult) => {
      *  });
      */
-    public createConnector(connectorConfig: ConnectorConfiguration): Promise<void> {
-        this.logger.info("[ConnectorService] Creating a connector:", connectorConfig.name);
+    public createConnector(clusterId: number, connectorTypeId: string, body: any): Promise<void> {
+        this.logger.info("[ConnectorService] Creating a connector:");
 
-        const endpoint: string = this.endpoint("/connector");
-        const body = {
-            connectorConfig
-        };
+        const endpoint: string = this.endpoint("/connector/:clusterId/:connectorTypeId", { clusterId, connectorTypeId });
         return this.httpPostWithReturn(endpoint, body);
     }
 
