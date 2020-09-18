@@ -76,6 +76,7 @@ export interface ConnectorProperty {
     'CONNECTION_ADVANCED_SSL' | 
     'FILTERS' |
     'CONNECTOR' |
+    'CONNECTOR_NAME' | 
     'CONNECTOR_ADVANCED' | 
     'CONNECTOR_SNAPSHOT' | 
     'ADVANCED' | 

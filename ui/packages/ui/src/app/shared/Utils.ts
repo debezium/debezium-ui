@@ -8,7 +8,8 @@ export enum ConnectorTypeId {
 }
 
 export enum PropertyName {
-  DATABASE_SERVER_NAME = 'database.server.name',
+  CONNECTOR_NAME = "connector.name",
+  DATABASE_SERVER_NAME = "database.server.name",
   DATABASE_DBNAME = "database.dbname",
   DATABASE_HOSTNAME = "database.hostname",
   DATABASE_PORT = "database.port",
@@ -73,6 +74,7 @@ export enum PropertyName {
 }
 
 export enum PropertyCategory {
+  CONNECTOR_NAME = "CONNECTOR_NAME",
   BASIC = "CONNECTION",
   ADVANCED_GENERAL = "CONNECTION_ADVANCED",
   ADVANCED_REPLICATION = "CONNECTION_ADVANCED_REPLICATION",
@@ -121,6 +123,17 @@ export function getBasicPropertyDefinitions(
       connProperties.push(propDefn);
     }
   }
+  // Add a property for the Connector name
+  const connNameProperty = {
+    category: PropertyCategory.CONNECTOR_NAME,
+    description: "The connector name",
+    displayName: "Connector name",
+    name: "connector.name",
+    isMandatory: true,
+    type: "STRING"
+  } as ConnectorProperty;
+  connProperties.push(connNameProperty);
+
   return connProperties;
 }
 
@@ -197,6 +210,25 @@ export function getRuntimeOptionsPropertyDefinitions(
     }
   }
   return connProperties;
+}
+
+/**
+ * Determine if the supplied category is one of the Data Options
+ * @param propertyCategory the category
+ */
+export function isDataOptions (propertyCategory: PropertyCategory): boolean {
+  return (propertyCategory === PropertyCategory.DATA_OPTIONS_GENERAL ||
+          propertyCategory === PropertyCategory.DATA_OPTIONS_ADVANCED ||
+          propertyCategory === PropertyCategory.DATA_OPTIONS_SNAPSHOT);
+}
+
+/**
+ * Determine if the supplied category is one of the Runtime Options
+ * @param propertyCategory the category
+ */
+export function isRuntimeOptions (propertyCategory: PropertyCategory): boolean {
+  return (propertyCategory === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
+          propertyCategory === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT);
 }
 
 export function mapToObject(inputMap: Map<string, string>) {

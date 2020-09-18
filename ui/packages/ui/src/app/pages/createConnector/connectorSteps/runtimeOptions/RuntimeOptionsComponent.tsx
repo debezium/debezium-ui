@@ -1,5 +1,5 @@
 import { ConnectorProperty } from "@debezium/ui-models/dist/js/ui.model";
-import { Grid, GridItem, Title } from "@patternfly/react-core";
+import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Grid, GridItem } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
@@ -31,6 +31,7 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
 
 export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
   (props, ref) => {
+    const [expanded, setExpanded] = React.useState<string[]>(["engine","heartbeat"]);
     const basicValidationSchema = {};
 
     const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
@@ -72,6 +73,22 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
 
     const handlePropertyChange = (propName: string, propValue: any) => {
       // TODO: handling for property change if needed.
+    };
+
+    const toggle = (
+      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      id: string
+    ) => {
+      e.preventDefault();
+      const index = expanded.indexOf(id);
+      const newExpanded =
+        index >= 0
+          ? [
+              ...expanded.slice(0, index),
+              ...expanded.slice(index + 1, expanded.length),
+            ]
+          : [...expanded, id];
+      setExpanded(newExpanded);
     };
 
     const getInitialValues = (combined: any) => {
@@ -120,51 +137,90 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
         >
           {({ errors, touched, handleChange, isSubmitting }) => (
             <Form className="pf-c-form">
-              <Title headingLevel="h2">Engine properties</Title>
-              <Grid hasGutter={true}>
-                {enginePropertyDefinitions.map(
-                  (propertyDefinition: ConnectorProperty, index) => {
-                    return (
-                      <GridItem key={index}>
-                        <FormComponent
-                          propertyDefinition={propertyDefinition}
-                          // propertyChange={handlePropertyChange}
-                          helperTextInvalid={errors[propertyDefinition.name]}
-                          validated={
-                            errors[propertyDefinition.name] &&
-                            touched[propertyDefinition.name]
-                              ? "error"
-                              : "default"
-                          }
-                          propertyChange={handlePropertyChange}
-                        />
-                      </GridItem>
-                    );
-                  }
-                )}
-              </Grid>
-              <Title headingLevel="h2">Heartbeat properties</Title>
-              <Grid hasGutter={true}>
-                {heartbeatPropertyDefinitions.map(
-                  (propertyDefinition: ConnectorProperty, index) => {
-                    return (
-                      <GridItem key={index}>
-                        <FormComponent
-                          propertyDefinition={propertyDefinition}
-                          propertyChange={handlePropertyChange}
-                          helperTextInvalid={errors[propertyDefinition.name]}
-                          validated={
-                            errors[propertyDefinition.name] &&
-                            touched[propertyDefinition.name]
-                              ? "error"
-                              : "default"
-                          }
-                        />
-                      </GridItem>
-                    );
-                  }
-                )}
-              </Grid>
+              <Accordion asDefinitionList={true}>
+                <AccordionItem>
+                  <AccordionToggle
+                    onClick={(e) => {
+                      toggle(e, "engine");
+                    }}
+                    isExpanded={expanded.includes("engine")}
+                    id="engine"
+                    className="dbz-c-accordion"
+                  >
+                    Engine properties
+                  </AccordionToggle>
+                  <AccordionContent
+                    id="engine"
+                    className="dbz-c-accordion__content"
+                    isHidden={!expanded.includes("engine")}
+                  >
+                    <Grid hasGutter={true}>
+                      {enginePropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem key={index}>
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                // propertyChange={handlePropertyChange}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                                propertyChange={handlePropertyChange}
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem>
+                  <AccordionToggle
+                    onClick={(e) => {
+                      toggle(e, "heartbeat");
+                    }}
+                    isExpanded={expanded.includes("heartbeat")}
+                    id="heartbeat"
+                    className="dbz-c-accordion"
+                  >
+                    Heartbeat properties
+                  </AccordionToggle>
+                  <AccordionContent
+                    id="heartbeat"
+                    isHidden={!expanded.includes("heartbeat")}
+                  >
+                    <Grid hasGutter={true}>
+                      {heartbeatPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem key={index}>
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                propertyChange={handlePropertyChange}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
               <FormSubmit ref={ref} />
             </Form>
           )}

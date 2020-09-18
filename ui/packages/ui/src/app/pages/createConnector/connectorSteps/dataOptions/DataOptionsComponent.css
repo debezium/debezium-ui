@@ -3,3 +3,10 @@
     margin: 20px 0
   }
 }
+
+.data-options-component {
+  &-grouping {
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+}
