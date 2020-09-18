@@ -1,22 +1,25 @@
-import { ConnectorProperty } from '@debezium/ui-models/dist/js/ui.model';
+import { ConnectorProperty } from "@debezium/ui-models/dist/js/ui.model";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionToggle,
   Grid,
-  GridItem
-} from '@patternfly/react-core';
+  GridItem,
+} from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
-import _ from 'lodash';
-import * as React from 'react';
-import { PropertyCategory } from 'src/app/shared';
-import { FormComponent } from '../shared';
+import _ from "lodash";
+import * as React from "react";
+import { PropertyCategory } from "src/app/shared";
+import { FormComponent } from "../shared";
 
 export interface IDataOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
-  propertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>, propertyCategory: PropertyCategory) => void;
+  propertyValues: Map<string, string>;
+  onValidateProperties: (
+    connectorProperties: Map<string, string>,
+    propertyCategory: PropertyCategory
+  ) => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
@@ -75,7 +78,9 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
 
       combined.map((key: { name: string; defaultValue: string }) => {
         if (!combinedValue[key.name]) {
-          key.defaultValue === undefined ? combinedValue[key.name] = "" : combinedValue[key.name] = key.defaultValue
+          key.defaultValue === undefined
+            ? (combinedValue[key.name] = "")
+            : (combinedValue[key.name] = key.defaultValue);
         }
       });
       return combinedValue;
@@ -90,18 +95,14 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     );
 
     const handleSubmit = (valueMap: Map<string, string>) => {
-
       const dataValueMap: Map<string, string> = new Map();
       for (const dataValue of props.propertyDefinitions) {
-        // To-do: Remove the boolean check once backend fix is available
-        if(typeof(valueMap[dataValue.name]) !== "boolean"){
-          dataValueMap.set(dataValue.name, valueMap[dataValue.name]);
-        }
-        dataValueMap.set(dataValue.name, ""+valueMap[dataValue.name]);
-        
+        dataValueMap.set(dataValue.name, valueMap[dataValue.name]);
       }
-      props.onValidateProperties(dataValueMap, PropertyCategory.DATA_OPTIONS_GENERAL);
-      
+      props.onValidateProperties(
+        dataValueMap,
+        PropertyCategory.DATA_OPTIONS_GENERAL
+      );
     };
 
     return (

@@ -6,7 +6,7 @@ import {
   AccordionToggle,
   Grid,
   GridItem,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
@@ -112,7 +112,9 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
 
       combined.map((key: { name: string; defaultValue: string }) => {
         if (!combinedValue[key.name]) {
-          key.defaultValue === undefined ? combinedValue[key.name] = "" : combinedValue[key.name] = key.defaultValue
+          key.defaultValue === undefined
+            ? (combinedValue[key.name] = "")
+            : (combinedValue[key.name] = key.defaultValue);
         }
       });
       return combinedValue;
@@ -142,15 +144,9 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
       // the advance properties
       const advancedValueMap: Map<string, string> = new Map();
       for (const advancedValue of props.advancedPropertyDefinitions) {
-        // To-do: Remove the boolean check once backend fix is available
-        if(typeof(valueMap[advancedValue.name]) !== "boolean"){
-          advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
-        }
-        advancedValueMap.set(advancedValue.name, ""+valueMap[advancedValue.name]);
-        
+        advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
       }
       props.onValidateProperties(basicValueMap, advancedValueMap);
-      
     };
 
     return (
