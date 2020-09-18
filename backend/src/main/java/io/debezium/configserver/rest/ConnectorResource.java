@@ -152,6 +152,11 @@ public class ConnectorResource {
         return Response.ok(integrator.getDescriptor()).build();
     }
 
+    private Map<String, String> convertPropertiesToStrings(Map<String, ?> properties) {
+        return properties.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
+    }
+
     @Path(CONNECTION_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -169,7 +174,7 @@ public class ConnectorResource {
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = BadRequestResponse.class)
             ))
-    public Response validateConnectionProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
+    public Response validateConnectionProperties(@PathParam("id") String connectorTypeId, Map<String, ?> properties) {
         ConnectorIntegrator integrator = integrators.get(connectorTypeId);
 
         if (integrator == null) {
@@ -178,7 +183,7 @@ public class ConnectorResource {
                     .build();
         }
 
-        ConnectionValidationResult validationResult = integrator.validateConnection(properties);
+        ConnectionValidationResult validationResult = integrator.validateConnection(convertPropertiesToStrings(properties));
 
         return Response.ok(validationResult)
                 .build();
@@ -208,7 +213,7 @@ public class ConnectorResource {
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
-    public Response validateFilters(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
+    public Response validateFilters(@PathParam("id") String connectorTypeId, Map<String, ?> properties) {
         ConnectorIntegrator integrator = integrators.get(connectorTypeId);
 
         if (integrator == null) {
@@ -218,7 +223,7 @@ public class ConnectorResource {
         }
 
         try {
-            FilterValidationResult validationResult = integrator.validateFilters(properties);
+            FilterValidationResult validationResult = integrator.validateFilters(convertPropertiesToStrings(properties));
 
             return Response.ok(validationResult)
                     .build();
@@ -248,7 +253,7 @@ public class ConnectorResource {
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = BadRequestResponse.class)
             ))
-    public Response validateConnectorProperties(@PathParam("id") String connectorTypeId, Map<String, String> properties) {
+    public Response validateConnectorProperties(@PathParam("id") String connectorTypeId, Map<String, ?> properties) {
         ConnectorIntegrator integrator = integrators.get(connectorTypeId);
 
         if (integrator == null) {
@@ -257,7 +262,7 @@ public class ConnectorResource {
                     .build();
         }
 
-        PropertiesValidationResult validationResult = integrator.validateProperties(properties);
+        PropertiesValidationResult validationResult = integrator.validateProperties(convertPropertiesToStrings(properties));
 
         return Response.ok(validationResult)
                 .build();
@@ -337,7 +342,7 @@ public class ConnectorResource {
                     .build();
         }
 
-        PropertiesValidationResult validationResult = integrator.validateProperties(kafkaConnectConfig.config);
+        PropertiesValidationResult validationResult = integrator.validateProperties(convertPropertiesToStrings(kafkaConnectConfig.config));
 
         if (validationResult.status == PropertiesValidationResult.Status.INVALID) {
             return Response.status(Status.BAD_REQUEST).entity(validationResult).build();

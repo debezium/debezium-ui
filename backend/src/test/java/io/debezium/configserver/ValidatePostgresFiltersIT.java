@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
@@ -110,8 +109,13 @@ public class ValidatePostgresFiltersIT {
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
             .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
-            .statusCode(500)
-            .assertThat().body("details", containsString("Dangling meta character '+' near index 0"));
+            .statusCode(200)
+            .assertThat().body("status", equalTo("INVALID"))
+                .body("propertyValidationResults.size()", is(1))
+                .body("matchedCollections.size()", is(0))
+                .rootPath("propertyValidationResults[0]")
+                .body("property", equalTo("schema.include.list"))
+                .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
     }
 
 }

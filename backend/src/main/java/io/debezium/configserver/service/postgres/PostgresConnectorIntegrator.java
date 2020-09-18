@@ -41,13 +41,13 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(PostgresConnectorConfig.PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(PostgresConnectorConfig.DATABASE_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
 
-        // Connection properties - advanced section
-        additionalMetadata.put(PostgresConnectorConfig.SSL_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED, enumArrayToList(PostgresConnectorConfig.SecureConnectionMode.values())));
-        additionalMetadata.put(PostgresConnectorConfig.SSL_CLIENT_CERT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
-        additionalMetadata.put(PostgresConnectorConfig.SSL_CLIENT_KEY_PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
-        additionalMetadata.put(PostgresConnectorConfig.SSL_ROOT_CERT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
-        additionalMetadata.put(PostgresConnectorConfig.SSL_CLIENT_KEY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
-        additionalMetadata.put(PostgresConnectorConfig.SSL_SOCKET_FACTORY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
+        // Connection properties - advanced section incl SSL subcategory
+        additionalMetadata.put(PostgresConnectorConfig.SSL_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL, enumArrayToList(PostgresConnectorConfig.SecureConnectionMode.values())));
+        additionalMetadata.put(PostgresConnectorConfig.SSL_CLIENT_CERT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL));
+        additionalMetadata.put(PostgresConnectorConfig.SSL_CLIENT_KEY_PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL));
+        additionalMetadata.put(PostgresConnectorConfig.SSL_ROOT_CERT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL));
+        additionalMetadata.put(PostgresConnectorConfig.SSL_CLIENT_KEY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL));
+        additionalMetadata.put(PostgresConnectorConfig.SSL_SOCKET_FACTORY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL));
         additionalMetadata.put(PostgresConnectorConfig.TCP_KEEPALIVE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.ON_CONNECT_STATEMENTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
 
@@ -103,8 +103,8 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(PostgresConnectorConfig.TRUNCATE_COLUMN.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.MASK_COLUMN.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.MASK_COLUMN_WITH_HASH.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
-        // -PLACEHOLDER- Missing field for datatype.propagate.source.type, filed: https://issues.redhat.com/browse/DBZ-2516
-        // -PLACEHOLDER- Missing field for column.propagate.source.typem, filed: https://issues.redhat.com/browse/DBZ-2516
+        additionalMetadata.put(PostgresConnectorConfig.PROPAGATE_DATATYPE_SOURCE_TYPE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
+        additionalMetadata.put(PostgresConnectorConfig.PROPAGATE_COLUMN_SOURCE_TYPE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.MSG_KEY_COLUMNS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.INCLUDE_UNKNOWN_DATATYPES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.TOASTED_VALUE_PLACEHOLDER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
