@@ -1,22 +1,25 @@
-import { ConnectorProperty } from '@debezium/ui-models/dist/js/ui.model';
+import { ConnectorProperty } from "@debezium/ui-models/dist/js/ui.model";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionToggle,
   Grid,
-  GridItem
-} from '@patternfly/react-core';
+  GridItem,
+} from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
-import _ from 'lodash';
-import * as React from 'react';
-import { PropertyCategory } from 'src/app/shared';
-import { FormComponent } from '../shared';
+import _ from "lodash";
+import * as React from "react";
+import { PropertyCategory } from "src/app/shared";
+import { FormComponent } from "../shared";
 
 export interface IDataOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
-  propertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>, propertyCategory: PropertyCategory) => void;
+  propertyValues: Map<string, string>;
+  onValidateProperties: (
+    connectorProperties: Map<string, string>,
+    propertyCategory: PropertyCategory
+  ) => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
@@ -34,7 +37,7 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
 
 export const DataOptionsComponent: React.FC<any> = React.forwardRef(
   (props, ref) => {
-    const [expanded, setExpanded] = React.useState<string>("basic");
+    const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
     const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
       return propertyValues.map((key: { name: string }) => {
         key.name = key.name.replace(/\./g, "_");
@@ -43,14 +46,14 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     };
     const mappingPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) =>
+        (defn: any) =>
           defn.category === PropertyCategory.DATA_OPTIONS_GENERAL ||
           defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED
       )
     );
     const snapshotPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
+        (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
       )
     );
 
@@ -75,7 +78,9 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
 
       combined.map((key: { name: string; defaultValue: string }) => {
         if (!combinedValue[key.name]) {
-          key.defaultValue === undefined ? combinedValue[key.name] = "" : combinedValue[key.name] = key.defaultValue
+          key.defaultValue === undefined
+            ? (combinedValue[key.name] = "")
+            : (combinedValue[key.name] = key.defaultValue);
         }
       });
       return combinedValue;
@@ -89,6 +94,17 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
       _.union(mappingPropertyDefinitions, snapshotPropertyDefinitions)
     );
 
+    const handleSubmit = (valueMap: Map<string, string>) => {
+      const dataValueMap: Map<string, string> = new Map();
+      for (const dataValue of props.propertyDefinitions) {
+        dataValueMap.set(dataValue.name, valueMap[dataValue.name]);
+      }
+      props.onValidateProperties(
+        dataValueMap,
+        PropertyCategory.DATA_OPTIONS_GENERAL
+      );
+    };
+
     return (
       <div>
         <Formik
@@ -101,7 +117,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                 result[key.replace(/_/g, ".")] = val;
               }
             );
-            props.onValidateProperties(valueMap, PropertyCategory.DATA_OPTIONS_GENERAL);
+            handleSubmit(valueMap);
           }}
         >
           {({ errors, touched, setFieldValue, isSubmitting }) => (

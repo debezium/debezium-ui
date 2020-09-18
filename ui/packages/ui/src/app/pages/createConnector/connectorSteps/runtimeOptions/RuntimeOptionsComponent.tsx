@@ -1,20 +1,19 @@
-import { ConnectorProperty } from '@debezium/ui-models/dist/js/ui.model';
-import {
-  Grid,
-  GridItem,
-  Title
-} from '@patternfly/react-core';
+import { ConnectorProperty } from "@debezium/ui-models/dist/js/ui.model";
+import { Grid, GridItem, Title } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
-import _ from 'lodash';
-import * as React from 'react';
-import { PropertyCategory } from 'src/app/shared';
-import * as Yup from 'yup';
-import { FormComponent } from '../shared';
+import _ from "lodash";
+import * as React from "react";
+import { PropertyCategory } from "src/app/shared";
+import * as Yup from "yup";
+import { FormComponent } from "../shared";
 
 export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
-  propertyValues: Map<string,string>;
-  onValidateProperties: (connectorProperties: Map<string,string>, propertyCategory: PropertyCategory) => void;
+  propertyValues: Map<string, string>;
+  onValidateProperties: (
+    connectorProperties: Map<string, string>,
+    propertyCategory: PropertyCategory
+  ) => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
@@ -42,12 +41,14 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
     };
     const enginePropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) => defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
+        (defn: ConnectorProperty) =>
+          defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
       )
     );
     const heartbeatPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) => defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
+        (defn: ConnectorProperty) =>
+          defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
       )
     );
 
@@ -78,7 +79,9 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
 
       combined.map((key: { name: string; defaultValue: string }) => {
         if (!combinedValue[key.name]) {
-          key.defaultValue === undefined ? combinedValue[key.name] = "" : combinedValue[key.name] = key.defaultValue
+          key.defaultValue === undefined
+            ? (combinedValue[key.name] = "")
+            : (combinedValue[key.name] = key.defaultValue);
         }
       });
       return combinedValue;
@@ -87,6 +90,17 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
     const initialValues = getInitialValues(
       _.union(enginePropertyDefinitions, heartbeatPropertyDefinitions)
     );
+
+    const handleSubmit = (valueMap: Map<string, string>) => {
+      const runtimeValueMap: Map<string, string> = new Map();
+      for (const runtimeValue of props.propertyDefinitions) {
+        runtimeValueMap.set(runtimeValue.name, valueMap[runtimeValue.name]);
+      }
+      props.onValidateProperties(
+        runtimeValueMap,
+        PropertyCategory.RUNTIME_OPTIONS_ENGINE
+      );
+    };
 
     return (
       <div>
@@ -101,7 +115,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                 result[key.replace(/_/g, ".")] = val;
               }
             );
-            props.onValidateProperties(valueMap, PropertyCategory.RUNTIME_OPTIONS_ENGINE);
+            handleSubmit(valueMap);
           }}
         >
           {({ errors, touched, handleChange, isSubmitting }) => (
