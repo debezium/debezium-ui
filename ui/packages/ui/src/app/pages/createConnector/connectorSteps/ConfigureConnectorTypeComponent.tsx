@@ -142,13 +142,14 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
       // the advance properties
       const advancedValueMap: Map<string, string> = new Map();
       for (const advancedValue of props.advancedPropertyDefinitions) {
-        advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
+        // To-do: Remove the boolean check once backend fix is available
+        if(typeof(valueMap[advancedValue.name]) !== "boolean"){
+          advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
+        }
+        advancedValueMap.set(advancedValue.name, ""+valueMap[advancedValue.name]);
+        
       }
-      // To-do: Temp commented out
-      // props.onValidateProperties(basicValueMap, advancedValueMap);
-      
-      // To-do: Remove this after un-commenting above line 
-      props.onValidateProperties(basicValueMap, new Map());
+      props.onValidateProperties(basicValueMap, advancedValueMap);
       
     };
 

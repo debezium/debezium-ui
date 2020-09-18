@@ -34,7 +34,7 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
 
 export const DataOptionsComponent: React.FC<any> = React.forwardRef(
   (props, ref) => {
-    const [expanded, setExpanded] = React.useState<string>("basic");
+    const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
     const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
       return propertyValues.map((key: { name: string }) => {
         key.name = key.name.replace(/\./g, "_");
@@ -43,14 +43,14 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     };
     const mappingPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) =>
+        (defn: any) =>
           defn.category === PropertyCategory.DATA_OPTIONS_GENERAL ||
           defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED
       )
     );
     const snapshotPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
+        (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
       )
     );
 
@@ -89,6 +89,21 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
       _.union(mappingPropertyDefinitions, snapshotPropertyDefinitions)
     );
 
+    const handleSubmit = (valueMap: Map<string, string>) => {
+
+      const dataValueMap: Map<string, string> = new Map();
+      for (const dataValue of props.propertyDefinitions) {
+        // To-do: Remove the boolean check once backend fix is available
+        if(typeof(valueMap[dataValue.name]) !== "boolean"){
+          dataValueMap.set(dataValue.name, valueMap[dataValue.name]);
+        }
+        dataValueMap.set(dataValue.name, ""+valueMap[dataValue.name]);
+        
+      }
+      props.onValidateProperties(dataValueMap, PropertyCategory.DATA_OPTIONS_GENERAL);
+      
+    };
+
     return (
       <div>
         <Formik
@@ -101,7 +116,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                 result[key.replace(/_/g, ".")] = val;
               }
             );
-            props.onValidateProperties(valueMap, PropertyCategory.DATA_OPTIONS_GENERAL);
+            handleSubmit(valueMap);
           }}
         >
           {({ errors, touched, setFieldValue, isSubmitting }) => (

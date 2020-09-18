@@ -28,16 +28,15 @@ import { FilterTreeComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
-  ConfirmationIconType,
   fetch_retry,
   mapToObject,
 } from "src/app/shared";
 import "./FiltersStepComponent.css";
 
 export interface IFiltersStepComponentProps {
-  propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
   filterValues: Map<string, string>;
+  connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
 }
 
@@ -139,18 +138,9 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
     saveFilter: boolean,
     filterExpression: Map<string, string> = formData
   ) => {
-    // TODO: The connector type should not be hardcode.  Use type selected.
-
     fetch_retry(connectorService.validateFilters, connectorService, [
-      "postgres",
-      mapToObject(
-        new Map(
-          (function*() {
-            yield* props.propertyValues;
-            yield* filterExpression;
-          })()
-        )
-      ),
+      props.connectorType,
+      mapToObject(new Map([...props.propertyValues, ...filterExpression])),
     ])
       .then((result: FilterValidationResult) => {
         setLoading(false);

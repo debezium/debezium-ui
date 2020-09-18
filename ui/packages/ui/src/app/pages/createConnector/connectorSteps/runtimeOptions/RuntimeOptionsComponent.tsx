@@ -42,12 +42,12 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
     };
     const enginePropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) => defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
+        (defn: ConnectorProperty) => defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
       )
     );
     const heartbeatPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn) => defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
+        (defn: ConnectorProperty) => defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
       )
     );
 
@@ -88,6 +88,21 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
       _.union(enginePropertyDefinitions, heartbeatPropertyDefinitions)
     );
 
+    const handleSubmit = (valueMap: Map<string, string>) => {
+
+      const runtimeValueMap: Map<string, string> = new Map();
+      for (const runtimeValue of props.propertyDefinitions) {
+        // To-do: Remove the boolean check once backend fix is available
+        if(typeof(valueMap[runtimeValue.name]) !== "boolean"){
+          runtimeValueMap.set(runtimeValue.name, valueMap[runtimeValue.name]);
+        }
+        runtimeValueMap.set(runtimeValue.name, ""+valueMap[runtimeValue.name]);
+        
+      }
+      props.onValidateProperties(runtimeValueMap, PropertyCategory.RUNTIME_OPTIONS_ENGINE);
+      
+    };
+
     return (
       <div>
         <Formik
@@ -101,7 +116,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                 result[key.replace(/_/g, ".")] = val;
               }
             );
-            props.onValidateProperties(valueMap, PropertyCategory.RUNTIME_OPTIONS_ENGINE);
+            handleSubmit(valueMap);
           }}
         >
           {({ errors, touched, handleChange, isSubmitting }) => (
