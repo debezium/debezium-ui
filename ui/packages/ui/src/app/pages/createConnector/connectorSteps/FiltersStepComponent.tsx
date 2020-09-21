@@ -363,7 +363,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
               <TextInput
                 validated={
                   invalidMsg?.size !== 0 &&
-                  getInvalidFilterMsg("schema", invalidMsg)
+                  getInvalidFilterMsg("table", invalidMsg)
                     ? "error"
                     : "default"
                 }
