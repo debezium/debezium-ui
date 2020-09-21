@@ -29,8 +29,11 @@ import {
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
+  isDataOptions,
+  isRuntimeOptions,
   mapToObject,
-  PropertyCategory
+  PropertyCategory,
+  PropertyName,
 } from "src/app/shared";
 import {
   ConfigureConnectorTypeComponent,
@@ -118,26 +121,35 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const dataOptionRef = React.useRef();
   const runtimeOptionRef = React.useRef();
 
+  const validationErrorMsg = "Resolve property errors, then click Validate";
+  const validationSuccessNextMsg = "Validation was successful, click Next to continue";
+  const validationSuccessFinishMsg = "Validation was successful, click Finish to create the connector";
+
   const onFinish = () => {
     setConnectorCreateFailed(false);
 
+    // Cluster ID and connector name for the create
+    const clusterID =  location.state.value;
+    const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
+
     // Merge the individual category properties values into a single map for the config
     const allPropValues = new Map<string, string>();
-    basicPropValues.forEach((v, k) => allPropValues.set(k, v));
+    // Remove connector name from basic, so not passed with properties
+    const basicValuesTemp = new Map<string,string>(basicPropValues);
+    basicValuesTemp.delete(PropertyName.CONNECTOR_NAME);
+    basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+
     advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
     filterValues.forEach((v, k) => allPropValues.set(k, v));
     dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
     runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
 
-    // TODO: Need to have a name input on one of the pages
-    const connName = "myConnector";
-    const clusterID =  location.state.value;
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.createConnector, connectorService, [
       clusterID,
       selectedConnectorType,
       {
-        name: connName,
+        name: connectorName,
         config: mapToObject(allPropValues),
       },
     ])
@@ -207,10 +219,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   ): void => {
     setBasicPropValues(basicPropertyValues);
     setAdvancedPropValues(advancePropertyValues);
+    // Don't include connector name for validation
+    const basicForValidation = new Map<string,string>(basicPropertyValues);
+    basicForValidation.delete(PropertyName.CONNECTOR_NAME);
     validateConnectionProperties(
       new Map(
         (function*() {
-          yield* basicPropertyValues;
+          yield* basicForValidation;
           yield* advancePropertyValues;
         })()
       )
@@ -221,6 +236,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     propertyValues: Map<string, string>,
     propertyCategory: PropertyCategory
   ): void => {
+    if ( isDataOptions(propertyCategory) ) {
+      setDataOptionsPropValues(propertyValues);
+    } else if ( isRuntimeOptions(propertyCategory) ) {
+      setRuntimeOptionsPropValues(propertyValues);
+    }
     validateOptionProperties(propertyValues, propertyCategory);
   };
 
@@ -273,22 +293,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             "connection props are INVALID. Property Results: \n" + resultStr
           );
         } else {
-          if (
-            propertyCategory === PropertyCategory.DATA_OPTIONS_GENERAL ||
-            propertyCategory === PropertyCategory.DATA_OPTIONS_ADVANCED ||
-            propertyCategory === PropertyCategory.DATA_OPTIONS_SNAPSHOT
-          ) {
+          if ( isDataOptions(propertyCategory) ) {
             setDataOptionsValid(true);
-          } else if (
-            propertyCategory === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
-            propertyCategory === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
-          ) {
+          } else if ( isRuntimeOptions(propertyCategory) ) {
             setRuntimeOptionsValid(true);
           }
         }
       })
       .catch((err: React.SetStateAction<Error>) => {
-        alert("Error Validation Connection Properties !: " + err);
+        alert("Error Validating Connection Properties !: " + err);
       });
   };
 
@@ -349,14 +362,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title="Validation failed, please try again."
+                  title={validationErrorMsg}
                 />
               </div>
             ) : (
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="success"
-                  title="Entered details are valid, please move to next step."
+                  title={validationSuccessNextMsg}
                 />
               </div>
             ))}
@@ -399,14 +412,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title="Validation failed, please try again."
+                  title={validationErrorMsg}
                 />
               </div>
             ) : (
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="success"
-                  title="Entered details are valid, please move to next step."
+                  title={validationSuccessNextMsg}
                 />
               </div>
             ))}
@@ -427,19 +440,20 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       name: "Runtime Options",
       component: (
         <>
-          {runtimeStepsValid === 1 && !connectorCreateFailed &&
+          {runtimeStepsValid === 1 &&
+            !connectorCreateFailed &&
             (!runtimeOptionsValid ? (
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title="Validation failed, please try again."
+                  title={validationErrorMsg}
                 />
               </div>
             ) : (
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="success"
-                  title="Entered details are valid, please move to next step."
+                  title={validationSuccessFinishMsg}
                 />
               </div>
             ))}

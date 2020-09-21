@@ -6,12 +6,14 @@ import {
   AccordionToggle,
   Grid,
   GridItem,
+  Title,
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
 import { PropertyCategory } from "src/app/shared";
 import { FormComponent } from "../shared";
+import "./DataOptionsComponent.css";
 
 export interface IDataOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
@@ -44,11 +46,14 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
         return key;
       });
     };
-    const mappingPropertyDefinitions = formatPropertyDefinitions(
+    const mappingGeneralPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
-        (defn: any) =>
-          defn.category === PropertyCategory.DATA_OPTIONS_GENERAL ||
-          defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED
+        (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
+      )
+    );
+    const mappingAdvancedPropertyDefinitions = formatPropertyDefinitions(
+      props.propertyDefinitions.filter(
+        (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED
       )
     );
     const snapshotPropertyDefinitions = formatPropertyDefinitions(
@@ -91,7 +96,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     };
 
     const initialValues = getInitialValues(
-      _.union(mappingPropertyDefinitions, snapshotPropertyDefinitions)
+      _.union(mappingGeneralPropertyDefinitions, mappingAdvancedPropertyDefinitions, snapshotPropertyDefinitions)
     );
 
     const handleSubmit = (valueMap: Map<string, string>) => {
@@ -180,7 +185,32 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                     isHidden={!expanded.includes("advanced")}
                   >
                     <Grid hasGutter={true}>
-                      {mappingPropertyDefinitions.map(
+                      {mappingGeneralPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem key={index}>
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                // propertyChange={handlePropertyChange}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                                propertyChange={handlePropertyChange}
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                    <Title headingLevel="h2" className={"data-options-component-grouping"}>Advanced properties</Title>
+                    <Grid hasGutter={true}>
+                      {mappingAdvancedPropertyDefinitions.map(
                         (propertyDefinition: ConnectorProperty, index) => {
                           return (
                             <GridItem key={index}>

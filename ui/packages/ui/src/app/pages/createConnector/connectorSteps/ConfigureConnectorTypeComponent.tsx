@@ -54,8 +54,16 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
         return key;
       });
     };
+
+    const namePropertyDefinitions = formatPropertyDefinitions(
+      props.basicPropertyDefinitions.filter(
+        (defn: any) => defn.category === PropertyCategory.CONNECTOR_NAME
+      )
+    );
     const basicPropertyDefinitions = formatPropertyDefinitions(
-      props.basicPropertyDefinitions
+      props.basicPropertyDefinitions.filter(
+        (defn: any) => defn.category === PropertyCategory.BASIC
+      )
     );
     const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(
       props.advancedPropertyDefinitions.filter(
@@ -73,8 +81,11 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
       )
     );
 
-    // Just added String and Password type
-    basicPropertyDefinitions.map((key: any) => {
+    const allBasicDefinitions = _.union(
+        namePropertyDefinitions,
+        basicPropertyDefinitions
+      );
+    allBasicDefinitions.map((key: any) => {
       if (key.type === "STRING") {
         basicValidationSchema[key.name] = Yup.string();
       } else if (key.type === "PASSWORD") {
@@ -129,6 +140,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
 
     const initialValues = getInitialValues(
       _.union(
+        namePropertyDefinitions,
         basicPropertyDefinitions,
         advancedGeneralPropertyDefinitions,
         advancedReplicationPropertyDefinitions,
@@ -167,6 +179,27 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
         >
           {({ errors, touched, handleChange, isSubmitting, validateForm }) => (
             <Form className="pf-c-form">
+              <Grid hasGutter={true}>
+                {namePropertyDefinitions.map(
+                  (propertyDefinition: ConnectorProperty, index: any) => {
+                    return (
+                      <GridItem key={index}>
+                        <FormComponent
+                          propertyDefinition={propertyDefinition}
+                          propertyChange={handlePropertyChange}
+                          helperTextInvalid={errors[propertyDefinition.name]}
+                          validated={
+                            errors[propertyDefinition.name] &&
+                            touched[propertyDefinition.name]
+                              ? "error"
+                              : "default"
+                          }
+                        />
+                      </GridItem>
+                    );
+                  }
+                )}
+              </Grid>
               <Accordion asDefinitionList={true}>
                 <AccordionItem>
                   <AccordionToggle
