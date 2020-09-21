@@ -11,20 +11,57 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 
 # Debezium UI PoC
 
-Debezium is an open source project that provides a low latency data streaming platform for change data capture (CDC).
+Debezium is an open source project that provides a low latency data streaming platform for change
+data capture (CDC).
 
 This repository contains a proof-of-concept for a potential future web-based UI for Debezium.
 
+## Prerequisites
+
+Debezium UI needs a properly running Debezium instance version 1.3.0.Beta2 or newer and a running
+Postgres database instance.
+
+### DEV Infrastructure with Docker-Compose
+
+You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium and Postgres using
+docker-compose:
+
+```
+## optionally make sure you have the latest images:
+$ docker-compose pull
+
+Pulling dbzui-zookeeper ... done
+Pulling dbzui-kafka     ... done
+Pulling dbzui-db-pg     ... done
+Pulling dbzui-connect   ... done
+
+## start containers
+$ docker-compose up -d
+
+Creating dbzui-db-pg     ... done
+Creating dbzui-zookeeper ... done
+Creating dbzui-kafka     ... done
+Creating dbzui-connect   ... done
+
+## later stop containers:
+$ docker-compose down
+
+Stopping dbzui-connect   ... done
+Stopping dbzui-kafka     ... done
+Stopping dbzui-zookeeper ... done
+Stopping dbzui-db-pg     ... done
+Removing dbzui-connect   ... done
+Removing dbzui-kafka     ... done
+Removing dbzui-zookeeper ... done
+Removing dbzui-db-pg     ... done
+Removing network debezium-ui_dbzui-network
+```
+
+Kafka Connect REST API with Debezium will be available on local port **8083**.   
+Postgres will be available on local port **65432**.  
+Kafka will be available on local port **9092**.  
+
 ## Build
-Before building the PoC, you need to build Debezium first. Take a checkout for DBZ [here](https://github.com/debezium/debezium)
-Run below commands to build Debezium:
-
-```
-mvn clean install -f support/ide-configs
-mvn clean install -f support/checkstyle
-mvn clean install -am -pl :debezium-core,:debezium-connector-postgres,:debezium-connector-mongodb,:debezium-connector-sqlserver,:debezium-connector-mysql -DskipTests=true -DskipITs=true -Dcheckstyle.skip=true
-```
-
 The entire application (UI and backend) can be built via Maven:
 
 ```
@@ -36,7 +73,8 @@ whose contents are then exposed by the Quarkus-based backend application.
 
 ### UI Development
 
-The UI code for the PoC is located in the _ui_ folder, with README instructions [here](./ui/README.md) to launch the UI for development.
+The UI code for the PoC is located in the _ui_ folder, with README instructions
+[here](./ui/README.md) to launch the UI for development.
 
 ### Backend
 
@@ -51,4 +89,7 @@ Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://loc
 
 ## Contributing
 
-The Debezium community welcomes anyone that wants to help out in any way, whether that includes reporting problems, helping with documentation, or contributing code changes to fix bugs, add tests, or implement new features. See [this document](https://github.com/debezium/debezium/blob/master/CONTRIBUTE.md) for details.
+The Debezium community welcomes anyone that wants to help out in any way, whether that includes
+reporting problems, helping with documentation, or contributing code changes to fix bugs, add tests,
+or implement new features.
+See [this document](https://github.com/debezium/debezium/blob/master/CONTRIBUTE.md) for details.
