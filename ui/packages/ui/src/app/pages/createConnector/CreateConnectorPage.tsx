@@ -44,7 +44,6 @@ import {
   RuntimeOptionsComponent
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
-
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
  * @param connectorTypes
@@ -133,13 +132,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setConnectorCreateFailed(false);
 
     // Cluster ID and connector name for the create
-    const clusterID =  location.state?.value;
+    const clusterID = location.state?.value;
     const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
 
     // Merge the individual category properties values into a single map for the config
     const allPropValues = new Map<string, string>();
     // Remove connector name from basic, so not passed with properties
-    const basicValuesTemp = new Map<string,string>(basicPropValues);
+    const basicValuesTemp = new Map<string, string>(basicPropValues);
     basicValuesTemp.delete(PropertyName.CONNECTOR_NAME);
     basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
 
@@ -228,7 +227,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     // basicForValidation.delete(PropertyName.CONNECTOR_NAME);
     validateConnectionProperties(
       new Map(
-        (function*() {
+        (function* () {
           yield* basicPropertyValues;
           yield* advancePropertyValues;
         })()
@@ -240,9 +239,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     propertyValues: Map<string, string>,
     propertyCategory: PropertyCategory
   ): void => {
-    if ( isDataOptions(propertyCategory) ) {
+    if (isDataOptions(propertyCategory)) {
       setDataOptionsPropValues(propertyValues);
-    } else if ( isRuntimeOptions(propertyCategory) ) {
+    } else if (isRuntimeOptions(propertyCategory)) {
       setRuntimeOptionsPropValues(propertyValues);
     }
     validateOptionProperties(propertyValues, propertyCategory);
@@ -260,10 +259,16 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     ])
       .then((result: ConnectionValidationResult) => {
         if (result.status === "INVALID") {
-          let resultStr = "";
-          for (const e1 of result.propertyValidationResults) {
-            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+          const connectorPropertyDefns = _.union(getBasicPropertyDefinitions(selectedConnectorPropertyDefns), getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns));
+          for (const connectionValue of connectorPropertyDefns) {
+            const propertyName = connectionValue.name.replace(/_/g, ".");
+            for (const msg in result.propertyValidationResults) {
+              if (result.propertyValidationResults[msg].property === propertyName) {
+                result.propertyValidationResults[msg].displayName = connectionValue.displayName;
+              }
+            }
           }
+
           setConnectionPropsValidMsg(result.propertyValidationResults)
         } else {
           setConnectionPropsValid(true);
@@ -287,15 +292,36 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     ])
       .then((result: PropertiesValidationResult) => {
         if (result.status === "INVALID") {
-          let resultStr = "";
-          for (const e1 of result.propertyValidationResults) {
-            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+          if (isDataOptions(propertyCategory)) {
+            const connectorPropertyDefns = getDataOptionsPropertyDefinitions(
+              selectedConnectorPropertyDefns
+            );
+            for (const connectionValue of connectorPropertyDefns) {
+              const propertyName = connectionValue.name.replace(/_/g, ".");
+              for (const msg in result.propertyValidationResults) {
+                if (result.propertyValidationResults[msg].property === propertyName) {
+                  result.propertyValidationResults[msg].displayName = connectionValue.displayName;
+                }
+              }
+            }
+          } else if (isRuntimeOptions(propertyCategory)) {
+            const connectorPropertyDefns = getDataOptionsPropertyDefinitions(
+              selectedConnectorPropertyDefns
+            );
+            for (const connectionValue of connectorPropertyDefns) {
+              const propertyName = connectionValue.name.replace(/_/g, ".");
+              for (const msg in result.propertyValidationResults) {
+                if (result.propertyValidationResults[msg].property === propertyName) {
+                  result.propertyValidationResults[msg].displayName = connectionValue.displayName;
+                }
+              }
+            }
           }
           setConnectionPropsValidMsg(result.propertyValidationResults)
         } else {
-          if ( isDataOptions(propertyCategory) ) {
+          if (isDataOptions(propertyCategory)) {
             setDataOptionsValid(true);
-          } else if ( isRuntimeOptions(propertyCategory) ) {
+          } else if (isRuntimeOptions(propertyCategory)) {
             setRuntimeOptionsValid(true);
           }
         }
@@ -337,17 +363,17 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   }, [connectorTypes]);
 
   const ConnectionPropertiesError = ({ connectionPropsMsg }) => {
-    if(connectionPropsMsg.length !== 0){
-      return(
+    if (connectionPropsMsg.length !== 0) {
+      return (
         <ul>
           {connectionPropsMsg.map((item, index) => (
-            <li key={index}>{item.property}: {item.message}</li>
+            <li key={index}>{item.displayName}: {item.message}</li>
           ))}
         </ul>
       )
-    }else{
-      return(
-      <div>{validationErrorMsg}</div>
+    } else {
+      return (
+        <div>{validationErrorMsg}</div>
       )
     }
 
@@ -383,13 +409,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 />
               </div>
             ) : (
-              <div style={{ padding: "15px 0" }}>
-                <Alert
-                  variant="success"
-                  title={validationSuccessNextMsg}
-                />
-              </div>
-            ))}
+                <div style={{ padding: "15px 0" }}>
+                  <Alert
+                    variant="success"
+                    title={validationSuccessNextMsg}
+                  />
+                </div>
+              ))}
           <ConfigureConnectorTypeComponent
             basicPropertyDefinitions={getBasicPropertyDefinitions(
               selectedConnectorPropertyDefns
@@ -435,13 +461,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 />
               </div>
             ) : (
-              <div style={{ padding: "15px 0" }}>
-                <Alert
-                  variant="success"
-                  title={validationSuccessNextMsg}
-                />
-              </div>
-            ))}
+                <div style={{ padding: "15px 0" }}>
+                  <Alert
+                    variant="success"
+                    title={validationSuccessNextMsg}
+                  />
+                </div>
+              ))}
           <DataOptionsComponent
             propertyDefinitions={getDataOptionsPropertyDefinitions(
               selectedConnectorPropertyDefns
@@ -469,13 +495,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 />
               </div>
             ) : (
-              <div style={{ padding: "15px 0" }}>
-                <Alert
-                  variant="success"
-                  title={validationSuccessFinishMsg}
-                />
-              </div>
-            ))}
+                <div style={{ padding: "15px 0" }}>
+                  <Alert
+                    variant="success"
+                    title={validationSuccessFinishMsg}
+                  />
+                </div>
+              ))}
           {connectorCreateFailed && (
             <div style={{ padding: "15px 0" }}>
               <Alert variant="danger" title="Create of the connector failed." />
@@ -542,10 +568,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                   Finish
                 </Button>
               ) : (
-                <Button variant="primary" type="submit" onClick={onNext}>
-                  Next
-                </Button>
-              )}
+                  <Button variant="primary" type="submit" onClick={onNext}>
+                    Next
+                  </Button>
+                )}
               <Button
                 variant="secondary"
                 onClick={onBack}

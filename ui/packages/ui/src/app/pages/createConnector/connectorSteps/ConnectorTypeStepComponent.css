@@ -3,6 +3,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     flex-direction: row;
+    align-items: center;
     & > div {
       text-align: center;
       cursor: pointer;
@@ -12,6 +13,9 @@
     &_disableCard {
       color: var(--pf-global--disabled-color--100);
       background: var(--pf-global--palette--black-150);
+    }
+    .pf-c-card{
+      min-height: 220px;
     }
   }
   &_dbIcon {
