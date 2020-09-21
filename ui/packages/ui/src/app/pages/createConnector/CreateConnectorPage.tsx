@@ -129,7 +129,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setConnectorCreateFailed(false);
 
     // Cluster ID and connector name for the create
-    const clusterID =  location.state.value;
+    const clusterID =  location.state?.value;
     const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
 
     // Merge the individual category properties values into a single map for the config
@@ -220,12 +220,12 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setBasicPropValues(basicPropertyValues);
     setAdvancedPropValues(advancePropertyValues);
     // Don't include connector name for validation
-    const basicForValidation = new Map<string,string>(basicPropertyValues);
-    basicForValidation.delete(PropertyName.CONNECTOR_NAME);
+    // const basicForValidation = new Map<string,string>(basicPropertyValues);
+    // basicForValidation.delete(PropertyName.CONNECTOR_NAME);
     validateConnectionProperties(
       new Map(
         (function*() {
-          yield* basicForValidation;
+          yield* basicPropertyValues;
           yield* advancePropertyValues;
         })()
       )
@@ -260,7 +260,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           for (const e1 of result.propertyValidationResults) {
             resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
           }
-          alert(
+          // tslint:disable-next-line: no-console
+          console.log(
             "connection props are INVALID. Property Results: \n" + resultStr
           );
         } else {
@@ -384,6 +385,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             advancedPropertyValues={advancedPropValues}
             onValidateProperties={handleValidateConnectionProperties}
             ref={connectionPropsRef}
+            setConnectionPropsValid={setConnectionPropsValid}
+            setConnectionStepsValid={setConnectionStepsValid}
           />
         </>
       ),
