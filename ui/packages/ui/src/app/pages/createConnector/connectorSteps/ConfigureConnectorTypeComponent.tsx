@@ -126,11 +126,11 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
         ...props.advancedPropertyValues,
       ]);
 
-      combined.map((key: { name: string; defaultValue: string }) => {
+      combined.map((key: { name: string; defaultValue: string; type: string }) => {
         if (!combinedValue[key.name]) {
           if (userValues.size === 0) {
             key.defaultValue === undefined
-              ? (combinedValue[key.name] = "")
+              ? (combinedValue[key.name] = (key.type === "INT" || key.type === "LONG") ? 0 : "")
               : (combinedValue[key.name] = key.defaultValue);
           } else {
             combinedValue[key.name] = userValues.get(

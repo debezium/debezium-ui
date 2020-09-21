@@ -21,7 +21,7 @@ export interface IFormInputComponentProps {
 export const FormInputComponent: React.FunctionComponent<IFormInputComponentProps> = props => {
   const [field] = useField(props);
   return (
-    <FormGroup 
+    <FormGroup
       label={props.label}
       isRequired={props.isRequired}
       labelIcon={
@@ -32,8 +32,21 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
       fieldId={field.name}
       validated={props.validated}
     >
-      <TextInput {...field} onChange={e => {field.onChange(field.name)(e);
-      }} aria-label={field.name} validated={props.validated}  type={props.type} />
+      <TextInput
+        {...field}
+        onChange={(e) => {
+          field.onChange(field.name)(e);
+        }}
+        aria-label={field.name}
+        validated={props.validated}
+        type={
+          props.type === "INT" || props.type === "LONG"
+            ? "number"
+            : props.type === "PASSWORD"
+            ? "password"
+            : "text"
+        }
+      />
     </FormGroup>
   );
 };

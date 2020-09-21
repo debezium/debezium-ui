@@ -76,13 +76,14 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
 
-      combined.map((key: { name: string; defaultValue: string }) => {
+      combined.map((key: { name: string; defaultValue: string; type: string }) => {
         if (!combinedValue[key.name]) {
           key.defaultValue === undefined
-            ? (combinedValue[key.name] = "")
+            ? (combinedValue[key.name] = (key.type === "INT" || key.type === "LONG") ? 0 : "")
             : (combinedValue[key.name] = key.defaultValue);
         }
       });
+
       return combinedValue;
     };
 
