@@ -1,8 +1,4 @@
-import {
-  ConnectorProperty,
-  DataCollection,
-  FilterValidationResult,
-} from "@debezium/ui-models";
+import { DataCollection, FilterValidationResult } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   ActionGroup,
@@ -21,7 +17,11 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@patternfly/react-core";
-import { HelpIcon, InfoCircleIcon } from "@patternfly/react-icons";
+import {
+  ExclamationCircleIcon,
+  HelpIcon,
+  InfoCircleIcon,
+} from "@patternfly/react-icons";
 import _ from "lodash";
 import React from "react";
 import { FilterTreeComponent } from "src/app/components";
@@ -75,6 +75,19 @@ const getTableExpression = (data: Map<string, string>): string => {
   return data.get("table.exclude.list") || data.get("table.include.list") || "";
 };
 
+const getInvalidFilterMsg = (
+  filter: string,
+  errorMsg: Map<string, string> | undefined
+) => {
+  let returnVal = "";
+  errorMsg?.forEach((val, key) => {
+    if (key.includes(filter)) {
+      returnVal = val;
+    }
+  });
+  return returnVal;
+};
+
 export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
   props
 ) => {
@@ -99,7 +112,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
     new Map()
   );
   const [treeData, setTreeData] = React.useState<any[]>([]);
-  const [invalidMsg, setInvalidMsg] = React.useState<string>("");
+  const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>();
   const [tableNo, setTableNo] = React.useState<number>(0);
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
@@ -145,15 +158,15 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
       .then((result: FilterValidationResult) => {
         setLoading(false);
         if (result.status === "INVALID") {
-          let resultStr = "";
-          for (const e1 of result.propertyValidationResults) {
-            resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
+          const errorMap = new Map();
+          for (const e of result.propertyValidationResults) {
+            errorMap.set(e.property, e.message);
           }
-          setInvalidMsg(resultStr);
+          setInvalidMsg(errorMap);
         } else {
           // tslint:disable-next-line: no-unused-expression
           saveFilter && props.updateFilterValues(filterExpression);
-          setInvalidMsg("");
+          setInvalidMsg(new Map());
           setTableNo(result.matchedCollections.length);
           setTreeData(formatResponseData(result.matchedCollections));
         }
@@ -253,11 +266,28 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
               </button>
             </Popover>
           }
+          helperTextInvalid={
+            invalidMsg?.size !== 0
+              ? getInvalidFilterMsg("schema", invalidMsg)
+              : ""
+          }
+          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          validated={
+            invalidMsg?.size !== 0 && getInvalidFilterMsg("schema", invalidMsg)
+              ? "error"
+              : "default"
+          }
         >
           <Flex>
             <FlexItem>
               <TextInput
                 value={schemaFilter}
+                validated={
+                  invalidMsg?.size !== 0 &&
+                  getInvalidFilterMsg("schema", invalidMsg)
+                    ? "error"
+                    : "default"
+                }
                 type="text"
                 id="schema_filter"
                 aria-describedby="schema_filter-helper"
@@ -316,10 +346,27 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
               </button>
             </Popover>
           }
+          helperTextInvalid={
+            invalidMsg?.size !== 0
+              ? getInvalidFilterMsg("table", invalidMsg)
+              : ""
+          }
+          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          validated={
+            invalidMsg?.size !== 0 && getInvalidFilterMsg("table", invalidMsg)
+              ? "error"
+              : "default"
+          }
         >
           <Flex>
             <FlexItem>
               <TextInput
+                validated={
+                  invalidMsg?.size !== 0 &&
+                  getInvalidFilterMsg("table", invalidMsg)
+                    ? "error"
+                    : "default"
+                }
                 value={tableFilter}
                 onChange={handleTableFilter}
                 type="text"
@@ -360,7 +407,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         </ActionGroup>
       </Form>
       <Divider />
-      {invalidMsg !== "" ? (
+      {invalidMsg?.size !== 0 ? (
         <Alert
           variant={"danger"}
           isInline={true}

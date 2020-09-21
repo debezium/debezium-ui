@@ -21,6 +21,8 @@ export interface IConfigureConnectorTypeComponentProps {
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
+  setConnectionPropsValid: () => void;
+  setConnectionStepsValid: () => void;
   onValidateProperties: (
     basicPropertyValues: Map<string, string>,
     advancePropertyValues: Map<string, string>
@@ -29,13 +31,20 @@ export interface IConfigureConnectorTypeComponentProps {
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
   (props, ref) => {
-    const { submitForm, validateForm } = useFormikContext();
+    const { dirty, submitForm, validateForm } = useFormikContext();
+
     React.useImperativeHandle(ref, () => ({
       validate() {
         validateForm();
         submitForm();
       },
     }));
+    React.useEffect(() => {
+      if (dirty) {
+        props.setConnectionPropsValid(!dirty);
+        props.setConnectionStepsValid(0);
+      }
+    }, [props.setConnectionPropsValid, dirty]);
     return null;
   }
 );
@@ -82,9 +91,9 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
     );
 
     const allBasicDefinitions = _.union(
-        namePropertyDefinitions,
-        basicPropertyDefinitions
-      );
+      namePropertyDefinitions,
+      basicPropertyDefinitions
+    );
     allBasicDefinitions.map((key: any) => {
       if (key.type === "STRING") {
         basicValidationSchema[key.name] = Yup.string();
@@ -120,12 +129,22 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
 
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
+      const userValues: Map<string, string> = new Map([
+        ...props.basicPropertyValues,
+        ...props.advancedPropertyValues,
+      ]);
 
       combined.map((key: { name: string; defaultValue: string }) => {
         if (!combinedValue[key.name]) {
-          key.defaultValue === undefined
-            ? (combinedValue[key.name] = "")
-            : (combinedValue[key.name] = key.defaultValue);
+          if (userValues.size === 0) {
+            key.defaultValue === undefined
+              ? (combinedValue[key.name] = "")
+              : (combinedValue[key.name] = key.defaultValue);
+          } else {
+            combinedValue[key.name] = userValues.get(
+              key.name.replace(/_/g, ".")
+            );
+          }
         }
       });
       return combinedValue;
@@ -348,7 +367,11 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              <FormSubmit ref={ref} />
+              <FormSubmit
+                ref={ref}
+                setConnectionPropsValid={props.setConnectionPropsValid}
+                setConnectionStepsValid={props.setConnectionStepsValid}
+              />
             </Form>
           )}
         </Formik>
