@@ -186,8 +186,6 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            // tslint:disable-next-line: no-console
-            console.log("submit", values);
             let valueMap = new Map<string, string>();
             valueMap = _.transform(
               values,
