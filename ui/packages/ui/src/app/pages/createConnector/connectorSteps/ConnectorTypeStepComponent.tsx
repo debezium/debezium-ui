@@ -6,7 +6,7 @@ import {
   CardHeaderMain,
   CardTitle,
   Flex,
-  FlexItem,
+  FlexItem
 } from "@patternfly/react-core";
 import React from "react";
 import { PageLoader } from "src/app/components";
@@ -42,7 +42,6 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
         : newId;
     props.onSelectionChange(newSelection);
   };
-
   return (
     <WithLoader
       error={props.apiError}
