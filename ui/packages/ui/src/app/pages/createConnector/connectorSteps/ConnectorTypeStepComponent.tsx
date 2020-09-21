@@ -42,7 +42,7 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
         : newId;
     props.onSelectionChange(newSelection);
   };
-
+  console.log(props.connectorTypesList)
   return (
     <WithLoader
       error={props.apiError}
@@ -68,7 +68,7 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
                   <CardHeaderMain
                     className={"connector-type-step-component_dbIcon"}
                   >
-                    <ConnectorIcon connectorType={cType.id} alt={cType.displayName} width={index !== 2 ? 50: 72} />
+                    <ConnectorIcon connectorType={cType.id} alt={cType.displayName} width={cType.id === "mysql" ? 72: 50} />
                   </CardHeaderMain>
                 </CardHeader>
                 <CardTitle>{cType.displayName}</CardTitle>
