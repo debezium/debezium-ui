@@ -1,0 +1,48 @@
+## Development infrastructure for running and testing the Debezium UI
+version: '3'
+services:
+  dbzui-zookeeper:
+    container_name: dbzui-zookeeper
+    image: debezium/zookeeper:1.3
+    networks:
+      - dbzui-network
+  dbzui-kafka:
+    container_name: dbzui-kafka
+    image: debezium/kafka:1.3
+    ports:
+      - "9092:9092"
+    depends_on:
+      - dbzui-zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=dbzui-zookeeper:2181
+    networks:
+      - dbzui-network
+  dbzui-db-pg:
+    container_name: dbzui-db-pg
+    image: debezium/example-postgres:1.3
+    ports:
+      - "65432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - dbzui-network
+  dbzui-connect:
+    container_name: dbzui-connect
+    image: debezium/connect:1.3
+    ports:
+      - "8083:8083"
+    depends_on:
+      - dbzui-kafka
+      - dbzui-db-pg
+    environment:
+      - BOOTSTRAP_SERVERS=dbzui-kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+    networks:
+      - dbzui-network
+networks:
+  dbzui-network:
+    external: false
