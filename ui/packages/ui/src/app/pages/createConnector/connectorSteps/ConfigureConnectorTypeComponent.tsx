@@ -6,12 +6,12 @@ import {
   AccordionToggle,
   Grid,
   GridItem,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { PropertyCategory, PropertyName } from "src/app/shared";
+import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
 import * as Yup from "yup";
 import "./ConfigureConnectorTypeComponent.css";
 import { FormComponent } from "./shared";
@@ -55,15 +55,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
     const [showPublication, setShowPublication] = React.useState(true);
 
     const basicValidationSchema = {};
-
-    const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-      const propertyValuesCopy = JSON.parse(JSON.stringify(propertyValues));
-      return propertyValuesCopy.map((key: { name: string }) => {
-        key.name = key.name.replace(/\./g, "_");
-        return key;
-      });
-    };
-
+    
     const namePropertyDefinitions = formatPropertyDefinitions(
       props.basicPropertyDefinitions.filter(
         (defn: any) => defn.category === PropertyCategory.CONNECTOR_NAME
@@ -170,12 +162,12 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
       // the basic properties
       const basicValueMap: Map<string, string> = new Map();
       for (const basicVal of props.basicPropertyDefinitions) {
-        basicValueMap.set(basicVal.name, valueMap[basicVal.name]);
+        basicValueMap.set(basicVal.name.replace(/_/g, "."), valueMap[basicVal.name]);
       }
       // the advance properties
       const advancedValueMap: Map<string, string> = new Map();
       for (const advancedValue of props.advancedPropertyDefinitions) {
-        advancedValueMap.set(advancedValue.name, valueMap[advancedValue.name]);
+        advancedValueMap.set(advancedValue.name.replace(/_/g, "."), valueMap[advancedValue.name]);
       }
       props.onValidateProperties(basicValueMap, advancedValueMap);
     };
@@ -186,14 +178,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            let valueMap = new Map<string, string>();
-            valueMap = _.transform(
-              values,
-              (result, val: string, key: string) => {
-                result[key.replace(/_/g, ".")] = val;
-              }
-            );
-            handleSubmit(valueMap);
+            handleSubmit(values);
           }}
         >
           {({ errors, touched, handleChange, isSubmitting, validateForm }) => (

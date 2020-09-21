@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Grid, Grid
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { PropertyCategory } from "src/app/shared";
+import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
 import * as Yup from "yup";
 import { FormComponent } from "../shared";
 
@@ -34,12 +34,6 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
     const [expanded, setExpanded] = React.useState<string[]>(["engine","heartbeat"]);
     const basicValidationSchema = {};
 
-    const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-      return propertyValues.map((key: { name: string }) => {
-        key.name = key.name.replace(/\./g, "_");
-        return key;
-      });
-    };
     const enginePropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
         (defn: ConnectorProperty) =>
@@ -111,7 +105,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
     const handleSubmit = (valueMap: Map<string, string>) => {
       const runtimeValueMap: Map<string, string> = new Map();
       for (const runtimeValue of props.propertyDefinitions) {
-        runtimeValueMap.set(runtimeValue.name, valueMap[runtimeValue.name]);
+        runtimeValueMap.set(runtimeValue.name.replace(/_/g, "."), valueMap[runtimeValue.name]);
       }
       props.onValidateProperties(
         runtimeValueMap,
@@ -125,17 +119,10 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            let valueMap = new Map<string, string>();
-            valueMap = _.transform(
-              values,
-              (result, val: string, key: string) => {
-                result[key.replace(/_/g, ".")] = val;
-              }
-            );
-            handleSubmit(valueMap);
+            handleSubmit(values);
           }}
         >
-          {({ errors, touched, handleChange, isSubmitting }) => (
+          {({ errors, touched }) => (
             <Form className="pf-c-form">
               <Accordion asDefinitionList={true}>
                 <AccordionItem>

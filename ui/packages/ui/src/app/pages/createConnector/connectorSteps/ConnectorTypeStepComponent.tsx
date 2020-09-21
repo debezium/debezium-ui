@@ -6,7 +6,7 @@ import {
   CardHeaderMain,
   CardTitle,
   Flex,
-  FlexItem,
+  FlexItem
 } from "@patternfly/react-core";
 import React from "react";
 import { PageLoader } from "src/app/components";
@@ -68,7 +68,7 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
                   <CardHeaderMain
                     className={"connector-type-step-component_dbIcon"}
                   >
-                    <ConnectorIcon connectorType={cType.id} alt={cType.displayName} width={50} />
+                    <ConnectorIcon connectorType={cType.id} alt={cType.displayName} width={index !== 2 ? 50: 72} />
                   </CardHeaderMain>
                 </CardHeader>
                 <CardTitle>{cType.displayName}</CardTitle>

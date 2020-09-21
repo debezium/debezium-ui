@@ -137,6 +137,15 @@ export function getBasicPropertyDefinitions(
   return connProperties;
 }
 
+export function formatPropertyDefinitions (
+  propertyValues: ConnectorProperty[]
+){
+  return propertyValues.map((key: { name: string }) => {
+    key.name = key.name.replace(/\./g, "_");
+    return key;
+  });
+};
+
 /**
  * Get the advanced properties
  * @param propertyDefns the array of all ConnectorProperty objects

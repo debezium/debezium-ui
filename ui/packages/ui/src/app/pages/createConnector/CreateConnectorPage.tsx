@@ -2,7 +2,8 @@ import {
   ConnectionValidationResult,
   ConnectorProperty,
   ConnectorType,
-  PropertiesValidationResult
+
+  PropertiesValidationResult, PropertyValidationResult
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
@@ -33,7 +34,7 @@ import {
   isRuntimeOptions,
   mapToObject,
   PropertyCategory,
-  PropertyName,
+  PropertyName
 } from "src/app/shared";
 import {
   ConfigureConnectorTypeComponent,
@@ -105,6 +106,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [connectionPropsValid, setConnectionPropsValid] = React.useState<
     boolean
   >(false);
+
+  const [connectionPropsValidMsg, setConnectionPropsValidMsg] = React.useState<PropertyValidationResult[]>([]);
+
   const [dataOptionsValid, setDataOptionsValid] = React.useState<boolean>(
     false
   );
@@ -244,11 +248,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     validateOptionProperties(propertyValues, propertyCategory);
   };
 
+  // Validation Connection Properties Step
   const validateConnectionProperties = (
     propertyValues: Map<string, string>
   ) => {
     // alert("Validate Properties: " + JSON.stringify(mapToObject(propertyValues)));
-
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.validateConnection, connectorService, [
       selectedConnectorType,
@@ -260,10 +264,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           for (const e1 of result.propertyValidationResults) {
             resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
           }
-          // tslint:disable-next-line: no-console
-          console.log(
-            "connection props are INVALID. Property Results: \n" + resultStr
-          );
+          setConnectionPropsValidMsg(result.propertyValidationResults)
         } else {
           setConnectionPropsValid(true);
         }
@@ -290,9 +291,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           for (const e1 of result.propertyValidationResults) {
             resultStr = `${resultStr}\n${e1.property}: ${e1.message}`;
           }
-          alert(
-            "connection props are INVALID. Property Results: \n" + resultStr
-          );
+          setConnectionPropsValidMsg(result.propertyValidationResults)
         } else {
           if ( isDataOptions(propertyCategory) ) {
             setDataOptionsValid(true);
@@ -337,6 +336,23 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     initPropertyValues();
   }, [connectorTypes]);
 
+  const ConnectionPropertiesError = ({ connectionPropsMsg }) => {
+    if(connectionPropsMsg.length !== 0){
+      return(
+        <ul>
+          {connectionPropsMsg.map((item, index) => (
+            <li key={index}>{item.property}: {item.message}</li>
+          ))}
+        </ul>
+      )
+    }else{
+      return(
+      <div>{validationErrorMsg}</div>
+      )
+    }
+
+  }
+
   const wizardSteps = [
     {
       id: 1,
@@ -363,7 +379,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title={validationErrorMsg}
+                  title={<ConnectionPropertiesError connectionPropsMsg={connectionPropsValidMsg} />}
                 />
               </div>
             ) : (
@@ -415,7 +431,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title={validationErrorMsg}
+                  title={<ConnectionPropertiesError connectionPropsMsg={connectionPropsValidMsg} />}
                 />
               </div>
             ) : (
@@ -449,7 +465,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title={validationErrorMsg}
+                  title={<ConnectionPropertiesError connectionPropsMsg={connectionPropsValidMsg} />}
                 />
               </div>
             ) : (

@@ -6,12 +6,12 @@ import {
   AccordionToggle,
   Grid,
   GridItem,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { PropertyCategory } from "src/app/shared";
+import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
 import { FormComponent } from "../shared";
 import "./DataOptionsComponent.css";
 
@@ -40,12 +40,7 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
 export const DataOptionsComponent: React.FC<any> = React.forwardRef(
   (props, ref) => {
     const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
-    const formatPropertyDefinitions = (propertyValues: ConnectorProperty[]) => {
-      return propertyValues.map((key: { name: string }) => {
-        key.name = key.name.replace(/\./g, "_");
-        return key;
-      });
-    };
+
     const mappingGeneralPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
         (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
@@ -102,7 +97,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     const handleSubmit = (valueMap: Map<string, string>) => {
       const dataValueMap: Map<string, string> = new Map();
       for (const dataValue of props.propertyDefinitions) {
-        dataValueMap.set(dataValue.name, valueMap[dataValue.name]);
+        dataValueMap.set(dataValue.name.replace(/_/g, "."), valueMap[dataValue.name]);
       }
       props.onValidateProperties(
         dataValueMap,
@@ -115,17 +110,10 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            let valueMap = new Map<string, string>();
-            valueMap = _.transform(
-              values,
-              (result, val: string, key: string) => {
-                result[key.replace(/_/g, ".")] = val;
-              }
-            );
-            handleSubmit(valueMap);
+            handleSubmit(values);
           }}
         >
-          {({ errors, touched, setFieldValue, isSubmitting }) => (
+          {({ errors, touched }) => (
             <Form className="pf-c-form">
               <Accordion asDefinitionList={true}>
                 <AccordionItem>
@@ -216,7 +204,6 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                             <GridItem key={index}>
                               <FormComponent
                                 propertyDefinition={propertyDefinition}
-                                // propertyChange={handlePropertyChange}
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
