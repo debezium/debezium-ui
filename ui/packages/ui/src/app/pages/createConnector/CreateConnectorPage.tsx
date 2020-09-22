@@ -33,6 +33,7 @@ import {
   isDataOptions,
   isRuntimeOptions,
   mapToObject,
+  minimizePropertyValues,
   PropertyCategory,
   PropertyName
 } from "src/app/shared";
@@ -147,13 +148,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
     runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
 
+    const minimizedValues = minimizePropertyValues(allPropValues, selectedConnectorPropertyDefns);
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.createConnector, connectorService, [
       clusterID,
       selectedConnectorType,
       {
         name: connectorName,
-        config: mapToObject(allPropValues),
+        config: mapToObject(minimizedValues),
       },
     ])
       .then(() => {
@@ -227,17 +229,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   ): void => {
     setBasicPropValues(basicPropertyValues);
     setAdvancedPropValues(advancePropertyValues);
-    // Don't include connector name for validation
-    // const basicForValidation = new Map<string,string>(basicPropertyValues);
-    // basicForValidation.delete(PropertyName.CONNECTOR_NAME);
-    validateConnectionProperties(
-      new Map(
-        (function* () {
-          yield* basicPropertyValues;
-          yield* advancePropertyValues;
-        })()
-      )
+
+    const valueMap = new Map(
+      (function* () {
+        yield* basicPropertyValues;
+        yield* advancePropertyValues;
+      })()
     );
+    const minimizedValues = minimizePropertyValues(valueMap, selectedConnectorPropertyDefns);
+    validateConnectionProperties(minimizedValues);
   };
 
   const handleValidateOptionProperties = (
@@ -289,11 +289,12 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     propertyCategory: PropertyCategory
   ) => {
     // alert("Validate Option Properties: " + JSON.stringify(mapToObject(propertyValues)));
+    const minimizedValues = minimizePropertyValues(propertyValues, selectedConnectorPropertyDefns);
 
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.validateProperties, connectorService, [
       selectedConnectorType,
-      mapToObject(new Map(propertyValues)),
+      mapToObject(new Map(minimizedValues)),
     ])
       .then((result: PropertiesValidationResult) => {
         if (result.status === "INVALID") {
