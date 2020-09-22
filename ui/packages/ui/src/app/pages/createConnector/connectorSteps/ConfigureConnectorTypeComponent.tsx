@@ -181,9 +181,9 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
             handleSubmit(values);
           }}
         >
-          {({ errors, touched, handleChange, isSubmitting, validateForm }) => (
+          {({ errors, touched }) => (
             <Form className="pf-c-form">
-              <Grid hasGutter={true}>
+              <Grid hasGutter={true} className="connector-name-form">
                 {namePropertyDefinitions.map(
                   (propertyDefinition: ConnectorProperty, index: any) => {
                     return (
