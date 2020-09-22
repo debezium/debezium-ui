@@ -46,10 +46,10 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
           <EmptyState variant={EmptyStateVariant.small}>
             <EmptyStateIcon icon={CubesIcon} />
             <Title headingLevel="h4" size="lg">
-              {"No tables matched the filters"}
+              {"No matching tables"}
             </Title>
             <EmptyStateBody className="filter-tree-component_emptyBody">
-              {"The specified filters resulted in no matching tables"}
+              {"No tables matched the specified filters"}
             </EmptyStateBody>
           </EmptyState>
         )

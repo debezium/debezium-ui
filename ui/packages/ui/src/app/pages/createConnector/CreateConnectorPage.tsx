@@ -441,7 +441,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     },
     {
       id: 3,
-      name: "Filters",
+      name: "Table Selection",
       component: (
         <FiltersStepComponent
           propertyValues={new Map([...basicPropValues, ...advancedPropValues])}
