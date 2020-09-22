@@ -1,7 +1,6 @@
 import { Connector } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
-  Bullseye,
   Button,
   DataList,
   EmptyState,
@@ -130,24 +129,22 @@ export const ConnectorsPage: React.FunctionComponent = () => {
               </DataList>
             </>
           ) : (
-            <Bullseye>
-              <EmptyState variant={EmptyStateVariant.large}>
-                <EmptyStateIcon icon={CubesIcon} />
-                <Title headingLevel="h4" size="lg">
-                  No connectors
-                </Title>
-                <EmptyStateBody>
-                  Please click 'Create a connector' to create a new connector.
-                </EmptyStateBody>
-                  <Button
-                    onClick={createConnector}
-                    variant="primary"
-                    className="connectors-page_createButton"
-                  >
-                    Create a connector
-                  </Button>
-              </EmptyState>
-            </Bullseye>
+            <EmptyState variant={EmptyStateVariant.large}>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                No connectors
+              </Title>
+              <EmptyStateBody>
+                Please click 'Create a connector' to create a new connector.
+              </EmptyStateBody>
+                <Button
+                  onClick={createConnector}
+                  variant="primary"
+                  className="connectors-page_createButton"
+                >
+                  Create a connector
+                </Button>
+            </EmptyState>
           )}
         </>
       )}
