@@ -10,6 +10,8 @@ import { FormComponent } from "../shared";
 export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  setRuntimeOptionsValid: () => void;
+  setRuntimeStepsValid: () => void;
   onValidateProperties: (
     connectorProperties: Map<string, string>,
     propertyCategory: PropertyCategory
@@ -18,13 +20,19 @@ export interface IRuntimeOptionsComponentProps {
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
   (props, ref) => {
-    const { submitForm, validateForm } = useFormikContext();
+    const { dirty, submitForm, validateForm } = useFormikContext();
     React.useImperativeHandle(ref, () => ({
       validate() {
         validateForm();
         submitForm();
       },
     }));
+    React.useEffect(() => {
+      if (dirty) {
+        props.setRuntimeOptionsValid(!dirty);
+        props.setRuntimeStepsValid(0);
+      }
+    }, [props.setRuntimeOptionsValid, props.setRuntimeStepsValid, dirty]);
     return null;
   }
 );
@@ -87,12 +95,21 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
 
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
+      const userValues: Map<string, string> = new Map([
+        ...props.propertyValues
+      ]);
 
       combined.map((key: { name: string; defaultValue: string; type: string }) => {
         if (!combinedValue[key.name]) {
-          key.defaultValue === undefined
-            ? (combinedValue[key.name] = (key.type === "INT" || key.type === "LONG") ? 0 : "")
-            : (combinedValue[key.name] = key.defaultValue);
+          if (userValues.size === 0) {
+            key.defaultValue === undefined
+              ? (combinedValue[key.name] = (key.type === "INT" || key.type === "LONG") ? 0 : "")
+              : (combinedValue[key.name] = key.defaultValue);
+          } else {
+            combinedValue[key.name] = userValues.get(
+              key.name.replace(/_/g, ".")
+            );
+          }
         }
       });
 
@@ -209,7 +226,11 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              <FormSubmit ref={ref} />
+              <FormSubmit
+                ref={ref}
+                setRuntimeOptionsValid={props.setRuntimeOptionsValid}
+                setRuntimeStepsValid={props.setRuntimeStepsValid}
+              />
             </Form>
           )}
         </Formik>

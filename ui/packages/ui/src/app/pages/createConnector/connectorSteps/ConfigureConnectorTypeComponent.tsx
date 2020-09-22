@@ -44,7 +44,7 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
         props.setConnectionPropsValid(!dirty);
         props.setConnectionStepsValid(0);
       }
-    }, [props.setConnectionPropsValid, dirty]);
+    }, [props.setConnectionPropsValid, props.setConnectionStepsValid, dirty]);
     return null;
   }
 );

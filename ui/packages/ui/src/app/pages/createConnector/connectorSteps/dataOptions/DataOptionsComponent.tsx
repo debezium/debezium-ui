@@ -6,7 +6,7 @@ import {
   AccordionToggle,
   Grid,
   GridItem,
-  Title
+  Title,
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
@@ -18,6 +18,8 @@ import "./DataOptionsComponent.css";
 export interface IDataOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  setDataOptionsValid: () => void;
+  setDataStepsValid: () => void;
   onValidateProperties: (
     connectorProperties: Map<string, string>,
     propertyCategory: PropertyCategory
@@ -26,13 +28,19 @@ export interface IDataOptionsComponentProps {
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
   (props, ref) => {
-    const { submitForm, validateForm } = useFormikContext();
+    const { dirty, submitForm, validateForm } = useFormikContext();
     React.useImperativeHandle(ref, () => ({
       validate() {
         validateForm();
         submitForm();
       },
     }));
+    React.useEffect(() => {
+      if (dirty) {
+        props.setDataOptionsValid(!dirty);
+        props.setDataStepsValid(0);
+      }
+    }, [props.setDataOptionsValid, props.setDataStepsValid, dirty]);
     return null;
   }
 );
@@ -75,14 +83,26 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
 
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
+      const userValues: Map<string, string> = new Map([
+        ...props.propertyValues,
+      ]);
 
-      combined.map((key: { name: string; defaultValue: string; type: string }) => {
-        if (!combinedValue[key.name]) {
-          key.defaultValue === undefined
-            ? (combinedValue[key.name] = (key.type === "INT" || key.type === "LONG") ? 0 : "")
-            : (combinedValue[key.name] = key.defaultValue);
+      combined.map(
+        (key: { name: string; defaultValue: string; type: string }) => {
+          if (!combinedValue[key.name]) {
+            if (userValues.size === 0) {
+              key.defaultValue === undefined
+                ? (combinedValue[key.name] =
+                    key.type === "INT" || key.type === "LONG" ? 0 : "")
+                : (combinedValue[key.name] = key.defaultValue);
+            } else {
+              combinedValue[key.name] = userValues.get(
+                key.name.replace(/_/g, ".")
+              );
+            }
+          }
         }
-      });
+      );
 
       return combinedValue;
     };
@@ -92,13 +112,20 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     };
 
     const initialValues = getInitialValues(
-      _.union(mappingGeneralPropertyDefinitions, mappingAdvancedPropertyDefinitions, snapshotPropertyDefinitions)
+      _.union(
+        mappingGeneralPropertyDefinitions,
+        mappingAdvancedPropertyDefinitions,
+        snapshotPropertyDefinitions
+      )
     );
 
     const handleSubmit = (valueMap: Map<string, string>) => {
       const dataValueMap: Map<string, string> = new Map();
       for (const dataValue of props.propertyDefinitions) {
-        dataValueMap.set(dataValue.name.replace(/_/g, "."), valueMap[dataValue.name]);
+        dataValueMap.set(
+          dataValue.name.replace(/_/g, "."),
+          valueMap[dataValue.name]
+        );
       }
       props.onValidateProperties(
         dataValueMap,
@@ -197,7 +224,12 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                         }
                       )}
                     </Grid>
-                    <Title headingLevel="h2" className={"data-options-component-grouping"}>Advanced properties</Title>
+                    <Title
+                      headingLevel="h2"
+                      className={"data-options-component-grouping"}
+                    >
+                      Advanced properties
+                    </Title>
                     <Grid hasGutter={true}>
                       {mappingAdvancedPropertyDefinitions.map(
                         (propertyDefinition: ConnectorProperty, index) => {
@@ -224,7 +256,11 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              <FormSubmit ref={ref} />
+              <FormSubmit
+                ref={ref}
+                setDataOptionsValid={props.setDataOptionsValid}
+                setDataStepsValid={props.setDataStepsValid}
+              />
             </Form>
           )}
         </Formik>
