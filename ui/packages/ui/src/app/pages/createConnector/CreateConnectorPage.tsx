@@ -171,6 +171,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     history.push("/app");
   };
 
+  const goToNext = (id: number, onNext: () => void) =>{
+    setStepIdReached(stepIdReached < id ? id : stepIdReached);
+    onNext()
+  }
+
   const validateLastStep = (stepName: string, onNext: () => void) => {
     let childRef;
     let isValid;
@@ -475,6 +480,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             propertyValues={dataOptionsPropValues}
             onValidateProperties={handleValidateOptionProperties}
             ref={dataOptionRef}
+            setDataOptionsValid={setDataOptionsValid}
+            setDataStepsValid={setDataStepsValid}
           />
         </>
       ),
@@ -514,6 +521,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             propertyValues={runtimeOptionsPropValues}
             onValidateProperties={handleValidateOptionProperties}
             ref={runtimeOptionRef}
+            setRuntimeOptionsValid={setRuntimeOptionsValid}
+            setRuntimeStepsValid={setRuntimeStepsValid}
           />
         </>
       ),
@@ -568,14 +577,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                   Finish
                 </Button>
               ) : (
-                  <Button variant="primary" type="submit" onClick={onNext}>
+                  <Button variant="primary" type="submit" onClick={() => goToNext(activeStep.id, onNext)}>
                     Next
                   </Button>
                 )}
               <Button
                 variant="secondary"
                 onClick={onBack}
-                className={activeStep.name === "Step 1" ? "pf-m-disabled" : ""}
+                className={activeStep.name === "Connector Type" ? "pf-m-disabled" : ""}
               >
                 Back
               </Button>
