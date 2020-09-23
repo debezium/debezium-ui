@@ -274,6 +274,56 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
   return minimizedValues;
 }
 
+/**
+ * Apply optional grid formatting values to some properties for better layouts.
+ * @param propertyDefns the array of property definitions
+ */
+export function getGridFormattedProperties (propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+  const formattedPropertyDefns: ConnectorProperty[] = [...propertyDefns];
+
+  for (const propDefn of formattedPropertyDefns) {
+    switch (propDefn.name) {
+      case PropertyName.DATABASE_PORT:
+      case PropertyName.SNAPSHOT_DELAY_MS:
+      case PropertyName.SNAPSHOT_FETCH_SIZE:
+      case PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS:
+      case PropertyName.BINARY_HANDLING_MODE:
+      case PropertyName.DECIMAL_HANDLING_MODE:
+      case PropertyName.HSTORE_HANDLING_MODE:
+      case PropertyName.INTERVAL_HANDLING_MODE:
+      case PropertyName.TIME_PRECISION_MODE:
+      case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
+      case PropertyName.MAX_QUEUE_SIZE:
+      case PropertyName.MAX_BATCH_SIZE:
+      case PropertyName.POLL_INTERVAL_MS:
+      case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
+      case PropertyName.HEARTBEAT_INTERVAL_MS:
+      case PropertyName.PLUGIN_NAME:
+      case PropertyName.PUBLICATION_AUTOCREATE_MODE:
+      case PropertyName.SCHEMA_REFRESH_MODE:
+        propDefn.gridWidth = 4;
+        break;
+      case PropertyName.SLOT_MAX_RETRIES:
+      case PropertyName.SLOT_RETRY_DELAY_MS:
+      case PropertyName.STATUS_UPDATE_INTERVAL_MS:
+      case PropertyName.XMIN_FETCH_INTERVAL_MS:
+        propDefn.gridWidth = 6;
+        break;
+      case PropertyName.DATABASE_HOSTNAME:
+        propDefn.gridWidth = 8;
+        break;
+      case PropertyName.SNAPSHOT_MODE:
+        propDefn.gridWidth = 9;
+        break;
+      default:
+        propDefn.gridWidth = 12;
+        break;
+    }
+  }
+ 
+  return formattedPropertyDefns;
+}
+
 export function mapToObject(inputMap: Map<string, string>) {
   const obj = {};
   inputMap.forEach((value, key) => {

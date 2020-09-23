@@ -29,6 +29,7 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
+  getGridFormattedProperties,
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
   isRuntimeOptions,
@@ -360,7 +361,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
-      setSelectedConnectorPropertyDefns(connectorTypes[0]!.properties);
+      setSelectedConnectorPropertyDefns(getGridFormattedProperties(connectorTypes[0]!.properties));
 
     // Init the connector property values
     initPropertyValues();
