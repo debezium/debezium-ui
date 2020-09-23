@@ -240,6 +240,40 @@ export function isRuntimeOptions (propertyCategory: PropertyCategory): boolean {
           propertyCategory === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT);
 }
 
+/**
+ * Minimize property values.  This function eliminates property values from the supplied map
+ * which are not required to be supplied to the backend for validation or connector creation.
+ *   - include property values which are mandatory
+ *   - include property values which have a default, and the value is different than the default
+ *   - include property value if it is not empty - (if not mandatory and has no default)
+ * @param propertyValues the map of property values
+ * @param propertyDefns the array of property definitions
+ */
+export function minimizePropertyValues (propertyValues: Map<string, string>, propertyDefns: ConnectorProperty[]): Map<string,string> {
+  const minimizedValues: Map<string,string> = new Map<string, string>();
+
+  propertyValues.forEach((value: string, key: string) => {
+    // Get the corresponding property definition
+    const propDefn = propertyDefns.find( (prop) => prop.name.replace(/_/g, ".") === key);
+    if (propDefn) {
+      // Include mandatory values
+      if (propDefn.isMandatory) {
+        minimizedValues.set(key, value);
+      // Include non-mandatory if has default and value is different
+      } else if (propDefn.defaultValue) {
+        if (propDefn.defaultValue !== value) {
+          minimizedValues.set(key, value);
+        }
+      // Include non-mandatory if no default, and not empty
+      } else if (value !== "") {
+        minimizedValues.set(key, value);
+      }
+    }
+  });
+ 
+  return minimizedValues;
+}
+
 export function mapToObject(inputMap: Map<string, string>) {
   const obj = {};
   inputMap.forEach((value, key) => {
