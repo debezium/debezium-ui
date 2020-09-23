@@ -126,7 +126,7 @@ export function getBasicPropertyDefinitions(
   // Add a property for the Connector name
   const connNameProperty = {
     category: PropertyCategory.CONNECTOR_NAME,
-    description: "The connector name",
+    description: "A name for the connector which will be created",
     displayName: "Connector name",
     name: "connector.name",
     isMandatory: true,

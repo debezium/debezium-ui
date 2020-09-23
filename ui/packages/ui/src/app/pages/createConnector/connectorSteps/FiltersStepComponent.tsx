@@ -230,12 +230,10 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
   return (
     <>
       <Title headingLevel="h2" size="3xl">
-        Select tables
+        Table Selection
       </Title>
       <Text component={TextVariants.h2}>
-        Start from filtering schemas; tables and columns by entering a
-        comma-separated list of regular expression that match the names of
-        schema, table or column.
+        Select tables for change capture by entering comma-separated lists of regular expressions for schemas, tables and columns.
       </Text>
       <Form isHorizontal={true} className="filters-step-component_form">
         <FormGroup
@@ -248,7 +246,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 className="filters-step-component_info"
               >
                 <InfoCircleIcon />
-                This filter will exclude the schema that matches the expression.
+                Schemas matching the regular expression filters will be excluded.
               </Text>
             ) : (
               ""
@@ -293,7 +291,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 aria-describedby="schema_filter-helper"
                 name="schema_filter"
                 onChange={handleSchemaFilter}
-                placeholder="Include the schemas that match the regular expression"
+                placeholder="Enter regular expression(s) for schema filtering"
               />
             </FlexItem>
             <FlexItem>
@@ -328,7 +326,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 className="filters-step-component_info"
               >
                 <InfoCircleIcon />
-                This filter will exclude the tables that matches the expression.
+                Tables matching the regular expression filters will be excluded.
               </Text>
             ) : (
               ""
@@ -372,7 +370,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
                 type="text"
                 id="table_filter"
                 name="table_filter"
-                placeholder="Include the tables that match the regular expression"
+                placeholder="Enter regular expression(s) for table filtering"
               />
             </FlexItem>
             <FlexItem>
@@ -411,7 +409,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         <Alert
           variant={"danger"}
           isInline={true}
-          title={"The input expression for filtering tables are invalid."}
+          title={"The expression(s) for table filtering are invalid."}
         />
       ) : props.filterValues.size !== 0 ? (
         <Alert
@@ -419,20 +417,20 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           isInline={true}
           title={
             tableNo !== 0
-              ? `The specified filters result in ${tableNo} tables for which changes will be captured`
-              : "The specified filters do not result in any matching tables"
+              ? `${tableNo} matching tables for change capture`
+              : "No matching tables for the specified filters"
           }
         >
           <p>
-            You can also find all the schemas and tables by clicking{" "}
-            <a onClick={clearFilter}>All tables</a>
+            You can include all schemas and tables by clicking{" "}
+            <a onClick={clearFilter}>Clear filters</a>
           </p>
         </Alert>
       ) : (
         <Alert
           variant="info"
           isInline={true}
-          title={`There are ${tableNo} tables available for capturing the data change. You can also select schema and tables by filtering.`}
+          title={`${tableNo} tables available for change capture. You can enter regular expressions to filter.`}
         />
       )}
 
@@ -447,9 +445,9 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         i18nCancelButtonText={"Cancel"}
         i18nConfirmButtonText={"Clear"}
         i18nConfirmationMessage={
-          "You will clear all the filtering expression if you perform the clear filters. \nAre you sure you want to clear."
+          "This operation will clear all filtering expressions. \nAre you sure you want to proceed?"
         }
-        i18nTitle={"Clear all filters?"}
+        i18nTitle={"Clear filters"}
         showDialog={showClearDialog}
         onCancel={doCancel}
         onConfirm={doClear}
