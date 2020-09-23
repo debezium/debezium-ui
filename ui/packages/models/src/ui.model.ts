@@ -42,6 +42,7 @@ export interface ConnectorConfiguration {
 export interface PropertyValidationResult {
     property: string;
     message: string;
+    displayName: string;
 }
 
 /**

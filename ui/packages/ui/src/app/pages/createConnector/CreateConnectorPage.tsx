@@ -22,7 +22,7 @@ import {
   WizardContextConsumer,
   WizardFooter
 } from "@patternfly/react-core";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
   fetch_retry,
@@ -164,8 +164,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       })
       .catch((err: React.SetStateAction<Error>) => {
         setConnectorCreateFailed(true);
-        setApiError(true);
-        setErrorMsg(err);
       });
   };
 
@@ -178,7 +176,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     onNext()
   }
 
-  const validateLastStep = (stepName: string, onNext: () => void) => {
+  const validateLastStep = (stepName: ReactNode, onNext: () => void) => {
     let childRef;
     let isValid;
     let setStep: Dispatch<SetStateAction<number>>;
