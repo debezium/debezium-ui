@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-
 /**
  * Model which represents a connector
  */
 // tslint:disable-next-line: interface-name
 export interface Connector {
+    connectorStatus: 'UNASSIGNED' | 'RUNNING' | 'PAUSED' | 'FAILED' | 'DESTROYED';
+    connectorType: string;
     name: string;
-    description: string;
-    type: string;
+    taskStates: any;
 }
 
 /**

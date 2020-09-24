@@ -1,5 +1,13 @@
 import { ConnectorProperty, ConnectorType } from "@debezium/ui-models";
 
+export enum ConnectorState {
+  UNASSIGNED = "UNASSIGNED",
+  RUNNING = "RUNNING",
+  PAUSED = "PAUSED",
+  FAILED = "FAILED",
+  DESTROYED = "DESTROYED"
+}
+
 export enum ConnectorTypeId {
   POSTGRES = "postgres",
   MYSQL = "mysql",

@@ -36,10 +36,15 @@ function getSortedConnectors(connectors: Connector[]) {
 export const ConnectorsPage: React.FunctionComponent = () => {
   // TODO: Replace this fake data with results from rest service call, when available.
   const [connectors, setConnectors] = React.useState<Connector[]>([
+    // UNCOMMENT THIS TO SEE SAMPLE CONNECTOR IN LIST
     // {
     //   name: "postgresTest",
-    //   description: "PostgreSQL connector",
-    //   type: ConnectorTypeId.POSTGRES
+    //   connectorStatus: "PAUSED",
+    //   connectorType: ConnectorTypeId.POSTGRES,
+    //   taskStates: {
+    //     "0" : "RUNNING",
+    //     "1" : "PAUSED"
+    //   }
     // } as Connector,
   ] as Connector[]);
   const [connectCluster, setConnectCluster] = React.useState<string>("");
@@ -82,6 +87,19 @@ export const ConnectorsPage: React.FunctionComponent = () => {
       });
   }, [setConnectClusters]);
 
+  // React.useEffect(() => {
+  //   const connectorService = Services.getConnectorService();
+  //   fetch_retry(connectorService.getConnectors, connectorService)
+  //     .then((connectors: Connector[]) => {
+  //       setLoading(false);
+  //       setConnectors([...connectors]);
+  //     })
+  //     .catch((err: React.SetStateAction<Error>) => {
+  //       setApiError(true);
+  //       setErrorMsg(err);
+  //     });
+  // }, [setConnectors]);
+
   return (
     <WithLoader
       error={apiError}
@@ -120,9 +138,10 @@ export const ConnectorsPage: React.FunctionComponent = () => {
                   return (
                     <ConnectorListItem
                       key={index}
-                      connectorName={conn.name}
-                      connectorType={conn.type}
-                      connectorDescription={conn.description}
+                      name={conn.name}
+                      type={conn.connectorType}
+                      status={conn.connectorStatus}
+                      taskStates={['RUNNING', 'PAUSED']}
                     />
                   );
                 })}
