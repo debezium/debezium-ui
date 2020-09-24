@@ -142,90 +142,100 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
         >
           {({ errors, touched }) => (
             <Form className="pf-c-form">
-              <Accordion asDefinitionList={true}>
-                <AccordionItem>
-                  <AccordionToggle
-                    onClick={(e) => {
-                      toggle(e, "engine");
-                    }}
-                    isExpanded={expanded.includes("engine")}
-                    id="engine"
-                    className="dbz-c-accordion"
-                  >
-                    Engine properties
-                  </AccordionToggle>
-                  <AccordionContent
-                    id="engine"
-                    className="dbz-c-accordion__content"
-                    isHidden={!expanded.includes("engine")}
-                  >
-                    <Grid hasGutter={true}>
-                      {enginePropertyDefinitions.map(
-                        (propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem key={index}>
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                // propertyChange={handlePropertyChange}
-                                helperTextInvalid={
-                                  errors[propertyDefinition.name]
-                                }
-                                validated={
-                                  errors[propertyDefinition.name] &&
-                                  touched[propertyDefinition.name]
-                                    ? "error"
-                                    : "default"
-                                }
-                                propertyChange={handlePropertyChange}
-                              />
-                            </GridItem>
-                          );
-                        }
-                      )}
-                    </Grid>
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem>
-                  <AccordionToggle
-                    onClick={(e) => {
-                      toggle(e, "heartbeat");
-                    }}
-                    isExpanded={expanded.includes("heartbeat")}
-                    id="heartbeat"
-                    className="dbz-c-accordion"
-                  >
-                    Heartbeat properties
-                  </AccordionToggle>
-                  <AccordionContent
-                    id="heartbeat"
-                    isHidden={!expanded.includes("heartbeat")}
-                  >
-                    <Grid hasGutter={true}>
-                      {heartbeatPropertyDefinitions.map(
-                        (propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem key={index}>
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                propertyChange={handlePropertyChange}
-                                helperTextInvalid={
-                                  errors[propertyDefinition.name]
-                                }
-                                validated={
-                                  errors[propertyDefinition.name] &&
-                                  touched[propertyDefinition.name]
-                                    ? "error"
-                                    : "default"
-                                }
-                              />
-                            </GridItem>
-                          );
-                        }
-                      )}
-                    </Grid>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+              <Grid>
+                <GridItem span={9}>
+                  <Accordion asDefinitionList={true}>
+                    <AccordionItem>
+                      <AccordionToggle
+                        onClick={(e) => {
+                          toggle(e, "engine");
+                        }}
+                        isExpanded={expanded.includes("engine")}
+                        id="engine"
+                        className="dbz-c-accordion"
+                      >
+                        Engine properties
+                      </AccordionToggle>
+                      <AccordionContent
+                        id="engine"
+                        className="dbz-c-accordion__content"
+                        isHidden={!expanded.includes("engine")}
+                      >
+                        <Grid hasGutter={true}>
+                          {enginePropertyDefinitions.map(
+                            (propertyDefinition: ConnectorProperty, index) => {
+                              return (
+                                <GridItem
+                                  key={index}
+                                  span={propertyDefinition.gridWidth}
+                                >
+                                  <FormComponent
+                                    propertyDefinition={propertyDefinition}
+                                    // propertyChange={handlePropertyChange}
+                                    helperTextInvalid={
+                                      errors[propertyDefinition.name]
+                                    }
+                                    validated={
+                                      errors[propertyDefinition.name] &&
+                                      touched[propertyDefinition.name]
+                                        ? "error"
+                                        : "default"
+                                    }
+                                    propertyChange={handlePropertyChange}
+                                  />
+                                </GridItem>
+                              );
+                            }
+                          )}
+                        </Grid>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem>
+                      <AccordionToggle
+                        onClick={(e) => {
+                          toggle(e, "heartbeat");
+                        }}
+                        isExpanded={expanded.includes("heartbeat")}
+                        id="heartbeat"
+                        className="dbz-c-accordion"
+                      >
+                        Heartbeat properties
+                      </AccordionToggle>
+                      <AccordionContent
+                        id="heartbeat"
+                        isHidden={!expanded.includes("heartbeat")}
+                      >
+                        <Grid hasGutter={true}>
+                          {heartbeatPropertyDefinitions.map(
+                            (propertyDefinition: ConnectorProperty, index) => {
+                              return (
+                                <GridItem
+                                  key={index}
+                                  span={propertyDefinition.gridWidth}
+                                >
+                                  <FormComponent
+                                    propertyDefinition={propertyDefinition}
+                                    propertyChange={handlePropertyChange}
+                                    helperTextInvalid={
+                                      errors[propertyDefinition.name]
+                                    }
+                                    validated={
+                                      errors[propertyDefinition.name] &&
+                                      touched[propertyDefinition.name]
+                                        ? "error"
+                                        : "default"
+                                    }
+                                  />
+                                </GridItem>
+                              );
+                            }
+                          )}
+                        </Grid>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </GridItem>
+              </Grid>
               <FormSubmit
                 ref={ref}
                 setRuntimeOptionsValid={props.setRuntimeOptionsValid}

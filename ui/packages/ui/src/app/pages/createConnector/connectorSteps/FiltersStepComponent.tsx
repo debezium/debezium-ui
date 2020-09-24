@@ -120,6 +120,9 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
+  const schemaFilterInfo = "A comma-separated list of regular expressions for schema filtering (e.g schema1,schema2).  Click for more information about regular expressions:";
+  const tableFilterInfo = "A comma-separated list of regular expressions for table filtering (e.g schema1.*,schema2.table1).  Click for more information about regular expressions:";
+
   const handleSchemaFilter = (val: string) => {
     setSchemaFilter(val);
   };
@@ -233,7 +236,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         Table Selection
       </Title>
       <Text component={TextVariants.h2}>
-        Select tables for change capture by entering comma-separated lists of regular expressions for schemas, tables and columns.
+        Select tables for change capture by entering comma-separated lists of regular expressions for schemas and tables.
       </Text>
       <Form isHorizontal={true} className="filters-step-component_form">
         <FormGroup
@@ -253,7 +256,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
             )
           }
           labelIcon={
-            <Popover bodyContent={<div>e.g schema1,schema2</div>}>
+            <Popover bodyContent={<div>{schemaFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
               <button
                 aria-label="More info for schema filter field"
                 onClick={(e) => e.preventDefault()}
@@ -333,7 +336,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
             )
           }
           labelIcon={
-            <Popover bodyContent={<div>e.g schema1.*,schema2.table1</div>}>
+            <Popover bodyContent={<div>{tableFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
               <button
                 aria-label="More info for table filter field"
                 onClick={(e) => e.preventDefault()}
