@@ -8,6 +8,9 @@ import {
 import { Services } from "@debezium/ui-services";
 import {
   Alert,
+  AlertActionCloseButton,
+  AlertGroup,
+  AlertVariant,
   Breadcrumb,
   BreadcrumbItem,
   Button,
@@ -22,6 +25,7 @@ import {
   WizardContextConsumer,
   WizardFooter
 } from "@patternfly/react-core";
+import _ from 'lodash';
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
@@ -71,6 +75,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
     string | undefined
   >();
+  const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true)
   const [
     selectedConnectorPropertyDefns,
     setSelectedConnectorPropertyDefns,
@@ -98,6 +103,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
+  const [alerts, setAlerts] = React.useState<any[]>([])
 
   const [connectionStepsValid, setConnectionStepsValid] = React.useState<
     number
@@ -130,9 +136,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const validationSuccessNextMsg = "Validation was successful, click Next to continue";
   const validationSuccessFinishMsg = "Validation was successful, click Finish to create the connector";
 
-  const onFinish = () => {
-    setConnectorCreateFailed(false);
+  const addAlert = () => {
+     const alertsCopy = [...alerts];
+     const uId = new Date().getTime();
+     alertsCopy.push({ title: 'Creation of the connector failed.', variant: 'danger',key: uId })
+     setAlerts(alertsCopy);
+    };
 
+  const removeAlert = (key: string) => {
+    setAlerts([...alerts.filter(el => el.key !== key)]);
+  };
+
+  const onFinish = () => {
     // Cluster ID and connector name for the create
     const clusterID = location.state?.value;
     const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
@@ -165,6 +180,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       })
       .catch((err: React.SetStateAction<Error>) => {
         setConnectorCreateFailed(true);
+        addAlert();
       });
   };
 
@@ -173,6 +189,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   };
 
   const goToNext = (id: number, onNext: () => void) =>{
+    setConnectorCreateFailed(false);
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
     onNext()
   }
@@ -410,17 +427,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title={<ConnectionPropertiesError connectionPropsMsg={connectionPropsValidMsg} />}
+                  title={
+                    <ConnectionPropertiesError
+                      connectionPropsMsg={connectionPropsValidMsg}
+                    />
+                  }
                 />
               </div>
             ) : (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert
-                    variant="success"
-                    title={validationSuccessNextMsg}
-                  />
-                </div>
-              ))}
+              <div style={{ padding: "15px 0" }}>
+                <Alert variant="success" title={validationSuccessNextMsg} />
+              </div>
+            ))}
           <ConfigureConnectorTypeComponent
             basicPropertyDefinitions={getBasicPropertyDefinitions(
               selectedConnectorPropertyDefns
@@ -448,6 +466,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           filterValues={filterValues}
           updateFilterValues={handleFilterUpdate}
           connectorType={selectedConnectorType || ""}
+          setIsValidFilter={setIsValidFilter}
         />
       ),
       canJumpTo: stepIdReached >= 3,
@@ -462,17 +481,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title={<ConnectionPropertiesError connectionPropsMsg={connectionPropsValidMsg} />}
+                  title={
+                    <ConnectionPropertiesError
+                      connectionPropsMsg={connectionPropsValidMsg}
+                    />
+                  }
                 />
               </div>
             ) : (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert
-                    variant="success"
-                    title={validationSuccessNextMsg}
-                  />
-                </div>
-              ))}
+              <div style={{ padding: "15px 0" }}>
+                <Alert variant="success" title={validationSuccessNextMsg} />
+              </div>
+            ))}
           <DataOptionsComponent
             propertyDefinitions={getDataOptionsPropertyDefinitions(
               selectedConnectorPropertyDefns
@@ -498,22 +518,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               <div style={{ padding: "15px 0" }}>
                 <Alert
                   variant="danger"
-                  title={<ConnectionPropertiesError connectionPropsMsg={connectionPropsValidMsg} />}
+                  title={
+                    <ConnectionPropertiesError
+                      connectionPropsMsg={connectionPropsValidMsg}
+                    />
+                  }
                 />
               </div>
             ) : (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert
-                    variant="success"
-                    title={validationSuccessFinishMsg}
-                  />
-                </div>
-              ))}
-          {connectorCreateFailed && (
-            <div style={{ padding: "15px 0" }}>
-              <Alert variant="danger" title="Create of the connector failed." />
-            </div>
-          )}
+              <div style={{ padding: "15px 0" }}>
+                <Alert variant="success" title={validationSuccessFinishMsg} />
+              </div>
+            ))}
           <RuntimeOptionsComponent
             propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
               selectedConnectorPropertyDefns
@@ -577,20 +593,48 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                   Finish
                 </Button>
               ) : (
-                  <Button variant="primary" type="submit" onClick={() => goToNext(activeStep.id, onNext)}>
-                    Next
-                  </Button>
-                )}
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className={
+                    activeStep.name === "Table Selection" && !isValidFilter
+                      ? "pf-m-disabled"
+                      : ""
+                  }
+                  onClick={() => goToNext(activeStep.id, onNext)}
+                >
+                  Next
+                </Button>
+              )}
               <Button
                 variant="secondary"
                 onClick={onBack}
-                className={activeStep.name === "Connector Type" ? "pf-m-disabled" : ""}
+                className={
+                  activeStep.name === "Connector Type" ? "pf-m-disabled" : ""
+                }
               >
                 Back
               </Button>
               <Button variant="link" onClick={onClose}>
                 Cancel
               </Button>
+              {activeStep.id && activeStep.id > 1 && activeStep.id !== 5 && (
+                <>
+                  <hr className="pf-c-divider pf-m-vertical" />
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className={
+                      activeStep.name === "Table Selection" && !isValidFilter
+                        ? "pf-m-disabled"
+                        : ""
+                    }
+                    onClick={onFinish}
+                  >
+                    Finish
+                  </Button>
+                </>
+              )}
             </>
           );
         }}
@@ -626,6 +670,23 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           className="create-connector-page_wizard"
         />
       </div>
+      <AlertGroup isToast={true}>
+          {alerts.map(({key, variant, title}) => (
+            <Alert
+            isInline={true}
+              isLiveRegion={true}
+              variant={AlertVariant[variant]}
+              title={title}
+              actionClose={
+                <AlertActionCloseButton
+                  title={title}
+                  variantLabel={`${variant} alert`}
+                  onClose={() => removeAlert(key)}
+                />
+              }
+              key={key} />
+          ))}
+        </AlertGroup>
     </>
   );
 };

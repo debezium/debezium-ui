@@ -6,7 +6,7 @@ import {
   Title,
   TreeView,
 } from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+import { CubesIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
 import React from "react";
 import { PageLoader } from ".";
 import { ApiError } from "../shared";
@@ -18,6 +18,7 @@ export interface IFilterTreeComponentProps {
   loading: boolean;
   apiError: boolean;
   errorMsg: Error;
+  invalidMsg: Map<string,string> | undefined;
 }
 export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentProps> = (
   props
@@ -35,14 +36,7 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
       errorChildren={<ApiError error={props.errorMsg} />}
     >
       {() =>
-        props.treeData.length !== 0 ? (
-          <TreeView
-            data={props.treeData}
-            activeItems={activeItems}
-            onSelect={onClick}
-            hasBadges={true}
-          />
-        ) : (
+        props.treeData.length === 0 ? props.invalidMsg?.size === 0 ?(
           <EmptyState variant={EmptyStateVariant.small}>
             <EmptyStateIcon icon={CubesIcon} />
             <Title headingLevel="h4" size="lg">
@@ -52,6 +46,24 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
               {"No tables matched the specified filters"}
             </EmptyStateBody>
           </EmptyState>
+        ) : (
+          <EmptyState variant={EmptyStateVariant.small}>
+            <EmptyStateIcon icon={ExclamationCircleIcon} />
+            <Title headingLevel="h4" size="lg">
+              {"Invalid filter(s)"}
+            </Title>
+            <EmptyStateBody className="filter-tree-component_emptyBody">
+              {"The expression(s) for table filtering are invalid, please correct and try again."}
+            </EmptyStateBody>
+          </EmptyState>
+        ) : (
+          <TreeView
+            data={props.treeData}
+            activeItems={activeItems}
+            onSelect={onClick}
+            hasBadges={true}
+          />
+          
         )
       }
     </WithLoader>
