@@ -37,7 +37,8 @@ public class CreatePostgresConnectorIT {
         Connector connector = Connector.from(
                 "my-postgres-connector",
                 Infrastructure.getPostgresConnectorConfiguration(1)
-        );
+                .with("slot.drop.on.stop", true)
+            );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
                 .post(ConnectorResource.API_PREFIX + ConnectorResource.CREATE_CONNECTOR_ENDPOINT, 1, "postgres")
