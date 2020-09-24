@@ -9,6 +9,7 @@ export interface IFormComponentProps {
   helperTextInvalid?: any;
   validated?: "default" | "success" | "warning" | "error" | undefined
   propertyChange: (name: string, selection: any) => void;
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
 }
 
 export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
@@ -25,6 +26,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
+        setFieldValue={props.setFieldValue}
         options={props.propertyDefinition.allowedValues}
       />
     );
@@ -36,6 +38,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
+        setFieldValue={props.setFieldValue}
       />
     );
     // Any other - Text input

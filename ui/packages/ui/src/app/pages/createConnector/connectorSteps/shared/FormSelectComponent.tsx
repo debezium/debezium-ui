@@ -32,7 +32,8 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     fieldId,
     helperTextInvalid,
     options,
-    propertyChange
+    propertyChange,
+    setFieldValue
   } = props;
   
   const [isOpen, setOpen] = React.useState<boolean>(false)
@@ -55,11 +56,12 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     else {
       setSelected(selection)
       setOpen(false)
+      setFieldValue(field.name, selection);
       propertyChange(field.name, selection);
     }
   };
 
-  const options = options.map((value) => {
+  const selectOptions = options.map((value) => {
     return {'value': value.charAt(0).toUpperCase() + value.slice(1)}
   })
   
@@ -82,7 +84,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
         selections={selected}
         isOpen={isOpen}
       >
-        {options.map((option, index) => (
+        {selectOptions.map((option, index) => (
           <SelectOption
             key={index}
             value={option.value}
