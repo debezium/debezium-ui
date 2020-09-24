@@ -23,7 +23,7 @@ import {
   InfoCircleIcon,
 } from "@patternfly/react-icons";
 import _ from "lodash";
-import React from "react";
+import React, { SetStateAction } from "react";
 import { FilterTreeComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
@@ -38,6 +38,7 @@ export interface IFiltersStepComponentProps {
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
+  setIsValidFilter: (val:SetStateAction<boolean>) => void;
 }
 
 const formatResponseData = (data: DataCollection[]) => {
@@ -166,9 +167,13 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
             errorMap.set(e.property, e.message);
           }
           setInvalidMsg(errorMap);
+          props.setIsValidFilter(false);
+          setTreeData([]);
+          setTableNo(result.matchedCollections.length);
         } else {
           // tslint:disable-next-line: no-unused-expression
           saveFilter && props.updateFilterValues(filterExpression);
+          props.setIsValidFilter(true)
           setInvalidMsg(new Map());
           setTableNo(result.matchedCollections.length);
           setTreeData(formatResponseData(result.matchedCollections));
@@ -442,6 +447,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}
+        invalidMsg={invalidMsg}
       />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
