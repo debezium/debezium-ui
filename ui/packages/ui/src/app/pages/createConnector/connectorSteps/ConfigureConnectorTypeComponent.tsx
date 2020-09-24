@@ -181,7 +181,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
             handleSubmit(values);
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form className="pf-c-form">
               <Grid hasGutter={true} className="connector-name-form">
                 {namePropertyDefinitions.map(
@@ -191,6 +191,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                         <FormComponent
                           propertyDefinition={propertyDefinition}
                           propertyChange={handlePropertyChange}
+                          setFieldValue={ setFieldValue }
                           helperTextInvalid={errors[propertyDefinition.name]}
                           validated={
                             errors[propertyDefinition.name] &&
@@ -237,6 +238,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                                   <FormComponent
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
+                                    setFieldValue={ setFieldValue }
                                     helperTextInvalid={
                                       errors[propertyDefinition.name]
                                     }
@@ -284,6 +286,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                                     <FormComponent
                                       propertyDefinition={propertyDefinition}
                                       propertyChange={handlePropertyChange}
+                                      setFieldValue={ setFieldValue }
                                       helperTextInvalid={
                                         errors[propertyDefinition.name]
                                       }
@@ -321,6 +324,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                                     <FormComponent
                                       propertyDefinition={propertyDefinition}
                                       propertyChange={handlePropertyChange}
+                                      setFieldValue={ setFieldValue }
                                       helperTextInvalid={
                                         errors[propertyDefinition.name]
                                       }
@@ -361,6 +365,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                                           propertyDefinition={
                                             propertyDefinition
                                           }
+                                          setFieldValue={ setFieldValue }
                                           propertyChange={handlePropertyChange}
                                           helperTextInvalid={
                                             errors[propertyDefinition.name]

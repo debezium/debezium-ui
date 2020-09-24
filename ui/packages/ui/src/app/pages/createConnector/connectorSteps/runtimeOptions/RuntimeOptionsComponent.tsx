@@ -1,4 +1,4 @@
-import { ConnectorProperty } from "@debezium/ui-models/dist/js/ui.model";
+import { ConnectorProperty } from "@debezium/ui-models";
 import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Grid, GridItem } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
@@ -140,7 +140,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
             handleSubmit(values);
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form className="pf-c-form">
               <Grid>
                 <GridItem span={9}>
@@ -171,7 +171,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                                 >
                                   <FormComponent
                                     propertyDefinition={propertyDefinition}
-                                    // propertyChange={handlePropertyChange}
+                                    setFieldValue={ setFieldValue }
                                     helperTextInvalid={
                                       errors[propertyDefinition.name]
                                     }
@@ -216,6 +216,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                                   <FormComponent
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
+                                    setFieldValue={ setFieldValue }
                                     helperTextInvalid={
                                       errors[propertyDefinition.name]
                                     }
