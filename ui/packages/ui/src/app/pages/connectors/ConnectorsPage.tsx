@@ -9,18 +9,17 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
-  Form,
   Title
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { BasicSelectInput, PageLoader } from "src/app/components";
+import { PageLoader } from "src/app/components";
+import { AppLayoutContext } from 'src/app/Layout/AppLayoutContext';
 import { ApiError, fetch_retry } from "src/app/shared";
 import { WithLoader } from "src/app/shared/WithLoader";
 import { ConnectorListItem } from "./ConnectorListItem";
 import "./ConnectorsPage.css";
-
 /**
  * Sorts the connectors by name.
  * @param connectors
@@ -33,7 +32,8 @@ function getSortedConnectors(connectors: Connector[]) {
   return sortedConns;
 }
 
-export const ConnectorsPage: React.FunctionComponent = () => {
+export const ConnectorsPage: React.FunctionComponent = (props) => {
+  const appLayoutContext = React.useContext(AppLayoutContext);
   // TODO: Replace this fake data with results from rest service call, when available.
   const [connectors, setConnectors] = React.useState<Connector[]>([
     // UNCOMMENT THIS TO SEE SAMPLE CONNECTOR IN LIST
@@ -55,21 +55,17 @@ export const ConnectorsPage: React.FunctionComponent = () => {
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
   const history = useHistory();
 
-  const onChange = (value: string, event: any) => {
-    setConnectCluster(value);
-  };
-
   const createConnector = () => {
-    if(connectCluster === "" ){
+    if (connectCluster === "") {
       setConnectCluster(connectClusters[0])
       history.push({
         pathname: "/app/create-connector",
         state: { value: 1 }
       })
-    }else{
+    } else {
       history.push({
         pathname: "/app/create-connector",
-        state: { value: connectClusters.indexOf(connectCluster) + 1 }
+        state: { value: connectClusters.indexOf(appLayoutContext.cluster) + 1 }
       })
     }
   }
@@ -109,14 +105,6 @@ export const ConnectorsPage: React.FunctionComponent = () => {
     >
       {() => (
         <>
-          <Form>
-            <BasicSelectInput 
-              options={connectClusters} 
-              label="Kafka connect cluster"
-              fieldId="kafka-connect-cluster"
-              propertyChange={onChange}
-            />
-          </Form>
           {connectors.length > 0 ? (
             <>
               <Flex className="connectors-page_toolbarFlex">
@@ -148,13 +136,13 @@ export const ConnectorsPage: React.FunctionComponent = () => {
               </DataList>
             </>
           ) : (
-            <EmptyState variant={EmptyStateVariant.large}>
-              <EmptyStateIcon icon={CubesIcon} />
-              <Title headingLevel="h4" size="lg">
-                No connectors
+              <EmptyState variant={EmptyStateVariant.large}>
+                <EmptyStateIcon icon={CubesIcon} />
+                <Title headingLevel="h4" size="lg">
+                  No connectors
               </Title>
-              <EmptyStateBody>
-                Please click 'Create a connector' to create a new connector.
+                <EmptyStateBody>
+                  Please click 'Create a connector' to create a new connector.
               </EmptyStateBody>
                 <Button
                   onClick={createConnector}
@@ -163,8 +151,8 @@ export const ConnectorsPage: React.FunctionComponent = () => {
                 >
                   Create a connector
                 </Button>
-            </EmptyState>
-          )}
+              </EmptyState>
+            )}
         </>
       )}
     </WithLoader>
