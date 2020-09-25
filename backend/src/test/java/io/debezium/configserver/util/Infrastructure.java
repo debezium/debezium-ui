@@ -1,7 +1,6 @@
 package io.debezium.configserver.util;
 
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
-import io.debezium.testing.testcontainers.DebeziumContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -29,7 +28,7 @@ public class Infrastructure {
             .withNetwork(network)
             .withNetworkAliases("postgres");
 
-    private static final DebeziumContainer debeziumContainer = new DebeziumContainer("debezium/connect:nightly")
+    private static final DebeziumContainer debeziumContainer = (DebeziumContainer) new DebeziumContainer("debezium/connect:nightly")
             .withNetwork(network)
             .withKafka(kafkaContainer)
             .withLogConsumer(new Slf4jLogConsumer(LOGGER))

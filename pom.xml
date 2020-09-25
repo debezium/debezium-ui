@@ -29,16 +29,38 @@
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
 
-    <quarkus.plugin.version>1.7.1.Final</quarkus.plugin.version>
+    <quarkus.plugin.version>1.8.1.Final</quarkus.plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.7.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>1.8.1.Final</quarkus.platform.version>
     <testcontainers.version>1.14.3</testcontainers.version>
     <debezium.base.version>1.3.0.Beta2</debezium.base.version>
+    <okhttp.version>4.8.1</okhttp.version>
+    <okio.version>2.8.0</okio.version>
   </properties>
 
   <modules>
     <module>ui</module>
     <module>backend</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>${okhttp.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>logging-interceptor</artifactId>
+        <version>${okhttp.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>${okio.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

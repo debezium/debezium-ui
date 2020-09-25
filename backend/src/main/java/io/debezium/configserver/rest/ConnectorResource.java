@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import io.debezium.configserver.model.ConnectorConfig;
+import io.debezium.configserver.model.ConnectConnectorConfigResponse;
+import io.debezium.configserver.model.ConnectorStatus;
 import io.debezium.configserver.model.KafkaConnectClusterList;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
@@ -53,6 +55,7 @@ public class ConnectorResource {
     public static final String FILTERS_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/filters";
     public static final String PROPERTIES_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/properties";
     public static final String CREATE_CONNECTOR_ENDPOINT = "/connector/{cluster}/{connector-type-id}";
+    public static final String LIST_CONNECTORS_ENDPOINT = "/connectors/{cluster}";
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
 
@@ -313,7 +316,7 @@ public class ConnectorResource {
             ))
     @APIResponse(
             responseCode = "503",
-            description = "Exception while trying to connect to the selected Kafka Conenct cluster",
+            description = "Exception while trying to connect to the selected Kafka Connect cluster",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
@@ -321,15 +324,15 @@ public class ConnectorResource {
     public Response createConnector(
             @PathParam("cluster") int cluster,
             @PathParam("connector-type-id") String connectorTypeId,
-            ConnectorConfig kafkaConnectConfig
+            ConnectConnectorConfigResponse kafkaConnectConfig
             ) {
-        if (kafkaConnectConfig.config == null || kafkaConnectConfig.config.isEmpty()) {
+        if (kafkaConnectConfig.getConfig() == null || kafkaConnectConfig.getConfig().isEmpty()) {
             return Response.status(Status.BAD_REQUEST)
                     .entity(new BadRequestResponse("Connector \"config\" property is not set!"))
                     .build();
         }
 
-        if (null == kafkaConnectConfig.name || kafkaConnectConfig.name.isBlank()) {
+        if (null == kafkaConnectConfig.getName() || kafkaConnectConfig.getName().isBlank()) {
             return Response.status(Status.BAD_REQUEST)
                     .entity(new BadRequestResponse("Connector \"name\" property is not set!"))
                     .build();
@@ -342,7 +345,7 @@ public class ConnectorResource {
                     .build();
         }
 
-        PropertiesValidationResult validationResult = integrator.validateProperties(convertPropertiesToStrings(kafkaConnectConfig.config));
+        PropertiesValidationResult validationResult = integrator.validateProperties(kafkaConnectConfig.getConfig());
 
         if (validationResult.status == PropertiesValidationResult.Status.INVALID) {
             return Response.status(Status.BAD_REQUEST).entity(validationResult).build();
@@ -361,10 +364,10 @@ public class ConnectorResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ServerError(errorMessage, traceAsString(e))).build();
         }
 
-        kafkaConnectConfig.config.put("connector.class", integrator.getDescriptor().className);
+        kafkaConnectConfig.getConfig().put("connector.class", integrator.getDescriptor().className);
 
         String result;
-        LOGGER.debug("Sending valid connector config: " + kafkaConnectConfig);
+        LOGGER.debug("Sending valid connector config: " + kafkaConnectConfig.getConfig());
         try {
             result = kafkaConnectClient.createConnector(kafkaConnectConfig);
         } catch (ProcessingException | IOException e) {
@@ -376,5 +379,84 @@ public class ConnectorResource {
         LOGGER.debug("Kafka Connect response: " + result);
 
         return Response.ok(result).build();
+    }
+
+    @Path(LIST_CONNECTORS_ENDPOINT)
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ConnectorStatus.class, type = SchemaType.ARRAY)
+            ))
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    @APIResponse(
+            responseCode = "503",
+            description = "Exception while trying to connect to the selected Kafka Connect cluster",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    public Response listConnectors(@PathParam("cluster") int cluster) {
+        URI kafkaConnectURI;
+        KafkaConnectClient kafkaConnectClient;
+        try {
+            kafkaConnectURI = getKafkaConnectURIforCluster(cluster);
+            kafkaConnectClient = RestClientBuilder.newBuilder()
+                    .baseUri(kafkaConnectURI)
+                    .build(KafkaConnectClient.class);
+        } catch (RuntimeException | URISyntaxException e) {
+            String errorMessage = "Error on choosing the Kafka Connect cluster URI: " + e.getLocalizedMessage();
+            LOGGER.error(errorMessage);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ServerError(errorMessage, traceAsString(e))).build();
+        }
+
+        List<String> activeConnectors;
+        try {
+            activeConnectors = kafkaConnectClient.listConnectors();
+        } catch (ProcessingException | IOException e) {
+            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
+                    + kafkaConnectURI + "\". (" + e.getLocalizedMessage() + ")";
+            LOGGER.error(errorMessage);
+            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
+        }
+
+        LOGGER.debug("Kafka Connect response: " + activeConnectors);
+
+        List<ConnectorStatus> connectorData = Collections.emptyList();
+        if (!activeConnectors.isEmpty()) {
+            connectorData = activeConnectors.stream().map(
+                            connectorName -> {
+                                try {
+                                    var connectorInfo = kafkaConnectClient.getConnectorInfo(connectorName);
+                                    String connectorType = connectorInfo.getConfig().get("connector.class");
+                                    if (!connectorType.startsWith("io.debezium")) {
+                                        return null;
+                                    }
+                                    LOGGER.debug("Kafka Connect connector status details: " + connectorInfo);
+                                    var connectorStatus = kafkaConnectClient.getConnectorStatus(connectorName);
+                                    var connectorState = new ConnectorStatus(connectorName);
+                                    connectorState.setConnectorType(connectorType);
+                                    connectorState.setConnectorStatus(connectorStatus.connectorStatus.status);
+                                    connectorStatus.taskStates.forEach(taskStatus -> connectorState.setTaskState(taskStatus.id, taskStatus.status));
+                                    return connectorState;
+                                } catch (IOException e) {
+                                    LOGGER.error(e.getLocalizedMessage());
+                                }
+                                return null;
+                            }).collect(Collectors.toList());
+        }
+
+        LOGGER.debug("Registered Connectors: " + connectorData);
+
+        return Response.ok(connectorData).build();
     }
 }
