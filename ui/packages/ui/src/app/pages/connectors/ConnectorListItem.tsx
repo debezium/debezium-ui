@@ -14,11 +14,13 @@ import {
   ConfirmationIconType,
 } from "src/app/shared";
 import { ConnectorIcon } from "./ConnectorIcon";
+import { ConnectorStatus } from './ConnectorStatus';
 
 export interface IConnectorListItemProps {
-  connectorDescription?: string;
-  connectorName: string;
-  connectorType: string;
+  name: string;
+  status: string;
+  taskStates: string[]
+  type: string;
 }
 
 export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps> = (
@@ -34,7 +36,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
     setShowDeleteDialog(false);
 
     // TODO: do the delete via the rest call
-    alert("Do the delete!");
+    alert("Not yet implemented: delete the connector.");
   };
 
   const showConfirmationDialog = () => {
@@ -59,28 +61,34 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
       <DataListItem
         aria-labelledby={"connector list item"}
         className={"connector-list-item"}
-        data-testid={`connector-list-item-${props.connectorName}`}
+        data-testid={`connector-list-item-${props.name}`}
       >
         <DataListItemRow>
           <DataListItemCells
             dataListCells={[
               <DataListCell key={0} width={1}>
                 <ConnectorIcon
-                  connectorType={props.connectorType}
-                  alt={props.connectorName}
+                  connectorType={props.type}
+                  alt={props.name}
                   width={50}
                   height={50}
                 />
               </DataListCell>,
-              <DataListCell key={"primary content"} width={5}>
+              <DataListCell key={1} width={2}>
                 <div>
-                  <b data-testid={"connector-name"}>{props.connectorName}</b>
-                  <br />
-                  <span data-testid={"connector-description"}>
-                    {props.connectorDescription
-                      ? props.connectorDescription
-                      : ""}
-                  </span>
+                  <b data-testid={"connector-name"}>{props.name}</b>
+                </div>
+              </DataListCell>,
+              <DataListCell key={2} width={1}>
+                <div>
+                  <ConnectorStatus
+                    currentStatus={props.status}
+                  />
+                </div>
+              </DataListCell>,
+              <DataListCell key={3} width={1}>
+                <div>
+                  Tasks: {props.taskStates.join(', ')}
                 </div>
               </DataListCell>,
             ]}

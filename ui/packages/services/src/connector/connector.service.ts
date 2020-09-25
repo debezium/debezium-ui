@@ -16,7 +16,7 @@
  */
 
 import {
-    ConnectionValidationResult, FilterValidationResult, PropertiesValidationResult, ConnectorConfiguration
+    Connector, ConnectionValidationResult, FilterValidationResult, PropertiesValidationResult
 } from "@debezium/ui-models";
 import {BaseService} from "../baseService";
 
@@ -109,6 +109,16 @@ export class ConnectorService extends BaseService {
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorTypeId", { clusterId, connectorTypeId });
         return this.httpPostWithReturn(endpoint, body);
+    }
+
+    /**
+     * Get the available connectors for the supplied clusterId
+     */
+    public getConnectors(clusterId: number): Promise<Connector[]> {
+        this.logger.info("[ConnectorService] Getting the list of connectors.");
+
+        const endpoint: string = this.endpoint("/connectors/:clusterId", { clusterId });
+        return this.httpGet<Connector[]>(endpoint);
     }
 
 }
