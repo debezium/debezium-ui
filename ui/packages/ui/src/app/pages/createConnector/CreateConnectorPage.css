@@ -13,6 +13,11 @@
     min-height: calc(100vh - 200px);
 
     .pf-c-wizard {
+      &__nav-link{
+        &.pf-m-current{
+          color: var(--pf-c-wizard__nav-link--m-current--Color);
+        }
+      }
       &__nav-list {
         margin: 24px 5px;
         padding: 0 40px;
