@@ -8,9 +8,13 @@ import java.util.Map;
 
 public class ConnectorStatus {
 
-    public ConnectorStatus(String name) {
-        this.name = name;
-    }
+    private String name;
+    private State connectorStatus;
+    private String connectorType;
+
+    @Schema(example = "{\"0\": \"RUNNING\", \"1\": \"PAUSED\"}")
+    private final Map<Long, State> taskStates = new HashMap<>();
+
 
     public enum State {
         UNASSIGNED,
@@ -20,12 +24,9 @@ public class ConnectorStatus {
         DESTROYED
     }
 
-    private String name;
-    private State connectorStatus;
-    private String connectorType;
-
-    @Schema(example = "{\"0\": \"RUNNING\", \"1\": \"PAUSED\"}")
-    private final Map<Long, State> taskStates = new HashMap<>();
+    public ConnectorStatus(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;

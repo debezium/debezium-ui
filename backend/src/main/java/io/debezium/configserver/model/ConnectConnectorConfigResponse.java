@@ -5,10 +5,11 @@ import java.util.stream.Collectors;
 
 public class ConnectConnectorConfigResponse {
 
+    private String name;
+    private Map<String, String> config;
+
     public ConnectConnectorConfigResponse() {
     }
-
-    private String name;
 
     public ConnectConnectorConfigResponse(String name) {
         this.name = name;
@@ -26,8 +27,6 @@ public class ConnectConnectorConfigResponse {
     public void setName(String name) {
         this.name = name;
     }
-
-    private Map<String, String> config;
 
     public Map<String, String> getConfig() {
         return config;
