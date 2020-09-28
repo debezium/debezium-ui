@@ -14,9 +14,37 @@
 
     .pf-c-wizard {
       &__nav-link{
-        &.pf-m-current{
-          color: var(--pf-c-wizard__nav-link--m-current--Color);
+        color: var(--pf-global--palette--green-500);
+
+        &:before{
+          background-color: var(--pf-global--palette--green-500);
+          color: white;
         }
+
+        &.pf-m-disabled{
+          color: var(--pf-c-wizard__nav-link--Color);
+
+          &:before{
+            background-color: var(--pf-c-wizard__nav-link--Color);
+            color: var(--pf-c-wizard__nav-link--Color);
+          }
+        }
+        &.pf-m-current{
+          color: var(--pf-global--active-color--100);
+          
+          &:before{
+            background-color: var(--pf-global--active-color--100);
+            color: white;
+          }
+          &.pf-m-disabled{
+            color: var(--pf-global--active-color--100);
+            &:before{
+              background-color: var(--pf-global--active-color--100);
+              color: white;
+            }
+          }
+        }
+        
       }
       &__nav-list {
         margin: 24px 5px;
