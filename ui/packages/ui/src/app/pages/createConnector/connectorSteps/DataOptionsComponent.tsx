@@ -1,9 +1,6 @@
 import { ConnectorProperty } from "@debezium/ui-models";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionToggle,
+  ExpandableSection,
   Grid,
   GridItem,
   Title
@@ -47,8 +44,9 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
 
 export const DataOptionsComponent: React.FC<any> = React.forwardRef(
   (props, ref) => {
-    const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
-
+    const [snapshotExpanded, setSnapshotExpanded] = React.useState<boolean>(true);
+    const [mappingExpanded, setMappingExpanded] = React.useState<boolean>(false);
+    
     const mappingGeneralPropertyDefinitions = formatPropertyDefinitions(
       props.propertyDefinitions.filter(
         (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
@@ -65,21 +63,13 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
       )
     );
 
-    const toggle = (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-      id: string
-    ) => {
-      e.preventDefault();
-      const index = expanded.indexOf(id);
-      const newExpanded =
-        index >= 0
-          ? [
-              ...expanded.slice(0, index),
-              ...expanded.slice(index + 1, expanded.length),
-            ]
-          : [...expanded, id];
-      setExpanded(newExpanded);
-    };
+    const onToggleSnapshot = (isExpanded: boolean) => {
+      setSnapshotExpanded(isExpanded);
+    }
+
+    const onToggleMapping = (isExpanded: boolean) => {
+      setMappingExpanded(isExpanded);
+    }
 
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
@@ -145,130 +135,129 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
             <Form className="pf-c-form">
               <Grid>
                 <GridItem span={9}>
-                  <Accordion asDefinitionList={true}>
-                    <AccordionItem>
-                      <AccordionToggle
-                        onClick={(e) => {
-                          toggle(e, "basic");
-                        }}
-                        isExpanded={expanded.includes("basic")}
-                        id="basic"
-                        className="dbz-c-accordion"
-                      >
-                        Snapshot properties
-                      </AccordionToggle>
-                      <AccordionContent
-                        id="basic"
-                        className="dbz-c-accordion__content"
-                        isHidden={!expanded.includes("basic")}
-                      >
-                        <Grid hasGutter={true}>
-                          {snapshotPropertyDefinitions.map(
-                            (propertyDefinition: ConnectorProperty, index) => {
-                              return (
-                                <GridItem
-                                  key={index}
-                                  span={propertyDefinition.gridWidth}
-                                >
-                                  <FormComponent
-                                    propertyDefinition={propertyDefinition}
-                                    propertyChange={handlePropertyChange}
-                                    setFieldValue={ setFieldValue }
-                                    helperTextInvalid={
-                                      errors[propertyDefinition.name]
-                                    }
-                                    validated={
-                                      errors[propertyDefinition.name] &&
-                                      touched[propertyDefinition.name]
-                                        ? "error"
-                                        : "default"
-                                    }
-                                  />
-                                </GridItem>
-                              );
-                            }
-                          )}
-                        </Grid>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem>
-                      <AccordionToggle
-                        onClick={(e) => {
-                          toggle(e, "advanced");
-                        }}
-                        isExpanded={expanded.includes("advanced")}
-                        id="advanced"
-                        className="dbz-c-accordion"
-                      >
-                        Mapping properties
-                      </AccordionToggle>
-                      <AccordionContent
-                        id="advance"
-                        isHidden={!expanded.includes("advanced")}
-                      >
-                        <Grid hasGutter={true}>
-                          {mappingGeneralPropertyDefinitions.map(
-                            (propertyDefinition: ConnectorProperty, index) => {
-                              return (
-                                <GridItem
-                                  key={index}
-                                  span={propertyDefinition.gridWidth}
-                                >
-                                  <FormComponent
-                                    propertyDefinition={propertyDefinition}
-                                    setFieldValue={ setFieldValue }
-                                    helperTextInvalid={
-                                      errors[propertyDefinition.name]
-                                    }
-                                    validated={
-                                      errors[propertyDefinition.name] &&
-                                      touched[propertyDefinition.name]
-                                        ? "error"
-                                        : "default"
-                                    }
-                                    propertyChange={handlePropertyChange}
-                                  />
-                                </GridItem>
-                              );
-                            }
-                          )}
-                        </Grid>
-                        <Title
-                          headingLevel="h2"
-                          className={"data-options-component-grouping"}
-                        >
-                          Advanced properties
-                        </Title>
-                        <Grid hasGutter={true}>
-                          {mappingAdvancedPropertyDefinitions.map(
-                            (propertyDefinition: ConnectorProperty, index) => {
-                              return (
-                                <GridItem
-                                  key={index}
-                                  span={propertyDefinition.gridWidth}
-                                >
-                                  <FormComponent
-                                    propertyDefinition={propertyDefinition}
-                                    setFieldValue={ setFieldValue }
-                                    helperTextInvalid={
-                                      errors[propertyDefinition.name]
-                                    }
-                                    validated={
-                                      errors[propertyDefinition.name] &&
-                                      touched[propertyDefinition.name]
-                                        ? "error"
-                                        : "default"
-                                    }
-                                    propertyChange={handlePropertyChange}
-                                  />
-                                </GridItem>
-                              );
-                            }
-                          )}
-                        </Grid>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  <Title headingLevel="h2">Snapshot Properties</Title>
+                  <ExpandableSection
+                    toggleText={
+                      snapshotExpanded
+                        ? "Hide snapshot properties"
+                        : "Show snapshot properties"
+                    }
+                    onToggle={onToggleSnapshot}
+                    isExpanded={snapshotExpanded}
+                  >
+                    <Grid
+                      hasGutter={true}
+                      className={"data-options-component-expansion-content"}
+                    >
+                      {snapshotPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem
+                              key={index}
+                              span={propertyDefinition.gridWidth}
+                            >
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                propertyChange={handlePropertyChange}
+                                setFieldValue={setFieldValue}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                  </ExpandableSection>
+                  <Title
+                    headingLevel="h2"
+                    className={"data-options-component-mapping-title"}
+                  >
+                    Mapping Properties
+                  </Title>
+                  <ExpandableSection
+                    toggleText={
+                      mappingExpanded
+                        ? "Hide mapping properties"
+                        : "Show mapping properties"
+                    }
+                    onToggle={onToggleMapping}
+                    isExpanded={mappingExpanded}
+                  >
+                    <Grid
+                      hasGutter={true}
+                      className={"data-options-component-expansion-content"}
+                    >
+                      {mappingGeneralPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem
+                              key={index}
+                              span={propertyDefinition.gridWidth}
+                            >
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                setFieldValue={setFieldValue}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                                propertyChange={handlePropertyChange}
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                    <Title
+                      headingLevel="h3"
+                      className={"data-options-component-grouping"}
+                    >
+                      Advanced mapping properties
+                    </Title>
+                    <Grid
+                      hasGutter={true}
+                      className={"data-options-component-expansion-content"}
+                    >
+                      {mappingAdvancedPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem
+                              key={index}
+                              span={propertyDefinition.gridWidth}
+                            >
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                setFieldValue={setFieldValue}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                                propertyChange={handlePropertyChange}
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                  </ExpandableSection>
                 </GridItem>
               </Grid>
               <FormSubmit

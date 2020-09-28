@@ -1,9 +1,6 @@
 import { ConnectorProperty } from "@debezium/ui-models";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionToggle,
+  ExpandableSection,
   Grid,
   GridItem,
   Title
@@ -14,9 +11,9 @@ import * as React from "react";
 import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
 import * as Yup from "yup";
 import { FormComponent } from "../../../components/formHelpers";
-import "./ConfigureConnectorTypeComponent.css";
+import "./ConfigureConnectorComponent.css";
 
-export interface IConfigureConnectorTypeComponentProps {
+export interface IConfigureConnectorComponentProps {
   basicPropertyDefinitions: ConnectorProperty[];
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
@@ -49,9 +46,10 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
   }
 );
 
-export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
+export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
   (props, ref) => {
-    const [expanded, setExpanded] = React.useState<string[]>(["basic"]);
+    const [basicExpanded, setBasicExpanded] = React.useState<boolean>(true);
+    const [advancedExpanded, setAdvancedExpanded] = React.useState<boolean>(false);
     const [showPublication, setShowPublication] = React.useState(true);
 
     const basicValidationSchema = {};
@@ -103,21 +101,13 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
 
     const validationSchema = Yup.object().shape({ ...basicValidationSchema });
 
-    const toggle = (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-      id: string
-    ) => {
-      e.preventDefault();
-      const index = expanded.indexOf(id);
-      const newExpanded =
-        index >= 0
-          ? [
-              ...expanded.slice(0, index),
-              ...expanded.slice(index + 1, expanded.length),
-            ]
-          : [...expanded, id];
-      setExpanded(newExpanded);
-    };
+    const onToggleBasic = (isExpanded: boolean) => {
+      setBasicExpanded(isExpanded);
+    }
+
+    const onToggleAdvanced = (isExpanded: boolean) => {
+      setAdvancedExpanded(isExpanded);
+    }
 
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
@@ -191,7 +181,7 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                         <FormComponent
                           propertyDefinition={propertyDefinition}
                           propertyChange={handlePropertyChange}
-                          setFieldValue={ setFieldValue }
+                          setFieldValue={setFieldValue}
                           helperTextInvalid={errors[propertyDefinition.name]}
                           validated={
                             errors[propertyDefinition.name] &&
@@ -207,111 +197,154 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
               </Grid>
               <Grid>
                 <GridItem span={9}>
-                  <Accordion asDefinitionList={true}>
-                    <AccordionItem>
-                      <AccordionToggle
-                        onClick={(e) => {
-                          toggle(e, "basic");
-                        }}
-                        isExpanded={expanded.includes("basic")}
-                        id="basic"
-                        className="dbz-c-accordion"
+                  <Title headingLevel="h2">Basic Properties</Title>
+                  <ExpandableSection
+                    toggleText={
+                      basicExpanded
+                        ? "Hide basic properties"
+                        : "Show basic properties"
+                    }
+                    onToggle={onToggleBasic}
+                    isExpanded={basicExpanded}
+                  >
+                    <Grid
+                      hasGutter={true}
+                      className={"configure-connector-expansion-content"}
+                    >
+                      {basicPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index: any) => {
+                          return (
+                            <GridItem
+                              key={index}
+                              span={propertyDefinition.gridWidth}
+                            >
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                propertyChange={handlePropertyChange}
+                                setFieldValue={setFieldValue}
+                                helperTextInvalid={
+                                  errors[propertyDefinition.name]
+                                }
+                                validated={
+                                  errors[propertyDefinition.name] &&
+                                  touched[propertyDefinition.name]
+                                    ? "error"
+                                    : "default"
+                                }
+                              />
+                            </GridItem>
+                          );
+                        }
+                      )}
+                    </Grid>
+                  </ExpandableSection>
+                  <Title
+                    headingLevel="h2"
+                    className={"configure-connector-advanced-title"}
+                  >
+                    Advanced Properties
+                  </Title>
+                  <ExpandableSection
+                    toggleText={
+                      advancedExpanded
+                        ? "Hide advanced properties"
+                        : "Show advanced properties"
+                    }
+                    onToggle={onToggleAdvanced}
+                    isExpanded={advancedExpanded}
+                  >
+                    <GridItem span={9}>
+                      <Grid
+                        hasGutter={true}
+                        className={"configure-connector-expansion-content"}
                       >
-                        Basic Properties
-                      </AccordionToggle>
-                      <AccordionContent
-                        id="basic"
-                        className="dbz-c-accordion__content"
-                        isHidden={!expanded.includes("basic")}
+                        {advancedGeneralPropertyDefinitions.map(
+                          (
+                            propertyDefinition: ConnectorProperty,
+                            index: any
+                          ) => {
+                            return (
+                              <GridItem
+                                key={index}
+                                span={propertyDefinition.gridWidth}
+                              >
+                                <FormComponent
+                                  propertyDefinition={propertyDefinition}
+                                  propertyChange={handlePropertyChange}
+                                  setFieldValue={setFieldValue}
+                                  helperTextInvalid={
+                                    errors[propertyDefinition.name]
+                                  }
+                                  validated={
+                                    errors[propertyDefinition.name] &&
+                                    touched[propertyDefinition.name]
+                                      ? "error"
+                                      : "default"
+                                  }
+                                />
+                              </GridItem>
+                            );
+                          }
+                        )}
+                      </Grid>
+                    </GridItem>
+                    <Title
+                      headingLevel="h2"
+                      className="configure-connector-grouping"
+                    >
+                      Replication
+                    </Title>
+                    <GridItem span={9}>
+                      <Grid
+                        hasGutter={true}
+                        className={"configure-connector-expansion-content"}
                       >
-                        <Grid hasGutter={true}>
-                          {basicPropertyDefinitions.map(
-                            (
-                              propertyDefinition: ConnectorProperty,
-                              index: any
-                            ) => {
-                              return (
-                                <GridItem
-                                  key={index}
-                                  span={propertyDefinition.gridWidth}
-                                >
-                                  <FormComponent
-                                    propertyDefinition={propertyDefinition}
-                                    propertyChange={handlePropertyChange}
-                                    setFieldValue={ setFieldValue }
-                                    helperTextInvalid={
-                                      errors[propertyDefinition.name]
-                                    }
-                                    validated={
-                                      errors[propertyDefinition.name] &&
-                                      touched[propertyDefinition.name]
-                                        ? "error"
-                                        : "default"
-                                    }
-                                  />
-                                </GridItem>
-                              );
-                            }
-                          )}
-                        </Grid>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem>
-                      <AccordionToggle
-                        onClick={(e) => {
-                          toggle(e, "advanced");
-                        }}
-                        isExpanded={expanded.includes("advanced")}
-                        id="advanced"
-                        className="dbz-c-accordion"
-                      >
-                        Advanced Properties
-                      </AccordionToggle>
-                      <AccordionContent
-                        id="advance"
-                        isHidden={!expanded.includes("advanced")}
-                      >
-                        <GridItem span={9}>
-                          <Grid hasGutter={true}>
-                            {advancedGeneralPropertyDefinitions.map(
-                              (
-                                propertyDefinition: ConnectorProperty,
-                                index: any
-                              ) => {
-                                return (
-                                  <GridItem
-                                    key={index}
-                                    span={propertyDefinition.gridWidth}
-                                  >
-                                    <FormComponent
-                                      propertyDefinition={propertyDefinition}
-                                      propertyChange={handlePropertyChange}
-                                      setFieldValue={ setFieldValue }
-                                      helperTextInvalid={
-                                        errors[propertyDefinition.name]
-                                      }
-                                      validated={
-                                        errors[propertyDefinition.name] &&
-                                        touched[propertyDefinition.name]
-                                          ? "error"
-                                          : "default"
-                                      }
-                                    />
-                                  </GridItem>
-                                );
-                              }
-                            )}
-                          </Grid>
-                        </GridItem>
+                        {advancedReplicationPropertyDefinitions.map(
+                          (
+                            propertyDefinition: ConnectorProperty,
+                            index: any
+                          ) => {
+                            return (
+                              <GridItem
+                                key={index}
+                                span={propertyDefinition.gridWidth}
+                              >
+                                <FormComponent
+                                  propertyDefinition={propertyDefinition}
+                                  propertyChange={handlePropertyChange}
+                                  setFieldValue={setFieldValue}
+                                  helperTextInvalid={
+                                    errors[propertyDefinition.name]
+                                  }
+                                  validated={
+                                    errors[propertyDefinition.name] &&
+                                    touched[propertyDefinition.name]
+                                      ? "error"
+                                      : "default"
+                                  }
+                                />
+                              </GridItem>
+                            );
+                          }
+                        )}
+                      </Grid>
+                    </GridItem>
+                    {showPublication && (
+                      <>
                         <Title
                           headingLevel="h2"
-                          className="configure-connector-type-form-grouping"
+                          className="configure-connector-grouping"
                         >
-                          Replication
+                          Publication
                         </Title>
                         <GridItem span={9}>
-                          <Grid hasGutter={true}>
-                            {advancedReplicationPropertyDefinitions.map(
+                          <Grid
+                            hasGutter={true}
+                            className={
+                              "configure-connector-expansion-content"
+                            }
+                          >
+                            {advancedPublicationPropertyDefinitions.map(
                               (
                                 propertyDefinition: ConnectorProperty,
                                 index: any
@@ -323,8 +356,8 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                                   >
                                     <FormComponent
                                       propertyDefinition={propertyDefinition}
+                                      setFieldValue={setFieldValue}
                                       propertyChange={handlePropertyChange}
-                                      setFieldValue={ setFieldValue }
                                       helperTextInvalid={
                                         errors[propertyDefinition.name]
                                       }
@@ -341,53 +374,9 @@ export const ConfigureConnectorTypeComponent: React.FC<any> = React.forwardRef(
                             )}
                           </Grid>
                         </GridItem>
-                        {showPublication && (
-                          <>
-                            <Title
-                              headingLevel="h2"
-                              className="configure-connector-type-form-grouping"
-                            >
-                              Publication
-                            </Title>
-                            <GridItem span={9}>
-                              <Grid hasGutter={true}>
-                                {advancedPublicationPropertyDefinitions.map(
-                                  (
-                                    propertyDefinition: ConnectorProperty,
-                                    index: any
-                                  ) => {
-                                    return (
-                                      <GridItem
-                                        key={index}
-                                        span={propertyDefinition.gridWidth}
-                                      >
-                                        <FormComponent
-                                          propertyDefinition={
-                                            propertyDefinition
-                                          }
-                                          setFieldValue={ setFieldValue }
-                                          propertyChange={handlePropertyChange}
-                                          helperTextInvalid={
-                                            errors[propertyDefinition.name]
-                                          }
-                                          validated={
-                                            errors[propertyDefinition.name] &&
-                                            touched[propertyDefinition.name]
-                                              ? "error"
-                                              : "default"
-                                          }
-                                        />
-                                      </GridItem>
-                                    );
-                                  }
-                                )}
-                              </Grid>
-                            </GridItem>
-                          </>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                      </>
+                    )}
+                  </ExpandableSection>
                 </GridItem>
               </Grid>
               <FormSubmit
