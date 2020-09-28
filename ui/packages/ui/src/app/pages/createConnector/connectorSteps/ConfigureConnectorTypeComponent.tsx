@@ -13,8 +13,8 @@ import _ from "lodash";
 import * as React from "react";
 import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
 import * as Yup from "yup";
+import { FormComponent } from "../../../components/formHelpers";
 import "./ConfigureConnectorTypeComponent.css";
-import { FormComponent } from "./shared";
 
 export interface IConfigureConnectorTypeComponentProps {
   basicPropertyDefinitions: ConnectorProperty[];

@@ -213,6 +213,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         : formDataCopy.delete("schema.include.list");
     }
     setFormData(formDataCopy);
+    props.setIsValidFilter(false);
   }, [schemaSelected, schemaFilter]);
 
   React.useEffect(() => {
@@ -229,6 +230,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         : formDataCopy.delete("table.include.list");
     }
     setFormData(formDataCopy);
+    props.setIsValidFilter(false);
   }, [tableSelected, tableFilter]);
 
   React.useEffect(() => {

@@ -5,12 +5,8 @@ import {
   SelectVariant
 } from '@patternfly/react-core';
 import * as React from 'react';
+import { ISelectOptions } from '.';
 
-
-export interface ISelectOptions {
-  value: string,
-  disabled: boolean
-}
 export interface IBasicSelectInputProps {
     label: string,
     name: string;
