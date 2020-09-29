@@ -8,9 +8,6 @@ import {
 import { Services } from "@debezium/ui-services";
 import {
   Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant,
   Breadcrumb,
   BreadcrumbItem,
   Button,
@@ -18,9 +15,7 @@ import {
   LevelItem,
   PageSection,
   PageSectionVariants,
-  Text,
   TextContent,
-  TextVariants,
   Title,
   TitleSizes,
   Wizard,
@@ -30,6 +25,7 @@ import {
 import _ from 'lodash';
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import { ToastAlertComponent } from 'src/app/components';
 import {
   fetch_retry,
   getAdvancedPropertyDefinitions,
@@ -156,6 +152,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const removeAlert = (key: string) => {
     setAlerts([...alerts.filter(el => el.key !== key)]);
   };
+  
+  React.useEffect(()=>{
+    const timeout = setTimeout(removeAlert, 10*1000, alerts[alerts.length-1]?.key); 
+    return () => clearTimeout(timeout);
+  },[alerts]);
 
   const onFinish = () => {
     // Cluster ID and connector name for the create
@@ -680,31 +681,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           className="create-connector-page_wizard"
         />
       </div>
-      <AlertGroup isToast={true}>
-        {alerts.map(({ key, variant, title, message }) => (
-          <Alert
-            isInline={true}
-            isLiveRegion={true}
-            variant={AlertVariant[variant]}
-            title={title}
-            actionClose={
-              <AlertActionCloseButton
-                title={title}
-                variantLabel={`${variant} alert`}
-                onClose={() => removeAlert(key)}
-              />
-            }
-            key={key}
-          >
-            {message && 
-              <TextContent>
-                <Text component={TextVariants.h6}>Details:</Text>
-                <Text component={TextVariants.p}>{message}</Text>
-              </TextContent>
-            }
-          </Alert>
-        ))}
-      </AlertGroup>
+      <ToastAlertComponent alerts={alerts}/>
     </>
   );
 };
