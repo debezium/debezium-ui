@@ -197,12 +197,11 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
               </Grid>
               <Grid>
                 <GridItem span={9}>
-                  <Title headingLevel="h2">Basic Properties</Title>
                   <ExpandableSection
                     toggleText={
                       basicExpanded
-                        ? "Hide basic properties"
-                        : "Show basic properties"
+                        ? "Basic properties"
+                        : "Basic properties"
                     }
                     onToggle={onToggleBasic}
                     isExpanded={basicExpanded}
@@ -238,17 +237,11 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
                       )}
                     </Grid>
                   </ExpandableSection>
-                  <Title
-                    headingLevel="h2"
-                    className={"configure-connector-advanced-title"}
-                  >
-                    Advanced Properties
-                  </Title>
                   <ExpandableSection
                     toggleText={
                       advancedExpanded
-                        ? "Hide advanced properties"
-                        : "Show advanced properties"
+                        ? "Advanced properties"
+                        : "Advanced properties"
                     }
                     onToggle={onToggleAdvanced}
                     isExpanded={advancedExpanded}

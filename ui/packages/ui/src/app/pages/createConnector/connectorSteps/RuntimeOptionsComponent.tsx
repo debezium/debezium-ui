@@ -1,5 +1,5 @@
 import { ConnectorProperty } from "@debezium/ui-models";
-import { ExpandableSection, Grid, GridItem, Title } from "@patternfly/react-core";
+import { ExpandableSection, Grid, GridItem } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
@@ -139,12 +139,11 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
             <Form className="pf-c-form">
               <Grid>
                 <GridItem span={9}>
-                  <Title headingLevel="h2">Engine Properties</Title>
                   <ExpandableSection
                     toggleText={
                       engineExpanded
-                        ? "Hide engine properties"
-                        : "Show engine properties"
+                        ? "Engine properties"
+                        : "Engine properties"
                     }
                     onToggle={onToggleEngine}
                     isExpanded={engineExpanded}
@@ -180,17 +179,11 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                       )}
                     </Grid>
                   </ExpandableSection>
-                  <Title
-                    headingLevel="h2"
-                    className={"runtime-options-component-heartbeat-title"}
-                  >
-                    Heartbeat Properties
-                  </Title>
                   <ExpandableSection
                     toggleText={
                       heartbeatExpanded
-                        ? "Hide heartbeat properties"
-                        : "Show heartbeat properties"
+                        ? "Heartbeat properties"
+                        : "Heartbeat properties"
                     }
                     onToggle={onToggleHeartbeat}
                     isExpanded={heartbeatExpanded}
