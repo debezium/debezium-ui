@@ -135,12 +135,11 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
             <Form className="pf-c-form">
               <Grid>
                 <GridItem span={9}>
-                  <Title headingLevel="h2">Snapshot Properties</Title>
                   <ExpandableSection
                     toggleText={
                       snapshotExpanded
-                        ? "Hide snapshot properties"
-                        : "Show snapshot properties"
+                        ? "Snapshot properties"
+                        : "Snapshot properties"
                     }
                     onToggle={onToggleSnapshot}
                     isExpanded={snapshotExpanded}
@@ -176,17 +175,11 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                       )}
                     </Grid>
                   </ExpandableSection>
-                  <Title
-                    headingLevel="h2"
-                    className={"data-options-component-mapping-title"}
-                  >
-                    Mapping Properties
-                  </Title>
                   <ExpandableSection
                     toggleText={
                       mappingExpanded
-                        ? "Hide mapping properties"
-                        : "Show mapping properties"
+                        ? "Mapping properties"
+                        : "Mapping properties"
                     }
                     onToggle={onToggleMapping}
                     isExpanded={mappingExpanded}
