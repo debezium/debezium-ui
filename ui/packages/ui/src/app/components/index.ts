@@ -5,3 +5,4 @@ export * from './KafkaConnectCluster';
 export * from './PageLoader';
 export * from './PageNotFound';
 export * from './formHelpers';
+export * from './ToastAlertComponent';
