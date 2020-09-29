@@ -3,3 +3,12 @@
     margin: 20px 0
   }
 }
+
+.runtime-options-component {
+  &-heartbeat-title {
+    margin-top: 30px;
+  }
+  &-expansion-content {
+    padding-left: 30px;
+  }
+}

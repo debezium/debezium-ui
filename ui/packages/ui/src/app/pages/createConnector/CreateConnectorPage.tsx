@@ -43,7 +43,7 @@ import {
   PropertyName
 } from "src/app/shared";
 import {
-  ConfigureConnectorTypeComponent,
+  ConfigureConnectorComponent,
   ConnectorTypeStepComponent,
   DataOptionsComponent,
   FiltersStepComponent,
@@ -439,7 +439,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 <Alert variant="success" title={validationSuccessNextMsg} />
               </div>
             ))}
-          <ConfigureConnectorTypeComponent
+          <ConfigureConnectorComponent
             basicPropertyDefinitions={getBasicPropertyDefinitions(
               selectedConnectorPropertyDefns
             )}
