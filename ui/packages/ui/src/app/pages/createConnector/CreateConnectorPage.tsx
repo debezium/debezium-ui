@@ -18,7 +18,9 @@ import {
   LevelItem,
   PageSection,
   PageSectionVariants,
+  Text,
   TextContent,
+  TextVariants,
   Title,
   TitleSizes,
   Wizard,
@@ -135,11 +137,19 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const validationErrorMsg = "Resolve property errors, then click Validate";
   const validationSuccessNextMsg = "Validation was successful, click Next to continue";
   const validationSuccessFinishMsg = "Validation was successful, click Finish to create the connector";
+  const createConnectorUnknownErrorMsg = "Unknown error - please consult your administrator";
 
-  const addAlert = () => {
+
+  const addAlert = (msg?: string) => {
      const alertsCopy = [...alerts];
      const uId = new Date().getTime();
-     alertsCopy.push({ title: 'Creation of the connector failed.', variant: 'danger',key: uId })
+     const newAlert = {
+       title: "Creation of the connector failed!",
+       variant: 'danger',
+       key: uId,
+       message: msg ? msg : createConnectorUnknownErrorMsg     
+     }
+     alertsCopy.push(newAlert);
      setAlerts(alertsCopy);
     };
 
@@ -180,7 +190,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       })
       .catch((err: React.SetStateAction<Error>) => {
         setConnectorCreateFailed(true);
-        addAlert();
+        addAlert(err.message);
       });
   };
 
@@ -671,22 +681,30 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         />
       </div>
       <AlertGroup isToast={true}>
-          {alerts.map(({key, variant, title}) => (
-            <Alert
+        {alerts.map(({ key, variant, title, message }) => (
+          <Alert
             isInline={true}
-              isLiveRegion={true}
-              variant={AlertVariant[variant]}
-              title={title}
-              actionClose={
-                <AlertActionCloseButton
-                  title={title}
-                  variantLabel={`${variant} alert`}
-                  onClose={() => removeAlert(key)}
-                />
-              }
-              key={key} />
-          ))}
-        </AlertGroup>
+            isLiveRegion={true}
+            variant={AlertVariant[variant]}
+            title={title}
+            actionClose={
+              <AlertActionCloseButton
+                title={title}
+                variantLabel={`${variant} alert`}
+                onClose={() => removeAlert(key)}
+              />
+            }
+            key={key}
+          >
+            {message && 
+              <TextContent>
+                <Text component={TextVariants.h6}>Details:</Text>
+                <Text component={TextVariants.p}>{message}</Text>
+              </TextContent>
+            }
+          </Alert>
+        ))}
+      </AlertGroup>
     </>
   );
 };
