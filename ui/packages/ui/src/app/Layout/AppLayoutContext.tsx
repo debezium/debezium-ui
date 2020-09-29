@@ -3,7 +3,7 @@ import * as React from 'react';
 export interface IAppLayoutContext {
   showBreadcrumb: (breadcrumb: any) => void;
   handleClusterChange: (value: string, event: any) => void;
-  cluster: any;
+  clusterId: number;
 }
 
 export const AppLayoutContextDefaultValue = {} as IAppLayoutContext;

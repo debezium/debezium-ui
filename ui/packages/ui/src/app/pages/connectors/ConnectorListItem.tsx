@@ -12,6 +12,7 @@ import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   ConfirmationIconType,
+  ConnectorTypeId,
 } from "src/app/shared";
 import { ConnectorIcon } from "./ConnectorIcon";
 import { ConnectorStatus } from './ConnectorStatus';
@@ -19,7 +20,7 @@ import { ConnectorStatus } from './ConnectorStatus';
 export interface IConnectorListItemProps {
   name: string;
   status: string;
-  taskStates: string[]
+  taskStates: any
   type: string;
 }
 
@@ -36,12 +37,17 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
     setShowDeleteDialog(false);
 
     // TODO: do the delete via the rest call
-    alert("Not yet implemented: delete the connector.");
+    alert("Sorry, delete is not yet implemented.");
   };
 
   const showConfirmationDialog = () => {
     setShowDeleteDialog(true);
   };
+
+  const getTaskStateStr = (taskStates: any) => {
+    const stateMap = new Map(Object.entries(taskStates));
+    return Array.from(stateMap.values()).join(", ");
+  }
 
   return (
     <>
@@ -68,7 +74,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
             dataListCells={[
               <DataListCell key={0} width={1}>
                 <ConnectorIcon
-                  connectorType={props.type}
+                  connectorType={props.type === "PostgreSQL" ? ConnectorTypeId.POSTGRES : props.type}
                   alt={props.name}
                   width={50}
                   height={50}
@@ -88,7 +94,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
               </DataListCell>,
               <DataListCell key={3} width={1}>
                 <div>
-                  Tasks: {props.taskStates.join(', ')}
+                  Tasks: {getTaskStateStr(props.taskStates)}
                 </div>
               </DataListCell>,
             ]}

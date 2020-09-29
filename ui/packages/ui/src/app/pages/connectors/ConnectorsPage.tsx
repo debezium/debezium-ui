@@ -20,6 +20,7 @@ import { ApiError, fetch_retry } from "src/app/shared";
 import { WithLoader } from "src/app/shared/WithLoader";
 import { ConnectorListItem } from "./ConnectorListItem";
 import "./ConnectorsPage.css";
+
 /**
  * Sorts the connectors by name.
  * @param connectors
@@ -34,21 +35,7 @@ function getSortedConnectors(connectors: Connector[]) {
 
 export const ConnectorsPage: React.FunctionComponent = (props) => {
   const appLayoutContext = React.useContext(AppLayoutContext);
-  // TODO: Replace this fake data with results from rest service call, when available.
-  const [connectors, setConnectors] = React.useState<Connector[]>([
-    // UNCOMMENT THIS TO SEE SAMPLE CONNECTOR IN LIST
-    // {
-    //   name: "postgresTest",
-    //   connectorStatus: "PAUSED",
-    //   connectorType: ConnectorTypeId.POSTGRES,
-    //   taskStates: {
-    //     "0" : "RUNNING",
-    //     "1" : "PAUSED"
-    //   }
-    // } as Connector,
-  ] as Connector[]);
-  const [connectCluster, setConnectCluster] = React.useState<string>("");
-  const [connectClusters, setConnectClusters] = React.useState<string[]>([""]);
+  const [connectors, setConnectors] = React.useState<Connector[]>([] as Connector[]);
 
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
@@ -56,45 +43,26 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
   const history = useHistory();
 
   const createConnector = () => {
-    if (connectCluster === "") {
-      setConnectCluster(connectClusters[0])
-      history.push({
-        pathname: "/app/create-connector",
-        state: { value: 1 }
-      })
-    } else {
-      history.push({
-        pathname: "/app/create-connector",
-        state: { value: connectClusters.indexOf(appLayoutContext.cluster) + 1 }
-      })
-    }
-  }
+    history.push({
+      pathname: "/app/create-connector",
+      state: { value: appLayoutContext.clusterId },
+    });
+  };
 
   React.useEffect(() => {
-    const globalsService = Services.getGlobalsService();
-    fetch_retry(globalsService.getConnectCluster, globalsService)
-      .then((cClusters: string[]) => {
+    const connectorService = Services.getConnectorService();
+    fetch_retry(connectorService.getConnectors, connectorService, [
+      appLayoutContext.clusterId,
+    ])
+      .then((cConnectors: Connector[]) => {
         setLoading(false);
-        setConnectClusters([...cClusters]);
+        setConnectors([...cConnectors]);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
         setErrorMsg(err);
       });
-  }, [setConnectClusters]);
-
-  // React.useEffect(() => {
-  //   const connectorService = Services.getConnectorService();
-  //   fetch_retry(connectorService.getConnectors, connectorService)
-  //     .then((connectors: Connector[]) => {
-  //       setLoading(false);
-  //       setConnectors([...connectors]);
-  //     })
-  //     .catch((err: React.SetStateAction<Error>) => {
-  //       setApiError(true);
-  //       setErrorMsg(err);
-  //     });
-  // }, [setConnectors]);
+  }, [setConnectors]);
 
   return (
     <WithLoader
@@ -129,30 +97,30 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
                       name={conn.name}
                       type={conn.connectorType}
                       status={conn.connectorStatus}
-                      taskStates={['RUNNING', 'PAUSED']}
+                      taskStates={conn.taskStates}
                     />
                   );
                 })}
               </DataList>
             </>
           ) : (
-              <EmptyState variant={EmptyStateVariant.large}>
-                <EmptyStateIcon icon={CubesIcon} />
-                <Title headingLevel="h4" size="lg">
-                  No connectors
+            <EmptyState variant={EmptyStateVariant.large}>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                No connectors
               </Title>
-                <EmptyStateBody>
-                  Please click 'Create a connector' to create a new connector.
+              <EmptyStateBody>
+                Please click 'Create a connector' to create a new connector.
               </EmptyStateBody>
-                <Button
-                  onClick={createConnector}
-                  variant="primary"
-                  className="connectors-page_createButton"
-                >
-                  Create a connector
-                </Button>
-              </EmptyState>
-            )}
+              <Button
+                onClick={createConnector}
+                variant="primary"
+                className="connectors-page_createButton"
+              >
+                Create a connector
+              </Button>
+            </EmptyState>
+          )}
         </>
       )}
     </WithLoader>
