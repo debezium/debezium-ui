@@ -6,6 +6,40 @@
     margin-bottom: var(--pf-global--spacer--sm);
   }  
   &_toolbarFlex {
-    justify-content: space-between;
+    align-items: center;
+    padding: var(--pf-global--spacer--sm) 0;
+
+    div:first-child{
+      margin-right: var(--pf-global--spacer--xl);;
+    }
+    .pf-c-button{
+      &.pf-m-primary{
+        margin-bottom: 0;
+      }
+    }
   }
+}
+
+.connector-list{
+  &__item{
+    .pf-c-data-list__item-content {
+      .pf-c-data-list__cell{
+        display: flex;
+        align-items: center;
+
+        &:first-child{
+          max-width: 100px;
+        }
+      }
+    }
+  }
+}
+
+.status-indicator{
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+  text-align: center;
+  color: white;
+  display: inline-block;
 }
