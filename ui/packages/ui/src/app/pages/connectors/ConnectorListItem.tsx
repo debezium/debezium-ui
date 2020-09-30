@@ -5,22 +5,23 @@ import {
   DataListItem,
   DataListItemCells,
   DataListItemRow,
-  Tooltip,
+  Tooltip
 } from "@patternfly/react-core";
 import * as React from "react";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   ConfirmationIconType,
-  ConnectorTypeId,
+  ConnectorTypeId
 } from "src/app/shared";
 import { ConnectorIcon } from "./ConnectorIcon";
 import { ConnectorStatus } from './ConnectorStatus';
+import { ConnectorTasks } from './ConnectorTasks';
 
 export interface IConnectorListItemProps {
   name: string;
   status: string;
-  taskStates: any
+  taskStates: any,
   type: string;
 }
 
@@ -46,7 +47,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
 
   const getTaskStateStr = (taskStates: any) => {
     const stateMap = new Map(Object.entries(taskStates));
-    return Array.from(stateMap.values()).join(", ");
+    return Array.from(stateMap.values());
   }
 
   return (
@@ -66,7 +67,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
       />
       <DataListItem
         aria-labelledby={"connector list item"}
-        className={"connector-list-item"}
+        className={"connector-list__item"}
         data-testid={`connector-list-item-${props.name}`}
       >
         <DataListItemRow>
@@ -93,8 +94,14 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
                 </div>
               </DataListCell>,
               <DataListCell key={3} width={1}>
-                <div>
-                  Tasks: {getTaskStateStr(props.taskStates)}
+                <div className="tasks-list">
+                {
+                  getTaskStateStr(props.taskStates).map((task, index) => {
+                    return (
+                      <ConnectorTasks key={index} currentTasks={task} taskNumber={index} />
+                    )
+                  })
+                }
                 </div>
               </DataListCell>,
             ]}
