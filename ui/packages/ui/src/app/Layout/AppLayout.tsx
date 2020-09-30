@@ -11,7 +11,7 @@ import './layout.css';
 
 const AppLayout: React.FC = ({ children }) => {
 	const [breadcrumb, setHasBreadcrumb] = React.useState(null);
-	const [cluster, setCluster] = React.useState<string>("");
+	const [clusterId, setClusterId] = React.useState<number>(1);
 	const showBreadcrumb = (b: any) => setHasBreadcrumb(b);
 
 	const PageSkipToContent = (
@@ -19,14 +19,14 @@ const AppLayout: React.FC = ({ children }) => {
 			Skip to Content
 		</SkipToContent>
 	);
-	const handleClusterChange = (value: string, event: any) => {
-		setCluster(value)
+	const handleClusterIdChange = (id: number) => {
+		setClusterId(id);
 	}
 	return (
 
-		<AppLayoutContext.Provider value={{ showBreadcrumb, cluster }}>
+		<AppLayoutContext.Provider value={{ showBreadcrumb, clusterId }}>
 			<Page
-				header={<AppHeader handleChange={handleClusterChange} />}
+				header={<AppHeader handleClusterChange={handleClusterIdChange} />}
 				skipToContent={PageSkipToContent}
 				breadcrumb={breadcrumb}
 				className="app-page"

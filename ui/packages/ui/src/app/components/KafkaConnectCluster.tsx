@@ -5,11 +5,17 @@ import { fetch_retry } from "src/app/shared";
 import { BasicSelectInput } from '../components';
 
 export interface IKafkaConnectCluster {
-  handleChange: (value: string, event: any) => void;
+  handleChange: (clusterId: number) => void;
 }
+
 export const KafkaConnectCluster: React.FC<IKafkaConnectCluster> = (props) => {
 
   const [connectClusters, setConnectClusters] = React.useState<string[]>([""]);
+
+  const handleClusterChange = (value: string, event: any) => {
+    const index = connectClusters.indexOf(value) + 1
+    props.handleChange(index);
+  }
   
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
@@ -30,7 +36,7 @@ export const KafkaConnectCluster: React.FC<IKafkaConnectCluster> = (props) => {
             options={connectClusters}
             label="Kafka connect cluster"
             fieldId="kafka-connect-cluster"
-            propertyChange={props.handleChange}
+            propertyChange={handleClusterChange}
           />
         </Form>
       </div>

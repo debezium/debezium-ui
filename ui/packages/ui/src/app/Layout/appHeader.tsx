@@ -8,7 +8,7 @@ import BrandLogo from '../../../assets/images/debezium_logo_300px.png';
 import { KafkaConnectCluster } from '../components';
 
 export interface IAppHeader {
-	handleChange: (value: string, event: any) => void;
+	handleClusterChange: (clusterId: number) => void;
 }
 
 const AppHeader: React.FC<IAppHeader> = (props) => {
@@ -20,7 +20,7 @@ const AppHeader: React.FC<IAppHeader> = (props) => {
 
 	const headerTools = (
 		<>
-			<KafkaConnectCluster handleChange={props.handleChange} />
+			<KafkaConnectCluster handleChange={props.handleClusterChange} />
 		</>
 	);
 
