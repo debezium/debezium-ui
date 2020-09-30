@@ -8,7 +8,7 @@ import "./ConnectorsPage.css";
   }
 
   /**
-   * Component for display of Connector Status
+   * Component for display of Connector Tasks
    */
   export const ConnectorTasks: React.FunctionComponent<IConnectorTasksProps> = (
     props
@@ -38,7 +38,7 @@ import "./ConnectorsPage.css";
           <div>Task: {props.currentTasks}</div>
           }
         >
-          <Label className="status-indicator" color={color} tabIndex="0" data-testid={"connector-status-div"} >{props.taskNumber}</Label>
+          <Label className="status-indicator" color={color} tabIndex={props.taskNumber} data-testid={"connector-status-div"} >{props.taskNumber}</Label>
         </Tooltip>
       </>
     )

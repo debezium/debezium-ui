@@ -7,7 +7,7 @@ import { ConnectorState } from "src/app/shared";
   }
 
   /**
-   * Component for display of Connector Tasks
+   * Component for display of Connector Status
    */
   export const ConnectorStatus: React.FunctionComponent<IConnectorStatusProps> = (
     props
