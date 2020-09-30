@@ -89,7 +89,7 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
                   </Button>
                 </FlexItem>
               </Flex>
-              <DataList aria-label={"connector list"}>
+              <DataList aria-label={"connector list"} className="connectors-page_dataList">
                 {getSortedConnectors(connectors).map((conn, index) => {
                   return (
                     <ConnectorListItem
