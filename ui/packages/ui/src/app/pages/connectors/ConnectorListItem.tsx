@@ -16,7 +16,7 @@ import {
 } from "src/app/shared";
 import { ConnectorIcon } from "./ConnectorIcon";
 import { ConnectorStatus } from './ConnectorStatus';
-import { ConnectorTasks } from './ConnectorTasks';
+import { ConnectorTask } from './ConnectorTask';
 
 export interface IConnectorListItemProps {
   name: string;
@@ -45,9 +45,15 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
     setShowDeleteDialog(true);
   };
 
-  const getTaskStateStr = (taskStates: any) => {
-    const stateMap = new Map(Object.entries(taskStates));
-    return Array.from(stateMap.values());
+  const getTaskStates = () => {
+    const taskElements: any = [];
+
+    const stateMap = new Map(Object.entries(props.taskStates));
+    stateMap.forEach( (taskState: any, id: string) => {
+      taskElements.push(<ConnectorTask key={id} task={taskState} taskId={id} />);
+    });
+
+    return taskElements;
   }
 
   return (
@@ -88,20 +94,12 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
               </DataListCell>,
               <DataListCell key={2} width={1}>
                 <div>
-                  <ConnectorStatus
-                    currentStatus={props.status}
-                  />
+                  Status: <ConnectorStatus currentStatus={props.status} />
                 </div>
               </DataListCell>,
               <DataListCell key={3} width={1}>
                 <div className="tasks-list">
-                {
-                  getTaskStateStr(props.taskStates).map((task, index) => {
-                    return (
-                      <ConnectorTasks key={index} currentTasks={task} taskNumber={index} />
-                    )
-                  })
-                }
+                  Tasks: {getTaskStates()}
                 </div>
               </DataListCell>,
             ]}

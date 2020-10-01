@@ -5,6 +5,9 @@
   &_toolbarCreateButton {
     margin-bottom: var(--pf-global--spacer--sm);
   }  
+  &_dataList {
+    margin-top: var(--pf-global--spacer--sm);
+  }  
   &_toolbarFlex {
     align-items: center;
     padding: var(--pf-global--spacer--sm) 0;
