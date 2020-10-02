@@ -20,7 +20,7 @@
       }
       &__nav-list {
         margin: 24px 5px;
-        padding: 0 40px;
+        padding: 0 10px 0 30px;
       }
       &__nav-item {
         margin-bottom: 30px;
