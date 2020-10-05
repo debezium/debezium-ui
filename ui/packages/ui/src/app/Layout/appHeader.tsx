@@ -1,6 +1,7 @@
 import {
 	Brand,
-	PageHeader
+	PageHeader,
+	PageHeaderTools
 } from '@patternfly/react-core';
 import * as React from 'react';
 import { useHistory } from "react-router-dom";
@@ -19,9 +20,9 @@ const AppHeader: React.FC<IAppHeader> = (props) => {
 	}
 
 	const headerTools = (
-		<>
+		<PageHeaderTools>
 			<KafkaConnectCluster handleChange={props.handleClusterChange} />
-		</>
+		</PageHeaderTools>
 	);
 
 	return (

@@ -5,6 +5,8 @@ import {
   DataListItem,
   DataListItemCells,
   DataListItemRow,
+  Flex,
+  FlexItem,
   Tooltip
 } from "@patternfly/react-core";
 import * as React from "react";
@@ -81,7 +83,11 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
             dataListCells={[
               <DataListCell key={0} width={1}>
                 <ConnectorIcon
-                  connectorType={props.type === "PostgreSQL" ? ConnectorTypeId.POSTGRES : props.type}
+                  connectorType={
+                    props.type === "PostgreSQL"
+                      ? ConnectorTypeId.POSTGRES
+                      : props.type
+                  }
                   alt={props.name}
                   width={50}
                   height={50}
@@ -99,7 +105,10 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
               </DataListCell>,
               <DataListCell key={3} width={1}>
                 <div className="tasks-list">
-                  Tasks: {getTaskStates()}
+                  <Flex>
+                    <FlexItem>Tasks: </FlexItem>
+                    <FlexItem>{getTaskStates()}</FlexItem>
+                  </Flex>
                 </div>
               </DataListCell>,
             ]}

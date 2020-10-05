@@ -45,7 +45,7 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
           color={color}
           data-testid={"connector-status-div"}
         >
-          {props.taskId}
+          Task {props.taskId}: {props.task}
         </Label>
       </Tooltip>
     </>
