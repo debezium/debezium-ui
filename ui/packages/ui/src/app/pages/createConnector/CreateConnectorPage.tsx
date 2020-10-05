@@ -285,6 +285,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setBasicPropValues(basicPropertyValues);
     setAdvancedPropValues(advancePropertyValues);
 
+    const connName = basicPropertyValues.get(PropertyName.CONNECTOR_NAME);
+
     const valueMap = new Map(
       (function* () {
         yield* basicPropertyValues;
@@ -292,7 +294,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       })()
     );
     const minimizedValues = minimizePropertyValues(valueMap, selectedConnectorPropertyDefns);
-    validateConnectionProperties(minimizedValues);
+    validateConnectionProperties(minimizedValues, connName);
   };
 
   const handleValidateOptionProperties = (
@@ -307,11 +309,31 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     validateOptionProperties(propertyValues, propertyCategory);
   };
 
+  const validateConnectionName = (connName: string): string => {
+    const currentNames = location.state?.connectorNames;
+    if (currentNames.indexOf(connName) > -1) {
+      return "Name already in use - please choose a different name."
+    }
+    return '';
+  }
+
   // Validation Connection Properties Step
   const validateConnectionProperties = (
-    propertyValues: Map<string, string>
+    propertyValues: Map<string, string>,
+    connName: string
   ) => {
-    // alert("Validate Properties: " + JSON.stringify(mapToObject(propertyValues)));
+    // Validate the connection name first
+    const connNameValidationMsg = validateConnectionName(connName);
+    if ( connNameValidationMsg.length > 0 ) {
+      const nameValidation = {
+        property: PropertyName.CONNECTOR_NAME,
+        message: connNameValidationMsg,
+        displayName: "Connector name"
+      }
+      setConnectionPropsValidMsg([nameValidation]);
+      return;
+    }
+
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.validateConnection, connectorService, [
       selectedConnectorType,

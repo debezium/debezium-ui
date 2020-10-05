@@ -16,6 +16,9 @@
     }
     .pf-c-card{
       min-height: 220px;
+      &__header {
+        height: 95px;
+      }
     }
   }
   &_dbIcon {
