@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {ConfigType, FeaturesConfig} from './config.type';
-import {Service} from "../baseService";
+import { Service } from "../baseService";
+import { ConfigType, FeaturesConfig } from './config.type';
 
 const DEFAULT_CONFIG: ConfigType = {
     artifacts: {
@@ -42,13 +42,21 @@ export class ConfigService implements Service {
 
     constructor() {
         const w: any = window;
-        if (w.DebeziumUiConfig) {
-            this.config = w.DebeziumUiConfig;
-            console.info("[ConfigService] Found app config.");
-        } else {
+        if (w.DEFAULT_CONFIG) {
+            this.config = w.DEFAULT_CONFIG;
+            console.info("[ConfigService] App config found! (using global)");
+        }else{
             console.error("[ConfigService] App config not found! (using default)");
             this.config = DEFAULT_CONFIG;
         }
+
+        // if (w.DebeziumUiConfig) {
+        //     this.config = w.DebeziumUiConfig;
+        //     console.info("[ConfigService] Found app config.");
+        // } else {
+        //     console.error("[ConfigService] App config not found! (using default)");
+        //     this.config = window.DEFAULT_CONFIG;
+        // }
     }
 
     public init(): void {
