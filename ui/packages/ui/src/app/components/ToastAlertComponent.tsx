@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertActionCloseButton,
   AlertGroup,
   AlertVariant,
   Text,
@@ -10,6 +11,7 @@ import React from "react";
 
 export interface IToastAlertComponentProps {
   alerts: any[];
+  removeAlert: (key: string)=> void;
 }
 export const ToastAlertComponent: React.FunctionComponent<IToastAlertComponentProps> = (
   props
@@ -22,6 +24,13 @@ export const ToastAlertComponent: React.FunctionComponent<IToastAlertComponentPr
           isLiveRegion={true}
           variant={AlertVariant[variant]}
           title={title}
+          actionClose={
+            <AlertActionCloseButton
+              title={title}
+              variantLabel={`${variant} alert`}
+              onClose={() => props.removeAlert(key)}
+            />
+          }
           key={key}
         >
           {message && (

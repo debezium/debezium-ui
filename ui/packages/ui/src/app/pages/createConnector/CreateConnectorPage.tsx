@@ -735,7 +735,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           className="create-connector-page_wizard"
         />
       </div>
-      <ToastAlertComponent alerts={alerts}/>
+      <ToastAlertComponent
+        alerts={alerts}
+        removeAlert={removeAlert}/>
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
         i18nCancelButtonText={"Stay"}
