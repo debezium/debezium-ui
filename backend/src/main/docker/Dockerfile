@@ -17,8 +17,15 @@ RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven \
 
 USER 1001
 
-COPY . /javabuild/
+COPY pom.xml /javabuild/
+COPY backend/pom.xml /javabuild/backend/pom.xml
+COPY ui/pom.xml /javabuild/ui/pom.xml
+
 WORKDIR /javabuild
+
+RUN mvn -am dependency:go-offline
+
+COPY . /javabuild/
 
 RUN mvn -am clean package -Dquarkus.package.type=fast-jar
 
