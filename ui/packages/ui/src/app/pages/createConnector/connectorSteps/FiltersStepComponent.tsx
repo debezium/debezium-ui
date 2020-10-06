@@ -10,6 +10,7 @@ import {
   Form,
   FormGroup,
   Popover,
+  Spinner,
   Text,
   TextInput,
   TextVariants,
@@ -160,7 +161,6 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
       mapToObject(new Map([...props.propertyValues, ...filterExpression])),
     ])
       .then((result: FilterValidationResult) => {
-        setLoading(false);
         if (result.status === "INVALID") {
           const errorMap = new Map();
           for (const e of result.propertyValidationResults) {
@@ -178,6 +178,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
           setTableNo(result.matchedCollections.length);
           setTreeData(formatResponseData(result.matchedCollections));
         }
+        setLoading(false);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
@@ -415,7 +416,9 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
         </ActionGroup>
       </Form>
       <Divider />
-      {invalidMsg?.size !== 0 ? (
+      {loading ? (
+        <Spinner />
+      ) : (invalidMsg?.size !== 0) ? (
         <Alert
           variant={"danger"}
           isInline={true}
