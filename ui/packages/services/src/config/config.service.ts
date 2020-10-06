@@ -42,21 +42,15 @@ export class ConfigService implements Service {
 
     constructor() {
         const w: any = window;
-        if (w.DEFAULT_CONFIG) {
-            this.config = w.DEFAULT_CONFIG;
-            console.info("[ConfigService] App config found! (using global)");
-        }else{
-            console.error("[ConfigService] App config not found! (using default)");
-            this.config = DEFAULT_CONFIG;
+        this.config = DEFAULT_CONFIG;
+        if (w.UI_BASE_URI) {
+            this.config.artifacts.url = w.UI_BASE_URI;
+            console.info("[ConfigService] Applied UI_BASE_URI (" + this.config.artifacts.url + ")!");
         }
-
-        // if (w.DebeziumUiConfig) {
-        //     this.config = w.DebeziumUiConfig;
-        //     console.info("[ConfigService] Found app config.");
-        // } else {
-        //     console.error("[ConfigService] App config not found! (using default)");
-        //     this.config = window.DEFAULT_CONFIG;
-        // }
+        if (w.UI_MODE) {
+            this.config.mode = w.UI_MODE;
+            console.info("[ConfigService] Applied UI_MODE (" + this.config.mode + ")!");
+        }
     }
 
     public init(): void {
