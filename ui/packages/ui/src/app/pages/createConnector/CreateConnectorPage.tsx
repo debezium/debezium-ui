@@ -119,10 +119,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const [connectionPropsValidMsg, setConnectionPropsValidMsg] = React.useState<PropertyValidationResult[]>([]);
 
   const [dataOptionsValid, setDataOptionsValid] = React.useState<boolean>(
-    false
+    true
   );
   const [runtimeOptionsValid, setRuntimeOptionsValid] = React.useState<boolean>(
-    false
+    true
   );
   const [connectorCreateFailed, setConnectorCreateFailed] = React.useState<
     boolean
