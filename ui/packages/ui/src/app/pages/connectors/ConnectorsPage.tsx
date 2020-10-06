@@ -43,9 +43,12 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
   const history = useHistory();
 
   const createConnector = () => {
+    const connectorNames = connectors.map( (conn) => {
+      return conn.name;
+    });
     history.push({
       pathname: "/app/create-connector",
-      state: { value: appLayoutContext.clusterId },
+      state: { value: appLayoutContext.clusterId, connectorNames },
     });
   };
 
