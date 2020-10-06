@@ -17,22 +17,6 @@
 
 import { Service } from "../baseService";
 import { ConfigType, FeaturesConfig } from './config.type';
-
-const DEFAULT_CONFIG: ConfigType = {
-    artifacts: {
-        type: "rest",
-        url: "http://localhost:8080/api/"
-    },
-    features: {
-        readOnly: false
-    },
-    mode: "dev",
-    ui: {
-        contextPath: null,
-        url: "http://localhost:8888/"
-    }
-};
-
 /**
  * A simple configuration service.  Reads information from a global "DebeziumUiConfig" variable
  * that is typically included via JSONP.
@@ -42,7 +26,11 @@ export class ConfigService implements Service {
 
     constructor() {
         const w: any = window;
-        this.config = DEFAULT_CONFIG;
+
+        if (w.DebeziumUiConfig) {
+            this.config = w.DebeziumUiConfig;
+            console.info("[ConfigService] Found app config.");
+        }
         if (w.UI_BASE_URI) {
             this.config.artifacts.url = w.UI_BASE_URI;
             console.info("[ConfigService] Applied UI_BASE_URI (" + this.config.artifacts.url + ")!");
