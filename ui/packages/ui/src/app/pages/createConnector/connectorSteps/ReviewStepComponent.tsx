@@ -1,9 +1,6 @@
-import {
-  Text, TextVariants, Title,
-} from "@patternfly/react-core";
-import _ from "lodash";
+import { Text, TextVariants, Title } from "@patternfly/react-core";
 import * as React from "react";
-import { mapToObject } from 'src/app/shared';
+import { mapToObject, maskPropertyValues } from 'src/app/shared';
 
 export interface IReviewStepComponentProps {
   connectorName: string;
@@ -23,7 +20,7 @@ export const ReviewStepComponent: React.FC<IReviewStepComponentProps> = (
         {props.connectorName}'. Click 'Finish' to create the connector.
       </Text>
       <Text component={"pre"} className={"pf-u-text-align-left"}>
-        {JSON.stringify(mapToObject(props.propertyValues), null, 2)}
+      {JSON.stringify(maskPropertyValues(mapToObject(props.propertyValues)), null, 2)}
       </Text>
     </>
   );
