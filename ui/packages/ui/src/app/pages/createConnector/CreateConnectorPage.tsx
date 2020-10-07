@@ -15,6 +15,7 @@ import {
   LevelItem,
   PageSection,
   PageSectionVariants,
+  Spinner,
   TextContent,
   Title,
   TitleSizes,
@@ -101,6 +102,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setRuntimeOptionsPropValues,
   ] = React.useState<Map<string, string>>(new Map<string, string>());
 
+  const [validateInProgress, setValidateInProgress] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
@@ -264,10 +266,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const onConnectorTypeChanged = (cType: string | undefined): void => {
     setSelectedConnectorType(cType);
-    // Categorize the properties and reset the overall state
-    const connType = connectorTypes.find((conn) => conn.id === cType);
-    setSelectedConnectorPropertyDefns(connType!.properties);
-    initPropertyValues();
+    if (cType) {
+      const connType = connectorTypes.find((conn) => conn.id === cType);
+      setSelectedConnectorPropertyDefns(connType!.properties);
+      initPropertyValues();
+    }
   };
 
   const initPropertyValues = (): void => {
@@ -322,6 +325,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     propertyValues: Map<string, string>,
     connName: string
   ) => {
+    setValidateInProgress(true);
     // Validate the connection name first
     const connNameValidationMsg = validateConnectionName(connName);
     if ( connNameValidationMsg.length > 0 ) {
@@ -331,6 +335,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         displayName: "Connector name"
       }
       setConnectionPropsValidMsg([nameValidation]);
+      setValidateInProgress(false);
       return;
     }
 
@@ -355,8 +360,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         } else {
           setConnectionPropsValid(true);
         }
+        setValidateInProgress(false);
       })
       .catch((err: React.SetStateAction<Error>) => {
+        setValidateInProgress(false);
         alert("Error Validation Connection Properties !: " + err);
       });
   };
@@ -366,6 +373,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     propertyCategory: PropertyCategory
   ) => {
     // alert("Validate Option Properties: " + JSON.stringify(mapToObject(propertyValues)));
+    setValidateInProgress(true);
     const minimizedValues = minimizePropertyValues(propertyValues, selectedConnectorPropertyDefns);
 
     const connectorService = Services.getConnectorService();
@@ -408,8 +416,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             setRuntimeOptionsValid(true);
           }
         }
+        setValidateInProgress(false);
       })
       .catch((err: React.SetStateAction<Error>) => {
+        setValidateInProgress(false);
         alert("Error Validating Connection Properties !: " + err);
       });
   };
@@ -474,8 +484,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         selectedConnectorType={selectedConnectorType}
         onSelectionChange={onConnectorTypeChanged}
       />
-    ),
-    enableNext: selectedConnectorType !== undefined,
+    )
   };
 
   const propertiesStep = {
@@ -483,7 +492,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     name: PROPERTIES_STEP,
     component: (
       <>
-        {connectionStepsValid === 1 &&
+        {validateInProgress ? (
+          <Spinner size="lg" />
+        ) : (
+          connectionStepsValid === 1 &&
           (!connectionPropsValid ? (
             <div style={{ padding: "15px 0" }}>
               <Alert
@@ -499,7 +511,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             <div style={{ padding: "15px 0" }}>
               <Alert variant="success" title={validationSuccessNextMsg} />
             </div>
-          ))}
+          ))
+        )}
         <ConfigureConnectorComponent
           basicPropertyDefinitions={getBasicPropertyDefinitions(
             selectedConnectorPropertyDefns
@@ -543,7 +556,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         name: DATA_OPTIONS_STEP,
         component: (
           <>
-            {dataStepsValid === 1 &&
+            {validateInProgress ? (
+              <Spinner size="lg" />
+            ) : (
+              dataStepsValid === 1 &&
               (!dataOptionsValid ? (
                 <div style={{ padding: "15px 0" }}>
                   <Alert
@@ -559,7 +575,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 <div style={{ padding: "15px 0" }}>
                   <Alert variant="success" title={validationSuccessNextMsg} />
                 </div>
-              ))}
+              ))
+            )}
             <DataOptionsComponent
               propertyDefinitions={getDataOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
@@ -579,7 +596,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         name: RUNTIME_OPTIONS_STEP,
         component: (
           <>
-            {runtimeStepsValid === 1 &&
+            {validateInProgress ? (
+              <Spinner size="lg" />
+            ) : (
+              runtimeStepsValid === 1 &&
               !connectorCreateFailed &&
               (!runtimeOptionsValid ? (
                 <div style={{ padding: "15px 0" }}>
@@ -596,7 +616,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 <div style={{ padding: "15px 0" }}>
                   <Alert variant="success" title={validationSuccessNextMsg} />
                 </div>
-              ))}
+              ))
+            )}
             <RuntimeOptionsComponent
               propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
@@ -623,7 +644,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         propertyValues={getFinalProperties()}
       />
     ),
-    canJumpTo: stepIdReached >= 6,
+    canJumpTo: stepIdReached >= 2,
     nextButtonText: "Finish",
   };
 
@@ -684,7 +705,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                   variant="primary"
                   type="submit"
                   className={
-                    activeStep.name === TABLE_SELECTION_STEP && !isValidFilter
+                    activeStep.name === (TABLE_SELECTION_STEP && !isValidFilter) || (CONNECTOR_TYPE_STEP && selectedConnectorType === undefined)
                       ? "pf-m-disabled"
                       : ""
                   }
@@ -716,7 +737,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                         ? "pf-m-disabled"
                         : ""
                     }
-                    onClick={onFinish}
+                    onClick={() => goToStepByName(REVIEW_STEP)}
                   >
                     Finish
                   </Button>
