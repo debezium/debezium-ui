@@ -196,7 +196,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
-      case RUNTIME_OPTIONS_STEP:
+      default:
         basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
@@ -250,6 +250,8 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const goToNext = (id: number, onNext: () => void) =>{
     setConnectorCreateFailed(false);
+    // tslint:disable-next-line: no-unused-expression
+    id === 5 && setFinishStepName(RUNTIME_OPTIONS_STEP);
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
     onNext()
   }
@@ -733,7 +735,10 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                   variant="primary"
                   type="submit"
                   className={
-                    activeStep.name === (TABLE_SELECTION_STEP && !isValidFilter) || (CONNECTOR_TYPE_STEP && selectedConnectorType === undefined)
+                    (activeStep.name === TABLE_SELECTION_STEP &&
+                      !isValidFilter) ||
+                    (activeStep.name === CONNECTOR_TYPE_STEP &&
+                      selectedConnectorType === undefined)
                       ? "pf-m-disabled"
                       : ""
                   }
@@ -744,7 +749,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               )}
               <Button
                 variant="secondary"
-                onClick={activeStep.id === 6 ? () =>backToFinishStep(goToStepByName) : onBack}
+                onClick={
+                  activeStep.id === 6
+                    ? () => backToFinishStep(goToStepByName)
+                    : onBack
+                }
                 className={
                   activeStep.name === CONNECTOR_TYPE_STEP ? "pf-m-disabled" : ""
                 }
@@ -765,7 +774,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                         ? "pf-m-disabled"
                         : ""
                     }
-                    onClick={()=>skipToReview(activeStep.name, goToStepByName)}
+                    onClick={() =>
+                      skipToReview(activeStep.name, goToStepByName)
+                    }
                   >
                     Skip to finish
                   </Button>
