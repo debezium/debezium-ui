@@ -340,6 +340,15 @@ export function mapToObject(inputMap: Map<string, string>) {
   return obj;
 }
 
+export function maskPropertyValues(inputObj:{key: string, value: any}){
+  for (const [key, value] of Object.entries(inputObj)) {
+    if(key === "database.password") {
+  	  inputObj[key] = "*".repeat(value.length);
+  	}
+  }
+  return inputObj;
+};
+
 /**
  * Wrapper function to call the underline api call repetitively upto MAX_RETRIES limit in case of error
  * @param api function fetching the api
