@@ -72,11 +72,23 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
   return [...enabledTypes, ...disabledTypes];
 }
 
+const validationErrorMsg = "Resolve property errors, then click Validate";
+const validationSuccessNextMsg = "Validation was successful, click Next to continue";
+const createConnectorUnknownErrorMsg = "Unknown error - please consult your administrator";
+
+const CONNECTOR_TYPE_STEP = "Connector Type";
+const PROPERTIES_STEP = "Properties";
+const TABLE_SELECTION_STEP = "Table Selection";
+const DATA_OPTIONS_STEP = "Data Options";
+const RUNTIME_OPTIONS_STEP = "Runtime Options";
+const REVIEW_STEP = "Review";
+
 export const CreateConnectorPage: React.FunctionComponent = () => {
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
     string | undefined
   >();
+  const [finishStepName, setFinishStepName] = React.useState<string>(RUNTIME_OPTIONS_STEP)
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true)
   const [
     selectedConnectorPropertyDefns,
@@ -135,17 +147,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const connectionPropsRef = React.useRef();
   const dataOptionRef = React.useRef();
   const runtimeOptionRef = React.useRef();
-
-  const validationErrorMsg = "Resolve property errors, then click Validate";
-  const validationSuccessNextMsg = "Validation was successful, click Next to continue";
-  const createConnectorUnknownErrorMsg = "Unknown error - please consult your administrator";
-
-  const CONNECTOR_TYPE_STEP = "Connector Type";
-  const PROPERTIES_STEP = "Properties";
-  const TABLE_SELECTION_STEP = "Table Selection";
-  const DATA_OPTIONS_STEP = "Data Options";
-  const RUNTIME_OPTIONS_STEP = "Runtime Options";
-  const REVIEW_STEP = "Review";
   
   const addAlert = (msg?: string) => {
      const alertsCopy = [...alerts];
@@ -173,18 +174,36 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     return basicPropValues.get(PropertyName.CONNECTOR_NAME);
   }
 
-  const getFinalProperties = () => {
+  const getFinalProperties = (stepName: string) => {
     // Merge the individual category properties values into a single map for the config
     const allPropValues = new Map<string, string>();
     // Remove connector name from basic, so not passed with properties
     const basicValuesTemp = new Map<string, string>(basicPropValues);
     basicValuesTemp.delete(PropertyName.CONNECTOR_NAME);
-    basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
-
-    advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
-    filterValues.forEach((v, k) => allPropValues.set(k, v));
-    dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
-    runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+    switch (stepName) {
+      case PROPERTIES_STEP:
+        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
+      case TABLE_SELECTION_STEP:
+        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
+      case DATA_OPTIONS_STEP:
+        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
+      case RUNTIME_OPTIONS_STEP:
+        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+        runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
+    }
 
     return minimizePropertyValues(allPropValues, selectedConnectorPropertyDefns);
   }
@@ -194,7 +213,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     const clusterID = location.state?.value;
     const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
 
-    const finalProperties = getFinalProperties();
+    const finalProperties = getFinalProperties(finishStepName);
 
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.createConnector, connectorService, [
@@ -209,9 +228,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         // On success, redirect to connectors page
         history.push("/app");
       })
-      .catch((err: React.SetStateAction<Error>) => {
+      .catch((err: Error) => {
         setConnectorCreateFailed(true);
-        addAlert(err.message);
+        addAlert(err?.message);
       });
   };
 
@@ -233,6 +252,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     setConnectorCreateFailed(false);
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
     onNext()
+  }
+
+  const skipToReview = (stepName: string, goToStepByName: (stepName: string) => void) =>{
+    setFinishStepName(stepName);
+    goToStepByName(REVIEW_STEP);
+  }
+
+  const backToFinishStep = (goToStepByName: (stepName: string) => void) =>{
+    goToStepByName(finishStepName)
   }
 
   const validateStep = (stepName: ReactNode, onNext: () => void) => {
@@ -312,7 +340,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     validateOptionProperties(propertyValues, propertyCategory);
   };
 
-  const validateConnectionName = (connName: string): string => {
+  const validateConnectionName = (connName: string | undefined): string => {
     const currentNames = location.state?.connectorNames;
     if (currentNames.indexOf(connName) > -1) {
       return "Name already in use - please choose a different name."
@@ -323,7 +351,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   // Validation Connection Properties Step
   const validateConnectionProperties = (
     propertyValues: Map<string, string>,
-    connName: string
+    connName: string | undefined
   ) => {
     setValidateInProgress(true);
     // Validate the connection name first
@@ -641,7 +669,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     component: (
       <ReviewStepComponent
         connectorName={getConnectorName()!}
-        propertyValues={getFinalProperties()}
+        propertyValues={getFinalProperties(finishStepName)}
       />
     ),
     canJumpTo: stepIdReached >= 2,
@@ -716,7 +744,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               )}
               <Button
                 variant="secondary"
-                onClick={onBack}
+                onClick={activeStep.id === 6 ? () =>backToFinishStep(goToStepByName) : onBack}
                 className={
                   activeStep.name === CONNECTOR_TYPE_STEP ? "pf-m-disabled" : ""
                 }
@@ -737,9 +765,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                         ? "pf-m-disabled"
                         : ""
                     }
-                    onClick={() => goToStepByName(REVIEW_STEP)}
+                    onClick={()=>skipToReview(activeStep.name, goToStepByName)}
                   >
-                    Finish
+                    Skip to finish
                   </Button>
                 </>
               )}
