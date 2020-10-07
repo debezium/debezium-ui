@@ -11,9 +11,9 @@ import * as React from "react";
 import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
 import * as Yup from "yup";
 import { FormComponent } from "../../../components/formHelpers";
-import "./ConfigureConnectorComponent.css";
+import "./PropertiesStep.css";
 
-export interface IConfigureConnectorComponentProps {
+export interface IPropertiesStepProps {
   basicPropertyDefinitions: ConnectorProperty[];
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
@@ -46,7 +46,7 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
   }
 );
 
-export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
+export const PropertiesStep: React.FC<any> = React.forwardRef(
   (props, ref) => {
     const [basicExpanded, setBasicExpanded] = React.useState<boolean>(true);
     const [advancedExpanded, setAdvancedExpanded] = React.useState<boolean>(false);
@@ -208,7 +208,7 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
                   >
                     <Grid
                       hasGutter={true}
-                      className={"configure-connector-expansion-content"}
+                      className={"properties-step-expansion-content"}
                     >
                       {basicPropertyDefinitions.map(
                         (propertyDefinition: ConnectorProperty, index: any) => {
@@ -249,7 +249,7 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
                     <GridItem span={9}>
                       <Grid
                         hasGutter={true}
-                        className={"configure-connector-expansion-content"}
+                        className={"properties-step-expansion-content"}
                       >
                         {advancedGeneralPropertyDefinitions.map(
                           (
@@ -283,14 +283,14 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
                     </GridItem>
                     <Title
                       headingLevel="h2"
-                      className="configure-connector-grouping"
+                      className="properties-step-grouping"
                     >
                       Replication
                     </Title>
                     <GridItem span={9}>
                       <Grid
                         hasGutter={true}
-                        className={"configure-connector-expansion-content"}
+                        className={"properties-step-expansion-content"}
                       >
                         {advancedReplicationPropertyDefinitions.map(
                           (
@@ -326,7 +326,7 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
                       <>
                         <Title
                           headingLevel="h2"
-                          className="configure-connector-grouping"
+                          className="properties-step-grouping"
                         >
                           Publication
                         </Title>
@@ -334,7 +334,7 @@ export const ConfigureConnectorComponent: React.FC<any> = React.forwardRef(
                           <Grid
                             hasGutter={true}
                             className={
-                              "configure-connector-expansion-content"
+                              "properties-step-expansion-content"
                             }
                           >
                             {advancedPublicationPropertyDefinitions.map(

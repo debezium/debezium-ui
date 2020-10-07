@@ -32,9 +32,9 @@ import {
   fetch_retry,
   mapToObject,
 } from "src/app/shared";
-import "./FiltersStepComponent.css";
+import "./TableSelectionStep.css";
 
-export interface IFiltersStepComponentProps {
+export interface ITableSelectionStepProps {
   propertyValues: Map<string, string>;
   filterValues: Map<string, string>;
   connectorType: string;
@@ -90,7 +90,7 @@ const getInvalidFilterMsg = (
   return returnVal;
 };
 
-export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponentProps> = (
+export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProps> = (
   props
 ) => {
   const [schemaFilter, setSchemaFilter] = React.useState<string>(
@@ -246,7 +246,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
       <Text component={TextVariants.h2}>
         Select tables for change capture by entering comma-separated lists of regular expressions for schemas and tables.
       </Text>
-      <Form isHorizontal={true} className="filters-step-component_form">
+      <Form isHorizontal={true} className="table-selection-step_form">
         <FormGroup
           label="Schema filter"
           fieldId="schema_filter"
@@ -254,7 +254,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
             schemaSelected === "schemaExclude" ? (
               <Text
                 component={TextVariants.h4}
-                className="filters-step-component_info"
+                className="table-selection-step_info"
               >
                 <InfoCircleIcon />
                 Schemas matching the regular expression filters will be excluded.
@@ -334,7 +334,7 @@ export const FiltersStepComponent: React.FunctionComponent<IFiltersStepComponent
             tableSelected === "tableExclude" ? (
               <Text
                 component={TextVariants.h4}
-                className="filters-step-component_info"
+                className="table-selection-step_info"
               >
                 <InfoCircleIcon />
                 Tables matching the regular expression filters will be excluded.

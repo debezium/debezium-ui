@@ -1,7 +1,7 @@
 .connector-name-form{
   padding: 8px 0px;
 }
-.configure-connector {
+.properties-step {
   &-advanced-title {
     margin-top: 30px;
   }

@@ -44,12 +44,12 @@ import {
   PropertyName
 } from "src/app/shared";
 import {
-  ConfigureConnectorComponent,
   ConnectorTypeStepComponent,
   DataOptionsComponent,
-  FiltersStepComponent,
+  PropertiesStep,
   ReviewStepComponent,
-  RuntimeOptionsComponent
+  RuntimeOptionsComponent,
+  TableSelectionStep
 } from "./connectorSteps";
 import "./CreateConnectorPage.css";
 /**
@@ -543,7 +543,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
             </div>
           ))
         )}
-        <ConfigureConnectorComponent
+        <PropertiesStep
           basicPropertyDefinitions={getBasicPropertyDefinitions(
             selectedConnectorPropertyDefns
           )}
@@ -569,7 +569,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         id: 3,
         name: TABLE_SELECTION_STEP,
         component: (
-          <FiltersStepComponent
+          <TableSelectionStep
             propertyValues={
               new Map([...basicPropValues, ...advancedPropValues])
             }
