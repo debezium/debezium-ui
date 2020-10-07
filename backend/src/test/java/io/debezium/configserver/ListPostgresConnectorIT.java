@@ -60,12 +60,14 @@ public class ListPostgresConnectorIT {
                 .body("size()", is(2))
                 .rootPath("find { it.name == '"+ runningConnectorName + "' }")
                     .body("connectorStatus", equalTo("RUNNING"))
-                    .body("connectorType", equalTo("PostgreSQL"))
+                    .body("connectorType", equalTo("postgres"))
+                    .body("databaseName", equalTo("PostgreSQL"))
                     .body("name", equalTo(runningConnectorName))
                     .body("taskStates", equalTo(Map.of("0", "RUNNING")))
                 .rootPath("find { it.name == '"+ pausedConnectorName + "' }")
                     .body("connectorStatus", equalTo("PAUSED"))
-                    .body("connectorType", equalTo("PostgreSQL"))
+                    .body("connectorType", equalTo("postgres"))
+                    .body("databaseName", equalTo("PostgreSQL"))
                     .body("name", equalTo(pausedConnectorName));
     }
 

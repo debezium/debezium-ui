@@ -11,6 +11,7 @@ public class ConnectorStatus {
     private String name;
     private State connectorStatus;
     private String connectorType;
+    private String databaseName;
 
     @Schema(example = "{\"0\": \"RUNNING\", \"1\": \"PAUSED\"}")
     private final Map<Long, State> taskStates = new HashMap<>();
@@ -56,22 +57,27 @@ public class ConnectorStatus {
         this.taskStates.put(taskNumber, state);
     }
 
-    public void setConnectorType(String connectorType) {
-        switch (connectorType) {
+    public void setConnectorType(String connectorClassName) {
+        switch (connectorClassName) {
             case "io.debezium.connector.postgresql.PostgresConnector":
-                this.connectorType = "PostgreSQL";
+                this.connectorType = "postgres";
+                this.databaseName = "PostgreSQL";
                 break;
             case "io.debezium.connector.mongodb.MongoDbConnector":
-                this.connectorType = "MongoDB";
+                this.connectorType = "mongodb";
+                this.databaseName = "MongoDB";
                 break;
             case "io.debezium.connector.mysql.MySqlConnector":
-                this.connectorType = "MySQL";
+                this.connectorType = "mysql";
+                this.databaseName = "MySQL";
                 break;
             case "io.debezium.connector.sqlserver.SqlServerConnector":
-                this.connectorType = "SQL Server";
+                this.connectorType = "sqlserver";
+                this.databaseName = "SQL Server";
                 break;
             default:
-                this.connectorType = connectorType;
+                this.connectorType = connectorClassName;
+                this.databaseName = "unknown";
                 break;
         }
     }
@@ -80,10 +86,15 @@ public class ConnectorStatus {
         return connectorType;
     }
 
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
     @Override
     public String toString() {
         return "ConnectorStatus{" +
                 "connectorType='" + connectorType + '\'' +
+                ", databaseName=" + databaseName +
                 ", connectorState=" + connectorStatus +
                 ", taskStates=" + taskStates +
                 '}';
