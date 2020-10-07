@@ -340,11 +340,11 @@ export function mapToObject(inputMap: Map<string, string>) {
   return obj;
 }
 
-export function maskPropertyValues(inputObj:{}){
-  for (const key in inputObj) {
-  	if(key === "database.password") {
-      inputObj[key] = "******";
-    }
+export function maskPropertyValues(inputObj:{key: string, value: any}){
+  for (const [key, value] of Object.entries(inputObj)) {
+    if(key === "database.password") {
+  	  inputObj[key] = "*".repeat(value.length);
+  	}
   }
   return inputObj;
 };
