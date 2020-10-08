@@ -460,6 +460,13 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   };
 
   React.useEffect(() => {
+    const currentNames = location.state?.connectorNames;
+    if(currentNames === undefined ){
+      history.push('/app')
+    }
+  });
+  
+  React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
     fetch_retry(globalsService.getConnectorTypes, globalsService)
       .then((cTypes: ConnectorType[]) => {
