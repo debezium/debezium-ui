@@ -23,7 +23,7 @@ import { ConnectorTask } from './ConnectorTask';
 export interface IConnectorListItemProps {
   name: string;
   status: string;
-  taskStates: any,
+  taskStates: any;
   type: string;
 }
 
@@ -50,9 +50,9 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
   const getTaskStates = () => {
     const taskElements: any = [];
 
-    const stateMap = new Map(Object.entries(props.taskStates));
-    stateMap.forEach( (taskState: any, id: string) => {
-      taskElements.push(<ConnectorTask key={id} task={taskState} taskId={id} />);
+    const statesMap = new Map(Object.entries(props.taskStates));
+    statesMap.forEach( (taskState: any, id: string) => {
+      taskElements.push(<ConnectorTask key={id} task={taskState.taskStatus} taskId={id} errors={taskState.errors} />);
     });
 
     return taskElements;

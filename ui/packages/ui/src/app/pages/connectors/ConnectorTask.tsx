@@ -30,6 +30,9 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
       color = "grey";
       break;
   }
+  if (!props.errors) {
+    props.errors = [];
+  }
 
   return (
     <>
@@ -37,6 +40,12 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
         content={
           <div>
             Task {props.taskId}: {props.task}
+            <div class="errors">
+              {props.errors.map((errormsg, key) => {
+                  return <div key={key}>{errormsg}</div>;
+                })
+              }
+            </div>
           </div>
         }
       >

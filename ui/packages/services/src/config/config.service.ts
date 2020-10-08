@@ -17,27 +17,35 @@
 
 import { Service } from "../baseService";
 import { ConfigType, FeaturesConfig } from './config.type';
+import _ from 'lodash'
+
 /**
  * A simple configuration service.  Reads information from a global "DebeziumUiConfig" variable
  * that is typically included via JSONP.
  */
 export class ConfigService implements Service {
-    private config: ConfigType;
+    private config: ConfigType = {
+        artifacts: {
+            type: "rest",
+            url: "http://localhost:8080/api/"
+        },
+        features: {
+            readOnly: false
+        },
+        mode: "dev",
+        ui: {
+            contextPath: null,
+            url: "http://localhost:8888/"
+        }
+    };
 
     constructor() {
         const w: any = window;
 
-        if (w.DebeziumUiConfig) {
-            this.config = w.DebeziumUiConfig;
-            console.info("[ConfigService] Found app config.");
-        }
-        if (w.UI_BASE_URI) {
-            this.config.artifacts.url = w.UI_BASE_URI;
-            console.info("[ConfigService] Applied UI_BASE_URI (" + this.config.artifacts.url + ")!");
-        }
-        if (w.UI_MODE) {
-            this.config.mode = w.UI_MODE;
-            console.info("[ConfigService] Applied UI_MODE (" + this.config.mode + ")!");
+        if (w.UI_CONFIG) {
+            this.config = _.extend({}, this.config, w.UI_CONFIG);
+            console.info("[ConfigService] Applied UI_CONFIG:");
+            console.info(w.UI_CONFIG);
         }
     }
 
