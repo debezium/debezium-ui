@@ -43,7 +43,7 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
         content={
           <div>
             Task {props.taskId}: {props.task}
-            <div class="errors">
+            <div className="errors">
               {errors.map((errormsg, key) => {
                   return <div class="error" key={key}>{errormsg}</div>;
                 })
