@@ -23,6 +23,7 @@ import org.jboss.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -56,6 +57,7 @@ public class ConnectorResource {
     public static final String PROPERTIES_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/properties";
     public static final String CREATE_CONNECTOR_ENDPOINT = "/connector/{cluster}/{connector-type-id}";
     public static final String LIST_CONNECTORS_ENDPOINT = "/connectors/{cluster}";
+    public static final String MANAGE_CONNECTORS_ENDPOINT = "/connectors/{cluster}/{connector-name}";
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
 
@@ -463,5 +465,60 @@ public class ConnectorResource {
         LOGGER.debug("Registered Connectors: " + connectorData);
 
         return Response.ok(connectorData).build();
+    }
+
+    @Path(MANAGE_CONNECTORS_ENDPOINT)
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "204",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @APIResponse(
+            responseCode = "404",
+            description = "Connector with specified name not found")
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    @APIResponse(
+            responseCode = "503",
+            description = "Exception while trying to connect to the selected Kafka Connect cluster",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    public Response deleteConnector(
+            @PathParam("cluster") int cluster,
+            @PathParam("connector-name") String connectorName) {
+        URI kafkaConnectURI;
+        KafkaConnectClient kafkaConnectClient;
+        try {
+            kafkaConnectURI = getKafkaConnectURIforCluster(cluster);
+            kafkaConnectClient = RestClientBuilder.newBuilder()
+                    .baseUri(kafkaConnectURI)
+                    .build(KafkaConnectClient.class);
+        } catch (RuntimeException | URISyntaxException e) {
+            String errorMessage = "Error on choosing the Kafka Connect cluster URI: " + e.getLocalizedMessage();
+            LOGGER.error(errorMessage);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ServerError(errorMessage, traceAsString(e))).build();
+        }
+
+        Response kafkaConnectDeleteConnectorResponse;
+        try {
+            kafkaConnectDeleteConnectorResponse = kafkaConnectClient.deleteConnector(connectorName);
+        } catch (ProcessingException | IOException e) {
+            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
+                    + kafkaConnectURI + "\". (" + e.getLocalizedMessage() + ")";
+            LOGGER.error(errorMessage);
+            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, traceAsString(e))).build();
+        }
+
+        LOGGER.debug("Kafka Connect response: " + kafkaConnectDeleteConnectorResponse);
+
+        return Response.fromResponse(kafkaConnectDeleteConnectorResponse).type(MediaType.APPLICATION_JSON).build();
     }
 }

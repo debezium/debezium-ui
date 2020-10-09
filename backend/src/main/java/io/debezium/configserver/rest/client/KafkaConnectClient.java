@@ -4,12 +4,14 @@ import io.debezium.configserver.model.ConnectConnectorConfigResponse;
 import io.debezium.configserver.model.ConnectConnectorStatusResponse;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,5 +37,9 @@ public interface KafkaConnectClient {
     @Path("/connectors/{connector-name}/status")
     @Produces("application/json")
     ConnectConnectorStatusResponse getConnectorStatus(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
+
+    @DELETE
+    @Path("/connectors/{connector-name}")
+    Response deleteConnector(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
 
 }
