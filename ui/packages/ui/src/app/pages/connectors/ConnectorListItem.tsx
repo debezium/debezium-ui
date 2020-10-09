@@ -25,6 +25,7 @@ export interface IConnectorListItemProps {
   status: string;
   taskStates: any;
   type: string;
+  errors: any;
 }
 
 export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps> = (
