@@ -170,6 +170,17 @@ public class DebeziumContainer extends io.debezium.testing.testcontainers.Debezi
         return null;
     }
 
+    public ConnectorStatus.State getConnectorTaskState(String connectorName, int taskNumber) throws IOException {
+        final Request request = new Request.Builder().url(getConnectorStatusURI(connectorName)).get().build();
+        var responseBody = executeRequestSuccessful(request).body();
+        if (null != responseBody) {
+            JsonObject parsedObject = parseJsonObject(responseBody.string());
+            responseBody.close();
+            return ConnectorStatus.State.valueOf(parsedObject.getJsonArray("tasks").getJsonObject(taskNumber).getString("state"));
+        }
+        return null;
+    }
+
     public void pauseConnector(String connectorName) throws IOException {
         final Request request = new Request.Builder()
                 .url(getPauseConnectorURI(connectorName))
@@ -180,5 +191,16 @@ public class DebeziumContainer extends io.debezium.testing.testcontainers.Debezi
         Awaitility.await()
                 .atMost(10, TimeUnit.SECONDS)
                 .until(() -> getConnectorState(connectorName) == ConnectorStatus.State.PAUSED);
+    }
+
+    public void ensureConnectorState(String connectorName, ConnectorStatus.State status) throws IOException {
+        Awaitility.await()
+                .atMost(10, TimeUnit.SECONDS)
+                .until(() -> getConnectorState(connectorName) == status);
+    }
+    public void ensureConnectorTaskState(String connectorName, int taskNumber, ConnectorStatus.State status) throws IOException {
+        Awaitility.await()
+                .atMost(10, TimeUnit.SECONDS)
+                .until(() -> getConnectorTaskState(connectorName, taskNumber) == status);
     }
 }

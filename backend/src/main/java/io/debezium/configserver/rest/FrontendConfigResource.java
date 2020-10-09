@@ -1,7 +1,10 @@
 package io.debezium.configserver.rest;
 
+import io.debezium.configserver.model.FrontendConfig;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -26,7 +29,10 @@ public class FrontendConfigResource {
     @GET
     @Produces("application/javascript")
     public String getFrontendConfig() {
-        return "window.UI_BASE_URI=\"" + UIBaseURI + "\"; window.UI_MODE=\"" + UIMode + "\";";
+        Jsonb jsonb = JsonbBuilder.create();
+        var config = new FrontendConfig(UIBaseURI.toString(), FrontendConfig.UIMode.valueOf(UIMode));
+        var jsonConfig = jsonb.toJson(config);
+        return "window.UI_CONFIG=" + jsonConfig + ";";
     }
 
 }

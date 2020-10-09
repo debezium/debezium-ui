@@ -446,7 +446,12 @@ public class ConnectorResource {
                                     var connectorState = new ConnectorStatus(connectorName);
                                     connectorState.setConnectorType(connectorType);
                                     connectorState.setConnectorStatus(connectorStatus.connectorStatus.status);
-                                    connectorStatus.taskStates.forEach(taskStatus -> connectorState.setTaskState(taskStatus.id, taskStatus.status));
+                                    connectorStatus.taskStates.forEach(
+                                            taskStatus -> connectorState.setTaskState(
+                                                    taskStatus.id,
+                                                    taskStatus.status,
+                                                    (taskStatus.getErrorsAsList() != null ? taskStatus.getErrorsAsList().stream().filter(s -> s.startsWith("Caused by:")).collect(Collectors.toList()) : null)
+                                                ));
                                     return connectorState;
                                 } catch (IOException e) {
                                     LOGGER.error(e.getLocalizedMessage());

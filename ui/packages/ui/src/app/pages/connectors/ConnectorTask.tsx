@@ -6,6 +6,7 @@ import "./ConnectorsPage.css";
 export interface IConnectorTaskProps {
   task: string;
   taskId: string;
+  errors: any;
 }
 
 /**
@@ -31,12 +32,23 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
       break;
   }
 
+  let errors = [];
+  if (props.errors) {
+    errors =  props.errors;
+  }
+
   return (
     <>
       <Tooltip
         content={
           <div>
             Task {props.taskId}: {props.task}
+            <div className="errors">
+              {errors.map((errormsg, key) => {
+                  return <div className="error" key={key}>{errormsg}</div>;
+                })
+              }
+            </div>
           </div>
         }
       >

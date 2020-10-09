@@ -1,9 +1,7 @@
 package io.debezium.configserver.model;
 
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConnectorStatus {
@@ -12,10 +10,7 @@ public class ConnectorStatus {
     private State connectorStatus;
     private String connectorType;
     private String databaseName;
-
-    @Schema(example = "{\"0\": \"RUNNING\", \"1\": \"PAUSED\"}")
-    private final Map<Long, State> taskStates = new HashMap<>();
-
+    private final Map<Long, TaskStatus> taskStates = new HashMap<>();
 
     public enum State {
         UNASSIGNED,
@@ -45,16 +40,16 @@ public class ConnectorStatus {
         this.connectorStatus = connectorStatus;
     }
 
-    public Map<Long, State> getTaskStates() {
+    public Map<Long, TaskStatus> getTaskStates() {
         return taskStates;
     }
 
-    public State getTaskState(Long taskNumber) {
+    public TaskStatus getTaskState(Long taskNumber) {
         return taskStates.get(taskNumber);
     }
 
-    public void setTaskState(Long taskNumber, State state) {
-        this.taskStates.put(taskNumber, state);
+    public void setTaskState(Long taskNumber, State state, List<String> errors) {
+        this.taskStates.put(taskNumber, new TaskStatus(state, errors));
     }
 
     public void setConnectorType(String connectorClassName) {

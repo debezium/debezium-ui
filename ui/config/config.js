@@ -1,14 +1,4 @@
-var DebeziumUiConfig = {
-    mode: "dev",
-    artifacts: {
-        type: "rest",
-        url: "http://localhost:8080/api"
-    },
-    ui: {
-        contextPath: null,
-        url: "http://localhost:8888/ui"
-    },
-    features: {
-        readOnly: false
-    }
+// put UI config overrides here (see config.service.ts)
+window.UI_CONFIG = {
+
 };
