@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "yarn clean",
     "build": "webpack --progress --config webpack.prod.js",
-    "start": "webpack serve --hot --color --progress --config webpack.dev.js",
+    "start": "webpack serve --color --progress --config webpack.dev.js",
     "start:prod": "node scripts/serve",
     "lint": "tslint -c ./tslint.json --project .",
     "build:bundle-profile": "webpack --profile --json > stats.json",
@@ -77,8 +77,8 @@
     "react-ace": "8.1.0",
     "react-dom": "16.13.1",
     "react-i18next": "^11.4.0",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
     "tslib": "^2.0.1",
     "use-react-router": "^1.0.7",
     "yup": "^0.29.3"
