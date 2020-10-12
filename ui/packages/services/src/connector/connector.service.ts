@@ -121,4 +121,14 @@ export class ConnectorService extends BaseService {
         return this.httpGet<Connector[]>(endpoint);
     }
 
+    /**
+     * Delete the Connector for the supplied clusterId
+     */
+    public deleteConnectors(clusterId: number, connectorName: string): Promise<Connector[]> {
+        this.logger.info("[ConnectorService] Delete the connector");
+
+        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
+        return this.httpDelete<any>(endpoint);
+    }
+
 }
