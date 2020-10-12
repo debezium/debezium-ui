@@ -5,18 +5,18 @@ export const ROUTES = [
   // Login page can be added here in future 
   { path: "/", key: "ROOT", exact: true, component: ConnectorsPage },
   {
-    path: "/app",
+    path: "/",
     key: "APP",
     component: RenderRoutes,
     routes: [
       {
-        path: "/app",
+        path: "/",
         key: "APP_ROOT",
         exact: true,
         component: ConnectorsPage,
       },
       {
-        path: "/app/create-connector",
+        path: "/create-connector",
         key: "CREATE_CONNECTOR_PAGE",
         exact: true,
         component: CreateConnectorPage,

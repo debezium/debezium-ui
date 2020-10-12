@@ -226,7 +226,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     ])
       .then(() => {
         // On success, redirect to connectors page
-        history.push("/app");
+        history.push("/");
       })
       .catch((err: Error) => {
         setConnectorCreateFailed(true);
@@ -241,7 +241,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const doGotoConnectorsListPage = () => {
     setShowCancelConfirmationDialog(false);
 
-    history.push("/app");
+    history.push("/");
   };
 
   const onCancel = () => {
@@ -462,7 +462,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   React.useEffect(() => {
     const currentNames = location.state?.connectorNames;
     if(currentNames === undefined ){
-      history.push('/app')
+      history.push('/')
     }
   });
   

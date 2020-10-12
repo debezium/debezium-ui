@@ -47,7 +47,7 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
       return conn.name;
     });
     history.push({
-      pathname: "/app/create-connector",
+      pathname: "/create-connector",
       state: { value: appLayoutContext.clusterId, connectorNames },
     });
   };

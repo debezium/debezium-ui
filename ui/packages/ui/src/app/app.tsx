@@ -6,7 +6,7 @@ import { RenderRoutes, ROUTES, WithErrorBoundary } from "./shared";
 
 const App: React.FC = () => {
 	return (
-		<Router>
+		<Router basename="/#app">
 			<AppLayout>
 				<WithErrorBoundary>
 					 <RenderRoutes routes={ROUTES} />
