@@ -52,7 +52,7 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
     });
   };
 
-  React.useEffect(() => {
+  const getConnectorsList = () =>{
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.getConnectors, connectorService, [
       appLayoutContext.clusterId,
@@ -65,7 +65,12 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
         setApiError(true);
         setErrorMsg(err);
       });
-  }, [setConnectors]);
+  }
+
+  React.useEffect(() => {
+    const getConnectorsInterval = setInterval(() => getConnectorsList(), 10000);
+    return () => clearInterval(getConnectorsInterval);;
+  },[]);
 
   return (
     <WithLoader

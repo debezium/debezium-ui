@@ -1,3 +1,4 @@
+import { Services } from "@debezium/ui-services";
 import {
   Button,
   DataListAction,
@@ -7,18 +8,20 @@ import {
   DataListItemRow,
   Flex,
   FlexItem,
-  Tooltip
+  Tooltip,
 } from "@patternfly/react-core";
 import * as React from "react";
+import { ToastAlertComponent } from "src/app/components";
+import { AppLayoutContext } from "src/app/Layout/AppLayoutContext";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   ConfirmationIconType,
-  ConnectorTypeId
+  ConnectorTypeId,
 } from "src/app/shared";
 import { ConnectorIcon } from "./ConnectorIcon";
-import { ConnectorStatus } from './ConnectorStatus';
-import { ConnectorTask } from './ConnectorTask';
+import { ConnectorStatus } from "./ConnectorStatus";
+import { ConnectorTask } from "./ConnectorTask";
 
 export interface IConnectorListItemProps {
   name: string;
@@ -30,7 +33,27 @@ export interface IConnectorListItemProps {
 export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps> = (
   props
 ) => {
+  const appLayoutContext = React.useContext(AppLayoutContext);
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+  const [deletedSucess, setDeletedSucess] = React.useState<boolean>(false);
+  const [alerts, setAlerts] = React.useState<any[]>([]);
+
+  const addAlert = (type: string, heading: string, msg?: string) => {
+    const alertsCopy = [...alerts];
+    const uId = new Date().getTime();
+    const newAlert = {
+      title: heading,
+      variant: type,
+      key: uId,
+      message: msg ? msg : "",
+    };
+    alertsCopy.push(newAlert);
+    setAlerts(alertsCopy);
+  };
+
+  const removeAlert = (key: string) => {
+    setAlerts([...alerts.filter((el) => el.key !== key)]);
+  };
 
   const doCancel = () => {
     setShowDeleteDialog(false);
@@ -38,9 +61,16 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
 
   const doDelete = () => {
     setShowDeleteDialog(false);
-
-    // TODO: do the delete via the rest call
-    alert("Sorry, delete is not yet implemented.");
+    const connectorService = Services.getConnectorService();
+    connectorService
+      .deleteConnectors(appLayoutContext.clusterId, props.name)
+      .then((cConnectors: any) => {
+        setDeletedSucess(true)
+        addAlert("success", 'Connector deleted successfully!');
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        addAlert("danger",'Connector deletion failed!', err?.message);
+      });
   };
 
   const showConfirmationDialog = () => {
@@ -51,12 +81,28 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
     const taskElements: any = [];
 
     const statesMap = new Map(Object.entries(props.taskStates));
-    statesMap.forEach( (taskState: any, id: string) => {
-      taskElements.push(<ConnectorTask key={id} task={taskState.taskStatus} taskId={id} errors={taskState.errors} />);
+    statesMap.forEach((taskState: any, id: string) => {
+      taskElements.push(
+        <ConnectorTask
+          key={id}
+          task={taskState.taskStatus}
+          taskId={id}
+          errors={taskState.errors}
+        />
+      );
     });
 
     return taskElements;
-  }
+  };
+
+  React.useEffect(() => {
+    const timeout = setTimeout(
+      removeAlert,
+      10 * 1000,
+      alerts[alerts.length - 1]?.key
+    );
+    return () => clearTimeout(timeout);
+  }, [alerts]);
 
   return (
     <>
@@ -73,6 +119,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
         onCancel={doCancel}
         onConfirm={doDelete}
       />
+      <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} />
       <DataListItem
         aria-labelledby={"connector list item"}
         className={"connector-list__item"}
@@ -128,6 +175,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
                 data-testid={"connector-list-item-delete-button"}
                 variant={"secondary"}
                 onClick={showConfirmationDialog}
+                isDisabled={deletedSucess}
               >
                 Delete
               </Button>
