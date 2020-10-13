@@ -154,7 +154,7 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
                 <div className="tasks-list">
                   <Flex>
                     <FlexItem>Tasks: </FlexItem>
-                    <FlexItem>{getTaskStates()}</FlexItem>
+                    <FlexItem tabIndex={0}>{getTaskStates()}</FlexItem>
                   </Flex>
                 </div>
               </DataListCell>,

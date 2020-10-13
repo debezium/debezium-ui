@@ -19,7 +19,7 @@ export const PageNotFound: React.FC = () => {
     const history = useHistory();
 
     const onHomeClick = () =>{
-        history.push('/app');
+        history.push('/');
     }
     return(
     <PageSection className="ps_rules-header" variant={PageSectionVariants.light}>
