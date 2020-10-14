@@ -1,8 +1,8 @@
 import { Label, Tooltip } from '@patternfly/react-core';
 import * as React from "react";
 import { ConnectorState } from "src/app/shared";
-import "./ConnectorsPage.css";
-  
+import "./ConnectorsTableComponent.css";
+
 export interface IConnectorTaskProps {
   task: string;
   taskId: string;
@@ -63,4 +63,4 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
     </>
   );
 };
-  
+

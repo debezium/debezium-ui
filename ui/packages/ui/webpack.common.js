@@ -24,7 +24,8 @@ module.exports = {
       name: 'debeziumuipoc',
       filename: "remoteEntry.js",
       exposes: {
-        "./debeziumCreateConnector": "./src/app/pages/createConnector/CreateConnectorPage",
+        "./debeziumCreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
+        "./debeziumTable": "./src/app/pages/connectors/ConnectorsTableComponent",
       },
       shared: {
         ...dependencies,

@@ -1,8 +1,8 @@
-import { ConnectorsPage, CreateConnectorPage } from "../pages";
+import {ConnectorsPage, CreateConnectorPage} from "../pages";
 import { RenderRoutes } from "./RenderRoutes";
 
 export const ROUTES = [
-  // Login page can be added here in future 
+  // Login page can be added here in future
   { path: "/", key: "ROOT", exact: true, component: ConnectorsPage },
   {
     path: "/app",
