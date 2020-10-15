@@ -76,11 +76,11 @@ const validationErrorMsg = "Resolve property errors, then click Validate";
 const validationSuccessNextMsg = "Validation was successful, click Next to continue";
 const createConnectorUnknownErrorMsg = "Unknown error - please consult your administrator";
 
-const CONNECTOR_TYPE_STEP = "Connector Type";
+const CONNECTOR_TYPE_STEP = "Connector type";
 const PROPERTIES_STEP = "Properties";
-const TABLE_SELECTION_STEP = "Table Selection";
-const DATA_OPTIONS_STEP = "Data Options";
-const RUNTIME_OPTIONS_STEP = "Runtime Options";
+const TABLE_SELECTION_STEP = "Table selection";
+const DATA_OPTIONS_STEP = "Data options";
+const RUNTIME_OPTIONS_STEP = "Runtime options";
 const REVIEW_STEP = "Review";
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
@@ -529,27 +529,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
     name: PROPERTIES_STEP,
     component: (
       <>
-        {validateInProgress ? (
-          <Spinner size="lg" />
-        ) : (
-          connectionStepsValid === 1 &&
-          (!connectionPropsValid ? (
-            <div style={{ padding: "15px 0" }}>
-              <Alert
-                variant="danger"
-                title={
-                  <ConnectionPropertiesError
-                    connectionPropsMsg={connectionPropsValidMsg}
-                  />
-                }
-              />
-            </div>
-          ) : (
-            <div style={{ padding: "15px 0" }}>
-              <Alert variant="success" title={validationSuccessNextMsg} />
-            </div>
-          ))
-        )}
         <PropertiesStep
           basicPropertyDefinitions={getBasicPropertyDefinitions(
             selectedConnectorPropertyDefns
@@ -564,13 +543,37 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           setConnectionPropsValid={setConnectionPropsValid}
           setConnectionStepsValid={setConnectionStepsValid}
         />
+        {validateInProgress ? (
+          <Spinner size="lg" />
+        ) : (
+          connectionStepsValid === 1 &&
+          (!connectionPropsValid ? (
+            <div style={{ padding: "15px 0" }}>
+              <Alert
+                variant="danger"
+                isInline={true}
+                title={
+                  <ConnectionPropertiesError
+                    connectionPropsMsg={connectionPropsValidMsg}
+                  />
+                }
+              />
+            </div>
+          ) : (
+            <div style={{ padding: "15px 0" }}>
+              <Alert variant="success" isInline={true} title={validationSuccessNextMsg} />
+            </div>
+          ))
+        )}
       </>
     ),
     canJumpTo: stepIdReached >= 2,
   };
 
   const additionalPropertiesStep = {
-    name: "Additional Properties",
+    name: "Additional properties",
+    // TODO: Add optional label, depending on UX feedback
+    // name: <div>Additional properties<Label color="blue">Optional</Label></div>,
     steps: [
       {
         id: 3,
@@ -593,27 +596,6 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         name: DATA_OPTIONS_STEP,
         component: (
           <>
-            {validateInProgress ? (
-              <Spinner size="lg" />
-            ) : (
-              dataStepsValid === 1 &&
-              (!dataOptionsValid ? (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert
-                    variant="danger"
-                    title={
-                      <ConnectionPropertiesError
-                        connectionPropsMsg={connectionPropsValidMsg}
-                      />
-                    }
-                  />
-                </div>
-              ) : (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert variant="success" title={validationSuccessNextMsg} />
-                </div>
-              ))
-            )}
             <DataOptionsComponent
               propertyDefinitions={getDataOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
@@ -624,24 +606,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               setDataOptionsValid={setDataOptionsValid}
               setDataStepsValid={setDataStepsValid}
             />
-          </>
-        ),
-        canJumpTo: stepIdReached >= 4,
-      },
-      {
-        id: 5,
-        name: RUNTIME_OPTIONS_STEP,
-        component: (
-          <>
             {validateInProgress ? (
               <Spinner size="lg" />
             ) : (
-              runtimeStepsValid === 1 &&
-              !connectorCreateFailed &&
-              (!runtimeOptionsValid ? (
+              dataStepsValid === 1 &&
+              (!dataOptionsValid ? (
                 <div style={{ padding: "15px 0" }}>
                   <Alert
                     variant="danger"
+                    isInline={true}
                     title={
                       <ConnectionPropertiesError
                         connectionPropsMsg={connectionPropsValidMsg}
@@ -651,10 +624,19 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
                 </div>
               ) : (
                 <div style={{ padding: "15px 0" }}>
-                  <Alert variant="success" title={validationSuccessNextMsg} />
+                  <Alert variant="success" isInline={true} title={validationSuccessNextMsg} />
                 </div>
               ))
             )}
+          </>
+        ),
+        canJumpTo: stepIdReached >= 4,
+      },
+      {
+        id: 5,
+        name: RUNTIME_OPTIONS_STEP,
+        component: (
+          <>
             <RuntimeOptionsComponent
               propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
@@ -665,6 +647,29 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
               setRuntimeOptionsValid={setRuntimeOptionsValid}
               setRuntimeStepsValid={setRuntimeStepsValid}
             />
+            {validateInProgress ? (
+              <Spinner size="lg" />
+            ) : (
+              runtimeStepsValid === 1 &&
+              !connectorCreateFailed &&
+              (!runtimeOptionsValid ? (
+                <div style={{ padding: "15px 0" }}>
+                  <Alert
+                    variant="danger"
+                    isInline={true}
+                    title={
+                      <ConnectionPropertiesError
+                        connectionPropsMsg={connectionPropsValidMsg}
+                      />
+                    }
+                  />
+                </div>
+              ) : (
+                <div style={{ padding: "15px 0" }}>
+                  <Alert variant="success" isInline={true} title={validationSuccessNextMsg} />
+                </div>
+              ))
+            )}
           </>
         ),
         canJumpTo: stepIdReached >= 5,
@@ -804,7 +809,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>Create Connector</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>Create connector</BreadcrumbItem>
         </Breadcrumb>
         <Level hasGutter={true}>
           <LevelItem>
