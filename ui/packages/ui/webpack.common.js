@@ -1,6 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const webpack = require('webpack');
+const { dependencies } = require("./package.json");
+
+// Try the environment variable, otherwise use root
+const ASSET_PATH = process.env.ASSET_PATH || '/';
 
 module.exports = {
   entry: {
@@ -10,13 +15,39 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
       favicon: './src/favicon.ico',
-    })
+    }),
+    // This makes it possible for us to safely use env vars on our code
+    new webpack.DefinePlugin({
+      'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
+    }),
+    new webpack.container.ModuleFederationPlugin({
+      name: 'debeziumuipoc',
+      filename: "remoteEntry.js",
+      exposes: {
+        "./debeziumCreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
+        "./debeziumTable": "./src/app/pages/connectors/ConnectorsTableComponent",
+      },
+      shared: {
+        ...dependencies,
+        react: {
+          eager: true,
+          singleton: true,
+          requiredVersion: dependencies.react,
+        },
+        "react-dom": {
+          eager: true,
+          singleton: true,
+          requiredVersion: dependencies["react-dom"],
+        }
+      },
+    }),
   ],
   module: {
     rules: [
       {
-        test: /\.(tsx|ts)?$/,
-        include: path.resolve(__dirname, 'src'),
+        test: /\.(tsx|ts|js)?$/,
+        //include: path.resolve(__dirname, 'src'),
+        exclude: /node_modules/,
         use: [
           {
             loader: 'ts-loader',
@@ -110,7 +141,8 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: ASSET_PATH
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],

@@ -1,10 +1,11 @@
 const path = require('path');
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || "8888";
+
 
 module.exports = merge(common, {
   mode: "development",
@@ -13,7 +14,9 @@ module.exports = merge(common, {
     new CopyWebpackPlugin([{from: '../../config/config.js'}])
   ],
   output: {
-    publicPath: "/"
+    publicPath: (false && isProd && remoteSuffix)
+      ? `http://debeziumuipoc${remoteSuffix}/`
+      : `http://localhost:8888/`
   },
   devServer: {
     contentBase: "./dist",
@@ -23,8 +26,7 @@ module.exports = merge(common, {
     inline: true,
     historyApiFallback: true,
     hot: true,
-    overlay: true,
-    open: true
+    overlay: true
   },
   module: {
     rules: [
