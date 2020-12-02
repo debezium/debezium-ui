@@ -31,17 +31,15 @@ function getSortedConnectors(connectors: Connector[]) {
   return sortedConns;
 }
 
-interface CreateConnectorCallbackFn {
-  (connectorNames: string[], clusterId: number): void
-}
+type ICreateConnectorCallbackFn = (connectorNames: string[], clusterId: number) => void
 
-interface ConnectorsTableComponentProps {
+interface IConnectorsTableComponentProps {
   clusterId: number
   title: string
-  createConnectorCallback: CreateConnectorCallbackFn;
+  createConnectorCallback: ICreateConnectorCallbackFn;
 }
 
-export const ConnectorsTableComponent: React.FunctionComponent<ConnectorsTableComponentProps> = (props: ConnectorsTableComponentProps) => {
+export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableComponentProps> = (props: IConnectorsTableComponentProps) => {
   const [connectors, setConnectors] = React.useState<Connector[]>([] as Connector[]);
 
   const [loading, setLoading] = React.useState(true);

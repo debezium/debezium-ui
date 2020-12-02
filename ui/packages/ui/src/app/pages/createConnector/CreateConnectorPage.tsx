@@ -11,8 +11,8 @@ import {
 } from "@patternfly/react-core";
 import React from "react";
 import {useHistory, useLocation} from "react-router-dom";
-import "./CreateConnectorComponent.css";
 import CreateConnectorComponent from "./CreateConnectorComponent";
+import "./CreateConnectorComponent.css";
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
 

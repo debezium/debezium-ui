@@ -9,7 +9,6 @@ import {Services} from "@debezium/ui-services";
 import {Alert, Button, Spinner, Wizard, WizardContextConsumer, WizardFooter} from "@patternfly/react-core";
 import _ from 'lodash';
 import React, {Dispatch, ReactNode, SetStateAction} from "react";
-import {useLocation} from "react-router-dom";
 import {ToastAlertComponent} from 'src/app/components';
 import {
   ConfirmationButtonStyle,
@@ -68,24 +67,20 @@ const DATA_OPTIONS_STEP = "Data options";
 const RUNTIME_OPTIONS_STEP = "Runtime options";
 const REVIEW_STEP = "Review";
 
-interface OnSuccessCallbackFn {
-  (): void
-}
+type IOnSuccessCallbackFn = () => void
 
-interface OnCancelCallbackFn {
-  (): void
-}
+type IOnCancelCallbackFn = () => void
 
-export interface CreateConnectorComponentProps {
+export interface ICreateConnectorComponentProps {
 
-  onSuccessCallback: OnSuccessCallbackFn
-  onCancelCallback: OnCancelCallbackFn
+  onSuccessCallback: IOnSuccessCallbackFn
+  onCancelCallback: IOnCancelCallbackFn
   clusterId: string
   connectorNames: string[]
 
 }
 
-export const CreateConnectorComponent: React.FunctionComponent<CreateConnectorComponentProps> = (props:CreateConnectorComponentProps) => {
+export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorComponentProps> = (props:ICreateConnectorComponentProps) => {
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
     string | undefined
