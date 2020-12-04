@@ -69,8 +69,8 @@
   "dependencies": {
     "@debezium/ui-models": "^1.0.0",
     "@debezium/ui-services": "^1.0.0",
-    "@patternfly/react-core": "^4.47.0",
-    "@patternfly/react-icons": "^4.7.4",
+    "@patternfly/react-core": "^4.75.2",
+    "@patternfly/react-icons": "^4.7.16",
     "formik": "^2.1.5",
     "lodash": "^4.17.20",
     "react": "16.13.1",

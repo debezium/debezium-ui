@@ -8,29 +8,17 @@ import {
   Text,
   Title,
 } from '@patternfly/react-core';
-import {
-  ErrorCircleOIcon,
-  InfoIcon,
-  OkIcon,
-  WarningTriangleIcon,
-} from '@patternfly/react-icons';
-import {
-  global_danger_color_100,
-  global_info_color_100,
-  global_success_color_100,
-  global_warning_color_100,
-} from '@patternfly/react-tokens';
 import * as React from 'react';
 
 /**
- * Icon type enum that maps to patternfly icon types
+ * Confirmation type enum that maps to patternfly modal type
  */
-export enum ConfirmationIconType {
-  DANGER = 'error-circle-o',
-  WARNING = 'warning-triangle-o',
+export enum ConfirmationType {
+  DANGER = 'danger',
+  WARNING = 'warning',
   INFO = 'info',
-  OK = 'ok',
-  NONE = 'NONE',
+  SUCCESS = 'success',
+  DEFAULT = 'default',
 }
 
 /**
@@ -79,9 +67,9 @@ export interface IConfirmationDialogProps {
   i18nTitle: string;
 
   /**
-   * The icon type to use, or unset for no icon
+   * The confirmation type, or unset for default
    */
-  icon?: ConfirmationIconType;
+  type?: ConfirmationType;
 
   /**
    * A callback for when the cancel button is clicked. Caller should hide dialog.
@@ -109,39 +97,11 @@ export const ConfirmationDialog: React.FunctionComponent<IConfirmationDialogProp
   i18nConfirmationMessage,
   i18nDetailsMessage,
   i18nTitle,
-  icon,
+  type,
   onCancel,
   onConfirm,
   showDialog,
 }) => {
-  let iconFragment: React.ReactNode | null = null;
-  switch (icon) {
-    case ConfirmationIconType.DANGER:
-      iconFragment = (
-        <ErrorCircleOIcon size={'lg'} color={global_danger_color_100.value} />
-      );
-      break;
-    case ConfirmationIconType.WARNING:
-      iconFragment = (
-        <WarningTriangleIcon
-          size={'lg'}
-          color={global_warning_color_100.value}
-        />
-      );
-      break;
-    case ConfirmationIconType.INFO:
-      iconFragment = (
-        <InfoIcon size={'lg'} color={global_info_color_100.value} />
-      );
-      break;
-    case ConfirmationIconType.OK:
-      iconFragment = (
-        <OkIcon size={'lg'} color={global_success_color_100.value} />
-      );
-      break;
-    default:
-    // No icon
-  }
   let buttonStyleMapped:
     | 'primary'
     | 'secondary'
@@ -165,6 +125,7 @@ export const ConfirmationDialog: React.FunctionComponent<IConfirmationDialogProp
   return (
     <Modal
       title={i18nTitle}
+      titleIconVariant={type}
       isOpen={showDialog}
       onClose={onCancel}
       actions={[
@@ -180,7 +141,6 @@ export const ConfirmationDialog: React.FunctionComponent<IConfirmationDialogProp
       <Stack hasGutter={true}>
         <StackItem>
           <Split hasGutter={true}>
-            {iconFragment && <SplitItem>{iconFragment}</SplitItem>}
             <SplitItem isFilled={true}>
               <Title headingLevel="h4" size={'lg'}>{i18nConfirmationMessage}</Title>
             </SplitItem>
