@@ -3,13 +3,20 @@ import {
   ConnectorProperty,
   ConnectorType,
   PropertiesValidationResult,
-  PropertyValidationResult
+  PropertyValidationResult,
 } from "@debezium/ui-models";
-import {Services} from "@debezium/ui-services";
-import {Alert, Button, Spinner, Wizard, WizardContextConsumer, WizardFooter} from "@patternfly/react-core";
-import _ from 'lodash';
-import React, {Dispatch, ReactNode, SetStateAction} from "react";
-import {ToastAlertComponent} from 'src/app/components';
+import { Services } from "@debezium/ui-services";
+import {
+  Alert,
+  Button,
+  Spinner,
+  Wizard,
+  WizardContextConsumer,
+  WizardFooter,
+} from "@patternfly/react-core";
+import _ from "lodash";
+import React, { Dispatch, ReactNode, SetStateAction } from "react";
+import { ToastAlertComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -24,7 +31,7 @@ import {
   mapToObject,
   minimizePropertyValues,
   PropertyCategory,
-  PropertyName
+  PropertyName,
 } from "src/app/shared";
 import {
   ConnectorTypeStepComponent,
@@ -32,7 +39,7 @@ import {
   PropertiesStep,
   ReviewStepComponent,
   RuntimeOptionsComponent,
-  TableSelectionStep
+  TableSelectionStep,
 } from "./connectorSteps";
 import "./CreateConnectorComponent.css";
 
@@ -57,8 +64,10 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 }
 
 const validationErrorMsg = "Resolve property errors, then click Validate";
-const validationSuccessNextMsg = "Validation was successful, click Next to continue";
-const createConnectorUnknownErrorMsg = "Unknown error - please consult your administrator";
+const validationSuccessNextMsg =
+  "Validation was successful, click Next to continue";
+const createConnectorUnknownErrorMsg =
+  "Unknown error - please consult your administrator";
 
 const CONNECTOR_TYPE_STEP = "Connector type";
 const PROPERTIES_STEP = "Properties";
@@ -67,26 +76,28 @@ const DATA_OPTIONS_STEP = "Data options";
 const RUNTIME_OPTIONS_STEP = "Runtime options";
 const REVIEW_STEP = "Review";
 
-type IOnSuccessCallbackFn = () => void
+type IOnSuccessCallbackFn = () => void;
 
-type IOnCancelCallbackFn = () => void
+type IOnCancelCallbackFn = () => void;
 
 export interface ICreateConnectorComponentProps {
-
-  onSuccessCallback: IOnSuccessCallbackFn
-  onCancelCallback: IOnCancelCallbackFn
-  clusterId: string
-  connectorNames: string[]
-
+  onSuccessCallback: IOnSuccessCallbackFn;
+  onCancelCallback: IOnCancelCallbackFn;
+  clusterId: string;
+  connectorNames: string[];
 }
 
-export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorComponentProps> = (props:ICreateConnectorComponentProps) => {
+export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorComponentProps> = (
+  props: ICreateConnectorComponentProps
+) => {
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
     string | undefined
   >();
-  const [finishStepName, setFinishStepName] = React.useState<string>(RUNTIME_OPTIONS_STEP)
-  const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true)
+  const [finishStepName, setFinishStepName] = React.useState<string>(
+    RUNTIME_OPTIONS_STEP
+  );
+  const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
   const [
     selectedConnectorPropertyDefns,
     setSelectedConnectorPropertyDefns,
@@ -115,8 +126,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
-  const [alerts, setAlerts] = React.useState<any[]>([])
-  const [showCancelConfirmationDialog, setShowCancelConfirmationDialog] = React.useState(false);
+  const [alerts, setAlerts] = React.useState<any[]>([]);
+  const [
+    showCancelConfirmationDialog,
+    setShowCancelConfirmationDialog,
+  ] = React.useState(false);
 
   const [connectionStepsValid, setConnectionStepsValid] = React.useState<
     number
@@ -127,11 +141,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     boolean
   >(false);
 
-  const [connectionPropsValidMsg, setConnectionPropsValidMsg] = React.useState<PropertyValidationResult[]>([]);
+  const [connectionPropsValidMsg, setConnectionPropsValidMsg] = React.useState<
+    PropertyValidationResult[]
+  >([]);
 
-  const [dataOptionsValid, setDataOptionsValid] = React.useState<boolean>(
-    true
-  );
+  const [dataOptionsValid, setDataOptionsValid] = React.useState<boolean>(true);
   const [runtimeOptionsValid, setRuntimeOptionsValid] = React.useState<boolean>(
     true
   );
@@ -144,30 +158,42 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const runtimeOptionRef = React.useRef();
 
   const addAlert = (msg?: string) => {
-     const alertsCopy = [...alerts];
-     const uId = new Date().getTime();
-     const newAlert = {
-       title: "Creation of the connector failed!",
-       variant: 'danger',
-       key: uId,
-       message: msg ? msg : createConnectorUnknownErrorMsg
-     }
-     alertsCopy.push(newAlert);
-     setAlerts(alertsCopy);
+    const alertsCopy = [...alerts];
+    const uId = new Date().getTime();
+    const newAlert = {
+      title: "Creation of the connector failed!",
+      variant: "danger",
+      key: uId,
+      message: msg ? msg : createConnectorUnknownErrorMsg,
     };
-
-  const removeAlert = (key: string) => {
-    setAlerts([...alerts.filter(el => el.key !== key)]);
+    alertsCopy.push(newAlert);
+    setAlerts(alertsCopy);
   };
 
-  React.useEffect(()=>{
-    const timeout = setTimeout(removeAlert, 10*1000, alerts[alerts.length-1]?.key);
+  const removeAlert = (key: string) => {
+    setAlerts([...alerts.filter((el) => el.key !== key)]);
+  };
+
+  const disableNextButton = (activeStepName: string):boolean =>{
+    return ((activeStepName === PROPERTIES_STEP &&
+      !connectionPropsValid) ||
+    (activeStepName === DATA_OPTIONS_STEP && !dataOptionsValid) ||
+    (activeStepName === RUNTIME_OPTIONS_STEP &&
+      !runtimeOptionsValid))
+  }
+
+  React.useEffect(() => {
+    const timeout = setTimeout(
+      removeAlert,
+      10 * 1000,
+      alerts[alerts.length - 1]?.key
+    );
     return () => clearTimeout(timeout);
-  },[alerts]);
+  }, [alerts]);
 
   const getConnectorName = () => {
     return basicPropValues.get(PropertyName.CONNECTOR_NAME);
-  }
+  };
 
   const getFinalProperties = (stepName: string) => {
     // Merge the individual category properties values into a single map for the config
@@ -177,22 +203,30 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     basicValuesTemp.delete(PropertyName.CONNECTOR_NAME);
     switch (stepName) {
       case PROPERTIES_STEP:
-        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
       case TABLE_SELECTION_STEP:
-        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         break;
       case DATA_OPTIONS_STEP:
-        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
       default:
-        basicValuesTemp.forEach((v, k) => { allPropValues.set(k, v) });
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
@@ -200,8 +234,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         break;
     }
 
-    return minimizePropertyValues(allPropValues, selectedConnectorPropertyDefns);
-  }
+    return minimizePropertyValues(
+      allPropValues,
+      selectedConnectorPropertyDefns
+    );
+  };
 
   const onFinish = () => {
     // Cluster ID and connector name for the create
@@ -242,22 +279,25 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setShowCancelConfirmationDialog(true);
   };
 
-  const goToNext = (id: number, onNext: () => void) =>{
+  const goToNext = (id: number, onNext: () => void) => {
     setConnectorCreateFailed(false);
     // tslint:disable-next-line: no-unused-expression
     id === 5 && setFinishStepName(RUNTIME_OPTIONS_STEP);
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
-    onNext()
-  }
+    onNext();
+  };
 
-  const skipToReview = (stepName: string, goToStepByName: (stepName: string) => void) =>{
+  const skipToReview = (
+    stepName: string,
+    goToStepByName: (stepName: string) => void
+  ) => {
     setFinishStepName(stepName);
     goToStepByName(REVIEW_STEP);
-  }
+  };
 
-  const backToFinishStep = (goToStepByName: (stepName: string) => void) =>{
-    goToStepByName(finishStepName)
-  }
+  const backToFinishStep = (goToStepByName: (stepName: string) => void) => {
+    goToStepByName(finishStepName);
+  };
 
   const validateStep = (stepName: ReactNode, onNext: () => void) => {
     let childRef;
@@ -315,12 +355,15 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     const connName = basicPropertyValues.get(PropertyName.CONNECTOR_NAME);
 
     const valueMap = new Map(
-      (function* () {
+      (function*() {
         yield* basicPropertyValues;
         yield* advancePropertyValues;
       })()
     );
-    const minimizedValues = minimizePropertyValues(valueMap, selectedConnectorPropertyDefns);
+    const minimizedValues = minimizePropertyValues(
+      valueMap,
+      selectedConnectorPropertyDefns
+    );
     validateConnectionProperties(minimizedValues, connName);
   };
 
@@ -339,10 +382,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const validateConnectionName = (connName: string | undefined): string => {
     const currentNames = props.connectorNames;
     if (currentNames.indexOf(connName) > -1) {
-      return "Name already in use - please choose a different name."
+      return "Name already in use - please choose a different name.";
     }
-    return '';
-  }
+    return "";
+  };
 
   // Validation Connection Properties Step
   const validateConnectionProperties = (
@@ -352,12 +395,12 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setValidateInProgress(true);
     // Validate the connection name first
     const connNameValidationMsg = validateConnectionName(connName);
-    if ( connNameValidationMsg.length > 0 ) {
+    if (connNameValidationMsg.length > 0) {
       const nameValidation = {
         property: PropertyName.CONNECTOR_NAME,
         message: connNameValidationMsg,
-        displayName: "Connector name"
-      }
+        displayName: "Connector name",
+      };
       setConnectionPropsValidMsg([nameValidation]);
       setValidateInProgress(false);
       return;
@@ -370,17 +413,23 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     ])
       .then((result: ConnectionValidationResult) => {
         if (result.status === "INVALID") {
-          const connectorPropertyDefns = _.union(getBasicPropertyDefinitions(selectedConnectorPropertyDefns), getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns));
+          const connectorPropertyDefns = _.union(
+            getBasicPropertyDefinitions(selectedConnectorPropertyDefns),
+            getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns)
+          );
           for (const connectionValue of connectorPropertyDefns) {
             const propertyName = connectionValue.name.replace(/_/g, ".");
             for (const msg in result.propertyValidationResults) {
-              if (result.propertyValidationResults[msg].property === propertyName) {
-                result.propertyValidationResults[msg].displayName = connectionValue.displayName;
+              if (
+                result.propertyValidationResults[msg].property === propertyName
+              ) {
+                result.propertyValidationResults[msg].displayName =
+                  connectionValue.displayName;
               }
             }
           }
 
-          setConnectionPropsValidMsg(result.propertyValidationResults)
+          setConnectionPropsValidMsg(result.propertyValidationResults);
         } else {
           setConnectionPropsValid(true);
         }
@@ -398,7 +447,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   ) => {
     // alert("Validate Option Properties: " + JSON.stringify(mapToObject(propertyValues)));
     setValidateInProgress(true);
-    const minimizedValues = minimizePropertyValues(propertyValues, selectedConnectorPropertyDefns);
+    const minimizedValues = minimizePropertyValues(
+      propertyValues,
+      selectedConnectorPropertyDefns
+    );
 
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.validateProperties, connectorService, [
@@ -414,8 +466,12 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             for (const connectionValue of connectorPropertyDefns) {
               const propertyName = connectionValue.name.replace(/_/g, ".");
               for (const msg in result.propertyValidationResults) {
-                if (result.propertyValidationResults[msg].property === propertyName) {
-                  result.propertyValidationResults[msg].displayName = connectionValue.displayName;
+                if (
+                  result.propertyValidationResults[msg].property ===
+                  propertyName
+                ) {
+                  result.propertyValidationResults[msg].displayName =
+                    connectionValue.displayName;
                 }
               }
             }
@@ -426,13 +482,17 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             for (const connectionValue of connectorPropertyDefns) {
               const propertyName = connectionValue.name.replace(/_/g, ".");
               for (const msg in result.propertyValidationResults) {
-                if (result.propertyValidationResults[msg].property === propertyName) {
-                  result.propertyValidationResults[msg].displayName = connectionValue.displayName;
+                if (
+                  result.propertyValidationResults[msg].property ===
+                  propertyName
+                ) {
+                  result.propertyValidationResults[msg].displayName =
+                    connectionValue.displayName;
                 }
               }
             }
           }
-          setConnectionPropsValidMsg(result.propertyValidationResults)
+          setConnectionPropsValidMsg(result.propertyValidationResults);
         } else {
           if (isDataOptions(propertyCategory)) {
             setDataOptionsValid(true);
@@ -455,7 +515,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   React.useEffect(() => {
     const currentNames = props.connectorNames;
-    if(currentNames === undefined ){
+    if (currentNames === undefined) {
       props.onCancelCallback();
     }
   });
@@ -480,7 +540,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
-      setSelectedConnectorPropertyDefns(getGridFormattedProperties(connectorTypes[0]!.properties));
+      setSelectedConnectorPropertyDefns(
+        getGridFormattedProperties(connectorTypes[0]!.properties)
+      );
 
     // Init the connector property values
     initPropertyValues();
@@ -491,17 +553,16 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       return (
         <ul>
           {connectionPropsMsg.map((item, index) => (
-            <li key={index}>{item.displayName}: {item.message}</li>
+            <li key={index}>
+              {item.displayName}: {item.message}
+            </li>
           ))}
         </ul>
-      )
+      );
     } else {
-      return (
-        <div>{validationErrorMsg}</div>
-      )
+      return <div>{validationErrorMsg}</div>;
     }
-
-  }
+  };
 
   const connectorTypeStep = {
     id: 1,
@@ -515,7 +576,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         selectedConnectorType={selectedConnectorType}
         onSelectionChange={onConnectorTypeChanged}
       />
-    )
+    ),
   };
 
   const propertiesStep = {
@@ -523,7 +584,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     name: PROPERTIES_STEP,
     component: (
       <>
-      <PropertiesStep
+        <PropertiesStep
           basicPropertyDefinitions={getBasicPropertyDefinitions(
             selectedConnectorPropertyDefns
           )}
@@ -555,7 +616,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             </div>
           ) : (
             <div style={{ padding: "15px 0" }}>
-              <Alert variant="success" isInline={true}title={validationSuccessNextMsg} />
+              <Alert
+                variant="success"
+                isInline={true}
+                title={validationSuccessNextMsg}
+              />
             </div>
           ))
         )}
@@ -590,7 +655,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         name: DATA_OPTIONS_STEP,
         component: (
           <>
-          <DataOptionsComponent
+            <DataOptionsComponent
               propertyDefinitions={getDataOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
               )}
@@ -618,7 +683,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 </div>
               ) : (
                 <div style={{ padding: "15px 0" }}>
-                  <Alert variant="success" isInline={true} title={validationSuccessNextMsg} />
+                  <Alert
+                    variant="success"
+                    isInline={true}
+                    title={validationSuccessNextMsg}
+                  />
                 </div>
               ))
             )}
@@ -631,7 +700,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         name: RUNTIME_OPTIONS_STEP,
         component: (
           <>
-          <RuntimeOptionsComponent
+            <RuntimeOptionsComponent
               propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
               )}
@@ -660,7 +729,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 </div>
               ) : (
                 <div style={{ padding: "15px 0" }}>
-                  <Alert variant="success" isInline={true} title={validationSuccessNextMsg} />
+                  <Alert
+                    variant="success"
+                    isInline={true}
+                    title={validationSuccessNextMsg}
+                  />
                 </div>
               ))
             )}
@@ -688,7 +761,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     connectorTypeStep,
     propertiesStep,
     additionalPropertiesStep,
-    reviewStep
+    reviewStep,
   ];
 
   const CustomFooter = (
@@ -702,39 +775,60 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           onBack,
           onClose,
         }) => {
-          if (
-            (activeStep.name === PROPERTIES_STEP && !connectionPropsValid) ||
-            (activeStep.name === DATA_OPTIONS_STEP && !dataOptionsValid) ||
-            (activeStep.name === RUNTIME_OPTIONS_STEP && !runtimeOptionsValid)
-          ) {
-            return (
-              <>
-                <Button
-                  onClick={() => validateStep(activeStep.name, onNext)}
-                >
-                  Validate
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={onBack}
-                  className={
-                    activeStep.name === CONNECTOR_TYPE_STEP ? "pf-m-disabled" : ""
-                  }
-                >
-                  Back
-                </Button>
-                <Button variant="link" onClick={onClose}>
-                  Cancel
-                </Button>
-              </>
-            );
-          }
           return (
             <>
+              {activeStep.name === PROPERTIES_STEP ||
+              activeStep.name === DATA_OPTIONS_STEP ||
+              activeStep.name === RUNTIME_OPTIONS_STEP ? (
+                (activeStep.name === PROPERTIES_STEP &&
+                  !connectionPropsValid) ||
+                (activeStep.name === DATA_OPTIONS_STEP && !dataOptionsValid) ||
+                (activeStep.name === RUNTIME_OPTIONS_STEP &&
+                  !runtimeOptionsValid) ? (
+                  <>
+                    <Button
+                      onClick={() => validateStep(activeStep.name, onNext)}
+                    >
+                      Validate
+                    </Button>
+                    <hr className="pf-c-divider pf-m-vertical" />
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      isDisabled={true}
+                      onClick={() => validateStep(activeStep.name, onNext)}
+                    >
+                      Validate
+                    </Button>
+                    <hr className="pf-c-divider pf-m-vertical" />
+                  </>
+                )
+              ) : (
+                <></>
+              )}
+
               {activeStep.name === REVIEW_STEP ? (
                 // Final step buttons
                 <Button variant="primary" type="submit" onClick={onFinish}>
                   Finish
+                </Button>
+              ) : disableNextButton(activeStep.name) ? (
+                <Button
+                  isDisabled={true}
+                  variant="primary"
+                  type="submit"
+                  className={
+                    (activeStep.name === TABLE_SELECTION_STEP &&
+                      !isValidFilter) ||
+                    (activeStep.name === CONNECTOR_TYPE_STEP &&
+                      selectedConnectorType === undefined)
+                      ? "pf-m-disabled"
+                      : ""
+                  }
+                  onClick={() => goToNext(activeStep.id, onNext)}
+                >
+                  Next
                 </Button>
               ) : (
                 <Button
@@ -769,7 +863,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               <Button variant="link" onClick={onClose}>
                 Cancel
               </Button>
-              {activeStep.id && activeStep.id > 1 && activeStep.id !== 6 && (
+              {activeStep.id && activeStep.id > 1 && activeStep.id !== 6 && !disableNextButton(activeStep.name) &&(
                 <>
                   <hr className="pf-c-divider pf-m-vertical" />
                   <Button
@@ -803,9 +897,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         steps={wizardSteps}
         className="create-connector-page_wizard"
       />
-      <ToastAlertComponent
-        alerts={alerts}
-        removeAlert={removeAlert}/>
+      <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
         i18nCancelButtonText={"Stay"}

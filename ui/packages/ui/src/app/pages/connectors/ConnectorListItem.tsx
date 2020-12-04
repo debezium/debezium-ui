@@ -16,7 +16,7 @@ import { AppLayoutContext } from "src/app/Layout/AppLayoutContext";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
-  ConfirmationIconType,
+  ConfirmationType,
   ConnectorTypeId,
 } from "src/app/shared";
 import { ConnectorIcon } from "./ConnectorIcon";
@@ -113,8 +113,8 @@ export const ConnectorListItem: React.FunctionComponent<IConnectorListItemProps>
         i18nConfirmationMessage={
           "The connector will be deleted, and cannot be undone.  Proceed?"
         }
-        i18nTitle={"Delete Connector"}
-        icon={ConfirmationIconType.DANGER}
+        i18nTitle={"Delete connector"}
+        type={ConfirmationType.DANGER}
         showDialog={showDeleteDialog}
         onCancel={doCancel}
         onConfirm={doDelete}
