@@ -174,6 +174,14 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setAlerts([...alerts.filter((el) => el.key !== key)]);
   };
 
+  const disableNextButton = (activeStepName: string):boolean =>{
+    return ((activeStepName === PROPERTIES_STEP &&
+      !connectionPropsValid) ||
+    (activeStepName === DATA_OPTIONS_STEP && !dataOptionsValid) ||
+    (activeStepName === RUNTIME_OPTIONS_STEP &&
+      !runtimeOptionsValid))
+  }
+
   React.useEffect(() => {
     const timeout = setTimeout(
       removeAlert,
@@ -805,11 +813,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 <Button variant="primary" type="submit" onClick={onFinish}>
                   Finish
                 </Button>
-              ) : (activeStep.name === PROPERTIES_STEP &&
-                  !connectionPropsValid) ||
-                (activeStep.name === DATA_OPTIONS_STEP && !dataOptionsValid) ||
-                (activeStep.name === RUNTIME_OPTIONS_STEP &&
-                  !runtimeOptionsValid) ? (
+              ) : disableNextButton(activeStep.name) ? (
                 <Button
                   isDisabled={true}
                   variant="primary"
@@ -859,7 +863,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               <Button variant="link" onClick={onClose}>
                 Cancel
               </Button>
-              {activeStep.id && activeStep.id > 1 && activeStep.id !== 6 && (
+              {activeStep.id && activeStep.id > 1 && activeStep.id !== 6 && !disableNextButton(activeStep.name) &&(
                 <>
                   <hr className="pf-c-divider pf-m-vertical" />
                   <Button
