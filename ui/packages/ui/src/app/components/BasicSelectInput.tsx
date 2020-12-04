@@ -6,6 +6,7 @@ import {
 } from '@patternfly/react-core';
 import * as React from 'react';
 import { ISelectOptions } from '.';
+import "./BasicSelectInput.css";
 
 export interface IBasicSelectInputProps {
     label: string,
@@ -54,6 +55,7 @@ export const BasicSelectInput = (props: IBasicSelectInputProps) => {
       name={fieldId}
     >
       <Select
+        className="basic-select-input"
         variant={SelectVariant.single}
         aria-label="Select Input"
         onToggle={onToggle}

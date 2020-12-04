@@ -306,23 +306,21 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
               />
             </FlexItem>
             <FlexItem>
-              <ToggleGroup aria-label="Default with single selectable">
+              <ToggleGroup aria-label="Include Exclude schema toggle group">
                 <ToggleGroupItem
                   buttonId="schemaInclude"
                   isSelected={schemaSelected === "schemaInclude"}
                   onChange={handleSchemaToggle}
                   onClick={(e) => e.preventDefault()}
-                >
-                  Include
-                </ToggleGroupItem>
+                  text="Include"
+                />
                 <ToggleGroupItem
                   buttonId="schemaExclude"
                   isSelected={schemaSelected === "schemaExclude"}
                   onChange={handleSchemaToggle}
                   onClick={(e) => e.preventDefault()}
-                >
-                  Exclude
-                </ToggleGroupItem>
+                  text="Exclude"
+                />
               </ToggleGroup>
             </FlexItem>
           </Flex>
@@ -385,23 +383,21 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
               />
             </FlexItem>
             <FlexItem>
-              <ToggleGroup aria-label="Default with single selectable">
+              <ToggleGroup aria-label="Include Exclude tables toggle group">
                 <ToggleGroupItem
                   buttonId="tableInclude"
                   isSelected={tableSelected === "tableInclude"}
                   onChange={handleTableToggle}
                   onClick={(e) => e.preventDefault()}
-                >
-                  Include
-                </ToggleGroupItem>
+                  text="Include"
+                />
                 <ToggleGroupItem
                   buttonId="tableExclude"
                   isSelected={tableSelected === "tableExclude"}
                   onChange={handleTableToggle}
                   onClick={(e) => e.preventDefault()}
-                >
-                  Exclude
-                </ToggleGroupItem>
+                  text="Exclude"
+                />
               </ToggleGroup>
             </FlexItem>
           </Flex>
