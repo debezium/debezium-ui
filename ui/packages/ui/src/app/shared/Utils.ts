@@ -283,10 +283,13 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
 }
 
 /**
- * Apply optional grid formatting values to some properties for better layouts.
+ * Alter the supplied connector properties for display purposes.
+ * - Apply optional grid formatting values to some properties for better layouts.
+ * - reset type if an alternate component is desired
  * @param propertyDefns the array of property definitions
+ * @returns the array of altered property definitions
  */
-export function getGridFormattedProperties (propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+export function getFormattedProperties (propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
   const formattedPropertyDefns: ConnectorProperty[] = [...propertyDefns];
 
   for (const propDefn of formattedPropertyDefns) {
@@ -322,6 +325,11 @@ export function getGridFormattedProperties (propertyDefns: ConnectorProperty[]):
         break;
       case PropertyName.SNAPSHOT_MODE:
         propDefn.gridWidth = 9;
+        break;
+      case PropertyName.DATABASE_TCPKEEPALIVE:
+      case PropertyName.SLOT_DROP_ON_STOP:
+        propDefn.gridWidth = 12;
+        propDefn.type = "BOOLEAN-SWITCH";
         break;
       default:
         propDefn.gridWidth = 12;

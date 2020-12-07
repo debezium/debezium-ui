@@ -24,7 +24,7 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
-  getGridFormattedProperties,
+  getFormattedProperties,
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
   isRuntimeOptions,
@@ -541,7 +541,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
       setSelectedConnectorPropertyDefns(
-        getGridFormattedProperties(connectorTypes[0]!.properties)
+        getFormattedProperties(connectorTypes[0]!.properties)
       );
 
     // Init the connector property values

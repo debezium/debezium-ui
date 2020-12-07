@@ -3,6 +3,7 @@ import * as React from 'react';
 import { FormCheckboxComponent } from './FormCheckboxComponent';
 import { FormInputComponent } from './FormInputComponent';
 import { FormSelectComponent } from './FormSelectComponent';
+import { FormSwitchComponent } from './FormSwitchComponent';
 
 export interface IFormComponentProps {
   propertyDefinition: ConnectorProperty;
@@ -34,6 +35,17 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   } else if (props.propertyDefinition.type === "BOOLEAN") {
     return (
       <FormCheckboxComponent
+        isChecked={typeof props.propertyDefinition.defaultValue !== 'undefined' && props.propertyDefinition.defaultValue === true}
+        label={props.propertyDefinition.displayName}
+        name={props.propertyDefinition.name}
+        propertyChange={props.propertyChange}
+        setFieldValue={props.setFieldValue}
+      />
+    );
+    // Boolean - switch
+  } else if (props.propertyDefinition.type === "BOOLEAN-SWITCH") {
+    return (
+      <FormSwitchComponent
         isChecked={typeof props.propertyDefinition.defaultValue !== 'undefined' && props.propertyDefinition.defaultValue === true}
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
