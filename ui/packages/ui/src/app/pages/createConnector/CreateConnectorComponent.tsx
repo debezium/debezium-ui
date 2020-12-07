@@ -3,16 +3,48 @@ import {
   ConnectorProperty,
   ConnectorType,
   PropertiesValidationResult,
-  PropertyValidationResult,
+  PropertyValidationResult
 } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   Alert,
   Button,
+
+
+
+
+
+
+
+
+  NotificationDrawer,
+  NotificationDrawerBody,
+
+  NotificationDrawerList,
+  NotificationDrawerListItem,
+  NotificationDrawerListItemBody,
+  NotificationDrawerListItemHeader,
+
+
+
   Spinner,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   Wizard,
   WizardContextConsumer,
-  WizardFooter,
+  WizardFooter
 } from "@patternfly/react-core";
 import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
@@ -31,7 +63,7 @@ import {
   mapToObject,
   minimizePropertyValues,
   PropertyCategory,
-  PropertyName,
+  PropertyName
 } from "src/app/shared";
 import {
   ConnectorTypeStepComponent,
@@ -39,7 +71,7 @@ import {
   PropertiesStep,
   ReviewStepComponent,
   RuntimeOptionsComponent,
-  TableSelectionStep,
+  TableSelectionStep
 } from "./connectorSteps";
 import "./CreateConnectorComponent.css";
 
@@ -777,6 +809,41 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         }) => {
           return (
             <>
+              {activeStep.id && activeStep.id > 2 && activeStep.id !== 6 && !disableNextButton(activeStep.name) &&(
+                <div className="skipToNextInfoBox">
+                <NotificationDrawer>
+                  <NotificationDrawerBody>
+                    <NotificationDrawerList>
+                      <NotificationDrawerListItem variant="info">
+                      <NotificationDrawerListItemHeader
+                          variant="info"
+                          title="This step is optional"
+                          // srTitle="Info notification:"
+                        />
+                         
+                        <NotificationDrawerListItemBody>
+                          All required configuration was done. You could quickly end the process.
+                        <Button
+                          variant="link"
+                          type="submit"
+                          className={
+                            activeStep.name === TABLE_SELECTION_STEP && !isValidFilter
+                              ? "pf-m-disabled"
+                              : ""
+                          }
+                          onClick={() =>
+                            skipToReview(activeStep.name, goToStepByName)
+                          }
+                        >
+                          Finish
+                        </Button>
+                        </NotificationDrawerListItemBody>
+                      </NotificationDrawerListItem>
+                      </NotificationDrawerList>
+                  </NotificationDrawerBody>
+                </NotificationDrawer>                 
+                </div>
+              )}
               {activeStep.name === PROPERTIES_STEP ||
               activeStep.name === DATA_OPTIONS_STEP ||
               activeStep.name === RUNTIME_OPTIONS_STEP ? (
@@ -863,25 +930,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               <Button variant="link" onClick={onClose}>
                 Cancel
               </Button>
-              {activeStep.id && activeStep.id > 1 && activeStep.id !== 6 && !disableNextButton(activeStep.name) &&(
-                <>
-                  <hr className="pf-c-divider pf-m-vertical" />
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className={
-                      activeStep.name === TABLE_SELECTION_STEP && !isValidFilter
-                        ? "pf-m-disabled"
-                        : ""
-                    }
-                    onClick={() =>
-                      skipToReview(activeStep.name, goToStepByName)
-                    }
-                  >
-                    Skip to finish
-                  </Button>
-                </>
-              )}
+
             </>
           );
         }}
