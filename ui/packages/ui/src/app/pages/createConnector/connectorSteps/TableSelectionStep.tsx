@@ -246,7 +246,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
       <Text component={TextVariants.h2}>
         Select tables for change capture by entering comma-separated lists of regular expressions for schemas and tables.
       </Text>
-      <Form isHorizontal={true} className="table-selection-step_form">
+      <Form className="table-selection-step_form">
         <FormGroup
           label="Schema filter"
           fieldId="schema_filter"
@@ -403,7 +403,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           </Flex>
         </FormGroup>
         <ActionGroup>
-          <Button variant="primary" onClick={applyFilter}>
+          <Button variant="secondary" onClick={applyFilter}>
             Apply
           </Button>
           <Button variant="link" isInline={true} onClick={clearFilter}>
