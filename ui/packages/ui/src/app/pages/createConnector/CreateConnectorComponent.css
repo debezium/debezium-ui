@@ -49,3 +49,14 @@
   }
   
 }
+.skipToNextInfoBox{
+  width: 100%;
+  margin-bottom: 40px;
+  .pf-c-button.pf-m-link{
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+.pf-c-notification-drawer{
+  box-shadow: var(--pf-global--BoxShadow--sm);
+}
