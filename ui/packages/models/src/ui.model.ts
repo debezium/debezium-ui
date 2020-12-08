@@ -89,7 +89,7 @@ export interface ConnectorProperty {
     gridWidth?: number;
     name: string;
     isMandatory: boolean;
-    type: 'BOOLEAN' | 'STRING' | 'INT' | 'SHORT' | 'LONG' | 'DOUBLE' | 'LIST' | 'CLASS' | 'PASSWORD';
+    type: 'BOOLEAN' | 'BOOLEAN-SWITCH' | 'STRING' | 'INT' | 'SHORT' | 'LONG' | 'DOUBLE' | 'LIST' | 'CLASS' | 'PASSWORD';
 }
 
 /**
