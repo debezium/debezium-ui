@@ -2,26 +2,25 @@ package io.debezium.configserver;
 
 import io.debezium.configserver.rest.ConnectorResource;
 import io.debezium.configserver.util.Infrastructure;
-import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
+import io.debezium.configserver.util.MongoDbInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.MongoDBContainer;
 
-import java.io.IOException;
-
-import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 @QuarkusTest
-@TestProfile(PostgresInfrastructureTestProfile.class)
-public class CreateAndDeletePostgresConnectorIT {
+@TestProfile(MongoDbInfrastructureTestProfile.class)
+public class CreateAndDeleteMongoDbConnectorIT {
 
     @Test
-    public void testPostgresClustersEndpoint() {
+    public void testMongoDbClustersEndpoint() {
         given()
                 .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECT_CLUSTERS_ENDPOINT)
                 .then().log().all()
@@ -36,25 +35,27 @@ public class CreateAndDeletePostgresConnectorIT {
     }
 
     @Test
-    public void testPostgresCreateConnectorEndpoint() {
+    public void testMongoDbCreateConnectorEndpoint() {
         Connector connector = Connector.from(
-                "my-postgres-connector",
-                Infrastructure.getPostgresConnectorConfiguration(1)
-                .with("slot.drop.on.stop", true)
+                "my-mongodb-connector",
+                Infrastructure.getMongoDbConnectorConfiguration(1)
             );
 
+        MongoDBContainer mongoDbContainer = Infrastructure.getMongoDbContainer();
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
-                .post(ConnectorResource.API_PREFIX + ConnectorResource.CREATE_CONNECTOR_ENDPOINT, 1, "postgres")
+                .post(ConnectorResource.API_PREFIX + ConnectorResource.CREATE_CONNECTOR_ENDPOINT, 1, "mongodb")
             .then().log().all()
             .statusCode(200)
-            .assertThat().body("name", equalTo("my-postgres-connector"))
+            .assertThat().body("name", equalTo("my-mongodb-connector"))
             .and().rootPath("config")
-                .body("['connector.class']", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
-                .and().body("['database.hostname']", equalTo(Infrastructure.getPostgresContainer().getContainerInfo().getConfig().getHostName()));
+                .body("['connector.class']", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
+                .and().body("['mongodb.hosts']",
+                equalTo("rs0/"+ mongoDbContainer.getContainerInfo().getConfig().getHostName()
+                    + ":" + mongoDbContainer.getExposedPorts().get(0)));
     }
 
     @Test
-    public void testPostgresDeleteConnectorFailed() {
+    public void testMongoDbDeleteConnectorFailed() {
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
         given()
                 .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
@@ -66,21 +67,21 @@ public class CreateAndDeletePostgresConnectorIT {
     }
 
     @Test
-    public void testPostgresDeleteConnectorSuccessful() {
-        final var deletePostgresConnectorName = "delete-connector-postgres";
+    public void testMongoDbDeleteConnectorSuccessful() {
+        final var deleteMongoDbConnectorName = "delete-connector-mongodb";
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
         Infrastructure.getDebeziumContainer().registerConnector(
-                deletePostgresConnectorName,
-                Infrastructure.getPostgresConnectorConfiguration(1));
+                deleteMongoDbConnectorName,
+                Infrastructure.getMongoDbConnectorConfiguration(1));
         Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
-                deletePostgresConnectorName, 0, Connector.State.RUNNING);
+                deleteMongoDbConnectorName, 0, Connector.State.RUNNING);
 
         given()
-                .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, deletePostgresConnectorName)
+                .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, deleteMongoDbConnectorName)
                 .then().log().all()
                 .statusCode(204);
 
-        assertTrue(Infrastructure.getDebeziumContainer().connectorIsNotRegistered(deletePostgresConnectorName));
+        assertTrue(Infrastructure.getDebeziumContainer().connectorIsNotRegistered(deleteMongoDbConnectorName));
     }
 
 }
