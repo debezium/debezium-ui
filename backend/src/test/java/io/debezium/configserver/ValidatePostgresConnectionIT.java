@@ -11,6 +11,7 @@ import io.restassured.http.ContentType;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -46,6 +47,7 @@ public class ValidatePostgresConnectionIT {
                 Infrastructure.getPostgresConnectorConfiguration(1)
                     .with("database.hostname", "zzzzzzzzzz"));
 
+        Locale.setDefault(new Locale("en", "US"));
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
                 .post(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTION_VALIDATION_ENDPOINT, "postgres")
                 .then().log().all()
@@ -55,7 +57,7 @@ public class ValidatePostgresConnectionIT {
                 .body("propertyValidationResults.size()", is(1))
                 .rootPath("propertyValidationResults[0]")
                     .body("property", equalTo("database.hostname"))
-                    .body("message", startsWith("Unable to connect:"));
+                    .body("message", equalTo("Error while validating connector config: The connection attempt failed."));
     }
 
     @Test

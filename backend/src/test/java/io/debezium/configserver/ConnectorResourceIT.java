@@ -1,7 +1,9 @@
 package io.debezium.configserver;
 
+import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.rest.ConnectorResource;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
+import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.connector.postgresql.PostgresConnectorConfig;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,17 @@ public class ConnectorResourceIT {
                     equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.SnapshotMode.values())))
             .body("properties.find { it.name == 'decimal.handling.mode' }.allowedValues",
                     equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.DecimalHandlingMode.values())));
+    }
+    @Test
+    public void testMongoDbConnectorTypesEndpoint() {
+        given()
+            .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "mongodb")
+            .then().log().all()
+            .statusCode(200)
+            .body("className", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
+            .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
+                    equalTo(ConnectorIntegratorBase.enumArrayToList(MongoDbConnectorConfig.SnapshotMode.values())))
+            .body("properties.find { it.name == 'field.renames' }.category", is(ConnectorProperty.Category.CONNECTOR_ADVANCED.name()));
     }
 
     @Test

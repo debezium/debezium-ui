@@ -4,6 +4,7 @@ import io.debezium.configserver.model.ConnectorStatus;
 import io.debezium.configserver.rest.ConnectorResource;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
+import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +27,7 @@ public class ListPostgresConnectorIT {
 
     @BeforeEach
     public void resetRunningConnectors() {
-        try {
-            Infrastructure.getDebeziumContainer().deleteAllConnectors();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Infrastructure.getDebeziumContainer().deleteAllConnectors();
     }
 
     @Test
@@ -46,22 +43,18 @@ public class ListPostgresConnectorIT {
         final var runningConnectorName = "list-connectors-postgres-connector";
         final var pausedConnectorName = "list-connectors-postgres-connector-paused";
         final var failedConnectorName = "list-connectors-postgres-connector-failed";
-        try {
-            Infrastructure.getDebeziumContainer().registerConnector(
-                    runningConnectorName,
-                    Infrastructure.getPostgresConnectorConfiguration(1));
-            Infrastructure.getDebeziumContainer().registerConnector(
-                    pausedConnectorName,
-                    Infrastructure.getPostgresConnectorConfiguration(2)
-                            .with("table.include.list", ".*"));
-            Infrastructure.getDebeziumContainer().pauseConnector(pausedConnectorName);
-            Infrastructure.getDebeziumContainer().registerConnector(
-                    failedConnectorName,
-                    Infrastructure.getPostgresConnectorConfiguration(1));
-            Infrastructure.getDebeziumContainer().ensureConnectorTaskState(failedConnectorName, 0, ConnectorStatus.State.FAILED);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Infrastructure.getDebeziumContainer().registerConnector(
+                runningConnectorName,
+                Infrastructure.getPostgresConnectorConfiguration(1));
+        Infrastructure.getDebeziumContainer().registerConnector(
+                pausedConnectorName,
+                Infrastructure.getPostgresConnectorConfiguration(2)
+                        .with("table.include.list", ".*"));
+        Infrastructure.getDebeziumContainer().pauseConnector(pausedConnectorName);
+        Infrastructure.getDebeziumContainer().registerConnector(
+                failedConnectorName,
+                Infrastructure.getPostgresConnectorConfiguration(1));
+        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(failedConnectorName, 0, Connector.State.FAILED);
 
         given()
                 .when().get(ConnectorResource.API_PREFIX + ConnectorResource.LIST_CONNECTORS_ENDPOINT, "1")
