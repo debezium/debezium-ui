@@ -29,6 +29,9 @@
             background-color: var(--pf-global--disabled-color--300);
           }
         }
+        .pf-m-required{
+          color: var(--pf-global--palette--red-100);
+        }
       }
     }
   }
