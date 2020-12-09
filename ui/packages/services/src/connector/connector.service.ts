@@ -124,7 +124,7 @@ export class ConnectorService extends BaseService {
     /**
      * Delete the Connector for the supplied clusterId
      */
-    public deleteConnectors(clusterId: number, connectorName: string): Promise<Connector[]> {
+    public deleteConnector(clusterId: number, connectorName: string): Promise<Connector[]> {
         this.logger.info("[ConnectorService] Delete the connector");
 
         const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
