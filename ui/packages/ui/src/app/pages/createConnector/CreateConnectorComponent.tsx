@@ -75,8 +75,8 @@ const validationSuccessNextMsg =
 const createConnectorUnknownErrorMsg =
   "Unknown error - please consult your administrator";
 
-const CONNECTOR_TYPE_STEP = "Connector type";
-const PROPERTIES_STEP = "Properties";
+const CONNECTOR_TYPE_STEP = (<div>Connector type <span className="pf-m-required"> *</span></div>);
+const PROPERTIES_STEP = (<div>Properties <span className="pf-m-required"> *</span></div>);  
 const TABLE_SELECTION_STEP = "Table selection";
 const DATA_OPTIONS_STEP = "Data options";
 const RUNTIME_OPTIONS_STEP = "Runtime options";

@@ -1,6 +1,7 @@
 import { ConnectorType } from "@debezium/ui-models";
 import {
   Card,
+  CardActions,
   CardBody,
   CardHeader,
   CardHeaderMain,
@@ -8,6 +9,7 @@ import {
   Flex,
   FlexItem
 } from "@patternfly/react-core";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 import React from "react";
 import { PageLoader } from "src/app/components";
 import { ApiError } from "src/app/shared";
@@ -15,6 +17,7 @@ import { WithLoader } from "src/app/shared/WithLoader";
 import { getConnectorTypeDescription } from "../../../shared/Utils";
 import { ConnectorIcon } from "../../connectors/ConnectorIcon";
 import "./ConnectorTypeStepComponent.css";
+
 
 export interface IConnectorTypeStepComponentProps {
   selectedConnectorType?: string;
@@ -64,6 +67,11 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
                 className={!cType.enabled ? 'connector-type-step-component_flex_disableCard' : ''}
               >
                 <CardHeader>
+                  {!cType.enabled &&
+                    <CardActions className="connector-type-step-component_cardAction">
+                      <ExclamationTriangleIcon className="connector-type-step-component_cardAction--icon" /> coming soon
+                    </CardActions>
+                  }
                   <CardHeaderMain
                     className={"connector-type-step-component_dbIcon"}
                   >
