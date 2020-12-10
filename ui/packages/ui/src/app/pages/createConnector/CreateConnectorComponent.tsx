@@ -624,10 +624,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 <NotificationDrawer>
                   <NotificationDrawerBody>
                     <NotificationDrawerList>
-                      <NotificationDrawerListItem variant="info">
+                      <NotificationDrawerListItem variant="success">
                       <NotificationDrawerListItemHeader
-                          variant="info"
+                          variant="success"
                           title="The validation was successful"
+                          className="titleSuccess"
                         />
                         
                         <NotificationDrawerListItemBody>
@@ -819,6 +820,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                         <NotificationDrawerListItemHeader
                             variant="info"
                             title="This step is optional"
+                            className="titleInfo"
                           />
                           
                           <NotificationDrawerListItemBody>
