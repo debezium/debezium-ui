@@ -71,7 +71,7 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 
 const validationErrorMsg = "Resolve property errors, then click Validate";
 const validationSuccessNextMsg =
-  "Validation was successful, All required configuration is complete. If desired, you can proceed to";
+  "All required configuration is complete. If desired, you can proceed to";
 const createConnectorUnknownErrorMsg =
   "Unknown error - please consult your administrator";
 
@@ -627,7 +627,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                       <NotificationDrawerListItem variant="info">
                       <NotificationDrawerListItemHeader
                           variant="info"
-                          title="This step is optional"
+                          title="The validation was successful"
                         />
                         
                         <NotificationDrawerListItemBody>
