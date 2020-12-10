@@ -71,7 +71,7 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 
 const validationErrorMsg = "Resolve property errors, then click Validate";
 const validationSuccessNextMsg =
-  "Validation was successful, click Next to continue";
+  "Validation was successful, All required configuration is complete. If desired, you can proceed to";
 const createConnectorUnknownErrorMsg =
   "Unknown error - please consult your administrator";
 
@@ -293,14 +293,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     onNext();
   };
 
-  const skipToReview = (
-    stepName: string,
-    goToStepByName: (stepName: string) => void
-  ) => {
+  const skipToReview = (stepName: string, goToStepByName: (stepName: string) => void) => {
     setFinishStepName(stepName);
     goToStepByName(REVIEW_STEP);
   };
-
+  const skipToReviewClone = (stepName: string) => {
+    setFinishStepName(stepName);
+  }
   const backToFinishStep = (goToStepByName: (stepName: string) => void) => {
     goToStepByName(finishStepName);
   };
@@ -621,13 +620,41 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               />
             </div>
           ) : (
-            <div style={{ padding: "15px 0" }}>
-              <Alert
-                variant="success"
-                isInline={true}
-                title={validationSuccessNextMsg}
-              />
-            </div>
+            <div className="skipToNextInfoBox">
+                <NotificationDrawer>
+                  <NotificationDrawerBody>
+                    <NotificationDrawerList>
+                      <NotificationDrawerListItem variant="info">
+                      <NotificationDrawerListItemHeader
+                          variant="info"
+                          title="This step is optional"
+                        />
+                        
+                        <NotificationDrawerListItemBody>
+                          <div>
+                            {validationSuccessNextMsg}
+                            <WizardContextConsumer>
+                              {({ activeStep, goToStepByName }) => {
+                                return (
+                                  <Button
+                                    variant="link"
+                                    type="submit"
+                                    onClick={() =>
+                                      skipToReview(activeStep.name, goToStepByName)
+                                    }
+                                  >
+                                    Review
+                                  </Button>
+                                )
+                              }}
+                            </WizardContextConsumer>
+                          </div>
+                        </NotificationDrawerListItemBody>
+                      </NotificationDrawerListItem>
+                      </NotificationDrawerList>
+                  </NotificationDrawerBody>
+                </NotificationDrawer>
+          </div>
           ))
         )}
       </>
@@ -785,37 +812,36 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             <>
               {activeStep.id && activeStep.id > 2 && activeStep.id !== 6 && !disableNextButton(activeStep.name) &&(
                 <div className="skipToNextInfoBox">
-                <NotificationDrawer>
-                  <NotificationDrawerBody>
-                    <NotificationDrawerList>
-                      <NotificationDrawerListItem variant="info">
-                      <NotificationDrawerListItemHeader
-                          variant="info"
-                          title="This step is optional"
-                          // srTitle="Info notification:"
-                        />
-                         
-                        <NotificationDrawerListItemBody>
-                          All required configuration was done. You could quickly end the process.
-                        <Button
-                          variant="link"
-                          type="submit"
-                          className={
-                            activeStep.name === TABLE_SELECTION_STEP && !isValidFilter
-                              ? "pf-m-disabled"
-                              : ""
-                          }
-                          onClick={() =>
-                            skipToReview(activeStep.name, goToStepByName)
-                          }
-                        >
-                          Finish
-                        </Button>
-                        </NotificationDrawerListItemBody>
-                      </NotificationDrawerListItem>
-                      </NotificationDrawerList>
-                  </NotificationDrawerBody>
-                </NotificationDrawer>                 
+                  <NotificationDrawer>
+                    <NotificationDrawerBody>
+                      <NotificationDrawerList>
+                        <NotificationDrawerListItem variant="info">
+                        <NotificationDrawerListItemHeader
+                            variant="info"
+                            title="This step is optional"
+                          />
+                          
+                          <NotificationDrawerListItemBody>
+                          All required configuration is complete. If desired, you can proceed to
+                          <Button
+                            variant="link"
+                            type="submit"
+                            className={
+                              activeStep.name === TABLE_SELECTION_STEP && !isValidFilter
+                                ? "pf-m-disabled"
+                                : ""
+                            }
+                            onClick={() =>
+                              skipToReview(activeStep.name, goToStepByName)
+                            }
+                          >
+                            Review
+                          </Button>
+                          </NotificationDrawerListItemBody>
+                        </NotificationDrawerListItem>
+                        </NotificationDrawerList>
+                    </NotificationDrawerBody>
+                  </NotificationDrawer>                 
                 </div>
               )}
               {activeStep.name === PROPERTIES_STEP ||
