@@ -5,7 +5,7 @@
   &_toolbarCreateButton {
     margin-bottom: var(--pf-global--spacer--sm);
   }  
-  &_dataList {
+  &_dataTable {
     margin-top: var(--pf-global--spacer--sm);
   }  
   &_toolbarFlex {
@@ -23,21 +23,6 @@
   }
 }
 
-.connector-list{
-  &__item{
-    .pf-c-data-list__item-content {
-      .pf-c-data-list__cell{
-        display: flex;
-        align-items: center;
-
-        &:first-child{
-          max-width: 100px;
-        }
-      }
-    }
-  }
-}
-
 .status-indicator{
   height: 25px;
   border-radius: 50%;
@@ -45,6 +30,17 @@
   text-align: center;
   color: white;
   display: inline-block;
+}
+
+.pf-c-table {
+  tbody {
+    >tr {
+      >* {
+        vertical-align: middle;
+        padding: 15px var(--pf-c-table--cell--PaddingRight) 10px var(--pf-c-table--cell--PaddingLeft);
+      }
+    }
+  }
 }
 
 .pf-c-tooltip{
