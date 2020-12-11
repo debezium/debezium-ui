@@ -1,9 +1,11 @@
-import { Switch } from '@patternfly/react-core';
+import { Split, SplitItem, Switch } from '@patternfly/react-core';
 import { useField } from 'formik';
 import * as React from 'react';
+import { HelpInfoIcon } from './HelpInfoIcon';
 
 export interface IFormSwitchComponentProps {
   label: string;
+  description: string;
   name: string;
   isChecked: boolean
   propertyChange: (name: string, selection: any) => void;
@@ -17,14 +19,21 @@ export const FormSwitchComponent: React.FunctionComponent<IFormSwitchComponentPr
     props.setFieldValue(field.name, value);
   };
     return (
-      <Switch
-        id={field.name}
-        name={field.name}
-        aria-label={props.label}
-        label={props.label}
-        labelOff={props.label}
-        isChecked={field.value}
-        onChange={handleChange}
-      />
+      <Split>
+        <SplitItem>
+          <Switch
+            id={field.name}
+            name={field.name}
+            aria-label={props.label}
+            label={props.label}
+            labelOff={props.label}
+            isChecked={field.value}
+            onChange={handleChange}
+          />
+        </SplitItem>
+        <SplitItem>
+          <HelpInfoIcon label={props.label} description={props.description} />
+        </SplitItem>
+      </Split>
     );
 }

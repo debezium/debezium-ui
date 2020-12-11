@@ -1,6 +1,7 @@
 import { ConnectorProperty } from '@debezium/ui-models';
 import * as React from 'react';
 import { FormCheckboxComponent } from './FormCheckboxComponent';
+import { FormDurationComponent } from './FormDurationComponent';
 import { FormInputComponent } from './FormInputComponent';
 import { FormSelectComponent } from './FormSelectComponent';
 import { FormSwitchComponent } from './FormSwitchComponent';
@@ -38,6 +39,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         isChecked={typeof props.propertyDefinition.defaultValue !== 'undefined' && props.propertyDefinition.defaultValue === true}
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
+        description={props.propertyDefinition.description}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
       />
@@ -47,6 +49,21 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
     return (
       <FormSwitchComponent
         isChecked={typeof props.propertyDefinition.defaultValue !== 'undefined' && props.propertyDefinition.defaultValue === true}
+        label={props.propertyDefinition.displayName}
+        name={props.propertyDefinition.name}
+        description={props.propertyDefinition.description}
+        propertyChange={props.propertyChange}
+        setFieldValue={props.setFieldValue}
+      />
+    );
+    // Duration
+  } else if (props.propertyDefinition.type === "DURATION") {
+    return (
+      <FormDurationComponent
+        description={props.propertyDefinition.description}
+        isRequired={props.propertyDefinition.isMandatory}
+        fieldId={props.propertyDefinition.name}
+        helperTextInvalid={props.helperTextInvalid}
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
