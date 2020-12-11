@@ -2,6 +2,8 @@ package io.debezium.configserver.service.temp;
 
 import java.util.Map;
 
+import io.debezium.config.Field;
+import io.debezium.connector.sqlserver.SqlServerConnectorConfig;
 import org.apache.kafka.connect.source.SourceConnector;
 
 import io.debezium.configserver.model.FilterValidationResult;
@@ -24,6 +26,11 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
     @Override
     protected SourceConnector getConnector() {
         return new SqlServerConnector();
+    }
+
+    @Override
+    public Field.Set getAllConnectorFields() {
+        return SqlServerConnectorConfig.ALL_FIELDS;
     }
 
     // TODO implement io.debezium.configserver.service.ConnectorIntegratorBase.allPropertiesWithAdditionalMetadata

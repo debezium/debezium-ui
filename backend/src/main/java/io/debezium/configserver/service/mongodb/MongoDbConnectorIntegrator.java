@@ -1,6 +1,5 @@
 package io.debezium.configserver.service.mongodb;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import io.debezium.DebeziumException;
 import io.debezium.config.CommonConnectorConfig;
 import io.debezium.config.Configuration;
+import io.debezium.config.Field;
 import io.debezium.configserver.model.AdditionalPropertyMetadata;
 import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.model.DataCollection;
@@ -22,10 +22,7 @@ import io.debezium.connector.mongodb.ConnectionContext;
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.connector.mongodb.MongoDbTaskContext;
 import io.debezium.connector.mongodb.ReplicaSet;
-import io.debezium.connector.postgresql.PostgresConnectorConfig;
-import io.debezium.connector.postgresql.connection.PostgresConnection;
 import io.debezium.heartbeat.Heartbeat;
-import io.debezium.relational.TableId;
 import io.debezium.schema.DataCollectionId;
 import org.apache.kafka.connect.source.SourceConnector;
 
@@ -150,6 +147,11 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
     @Override
     public Map<String, AdditionalPropertyMetadata> allPropertiesWithAdditionalMetadata() {
         return MONGODB_PROPERTIES;
+    }
+
+    @Override
+    public Field.Set getAllConnectorFields() {
+        return MongoDbConnectorConfig.ALL_FIELDS;
     }
 
     @Override

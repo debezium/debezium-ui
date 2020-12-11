@@ -92,10 +92,9 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
         }
     }
 
-    @Override
     public PropertiesValidationResult validateProperties(Map<String, String> properties) {
         List<Field> fields = new ArrayList<>();
-        PostgresConnectorConfig.ALL_FIELDS.forEach(field -> {
+        getAllConnectorFields().forEach(field -> {
             if (properties.containsKey(field.name())) {
                 fields.add(field);
             }
