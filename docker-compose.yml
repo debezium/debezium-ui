@@ -27,6 +27,27 @@ services:
       - POSTGRES_PASSWORD=postgres
     networks:
       - dbzui-network
+  dbzui-db-mongo:
+    container_name: dbzui-db-mongo
+    #image: debezium/example-mongo:1.4
+    image: mongo:3.6
+    ports:
+      - "37017:27017"
+    volumes:
+    - ./backend/src/test/resources/initialize-mongo-single.js:/docker-entrypoint-initdb.d/initialize-mongo-single.js
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=admin
+    networks:
+      - dbzui-network
+  mongo-initializer:
+    image: mongo:3.6
+    networks:
+      - dbzui-network
+    depends_on:
+      - dbzui-db-mongo
+    command: bash -c 'sleep 20 && mongo -u admin -p admin --authenticationDatabase admin dbzui-db-mongo:27017/inventory --eval "rs.initiate();"'
   dbzui-connect:
     container_name: dbzui-connect
     image: debezium/connect:1.3

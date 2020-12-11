@@ -18,19 +18,21 @@ This repository contains a proof-of-concept for a potential future web-based UI 
 
 ## Prerequisites
 
-Debezium UI needs a properly running Debezium instance version 1.3.0.Beta2 or newer and a running
-Postgres database instance.
+Debezium UI needs a properly running Debezium instance version 1.4.0.Beta1 or newer and a running
+Postgres or Mongo DB database instance (depending on what connector you are going to use).
 
 ### DEV Infrastructure with Docker-Compose
 
-You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium and Postgres using
-docker-compose:
+You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium, Postgres and
+Mongo DB using docker-compose:
 
 ```
 ## optionally make sure you have the latest images:
 $ docker-compose pull
 
 Pulling dbzui-zookeeper ... done
+Pulling dbzui-db-mongo  ... done
+Pulling debezium-ui_mongo-initializer_1 ... done
 Pulling dbzui-kafka     ... done
 Pulling dbzui-db-pg     ... done
 Pulling dbzui-connect   ... done
@@ -40,6 +42,8 @@ $ docker-compose up -d
 
 Creating dbzui-db-pg     ... done
 Creating dbzui-zookeeper ... done
+Creating dbzui-db-mongo  ... done
+Creating debezium-ui_mongo-initializer_1 ... done
 Creating dbzui-kafka     ... done
 Creating dbzui-connect   ... done
 
@@ -49,16 +53,21 @@ $ docker-compose down
 Stopping dbzui-connect   ... done
 Stopping dbzui-kafka     ... done
 Stopping dbzui-zookeeper ... done
+Stopping dbzui-db-mongo  ... done
+Stopping debezium-ui_mongo-initializer_1 ... done
 Stopping dbzui-db-pg     ... done
 Removing dbzui-connect   ... done
 Removing dbzui-kafka     ... done
 Removing dbzui-zookeeper ... done
+Removing dbzui-db-mongo  ... done
+Removing debezium-ui_mongo-initializer_1 ... done
 Removing dbzui-db-pg     ... done
 Removing network debezium-ui_dbzui-network
 ```
 
 Kafka Connect REST API with Debezium will be available on local port **8083**.   
 Postgres will be available on local port **65432**.  
+Mongo DB will be availaible after ~20 seconds on local port **37017** (connect via `mongo -u debezium -p dbz --authenticationDatabase admin localhost:37017/inventory`)
 Kafka will be available on local port **9092**.  
 
 ## Build
