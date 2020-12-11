@@ -302,7 +302,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
                 aria-describedby="schema_filter-helper"
                 name="schema_filter"
                 onChange={handleSchemaFilter}
-                placeholder="Enter regular expression(s) for schema filtering"
+                placeholder="e.g schema1,schema2"
               />
             </FlexItem>
             <FlexItem>
@@ -379,7 +379,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
                 type="text"
                 id="table_filter"
                 name="table_filter"
-                placeholder="Enter regular expression(s) for table filtering"
+                placeholder="e.g schema1.*,schema2.table1"
               />
             </FlexItem>
             <FlexItem>
