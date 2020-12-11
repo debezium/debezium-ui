@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
+import io.debezium.config.Field;
 import io.debezium.configserver.model.AdditionalPropertyMetadata;
 import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.heartbeat.DatabaseHeartbeatImpl;
@@ -162,5 +163,10 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
     @Override
     public Map<String, AdditionalPropertyMetadata> allPropertiesWithAdditionalMetadata() {
         return POSTGRES_PROPERTIES;
+    }
+
+    @Override
+    public Field.Set getAllConnectorFields() {
+        return PostgresConnectorConfig.ALL_FIELDS;
     }
 }

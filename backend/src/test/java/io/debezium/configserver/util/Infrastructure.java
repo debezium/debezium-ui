@@ -3,6 +3,7 @@ package io.debezium.configserver.util;
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.debezium.testing.testcontainers.DebeziumContainer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -13,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.lifecycle.Startables;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 public class Infrastructure {
@@ -34,7 +34,7 @@ public class Infrastructure {
             .withNetwork(network)
             .withNetworkAliases("postgres");
 
-    private static final MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:4.0.10")
+    private static final MongoDBContainer mongoDbContainer = new MongoDbContainer("mongo:3.6")
             .withNetwork(network)
             .withNetworkAliases("mongodb");
 
@@ -45,7 +45,7 @@ public class Infrastructure {
             .dependsOn(kafkaContainer);
 
     public static void startContainers(DATABASE database) {
-        GenericContainer<?> dbContainer = null;
+        final GenericContainer<?> dbContainer;
         switch (database) {
             case POSTGRES:
                 dbContainer = postgresContainer;
@@ -54,6 +54,7 @@ public class Infrastructure {
                 dbContainer = mongoDbContainer;
                 break;
             default:
+                dbContainer = null;
                 break;
         }
         Startables.deepStart(Stream.of(kafkaContainer, dbContainer, debeziumContainer)).join();
@@ -90,6 +91,8 @@ public class Infrastructure {
 
     public static ConnectorConfiguration getMongoDbConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbContainer(mongoDbContainer)
+                .with(MongoDbConnectorConfig.USER.name(), "debezium")
+                .with(MongoDbConnectorConfig.PASSWORD.name(), "dbz")
                 .with(MongoDbConnectorConfig.LOGICAL_NAME.name(), "mongo" + id);
 
         if (options != null && options.length > 0) {
