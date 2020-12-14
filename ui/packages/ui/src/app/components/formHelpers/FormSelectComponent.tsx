@@ -81,7 +81,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
         aria-label="Select Input"
         onToggle={onToggle}
         onSelect={onSelect}
-        selections={selected}
+        selections={field.value}
         isOpen={isOpen}
       >
         {selectOptions.map((option, index) => (

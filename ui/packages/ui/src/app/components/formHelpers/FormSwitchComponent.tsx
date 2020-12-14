@@ -11,11 +11,9 @@ export interface IFormSwitchComponentProps {
 }
 
 export const FormSwitchComponent: React.FunctionComponent<IFormSwitchComponentProps> = props => {
-  const [isSwitched, setSwitched] = React.useState(props.isChecked);
   const [field] = useField(props);
-  
   const handleChange = (value: boolean) => {
-    setSwitched(value);
+    props.propertyChange(field.name, value)
     props.setFieldValue(field.name, value);
   };
     return (
@@ -25,7 +23,7 @@ export const FormSwitchComponent: React.FunctionComponent<IFormSwitchComponentPr
         aria-label={props.label}
         label={props.label}
         labelOff={props.label}
-        isChecked={isSwitched}
+        isChecked={field.value}
         onChange={handleChange}
       />
     );
