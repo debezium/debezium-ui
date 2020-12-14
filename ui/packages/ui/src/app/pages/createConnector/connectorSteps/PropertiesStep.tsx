@@ -133,10 +133,17 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
     };
 
     const handlePropertyChange = (propName: string, propValue: any) => {
+      Object.entries(initialValues).forEach(([key]) => {
+        if(key === propName){
+          initialValues[key] = propValue;
+        }
+      });
+      
       propName = propName.replace(/\_/g, ".");
       if (propName === PropertyName.PLUGIN_NAME) {
         setShowPublication(propValue === "Pgoutput");
       }
+      return initialValues;
     };
 
     const initialValues = getInitialValues(
