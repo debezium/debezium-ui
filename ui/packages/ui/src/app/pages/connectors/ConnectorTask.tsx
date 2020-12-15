@@ -1,5 +1,6 @@
-import { Label, Tooltip } from '@patternfly/react-core';
+import { Label, Split, SplitItem } from '@patternfly/react-core';
 import * as React from "react";
+import { HelpInfoIcon } from 'src/app/components/formHelpers/HelpInfoIcon';
 import { ConnectorState } from "src/app/shared";
 import "./ConnectorsTableComponent.css";
 
@@ -39,27 +40,25 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
 
   return (
     <>
-      <Tooltip
-        content={
-          <div>
+      <Split>
+        <SplitItem>
+          <Label
+            className="status-indicator"
+            color={color}
+            data-testid={"connector-status-div"}
+          >
             Task {props.taskId}: {props.task}
-            <div className="errors">
-              {errors.map((errormsg, key) => {
-                  return <div className="error" key={key}>{errormsg}</div>;
-                })
-              }
-            </div>
-          </div>
-        }
-      >
-        <Label
-          className="status-indicator"
-          color={color}
-          data-testid={"connector-status-div"}
-        >
-          Task {props.taskId}: {props.task}
-        </Label>
-      </Tooltip>
+          </Label>
+        </SplitItem>
+        {errors && errors.length > 0 ? (
+          <SplitItem>
+            <HelpInfoIcon
+              label={"Task Status"}
+              description={errors.join(":")}
+            />
+          </SplitItem>
+        ) : null}
+      </Split>
     </>
   );
 };

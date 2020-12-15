@@ -1,4 +1,4 @@
-import { Label, Tooltip } from "@patternfly/react-core";
+import { Label } from "@patternfly/react-core";
 import * as React from "react";
 import { ConnectorState } from "src/app/shared";
   
@@ -31,15 +31,9 @@ import { ConnectorState } from "src/app/shared";
     }
     
     return (
-      <Tooltip
-        content={
-        <div>Status: {props.currentStatus}</div>
-        }
-      >
-        <Label data-testid={"connector-status-label"} color={color}>
-          {props.currentStatus}
-        </Label>
-      </Tooltip>
+      <Label data-testid={"connector-status-label"} color={color}>
+        {props.currentStatus}
+      </Label>
     );
 };
   

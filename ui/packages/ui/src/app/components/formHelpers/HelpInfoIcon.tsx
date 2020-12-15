@@ -20,6 +20,7 @@ export const HelpInfoIcon = (props: IHelpInfoIconProps) => {
       bodyContent={<div>{props.description}</div>}
     >
       <button
+        aria-label={`${props.label} Information popover`}
         onClick={e => e.preventDefault()}
         className="pf-c-form__group-label-help"
       >

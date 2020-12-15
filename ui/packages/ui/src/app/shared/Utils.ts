@@ -327,12 +327,14 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[]): Con
       case PropertyName.POLL_INTERVAL_MS:
         propDefn.gridWidth = 4;
         propDefn.type = "DURATION";
+        propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
         break;
       case PropertyName.SLOT_RETRY_DELAY_MS:
       case PropertyName.STATUS_UPDATE_INTERVAL_MS:
       case PropertyName.XMIN_FETCH_INTERVAL_MS:
         propDefn.gridWidth = 6;
         propDefn.type = "DURATION";
+        propDefn.displayName = propDefn.displayName.replace("(ms)", "");
         break;
       case PropertyName.DATABASE_PORT:
       case PropertyName.SNAPSHOT_FETCH_SIZE:
