@@ -40,7 +40,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MongoDbConnectorConfig.HOSTS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MongoDbConnectorConfig.AUTO_DISCOVER_MEMBERS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MongoDbConnectorConfig.MONGODB_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(MongoDbConnectorConfig.USER.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(MongoDbConnectorConfig.USER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MongoDbConnectorConfig.PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MongoDbConnectorConfig.LOGICAL_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
 
@@ -66,7 +66,6 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MongoDbConnectorConfig.SNAPSHOT_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT, enumArrayToList(MongoDbConnectorConfig.SnapshotMode.values())));
         additionalMetadata.put(MongoDbConnectorConfig.SNAPSHOT_FETCH_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT));
         additionalMetadata.put(MongoDbConnectorConfig.SNAPSHOT_DELAY_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT));
-        additionalMetadata.put(MongoDbConnectorConfig.MAX_COPY_THREADS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
 
         // Data type mapping properties:
         additionalMetadata.put(MongoDbConnectorConfig.TOMBSTONES_ON_DELETE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR));
