@@ -1,0 +1,8 @@
+.form-fragment-component{
+    &-checkbox{
+        margin-right: 20px;
+        &-input{
+            flex-grow:1;
+        }
+    }
+}
