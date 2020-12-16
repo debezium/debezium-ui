@@ -1,0 +1,17 @@
+{
+  "app": {
+    "advancedMappingPropertiesText": "Advanced mapping properties",
+    "advancedPropertiesText": "Advanced Properties",
+    "basicPropertiesText": "Basic Properties",
+    "engineProperties": "Engine properties",
+    "heartbeatProperties": "Heartbeat properties",
+    "mappingPropertiesText": "Mapping properties",
+    "snapshotPropertiesText": "Snapshot properties",
+    "Delete": "Delete",
+    "Name": "Name",
+    "reviewMessage": "Review the properties to be used for creation of connector '{{connectorName}}'. Click 'Finish' to create the connector.",
+    "reviewTitle": "Review Connector Properties", 
+    "Status": "Status",
+    "Tasks": "Tasks"
+  }
+}

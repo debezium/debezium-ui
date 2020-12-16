@@ -3,7 +3,8 @@ import * as React from "react";
 import { mapToObject, maskPropertyValues } from 'src/app/shared';
 
 export interface IReviewStepComponentProps {
-  connectorName: string;
+  i18nReviewTitle: string;
+  i18nReviewMessage: string;
   propertyValues: Map<string, string>;
 }
 
@@ -13,11 +14,10 @@ export const ReviewStepComponent: React.FC<IReviewStepComponentProps> = (
   return (
     <>
       <Title headingLevel="h2" size="3xl">
-        Review Connector Properties
+        {props.i18nReviewTitle}
       </Title>
       <Text component={TextVariants.h2}>
-        Review the properties to be used for creation of connector '
-        {props.connectorName}'. Click 'Finish' to create the connector.
+        {props.i18nReviewMessage}
       </Text>
       <Text component={"pre"} className={"pf-u-text-align-left"}>
       {JSON.stringify(maskPropertyValues(mapToObject(props.propertyValues)), null, 2)}

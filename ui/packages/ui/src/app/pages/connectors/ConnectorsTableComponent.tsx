@@ -13,6 +13,7 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 import { cellWidth, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { PageLoader, ToastAlertComponent } from "src/app/components";
 import { AppLayoutContext } from 'src/app/Layout/AppLayoutContext';
 import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry } from "src/app/shared";
@@ -42,6 +43,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const [alerts, setAlerts] = React.useState<any[]>([]);
   const [connectorToDelete, setConnectorToDelete] = React.useState('');
+  const { t } = useTranslation(['app']);
 
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
@@ -139,15 +141,15 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       columnTransforms: [cellWidth(10)]
     }, 
     { 
-      title: 'Name', 
+      title: t('Name'), 
       columnTransforms: [cellWidth(40)]
     }, 
     { 
-      title: 'Status', 
+      title: t('Status'), 
       columnTransforms: [cellWidth(20)]
     }, 
     { 
-      title: 'Tasks', 
+      title: t('Tasks'), 
       columnTransforms: [cellWidth(30)]
     }
   ];
@@ -198,7 +200,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const tableActionResolver = () => {
     return [
       {
-        title: 'Delete',
+        title: t('Delete'),
         onClick: (event, rowId, rowData, extra) => {
           setConnectorToDelete(rowData.connName);
           showConfirmationDialog();

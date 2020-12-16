@@ -15,6 +15,9 @@ import "./DataOptionsComponent.css";
 export interface IDataOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  i18nAdvancedMappingPropertiesText: string;
+  i18nMappingPropertiesText: string;
+  i18nSnapshotPropertiesText: string;
   setDataOptionsValid: () => void;
   setDataStepsValid: () => void;
   onValidateProperties: (
@@ -138,8 +141,8 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                   <ExpandableSection
                     toggleText={
                       snapshotExpanded
-                        ? "Snapshot properties"
-                        : "Snapshot properties"
+                        ? props.i18nSnapshotPropertiesText
+                        : props.i18nSnapshotPropertiesText
                     }
                     onToggle={onToggleSnapshot}
                     isExpanded={snapshotExpanded}
@@ -178,8 +181,8 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                   <ExpandableSection
                     toggleText={
                       mappingExpanded
-                        ? "Mapping properties"
-                        : "Mapping properties"
+                        ? props.i18nMappingPropertiesText
+                        : props.i18nMappingPropertiesText
                     }
                     onToggle={onToggleMapping}
                     isExpanded={mappingExpanded}
@@ -218,7 +221,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                       headingLevel="h3"
                       className={"data-options-component-grouping"}
                     >
-                      Advanced mapping properties
+                      {props.i18nAdvancedMappingPropertiesText}
                     </Title>
                     <Grid
                       hasGutter={true}
