@@ -3,6 +3,7 @@ import * as React from 'react';
 import { FormCheckboxComponent } from './FormCheckboxComponent';
 import { FormDurationComponent } from './FormDurationComponent';
 import { FormInputComponent } from './FormInputComponent';
+import { FormMaskOrTruncateComponent } from './FormMaskOrTruncateComponent';
 import { FormSelectComponent } from './FormSelectComponent';
 import { FormSwitchComponent } from './FormSwitchComponent';
 
@@ -70,8 +71,23 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         setFieldValue={props.setFieldValue}
       />
     );
-    // Any other - Text input
-  } else {
+     // FRAGMENT
+  } else if (props.propertyDefinition.type === "FRAGMENT") {
+    return (
+      <FormMaskOrTruncateComponent
+        description={props.propertyDefinition.description}
+        isRequired={props.propertyDefinition.isMandatory}
+        fieldId={props.propertyDefinition.name}
+        helperTextInvalid={props.helperTextInvalid}
+        label={props.propertyDefinition.displayName}
+        name={props.propertyDefinition.name}
+        propertyChange={props.propertyChange}
+        setFieldValue={props.setFieldValue}
+      />
+    );
+    
+   // Any other - Text input
+  }  else {
     return (
       <FormInputComponent
         isRequired={props.propertyDefinition.isMandatory}

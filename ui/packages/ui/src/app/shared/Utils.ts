@@ -46,9 +46,9 @@ export enum PropertyName {
   TIME_PRECISION_MODE = "time.precision.mode",
   TOMBSTONES_ON_DELETE = "tombstones.on.delete",
   MESSAGE_KEY_COLUMNS = "message.key.columns",
-  COLUMN_MASK_HASH_PREFIX = "column.mask.hash",
-  COLUMN_MASK_WITH_PREFIX = "column.mask.with",
-  COLUMN_TRUNCATE_PREFIX = "column.truncate.to",
+  COLUMN_MASK_HASH_PREFIX = "column.mask.hash.([^.]+).with.salt.(.+)",
+  COLUMN_MASK_WITH_PREFIX = "column.mask.with.(d+).chars",
+  COLUMN_TRUNCATE_PREFIX = "column.truncate.to.(d+).chars",
   INCLUDE_UNKNOWN_DATATYPES = "include.unknown.datatypes",
   TOASTED_VALUE_PLACEHOLDER = "toasted.value.placeholder",
   PROVIDE_TRANSACTION_METADATA = "provide.transaction.metadata",
@@ -268,11 +268,17 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
       if (propDefn.isMandatory) {
         minimizedValues.set(key, value);
       // Include non-mandatory if has default and value is different
-      } else if (propDefn.defaultValue) {
+      }else if (propDefn.defaultValue) {
         if (propDefn.defaultValue !== value) {
           minimizedValues.set(key, value);
         }
-      // Include non-mandatory if no default, and not empty
+      }else if(propDefn.name.includes('(d+)_chars') && value !== ""){
+        const [a,b] = value.split('&&');
+        const updatedKey = key.replace('(d+)',b);
+        if(a !== '' && b !== ''){
+          minimizedValues.set(updatedKey, a);
+        }
+        // Include non-mandatory if no default, and not empty
       } else if (value !== "") {
         minimizedValues.set(key, value);
       }
@@ -342,7 +348,12 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[]): Con
       case PropertyName.MAX_BATCH_SIZE:
         propDefn.gridWidth = 4;
         propDefn.type =  "NON-NEG-INT";
-      break;
+        break;
+      case PropertyName.COLUMN_TRUNCATE_PREFIX:
+      case PropertyName.COLUMN_MASK_WITH_PREFIX:
+        propDefn.gridWidth = 12;
+        propDefn.type =  "FRAGMENT";
+        break;
       default:
         propDefn.gridWidth = 12;
         break;

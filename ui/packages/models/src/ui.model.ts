@@ -101,7 +101,8 @@ export interface ConnectorProperty {
           'DOUBLE' | 
           'LIST' | 
           'CLASS' | 
-          'PASSWORD';
+          'PASSWORD'|
+          'FRAGMENT';
 }
 
 /**
