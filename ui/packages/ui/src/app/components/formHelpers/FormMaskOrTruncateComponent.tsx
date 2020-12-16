@@ -10,10 +10,10 @@ import {
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useField } from "formik";
 import * as React from "react";
-import "./FormFragmentComponent.css";
+import "./FormMaskOrTruncateComponent.css";
 import { HelpInfoIcon } from "./HelpInfoIcon";
 
-export interface IFormFragmentComponentProps {
+export interface IFormMaskOrTruncateComponentProps {
   label: string;
   description: string;
   name: string;
@@ -29,7 +29,7 @@ export interface IFormFragmentComponentProps {
   ) => void;
 }
 
-export const FormFragmentComponent: React.FunctionComponent<IFormFragmentComponentProps> = (
+export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTruncateComponentProps> = (
   props
 ) => {
   const [field] = useField(props);
@@ -59,6 +59,12 @@ export const FormFragmentComponent: React.FunctionComponent<IFormFragmentCompone
   };
 
   const id = field.name;
+  const handleKeyPress = (keyEvent: KeyboardEvent) => {
+    // do not allow entry of '.' or '-'
+    if (keyEvent.key === "." || keyEvent.key === "-") {
+      keyEvent.preventDefault();
+    }
+  };
 
   return (
     <FormGroup
@@ -75,9 +81,9 @@ export const FormFragmentComponent: React.FunctionComponent<IFormFragmentCompone
       <InputGroup>
         <Grid>
           <GridItem span={9}>
-            <Flex className={'form-fragment-component-checkbox'}>
+            <Flex className={'form-mask-or-truncate-component-column'}>
               <FlexItem>Column:</FlexItem>
-              <FlexItem className={'form-fragment-component-checkbox-input'}>
+              <FlexItem className={'form-mask-or-truncate-component-column-input'}>
                 <TextInput 
                   data-testid={id}
                   id={id}
@@ -85,6 +91,7 @@ export const FormFragmentComponent: React.FunctionComponent<IFormFragmentCompone
                   validated={props.validated}
                   onChange={handleTextInputChange}
                   defaultValue={field.value.split("&&")[0]}
+                  onKeyPress={(event) => handleKeyPress(event as any)}
                 />
               </FlexItem>
             </Flex>
@@ -94,12 +101,14 @@ export const FormFragmentComponent: React.FunctionComponent<IFormFragmentCompone
               <FlexItem>n:</FlexItem>
               <FlexItem>
                 <TextInput
+                  min={"1"}
                   data-testid={id}
                   id={"n"}
                   type={"number"}
                   validated={props.validated}
                   onChange={handleTextInputChange}
                   defaultValue={field.value.split("&&")[1]}
+                  onKeyPress={(event) => handleKeyPress(event as any)}
                 />
               </FlexItem>
             </Flex>

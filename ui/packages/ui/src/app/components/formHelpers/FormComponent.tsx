@@ -2,8 +2,8 @@ import { ConnectorProperty } from '@debezium/ui-models';
 import * as React from 'react';
 import { FormCheckboxComponent } from './FormCheckboxComponent';
 import { FormDurationComponent } from './FormDurationComponent';
-import { FormFragmentComponent } from './FormFragmentComponent';
 import { FormInputComponent } from './FormInputComponent';
+import { FormMaskOrTruncateComponent } from './FormMaskOrTruncateComponent';
 import { FormSelectComponent } from './FormSelectComponent';
 import { FormSwitchComponent } from './FormSwitchComponent';
 
@@ -74,7 +74,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
      // FRAGMENT
   } else if (props.propertyDefinition.type === "FRAGMENT") {
     return (
-      <FormFragmentComponent
+      <FormMaskOrTruncateComponent
         description={props.propertyDefinition.description}
         isRequired={props.propertyDefinition.isMandatory}
         fieldId={props.propertyDefinition.name}

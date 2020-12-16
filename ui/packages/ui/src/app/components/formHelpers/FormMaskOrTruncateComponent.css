@@ -1,5 +1,5 @@
-.form-fragment-component{
-    &-checkbox{
+.form-mask-or-truncate-component{
+    &-column{
         margin-right: 20px;
         &-input{
             flex-grow:1;
