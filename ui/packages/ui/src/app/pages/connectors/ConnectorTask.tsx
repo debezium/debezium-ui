@@ -2,12 +2,12 @@ import { Label, Split, SplitItem } from '@patternfly/react-core';
 import * as React from "react";
 import { HelpInfoIcon } from 'src/app/components/formHelpers/HelpInfoIcon';
 import { ConnectorState } from "src/app/shared";
-import "./ConnectorsTableComponent.css";
+import "./ConnectorTask.css";
 
 export interface IConnectorTaskProps {
-  task: string;
+  status: string;
   taskId: string;
-  errors: any;
+  errors?: any;
 }
 
 /**
@@ -17,7 +17,7 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
   props
 ) => {
   let color: "grey" | "green" | "red" | "orange" = "grey";
-  switch (props.task) {
+  switch (props.status) {
     case ConnectorState.DESTROYED:
     case ConnectorState.FAILED:
       color = "red";
@@ -33,9 +33,11 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
       break;
   }
 
-  let errors = [];
+  const errors: JSX.Element[] = [];
   if (props.errors) {
-    errors =  props.errors;
+    props.errors.forEach( (error: string) => {
+      errors.push(<div className="connector-task-error">{error}</div>)
+    });
   }
 
   return (
@@ -47,14 +49,14 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
             color={color}
             data-testid={"connector-status-div"}
           >
-            Task {props.taskId}: {props.task}
+            Task {props.taskId}: {props.status}
           </Label>
         </SplitItem>
         {errors && errors.length > 0 ? (
           <SplitItem>
             <HelpInfoIcon
-              label={"Task Status"}
-              description={errors.join(":")}
+              label={"Task Status Detail"}
+              description={<div>{errors}</div>}
             />
           </SplitItem>
         ) : null}

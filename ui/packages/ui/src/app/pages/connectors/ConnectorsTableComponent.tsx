@@ -110,7 +110,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       taskElements.push(
         <ConnectorTask
           key={id}
-          task={taskState.taskStatus}
+          status={taskState.taskStatus}
           taskId={id}
           errors={taskState.errors}
         />

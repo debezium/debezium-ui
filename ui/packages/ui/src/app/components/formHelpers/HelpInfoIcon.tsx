@@ -6,7 +6,7 @@ import React from 'react';
 
 export interface IHelpInfoIconProps {
   label: string,
-  description: string,
+  description: string | JSX.Element,
 }
 
 export const HelpInfoIcon = (props: IHelpInfoIconProps) => {
