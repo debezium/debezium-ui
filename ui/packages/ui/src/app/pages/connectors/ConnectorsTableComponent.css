@@ -9,15 +9,22 @@
     margin-top: var(--pf-global--spacer--sm);
   }  
   &_toolbarFlex {
-    align-items: center;
     padding: var(--pf-global--spacer--sm) 0;
-
-    div:first-child{
+    border-bottom: 1px solid var(--pf-global--palette--black-200);
+    .flexCol {
+      flex-direction: column;
+    }
+    div:nth-child(2){
       margin-right: var(--pf-global--spacer--xl);;
     }
     .pf-c-button{
       &.pf-m-primary{
         margin-bottom: 0;
+      }
+    }
+    .pf-c-toolbar{
+      &__content{
+        padding: 0;
       }
     }
   }

@@ -2,15 +2,22 @@ import { Connector } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  DropdownToggle,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Flex,
   FlexItem,
-  Title
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem
 } from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+import { CubesIcon, FilterIcon, SortAmountDownIcon } from "@patternfly/react-icons";
 import { cellWidth, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
 import { useTranslation } from 'react-i18next';
@@ -22,13 +29,12 @@ import { ConnectorIcon } from './ConnectorIcon';
 import "./ConnectorsTableComponent.css";
 import { ConnectorStatus } from './ConnectorStatus';
 import { ConnectorTask } from './ConnectorTask';
-
 type ICreateConnectorCallbackFn = (connectorNames: string[], clusterId: number) => void
 
 interface IConnectorsTableComponentProps {
   clusterId: number
   title: string
-  createConnectorCallback: ICreateConnectorCallbackFn;
+  createConnectorCallback: ICreateConnectorCallbackFn
 }
 
 export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableComponentProps> = (props: IConnectorsTableComponentProps) => {
@@ -44,7 +50,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [alerts, setAlerts] = React.useState<any[]>([]);
   const [connectorToDelete, setConnectorToDelete] = React.useState('');
   const { t } = useTranslation(['app']);
-
+  const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
+  const [currentCategory, setCurrentCategory] = React.useState('Name');
+  
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
     const uId = new Date().getTime();
@@ -131,8 +139,12 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   }, [alerts]);
 
   React.useEffect(() => {
-    const getConnectorsInterval = setInterval(() => getConnectorsList(), 10000);
-    return () => clearInterval(getConnectorsInterval);;
+    getConnectorsList();
+    const getConnectorsInterval = setInterval(() => {
+      getConnectorsList()
+      setCurrentCategory('Name') // reset table sorting to default
+    }, 50000)
+    return () => clearInterval(getConnectorsInterval);
   },[]);
 
   const columns = [
@@ -153,15 +165,37 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       columnTransforms: [cellWidth(30)]
     }
   ];
+
+  const sortFieldsItem = [
+    { title: 'Name', isPlaceholder: true },
+    { title: 'Status'},
+    { title: 'Tasks'}
+  ];
   
-  const updateTableRows = (conns: Connector[]) => {
+  const updateTableRows = (conns: Connector[], sortBy: string = 'Name') => {
+    let sortedConns: Connector[] = [];
     setConnectors(conns);
-
-    // Sort connectors by name for the table
-    const sortedConns: Connector[] = conns.sort((thisConn, thatConn) => {
-      return thisConn.name.localeCompare(thatConn.name);
-    });
-
+    
+    switch(sortBy) {
+      case 'Status':
+        // Sort connectors by status for the table
+        sortedConns = conns.sort((thisConn, thatConn) => {
+          return thisConn.connectorStatus.localeCompare(thatConn.connectorStatus);
+        });
+        break;
+      case 'Tasks':
+        // Sort connectors by tasks for the table
+        sortedConns = conns.sort((thisConn, thatConn) => {
+          return thisConn.taskStates[0].taskStatus.localeCompare(thatConn.taskStates[0].taskStatus) ? -1 : 1;
+        });
+        break;
+      default:
+        // Sort connectors by name for the table
+        sortedConns = conns.sort((thisConn, thatConn) => {
+          return thisConn.name.localeCompare(thatConn.name);
+        });
+    }
+    
     // Create table rows
     const rows: any[] = [];
     for (const conn of sortedConns) {
@@ -208,7 +242,43 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       }
     ];
   }
-    
+
+  const onSortingSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sortBy = e.target.innerText;
+    setCurrentCategory(sortBy)
+    setIsSortingDropdownOpen(!isSortingDropdownOpen)
+    updateTableRows(connectors, sortBy)
+  };
+
+  const onSortingToggle = (isOpen) => {
+    setIsSortingDropdownOpen(isOpen)
+  };
+  
+  const toolbarItems = (
+    <React.Fragment>
+      <ToolbarContent>
+        <ToolbarItem>
+          <Dropdown
+            onSelect={onSortingSelect}
+            position={DropdownPosition.left}
+            toggle={
+              <DropdownToggle onToggle={onSortingToggle}>
+                <FilterIcon size="sm" /> {currentCategory}
+              </DropdownToggle>
+            }
+            isOpen={isSortingDropdownOpen}
+            dropdownItems={sortFieldsItem.map((item, index) => (
+              <DropdownItem key={index}>{item.title}</DropdownItem>
+            ))}
+          />
+        </ToolbarItem>
+        <ToolbarItem>
+          <SortAmountDownIcon size="sm" />
+        </ToolbarItem>
+      </ToolbarContent>
+    </React.Fragment>
+  );    
+
   return (
     <WithLoader
       error={apiError}
@@ -234,13 +304,19 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 onConfirm={doDelete}
               />
               <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} />
-              <Flex className="connectors-page_toolbarFlex">
+              <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
                 <FlexItem>
                   {props.title ? (
                     <Title headingLevel={"h1"}>Connectors</Title>
                   ) : (
                     ""
                   )}
+                  <p>The list shows all the connectors that you have been created, you can also create a new connector by clicking create a connector button.</p>
+                </FlexItem>
+              </Flex>
+              <Flex className="connectors-page_toolbarFlex">
+                <FlexItem>
+                  <Toolbar>{toolbarItems}</Toolbar>
                 </FlexItem>
                 <FlexItem>
                   <Button
