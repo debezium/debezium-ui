@@ -51,7 +51,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [connectorToDelete, setConnectorToDelete] = React.useState('');
   const { t } = useTranslation(['app']);
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
-  const [currentCategory, setCurrentCategory] = React.useState('Name');
+  const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
   
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
@@ -139,13 +139,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   }, [alerts]);
 
   React.useEffect(() => {
-    getConnectorsList();
-    const getConnectorsInterval = setInterval(() => {
-      getConnectorsList()
-      setCurrentCategory('Name') // reset table sorting to default
-    }, 50000)
+    const getConnectorsInterval = setInterval(() => getConnectorsList(), 10000)
     return () => clearInterval(getConnectorsInterval);
-  },[]);
+  },[currentCategory]);
 
   const columns = [
     {
@@ -172,18 +168,26 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     { title: 'Tasks'}
   ];
   
-  const updateTableRows = (conns: Connector[], sortBy: string = 'Name') => {
+  const updateTableRows = (conns: Connector[], sortBy: string = currentCategory) => {
     let sortedConns: Connector[] = [];
     setConnectors(conns);
     
     switch(sortBy) {
       case 'Status':
+        // Sort connectors by name for the table
+        sortedConns = conns.sort((thisConn, thatConn) => {
+          return thisConn.name.localeCompare(thatConn.name);
+        });
         // Sort connectors by status for the table
         sortedConns = conns.sort((thisConn, thatConn) => {
           return thisConn.connectorStatus.localeCompare(thatConn.connectorStatus);
         });
         break;
       case 'Tasks':
+        // Sort connectors by name for the table
+        sortedConns = conns.sort((thisConn, thatConn) => {
+          return thisConn.name.localeCompare(thatConn.name);
+        });
         // Sort connectors by tasks for the table
         sortedConns = conns.sort((thisConn, thatConn) => {
           return thisConn.taskStates[0].taskStatus.localeCompare(thatConn.taskStates[0].taskStatus) ? -1 : 1;
