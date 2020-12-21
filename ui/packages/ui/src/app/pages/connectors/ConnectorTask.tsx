@@ -35,8 +35,8 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
 
   const errors: JSX.Element[] = [];
   if (props.errors) {
-    props.errors.forEach( (error: string) => {
-      errors.push(<div className="connector-task-error">{error}</div>)
+    props.errors.forEach( (error: string, index) => {
+      errors.push(<div key ={index} className="connector-task-error">{error}</div>)
     });
   }
 
