@@ -22,6 +22,7 @@ import {
 } from "@patternfly/react-core";
 import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
+import { useTranslation } from 'react-i18next';
 import { ToastAlertComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
@@ -158,6 +159,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const [connectorCreateFailed, setConnectorCreateFailed] = React.useState<
     boolean
   >(false);
+
+  const { t } = useTranslation(['app']);
 
   const connectionPropsRef = React.useRef();
   const dataOptionRef = React.useRef();
@@ -598,6 +601,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             selectedConnectorPropertyDefns
           )}
           advancedPropertyValues={advancedPropValues}
+          i18nAdvancedPropertiesText={t('advancedPropertiesText')}
+          i18nBasicPropertiesText={t('basicPropertiesText')}
           onValidateProperties={handleValidateConnectionProperties}
           ref={connectionPropsRef}
           setConnectionPropsValid={setConnectionPropsValid}
@@ -694,6 +699,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 selectedConnectorPropertyDefns
               )}
               propertyValues={dataOptionsPropValues}
+              i18nAdvancedMappingPropertiesText={t('advancedMappingPropertiesText')}
+              i18nMappingPropertiesText={t('mappingPropertiesText')}
+              i18nSnapshotPropertiesText={t('snapshotPropertiesText')}
               onValidateProperties={handleValidateOptionProperties}
               ref={dataOptionRef}
               setDataOptionsValid={setDataOptionsValid}
@@ -739,6 +747,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 selectedConnectorPropertyDefns
               )}
               propertyValues={runtimeOptionsPropValues}
+              i18nEngineProperties={t('engineProperties')}
+              i18nHeartbeatProperties={t('heartbeatProperties')}
               onValidateProperties={handleValidateOptionProperties}
               ref={runtimeOptionRef}
               setRuntimeOptionsValid={setRuntimeOptionsValid}
@@ -783,7 +793,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     name: REVIEW_STEP,
     component: (
       <ReviewStepComponent
-        connectorName={getConnectorName()!}
+        i18nReviewMessage={t('reviewMessage', {
+          connectorName: getConnectorName(),
+        })}
+        i18nReviewTitle={t('reviewTitle')}
         propertyValues={getFinalProperties(finishStepName)}
       />
     ),

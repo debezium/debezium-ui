@@ -74,6 +74,8 @@
     "@patternfly/react-icons": "^4.7.16",
     "@patternfly/react-table": "^4.19.24",
     "formik": "^2.1.5",
+    "i18next": "^19.4.4",
+    "i18next-browser-languagedetector": "^4.0.1",
     "lodash": "^4.17.20",
     "react": "16.13.1",
     "react-ace": "8.1.0",

@@ -11,6 +11,8 @@ import "./RuntimeOptionsComponent.css";
 export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  i18nEngineProperties: string;
+  i18nHeartbeatProperties: string;
   setRuntimeOptionsValid: () => void;
   setRuntimeStepsValid: () => void;
   onValidateProperties: (
@@ -142,8 +144,8 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                   <ExpandableSection
                     toggleText={
                       engineExpanded
-                        ? "Engine properties"
-                        : "Engine properties"
+                        ? props.i18nEngineProperties
+                        : props.i18nEngineProperties
                     }
                     onToggle={onToggleEngine}
                     isExpanded={engineExpanded}
@@ -182,8 +184,8 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                   <ExpandableSection
                     toggleText={
                       heartbeatExpanded
-                        ? "Heartbeat properties"
-                        : "Heartbeat properties"
+                        ? props.i18nHeartbeatProperties
+                        : props.i18nHeartbeatProperties
                     }
                     onToggle={onToggleHeartbeat}
                     isExpanded={heartbeatExpanded}

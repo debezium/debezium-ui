@@ -1,0 +1,17 @@
+{
+  "app": {
+    "advancedMappingPropertiesText": "Proprietà di mappatura avanzate",
+    "advancedPropertiesText": "Proprietà avanzate",
+    "basicPropertiesText": "Proprietà di base",
+    "engineProperties": "Proprietà del motore",
+    "heartbeatProperties": "Proprietà del battito cardiaco",
+    "mappingPropertiesText": "Proprietà di mappatura",
+    "snapshotPropertiesText": "Proprietà snapshot",
+    "Delete": "Elimina",
+    "Name": "Nome",
+    "reviewMessage": "Rivedere le proprietà da utilizzare per la creazione del connettore '{{connectorName}}'. Fare clic su 'Fine' per creare il connettore.",
+    "reviewTitle": "Rivedi le proprietà del connettore", 
+    "Status": "Stato",
+    "Tasks": "Compiti"
+  }
+}

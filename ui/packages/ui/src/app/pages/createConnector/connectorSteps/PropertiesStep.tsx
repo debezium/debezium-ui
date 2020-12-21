@@ -18,6 +18,8 @@ export interface IPropertiesStepProps {
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
+  i18nAdvancedPropertiesText: string;
+  i18nBasicPropertiesText: string;
   setConnectionPropsValid: () => void;
   setConnectionStepsValid: () => void;
   onValidateProperties: (
@@ -207,8 +209,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                   <ExpandableSection
                     toggleText={
                       basicExpanded
-                        ? "Basic properties"
-                        : "Basic properties"
+                        ? props.i18nBasicPropertiesText
+                        : props.i18nBasicPropertiesText
                     }
                     onToggle={onToggleBasic}
                     isExpanded={basicExpanded}
@@ -247,8 +249,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                   <ExpandableSection
                     toggleText={
                       advancedExpanded
-                        ? "Advanced properties"
-                        : "Advanced properties"
+                        ? props.i18nAdvancedPropertiesText
+                        : props.i18nAdvancedPropertiesText
                     }
                     onToggle={onToggleAdvanced}
                     isExpanded={advancedExpanded}
