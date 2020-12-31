@@ -17,7 +17,7 @@ import {
   ToolbarContent,
   ToolbarItem
 } from "@patternfly/react-core";
-import { CubesIcon, FilterIcon, SortAmountDownIcon } from "@patternfly/react-icons";
+import { CubesIcon, FilterIcon, SortAmountDownIcon, SortAmountUpIcon } from "@patternfly/react-icons";
 import { cellWidth, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
 import { useTranslation } from 'react-i18next';
@@ -52,6 +52,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const { t } = useTranslation(['app']);
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
+  const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
   
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
@@ -247,6 +248,11 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ];
   }
 
+  const toggleRowOrder = () =>{
+    setTableRows([...tableRows].reverse());
+    setDesRowOrder(!desRowOrder);
+  }
+
   const onSortingSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sortBy = e.target.innerText;
     setCurrentCategory(sortBy)
@@ -277,7 +283,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           />
         </ToolbarItem>
         <ToolbarItem>
-          <SortAmountDownIcon size="sm" />
+          {desRowOrder ? <SortAmountUpIcon size="sm" onClick={toggleRowOrder}/> :
+           <SortAmountDownIcon size="sm" onClick={toggleRowOrder}/>} 
         </ToolbarItem>
       </ToolbarContent>
     </React.Fragment>
