@@ -8,6 +8,8 @@ export interface IConnectorTaskProps {
   status: string;
   taskId: string;
   errors?: any;
+  i18nTask: string;
+  i18nTaskStatusDetail: string;
 }
 
 /**
@@ -49,13 +51,13 @@ export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
             color={color}
             data-testid={"connector-status-div"}
           >
-            Task {props.taskId}: {props.status}
+             {props.i18nTask +' '+ props.taskId}: {props.status}
           </Label>
         </SplitItem>
         {errors && errors.length > 0 ? (
           <SplitItem>
             <HelpInfoIcon
-              label={"Task Status Detail"}
+              label={props.i18nTaskStatusDetail}
               description={<div>{errors}</div>}
             />
           </SplitItem>

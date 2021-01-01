@@ -19,6 +19,10 @@ export interface IFilterTreeComponentProps {
   apiError: boolean;
   errorMsg: Error;
   invalidMsg: Map<string,string> | undefined;
+  i18nNoMatchingTables: string;
+  i18nNoMatchingFilterExpMsg: string;
+  i18nInvalidFilters: string;
+  i18nInvalidFilterExpText: string;
 }
 export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentProps> = (
   props
@@ -40,20 +44,20 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
           <EmptyState variant={EmptyStateVariant.small}>
             <EmptyStateIcon icon={CubesIcon} />
             <Title headingLevel="h4" size="lg">
-              {"No matching tables"}
+              {props.i18nNoMatchingTables}
             </Title>
             <EmptyStateBody className="filter-tree-component_emptyBody">
-              {"No tables matched the specified filters"}
+              {props.i18nNoMatchingFilterExpMsg}
             </EmptyStateBody>
           </EmptyState>
         ) : (
           <EmptyState variant={EmptyStateVariant.small}>
             <EmptyStateIcon icon={ExclamationCircleIcon} />
             <Title headingLevel="h4" size="lg">
-              {"Invalid filter(s)"}
+              {props.i18nInvalidFilters}
             </Title>
             <EmptyStateBody className="filter-tree-component_emptyBody">
-              {"The expression(s) for table filtering are invalid, please correct and try again."}
+              {props.i18nInvalidFilterExpText}
             </EmptyStateBody>
           </EmptyState>
         ) : (

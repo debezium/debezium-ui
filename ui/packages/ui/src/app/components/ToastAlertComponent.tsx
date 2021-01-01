@@ -12,6 +12,7 @@ import React from "react";
 export interface IToastAlertComponentProps {
   alerts: any[];
   removeAlert: (key: string)=> void;
+  i18nDetails: string;
 }
 export const ToastAlertComponent: React.FunctionComponent<IToastAlertComponentProps> = (
   props
@@ -35,7 +36,7 @@ export const ToastAlertComponent: React.FunctionComponent<IToastAlertComponentPr
         >
           {message && (
             <TextContent>
-              <Text component={TextVariants.h6}>Details:</Text>
+              <Text component={TextVariants.h6}>{props.i18nDetails}</Text>
               <Text component={TextVariants.p}>{message}</Text>
             </TextContent>
           )}
