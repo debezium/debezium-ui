@@ -11,11 +11,12 @@ import {
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 
 export const PageNotFound: React.FC = () => {
-
+    const { t } = useTranslation(["app"]);
     const history = useHistory();
 
     const onHomeClick = () =>{
@@ -26,12 +27,12 @@ export const PageNotFound: React.FC = () => {
         <EmptyState variant={EmptyStateVariant.full}>
             <EmptyStateIcon icon={ExclamationCircleIcon} />
             <Title headingLevel="h5" size="lg">
-                404 Error: page not found
+                404 Error: {t('pageNotFound')}
             </Title>
             <EmptyStateBody>
-                This page couldn't be found.  If you think this is a bug, please report the issue.
+                {t('pageNotFoundMsg')}
             </EmptyStateBody>
-            <Button variant="primary" data-testid="error-btn-artifacts" onClick={onHomeClick}>Take back to home</Button>
+            <Button variant="primary" data-testid="error-btn-artifacts" onClick={onHomeClick}>{t('takeBackToHome')}</Button>
         </EmptyState>
     </PageSection>)
 };

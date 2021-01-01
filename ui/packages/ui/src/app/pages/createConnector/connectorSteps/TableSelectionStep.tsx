@@ -40,6 +40,29 @@ export interface ITableSelectionStepProps {
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val:SetStateAction<boolean>) => void;
+  i18nFilterSchemaInfoMsg: string;
+  i18nFilterTableInfoMsg: string;
+  i18nTableSelection: string;
+  i18nFilterPageHeadingText: string;
+  i18nSchemaFilter: string;
+  i18nSchemaFilterHelperText: string;
+  i18nInclude: string;
+  i18nExclude: string;
+  i18nTableFilter: string;
+  i18nTableFilterHelperText: string;
+  i18nApply: string;
+  i18nClearFilters: string;
+  i18nInvalidFilterText: string;
+  i18nMatchingFilterExpMsg: string;
+  i18nNoMatchingFilterExpMsg: string;
+  i18nClearFilterText: string;
+  i18nFilterExpressionResultText: string;
+  i18nCancel: string;
+  i18nClear: string;
+  i18nClearFilterConfMsg: string;
+  i18nNoMatchingTables: string;
+  i18nInvalidFilters: string;
+  i18nInvalidFilterExpText: string;
 }
 
 const formatResponseData = (data: DataCollection[]) => {
@@ -122,8 +145,8 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
-  const schemaFilterInfo = "A comma-separated list of regular expressions for schema filtering (e.g schema1,schema2).  Click for more information about regular expressions:";
-  const tableFilterInfo = "A comma-separated list of regular expressions for table filtering (e.g schema1.*,schema2.table1).  Click for more information about regular expressions:";
+  const schemaFilterInfo = props.i18nFilterSchemaInfoMsg;
+  const tableFilterInfo = props.i18nFilterTableInfoMsg;
 
   const handleSchemaFilter = (val: string) => {
     setSchemaFilter(val);
@@ -241,14 +264,14 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
   return (
     <>
       <Title headingLevel="h2" size="3xl">
-        Table Selection
+        {props.i18nTableSelection}
       </Title>
       <Text component={TextVariants.h2}>
-        Select tables for change capture by entering comma-separated lists of regular expressions for schemas and tables.
+        {props.i18nFilterPageHeadingText}
       </Text>
       <Form className="table-selection-step_form">
         <FormGroup
-          label="Schema filter"
+          label={props.i18nSchemaFilter}
           fieldId="schema_filter"
           helperText={
             schemaSelected === "schemaExclude" ? (
@@ -257,7 +280,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
                 className="table-selection-step_info"
               >
                 <InfoCircleIcon />
-                Schemas matching the regular expression filters will be excluded.
+                {props.i18nSchemaFilterHelperText}
               </Text>
             ) : (
               ""
@@ -312,21 +335,21 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
                   isSelected={schemaSelected === "schemaInclude"}
                   onChange={handleSchemaToggle}
                   onClick={(e) => e.preventDefault()}
-                  text="Include"
+                  text={props.i18nInclude}
                 />
                 <ToggleGroupItem
                   buttonId="schemaExclude"
                   isSelected={schemaSelected === "schemaExclude"}
                   onChange={handleSchemaToggle}
                   onClick={(e) => e.preventDefault()}
-                  text="Exclude"
+                  text={props.i18nExclude}
                 />
               </ToggleGroup>
             </FlexItem>
           </Flex>
         </FormGroup>
         <FormGroup
-          label="Table filter"
+          label={props.i18nTableFilter}
           fieldId="table_filter"
           helperText={
             tableSelected === "tableExclude" ? (
@@ -335,7 +358,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
                 className="table-selection-step_info"
               >
                 <InfoCircleIcon />
-                Tables matching the regular expression filters will be excluded.
+                {props.i18nTableFilterHelperText}
               </Text>
             ) : (
               ""
@@ -389,14 +412,14 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
                   isSelected={tableSelected === "tableInclude"}
                   onChange={handleTableToggle}
                   onClick={(e) => e.preventDefault()}
-                  text="Include"
+                  text={props.i18nInclude}
                 />
                 <ToggleGroupItem
                   buttonId="tableExclude"
                   isSelected={tableSelected === "tableExclude"}
                   onChange={handleTableToggle}
                   onClick={(e) => e.preventDefault()}
-                  text="Exclude"
+                  text={props.i18nExclude}
                 />
               </ToggleGroup>
             </FlexItem>
@@ -404,10 +427,10 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
         </FormGroup>
         <ActionGroup>
           <Button variant="secondary" onClick={applyFilter}>
-            Apply
+            {props.i18nApply}
           </Button>
           <Button variant="link" isInline={true} onClick={clearFilter}>
-            Clear filters
+            {props.i18nClearFilters}
           </Button>
         </ActionGroup>
       </Form>
@@ -418,7 +441,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
         <Alert
           variant={"danger"}
           isInline={true}
-          title={"The expression(s) for table filtering are invalid."}
+          title={props.i18nInvalidFilterText}
         />
       ) : props.filterValues.size !== 0 ? (
         <Alert
@@ -426,20 +449,20 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           isInline={true}
           title={
             tableNo !== 0
-              ? `${tableNo} matching tables for change capture`
-              : "No matching tables for the specified filters"
+              ? `${tableNo} ${props.i18nMatchingFilterExpMsg}`
+              : props.i18nNoMatchingFilterExpMsg
           }
         >
           <p>
-            You can include all schemas and tables by clicking{" "}
-            <a onClick={clearFilter}>Clear filters</a>
+            {props.i18nClearFilterText+" "}
+            <a onClick={clearFilter}>{props.i18nClearFilters}</a>
           </p>
         </Alert>
       ) : (
         <Alert
           variant="info"
           isInline={true}
-          title={`${tableNo} tables available for change capture. You can enter regular expressions to filter.`}
+          title={`${tableNo} ${props.i18nFilterExpressionResultText}`}
         />
       )}
 
@@ -449,15 +472,17 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
         apiError={apiError}
         errorMsg={errorMsg}
         invalidMsg={invalidMsg}
+        i18nNoMatchingTables={props.i18nNoMatchingTables}
+        i18nNoMatchingFilterExpMsg={props.i18nNoMatchingFilterExpMsg}
+        i18nInvalidFilters={props.i18nInvalidFilters}
+        i18nInvalidFilterExpText={props.i18nInvalidFilterExpText}
       />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
-        i18nCancelButtonText={"Cancel"}
-        i18nConfirmButtonText={"Clear"}
-        i18nConfirmationMessage={
-          "This operation will clear all filtering expressions. \nAre you sure you want to proceed?"
-        }
-        i18nTitle={"Clear filters"}
+        i18nCancelButtonText={props.i18nCancel}
+        i18nConfirmButtonText={props.i18nClear}
+        i18nConfirmationMessage={props.i18nClearFilterConfMsg}
+        i18nTitle={props.i18nClearFilters}
         showDialog={showClearDialog}
         onCancel={doCancel}
         onConfirm={doClear}

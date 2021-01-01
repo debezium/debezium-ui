@@ -80,10 +80,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     connectorService
       .deleteConnector(appLayoutContext.clusterId, connectorToDelete)
       .then((cConnectors: any) => {
-        addAlert("success", 'Connector deleted successfully!');
+        addAlert("success", t('connectorDeletedSuccess'));
       })
       .catch((err: React.SetStateAction<Error>) => {
-        addAlert("danger",'Connector deletion failed!', err?.message);
+        addAlert("danger",t('connectorDeletionFailed'), err?.message);
       });
   };
 
@@ -123,6 +123,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           status={taskState.taskStatus}
           taskId={id}
           errors={taskState.errors}
+          i18nTask={t('task')}
+          i18nTaskStatusDetail={t('taskStatusDetail')}
         />
       );
     });
@@ -149,23 +151,23 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       columnTransforms: [cellWidth(10)]
     }, 
     { 
-      title: t('Name'), 
+      title: t('name'), 
       columnTransforms: [cellWidth(40)]
     }, 
     { 
-      title: t('Status'), 
+      title: t('status'), 
       columnTransforms: [cellWidth(20)]
     }, 
     { 
-      title: t('Tasks'), 
+      title: t('tasks'), 
       columnTransforms: [cellWidth(30)]
     }
   ];
 
   const sortFieldsItem = [
-    { title: 'Name', isPlaceholder: true },
-    { title: 'Status'},
-    { title: 'Tasks'}
+    { title: t('name'), isPlaceholder: true },
+    { title: t('status')},
+    { title: t('tasks')}
   ];
   
   const updateTableRows = (conns: Connector[], sortBy: string = currentCategory) => {
@@ -173,7 +175,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setConnectors(conns);
     
     switch(sortBy) {
-      case 'Status':
+      case t('status'):
         // Sort connectors by name for the table
         sortedConns = conns.sort((thisConn, thatConn) => {
           return thisConn.name.localeCompare(thatConn.name);
@@ -183,7 +185,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           return thisConn.connectorStatus.localeCompare(thatConn.connectorStatus);
         });
         break;
-      case 'Tasks':
+      case t('tasks'):
         // Sort connectors by name for the table
         sortedConns = conns.sort((thisConn, thatConn) => {
           return thisConn.name.localeCompare(thatConn.name);
@@ -238,7 +240,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const tableActionResolver = () => {
     return [
       {
-        title: t('Delete'),
+        title: t('delete'),
         onClick: (event, rowId, rowData, extra) => {
           setConnectorToDelete(rowData.connName);
           showConfirmationDialog();
@@ -296,26 +298,24 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
             <>
               <ConfirmationDialog
                 buttonStyle={ConfirmationButtonStyle.DANGER}
-                i18nCancelButtonText={"Cancel"}
-                i18nConfirmButtonText={"Delete"}
-                i18nConfirmationMessage={
-                  "The connector will be deleted, and cannot be undone.  Proceed?"
-                }
-                i18nTitle={"Delete connector"}
+                i18nCancelButtonText={t('cancel')}
+                i18nConfirmButtonText={t('delete')}
+                i18nConfirmationMessage={t('deleteWarningMsg')}
+                i18nTitle={t('deleteConnector')}
                 type={ConfirmationType.DANGER}
                 showDialog={showDeleteDialog}
                 onCancel={doCancel}
                 onConfirm={doDelete}
               />
-              <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} />
+              <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} i18nDetails={t('details')}/>
               <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
                 <FlexItem>
                   {props.title ? (
-                    <Title headingLevel={"h1"}>Connectors</Title>
+                    <Title headingLevel={"h1"}>{t('connectors')}</Title>
                   ) : (
                     ""
                   )}
-                  <p>The list shows all the connectors that you have been created, you can also create a new connector by clicking create a connector button.</p>
+                  <p>{t('connectorPageHeadingText')}</p>
                 </FlexItem>
               </Flex>
               <Flex className="connectors-page_toolbarFlex">
@@ -328,7 +328,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                     onClick={createConnector}
                     className="connectors-page_toolbarCreateButton"
                   >
-                    Create a connector
+                    {t('createAConnector')}
                   </Button>
                 </FlexItem>
               </Flex>
@@ -347,17 +347,17 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
             <EmptyState variant={EmptyStateVariant.large}>
               <EmptyStateIcon icon={CubesIcon} />
               <Title headingLevel="h4" size="lg">
-                No connectors
+                {t('noConnectors')}
               </Title>
               <EmptyStateBody>
-                Please click 'Create a connector' to create a new connector.
+                {t('connectorEmptyStateMsg')}
               </EmptyStateBody>
               <Button
                 onClick={createConnector}
                 variant="primary"
                 className="connectors-page_createButton"
               >
-                Create a connector
+                {t('createAConnector')}
               </Button>
             </EmptyState>
           )}
