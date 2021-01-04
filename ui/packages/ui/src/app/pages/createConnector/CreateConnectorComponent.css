@@ -1,3 +1,6 @@
+.pf-c-page__main {
+  overflow: unset;
+}
 .create-connector {
   &-page_breadcrumb {
     padding: 0px !important;
@@ -8,11 +11,15 @@
       }
     }
   }
+
   &-page_wizard {
     height: auto;
     min-height: calc(100vh - 200px);
 
     .pf-c-wizard {
+      &__main{
+        overflow: unset;
+      }
       &__nav-link{
         &.pf-m-current{
           color: var(--pf-c-wizard__nav-link--m-current--Color);
