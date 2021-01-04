@@ -46,9 +46,9 @@ export enum PropertyName {
   TIME_PRECISION_MODE = "time.precision.mode",
   TOMBSTONES_ON_DELETE = "tombstones.on.delete",
   MESSAGE_KEY_COLUMNS = "message.key.columns",
-  COLUMN_MASK_HASH_PREFIX = "column.mask.hash.([^.]+).with.salt.(.+)",
-  COLUMN_MASK_WITH_PREFIX = "column.mask.with.(d+).chars",
-  COLUMN_TRUNCATE_PREFIX = "column.truncate.to.(d+).chars",
+  COLUMN_MASK_HASH_SALT = "column.mask.hash.([^.]+).with.salt.(.+)",
+  COLUMN_MASK = "column.mask.with.(d+).chars",
+  COLUMN_TRUNCATE = "column.truncate.to.(d+).chars",
   INCLUDE_UNKNOWN_DATATYPES = "include.unknown.datatypes",
   TOASTED_VALUE_PLACEHOLDER = "toasted.value.placeholder",
   PROVIDE_TRANSACTION_METADATA = "provide.transaction.metadata",
@@ -260,6 +260,7 @@ export function isRuntimeOptions (propertyCategory: PropertyCategory): boolean {
 export function minimizePropertyValues (propertyValues: Map<string, string>, propertyDefns: ConnectorProperty[]): Map<string,string> {
   const minimizedValues: Map<string,string> = new Map<string, string>();
 
+  // console.log("MinimizePropertyValues: " + JSON.stringify(mapToObject(propertyValues)));
   propertyValues.forEach((value: string, key: string) => {
     // Get the corresponding property definition
     const propDefn = propertyDefns.find( (prop) => prop.name.replace(/_/g, ".") === key);
@@ -273,12 +274,23 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
           minimizedValues.set(key, value);
         }
       }else if(propDefn.name.includes('(d+)_chars') && value !== ""){
+        // The value is of form : Cols&&n - where && is used as a separator
         const [a,b] = value.split('&&');
         const updatedKey = key.replace('(d+)',b);
         if(a !== '' && b !== ''){
           minimizedValues.set(updatedKey, a);
         }
-        // Include non-mandatory if no default, and not empty
+      }else if(propDefn.name.startsWith("column_mask_hash") && value !== "") {
+        // The value is of form : Cols&&Hash||Salt - where && and || are used as separators
+        const [cols, trailing] = value.split("&&");
+        if (trailing) {
+          const [hash, salt] = trailing.split("||");
+          if(cols !== "" && hash !== "" && salt && salt !== ""){
+            const updatedKey = key.replace("([^_]+)",hash).replace("(_+)",salt);
+            minimizedValues.set(updatedKey, cols);
+          }
+        }
+      // Include non-mandatory if no default, and not empty
       } else if (value !== "") {
         minimizedValues.set(key, value);
       }
@@ -349,10 +361,14 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[]): Con
         propDefn.gridWidth = 4;
         propDefn.type =  "NON-NEG-INT";
         break;
-      case PropertyName.COLUMN_TRUNCATE_PREFIX:
-      case PropertyName.COLUMN_MASK_WITH_PREFIX:
+      case PropertyName.COLUMN_TRUNCATE:
+      case PropertyName.COLUMN_MASK:
         propDefn.gridWidth = 12;
-        propDefn.type =  "FRAGMENT";
+        propDefn.type =  "COL_MASK_OR_TRUNCATE";
+        break;
+      case PropertyName.COLUMN_MASK_HASH_SALT:
+        propDefn.gridWidth = 12;
+        propDefn.type =  "COL_MASK_HASH_SALT";
         break;
       default:
         propDefn.gridWidth = 12;

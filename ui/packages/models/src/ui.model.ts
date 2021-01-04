@@ -102,7 +102,8 @@ export interface ConnectorProperty {
           'LIST' | 
           'CLASS' | 
           'PASSWORD'|
-          'FRAGMENT';
+          'COL_MASK_OR_TRUNCATE' |
+          'COL_MASK_HASH_SALT';
 }
 
 /**
