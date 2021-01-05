@@ -82,7 +82,7 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
         <Grid>
           <GridItem span={9}>
             <Flex className={'form-mask-or-truncate-component-column'}>
-              <FlexItem>Column:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }}>Columns:</FlexItem>
               <FlexItem className={'form-mask-or-truncate-component-column-input'}>
                 <TextInput 
                   data-testid={id}
@@ -98,7 +98,7 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
           </GridItem>
           <GridItem span={3}>
             <Flex>
-              <FlexItem>n:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }}>n:</FlexItem>
               <FlexItem>
                 <TextInput
                   min={"1"}

@@ -346,6 +346,15 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setSelectedConnectorType(cType);
     if (cType) {
       const connType = connectorTypes.find((conn) => conn.id === cType);
+
+      if(connType?.properties.find(
+        obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+        )?.name){
+          connType.properties.find(
+            obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+            ).name= "column.mask.hash";
+        }
+
       setSelectedConnectorPropertyDefns(connType!.properties);
       initPropertyValues();
     }
@@ -552,6 +561,14 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.id && setSelectedConnectorType(connectorTypes[0].id);
 
+    if(connectorTypes[0]?.properties.find(
+      obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+      )?.name){
+        connectorTypes[0].properties.find(
+          obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+          ).name= "column.mask.hash";
+      }
+      
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
       setSelectedConnectorPropertyDefns(
