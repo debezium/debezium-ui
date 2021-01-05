@@ -66,7 +66,7 @@
     "taskStatusDetail": "Dettagli sullo stato dell'attività",
     "task": "Compito",
     "details": "Dettagli:",
-    "connectorPageHeadingText": "L'elenco mostra tutti i connettori che sono stati creati, puoi anche creare un nuovo connettore facendo clic sul pulsante crea un connettore.",
+    "connectorPageHeadingText": "Questo elenco mostra tutti i connettori che sono stati creati. Puoi creare un nuovo connettore facendo clic sul pulsante 'Crea un connettore'",
     "pageNotFound": "pagina non trovata",
     "pageNotFoundMsg": "Questa pagina non è stata trovata. Se pensi che si tratti di un bug, segnala il problema.",
     "takeBackToHome": "Riporta a casa"

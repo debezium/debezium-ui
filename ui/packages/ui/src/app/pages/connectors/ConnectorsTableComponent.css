@@ -5,6 +5,9 @@
   &_toolbarCreateButton {
     margin-bottom: var(--pf-global--spacer--sm);
   }  
+  &_toolbarSortIcon {
+    cursor: pointer;
+  }  
   &_dataTable {
     margin-top: var(--pf-global--spacer--sm);
   }  
