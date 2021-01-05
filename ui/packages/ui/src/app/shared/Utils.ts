@@ -46,7 +46,7 @@ export enum PropertyName {
   TIME_PRECISION_MODE = "time.precision.mode",
   TOMBSTONES_ON_DELETE = "tombstones.on.delete",
   MESSAGE_KEY_COLUMNS = "message.key.columns",
-  COLUMN_MASK_HASH_SALT = "column.mask.hash.([^.]+).with.salt.(.+)",
+  COLUMN_MASK_HASH_SALT = "column.mask.hash",
   COLUMN_MASK = "column.mask.with.(d+).chars",
   COLUMN_TRUNCATE = "column.truncate.to.(d+).chars",
   INCLUDE_UNKNOWN_DATATYPES = "include.unknown.datatypes",
@@ -286,7 +286,7 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
         if (trailing) {
           const [hash, salt] = trailing.split("||");
           if(cols !== "" && hash !== "" && salt && salt !== ""){
-            const updatedKey = key.replace("([^_]+)",hash).replace("(_+)",salt);
+            const updatedKey = "column.mask.hash.([^.]+).with.salt.(.+)".replace("([^.]+)",hash).replace("(.+)",salt);
             minimizedValues.set(updatedKey, cols);
           }
         }
