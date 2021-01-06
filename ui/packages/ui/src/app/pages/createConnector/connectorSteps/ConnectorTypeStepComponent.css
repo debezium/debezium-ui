@@ -11,6 +11,7 @@
       margin: 10px;
     }
     &_disableCard {
+      cursor: default;
       color: var(--pf-global--disabled-color--100);
       background: var(--pf-global--palette--black-150);
     }

@@ -285,8 +285,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           />
         </ToolbarItem>
         <ToolbarItem>
-          {desRowOrder ? <SortAmountUpIcon size="sm" onClick={toggleRowOrder}/> :
-           <SortAmountDownIcon size="sm" onClick={toggleRowOrder}/>} 
+          {desRowOrder ? <SortAmountUpIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/> :
+           <SortAmountDownIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/>} 
         </ToolbarItem>
       </ToolbarContent>
     </React.Fragment>
