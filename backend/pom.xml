@@ -14,15 +14,6 @@
     <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>sonatype-oss-snapshots</id>
-      <name>Sonatype OSS SNAPSHOT Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <!--// temporary repository in order to use Debezium SNAPSHOT nightly builds //-->
-    </repository>
-  </repositories>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
