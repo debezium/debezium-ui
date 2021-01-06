@@ -274,11 +274,17 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
           minimizedValues.set(key, value);
         }
       }else if(propDefn.name.includes('(d+)_chars') && value !== ""){
-        // The value is of form : Cols&&n - where && is used as a separator
-        const [a,b] = value.split('&&');
-        const updatedKey = key.replace('(d+)',b);
-        if(a !== '' && b !== ''){
-          minimizedValues.set(updatedKey, a);
+        // The value value can have multiple entries (entries are separated by '@^')
+        // Example colsString&&number @^ colsString&&number
+        const entries = value.split("@^");
+        for(const entry of entries) {
+          if (entry && entry !== "") {
+            const [a, b] = entry.split("&&");
+            const updatedKey = key.replace("(d+)", b);
+            if (a !== "" && b !== "") {
+              minimizedValues.set(updatedKey, a.trim());
+            }
+          }
         }
       }else if(propDefn.name.startsWith("column_mask_hash") && value !== "") {
         // The value is of form : Cols&&Hash||Salt - where && and || are used as separators

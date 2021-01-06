@@ -1,17 +1,14 @@
 import {
-  Flex,
-  FlexItem,
-  FormGroup,
-  Grid,
-  GridItem,
+  Button, FormGroup,
   InputGroup,
-  TextInput
+  Stack,
+  StackItem
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useField } from "formik";
 import * as React from "react";
-import "./FormMaskOrTruncateComponent.css";
 import { HelpInfoIcon } from "./HelpInfoIcon";
+import { MaskOrTruncateItem } from './MaskOrTruncateItem';
 
 export interface IFormMaskOrTruncateComponentProps {
   label: string;
@@ -34,37 +31,54 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
 ) => {
   const [field] = useField(props);
 
-  const handleTextInputChange = (
-    val: string,
-    event: React.FormEvent<HTMLInputElement>
-  ) => {
-    const currentValue = field.value;
-    let newVal = "";
-    if (event.target.id.includes("column")) {
-      if (currentValue.includes("&&")) {
-        const n = currentValue.split("&&")[1];
-        newVal = val + "&&" + n;
-      } else {
-        newVal = val + "&&";
-      }
-    } else {
-      if (currentValue.includes("&&")) {
-        const columnList = currentValue.split("&&")[0];
-        newVal = columnList + "&&" + val;
-      } else {
-        newVal = "&&" + val;
-      }
+  const getItemRows = () => {
+    return (field.value).split("@^");
+  }
+
+  const handleMaskTruncateItemChanged = (rowId: number, maskTruncateValue: string) => {
+    // Break into rows
+    const rows = [...getItemRows()];
+    // replace element with updated content
+    rows[rowId] = maskTruncateValue;
+    // Join elements back together
+    const newValue = rows.join("@^");
+    // Set new value
+    props.setFieldValue(field.name, newValue, true);
+    props.propertyChange(field.name, newValue);
+  }
+
+  const handleDeleteMaskTruncateItem = (rowIndex: number) => {
+    // Break into rows
+    const rows = [...getItemRows()];
+    rows.splice(rowIndex,1);
+    // Join elements back together
+    const newValue = rows.join("@^");
+    // Set new value
+    props.setFieldValue(field.name, newValue, true);
+    props.propertyChange(field.name, newValue);
+  }
+
+  const onAddDefinition = () => {
+    const newValue = field.value+"@^";
+    props.setFieldValue(field.name, newValue, true);
+    props.propertyChange(field.name, newValue);
+  }
+
+  const getColumnsValue = (row: string) => {
+    if (row && row.includes('&&')) {
+      return row.split("&&")[0];
     }
-    props.setFieldValue(field.name, newVal, true);
-  };
+    return '';
+  }
+
+  const getNValue = (row: string) => {
+    if (row && row.includes('&&')) {
+      return row.split("&&")[1];
+    }
+    return '';
+  }
 
   const id = field.name;
-  const handleKeyPress = (keyEvent: KeyboardEvent) => {
-    // do not allow entry of '.' or '-'
-    if (keyEvent.key === "." || keyEvent.key === "-") {
-      keyEvent.preventDefault();
-    }
-  };
 
   return (
     <FormGroup
@@ -79,41 +93,25 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
       validated={props.validated}
     >
       <InputGroup>
-        <Grid>
-          <GridItem span={8}>
-            <Flex className={'form-mask-or-truncate-component-column'}>
-              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-or-truncate-component-label">Columns:</FlexItem>
-              <FlexItem className={'form-mask-or-truncate-component-column-input'}>
-                <TextInput 
-                  data-testid={id}
-                  id={id}
-                  type={"text"}
-                  validated={props.validated}
-                  onChange={handleTextInputChange}
-                  defaultValue={field.value.split("&&")[0]}
-                  onKeyPress={(event) => handleKeyPress(event as any)}
-                />
-              </FlexItem>
-            </Flex>
-          </GridItem>
-          <GridItem span={4}>
-            <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }}  className="form-mask-or-truncate-component-label">n:</FlexItem>
-              <FlexItem>
-                <TextInput
-                  min={"1"}
-                  data-testid={id}
-                  id={"n"}
-                  type={"number"}
-                  validated={props.validated}
-                  onChange={handleTextInputChange}
-                  defaultValue={field.value.split("&&")[1]}
-                  onKeyPress={(event) => handleKeyPress(event as any)}
-                />
-              </FlexItem>
-            </Flex>
-          </GridItem>
-        </Grid>
+        <Stack hasGutter>
+        {getItemRows().map((row: string, idx: number) => (
+          <StackItem key={idx}>
+            <MaskOrTruncateItem
+              rowId={idx}
+              columnsValue={getColumnsValue(row)}
+              nValue={getNValue(row)}
+              canDelete={getItemRows().length > 1}
+              maskTruncateItemChanged={handleMaskTruncateItemChanged}
+              deleteMaskTruncateItem={handleDeleteMaskTruncateItem}
+            />
+          </StackItem>
+          ))}
+          <StackItem>
+            <Button variant="link" onClick={onAddDefinition}>
+              {"+ Add Definition"}
+            </Button>
+          </StackItem>
+        </Stack>
       </InputGroup>
     </FormGroup>
   );
