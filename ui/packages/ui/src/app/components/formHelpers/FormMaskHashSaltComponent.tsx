@@ -5,7 +5,6 @@ import {
   Grid,
   GridItem,
   InputGroup,
-
   Select,
   SelectOption,
   SelectVariant, TextInput
@@ -163,7 +162,7 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
         <Grid>
           <GridItem span={5}>
             <Flex className={'form-mask-hash-salt-component-column'}>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Columns:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Columns:</FlexItem>
               <FlexItem className={'form-mask-hash-salt-component-column-input'}>
                   <TextInput 
                     data-testid={id}
@@ -179,30 +178,30 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
           </GridItem>
           <GridItem span={4}>
             <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Hash:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Hash:</FlexItem>
               <FlexItem spacer={{ default: 'spacerXs' }}>
-                  <Select
-                    variant={SelectVariant.single}
-                    aria-label="Select Input"
-                    onToggle={onToggle}
-                    onSelect={onSelect}
-                    selections={getHashValue(field.value)}
-                    isOpen={isOpen}
-                  >
-                    {selectOptions.map((option, index) => (
-                      <SelectOption
-                        key={index}
-                        value={option.value}
-                        isPlaceholder={option.isPlaceholder}
-                      />
-                    ))}
-                  </Select>
+                <Select
+                  variant={SelectVariant.single}
+                  aria-label="Select Input"
+                  onToggle={onToggle}
+                  onSelect={onSelect}
+                  selections={getHashValue(field.value)}
+                  isOpen={isOpen}
+                >
+                  {selectOptions.map((option, index) => (
+                    <SelectOption
+                      key={index}
+                      value={option.value}
+                      isPlaceholder={option.isPlaceholder}
+                    />
+                  ))}
+                </Select>
               </FlexItem>
             </Flex>
           </GridItem>
           <GridItem span={3}>
             <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Salt:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Salt:</FlexItem>
               <FlexItem spacer={{ default: 'spacerXs' }}>
                 <TextInput
                   data-testid={id}
