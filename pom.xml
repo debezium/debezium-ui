@@ -31,7 +31,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.10.2.Final</quarkus.platform.version>
     <testcontainers.version>1.14.3</testcontainers.version>
-    <debezium.base.version>1.4.0-SNAPSHOT</debezium.base.version>
+    <debezium.base.version>1.4.0.Final</debezium.base.version>
     <okhttp.version>4.8.1</okhttp.version>
     <okio.version>2.8.0</okio.version>
   </properties>
