@@ -20,10 +20,10 @@ import {
   WizardContextConsumer,
   WizardFooter,
 } from "@patternfly/react-core";
-import {useHistory} from "react-router-dom";
 import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 import { ToastAlertComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
