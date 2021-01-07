@@ -12,5 +12,8 @@
 .pf-l-flex{
     &-nowrap{
         flex-wrap: nowrap;
+        @media screen and (max-width: 1200px) {
+            flex-wrap: wrap;
+        }
     }
 }
