@@ -9,3 +9,8 @@
         font-size: var(--pf-global--FontSize--sm);
     }
 }
+.pf-l-flex{
+    &-nowrap{
+        flex-wrap: nowrap;
+    }
+}

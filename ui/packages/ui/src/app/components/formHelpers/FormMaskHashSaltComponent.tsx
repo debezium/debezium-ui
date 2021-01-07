@@ -106,7 +106,7 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
     else {
       setSelected(selection)
       setOpen(false)
-      let newVal = getColsValue(field.value)+"&&"+selection+"||"+getSaltValue(field.value);
+      const newVal = getColsValue(field.value)+"&&"+selection+"||"+getSaltValue(field.value);
       props.setFieldValue(field.name, newVal, true);
       props.propertyChange(field.name, newVal);
     }
@@ -176,7 +176,7 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
               </FlexItem>
             </Flex>
           </GridItem>
-          <GridItem span={4}>
+          <GridItem span={3}>
             <Flex>
               <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Hash:</FlexItem>
               <FlexItem spacer={{ default: 'spacerXs' }}>
@@ -199,8 +199,8 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
               </FlexItem>
             </Flex>
           </GridItem>
-          <GridItem span={3}>
-            <Flex>
+          <GridItem span={4}>
+            <Flex className="pf-l-flex-nowrap">
               <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Salt:</FlexItem>
               <FlexItem spacer={{ default: 'spacerXs' }}>
                 <TextInput
