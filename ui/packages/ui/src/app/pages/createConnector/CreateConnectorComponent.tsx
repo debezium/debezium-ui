@@ -20,6 +20,7 @@ import {
   WizardContextConsumer,
   WizardFooter,
 } from "@patternfly/react-core";
+import {useHistory} from "react-router-dom";
 import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
@@ -73,6 +74,7 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 type IOnSuccessCallbackFn = () => void;
 
 type IOnCancelCallbackFn = () => void;
+const basename = "/#app"
 
 export interface ICreateConnectorComponentProps {
   onSuccessCallback: IOnSuccessCallbackFn;
@@ -103,6 +105,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const DATA_OPTIONS_STEP = t("dataOptions");
   const RUNTIME_OPTIONS_STEP = t("runtimeOptions");
   const REVIEW_STEP = t("review");
+
+  const history = useHistory();
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
@@ -135,6 +139,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     runtimeOptionsPropValues,
     setRuntimeOptionsPropValues,
   ] = React.useState<Map<string, string>>(new Map<string, string>());
+  const [backEnable, setBackEnable] = React.useState(false);
 
   const [validateInProgress, setValidateInProgress] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -144,6 +149,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const [
     showCancelConfirmationDialog,
     setShowCancelConfirmationDialog,
+  ] = React.useState(false);
+
+  const [
+    showBackConfirmationDialog,
+    setShowBackConfirmationDialog,
   ] = React.useState(false);
 
   const [connectionStepsValid, setConnectionStepsValid] = React.useState<
@@ -170,6 +180,23 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const connectionPropsRef = React.useRef();
   const dataOptionRef = React.useRef();
   const runtimeOptionRef = React.useRef();
+
+const onBackButtonEvent = (e:any) => {
+    e.preventDefault();
+    if (!backEnable) {
+        setShowBackConfirmationDialog(true);
+    }
+}
+
+  React.useEffect(() => {
+    window.history.pushState(null, '', basename+history.location.pathname);
+    window.addEventListener('popstate', onBackButtonEvent);
+    return () => {
+      window.removeEventListener('popstate', onBackButtonEvent);  
+    };
+  }, []);
+
+
 
   const addAlert = (msg?: string) => {
     const alertsCopy = [...alerts];
@@ -284,9 +311,21 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setShowCancelConfirmationDialog(false);
   };
 
+  const doStay = () => {
+    setShowBackConfirmationDialog(false);
+    window.history.pushState(null, '', basename+history.location.pathname);
+    setBackEnable(false)
+  };
+
   const doGotoConnectorsListPage = () => {
     setShowCancelConfirmationDialog(false);
     props.onCancelCallback();
+  };
+
+  const doGotoBack = () => {
+    setShowBackConfirmationDialog(false);
+    setBackEnable(true);
+    history.goBack();
   };
 
   const onCancel = () => {
@@ -1025,6 +1064,16 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         showDialog={showCancelConfirmationDialog}
         onCancel={doCancelConfirmed}
         onConfirm={doGotoConnectorsListPage}
+      />
+      <ConfirmationDialog
+        buttonStyle={ConfirmationButtonStyle.NORMAL}
+        i18nCancelButtonText={t("stay")}
+        i18nConfirmButtonText={t("leave")}
+        i18nConfirmationMessage={t("cancelWarningMsg")}
+        i18nTitle={t("exitWizard")}
+        showDialog={showBackConfirmationDialog}
+        onCancel={doStay}
+        onConfirm={doGotoBack}
       />
     </>
   );
