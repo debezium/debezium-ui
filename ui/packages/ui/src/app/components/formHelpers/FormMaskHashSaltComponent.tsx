@@ -5,7 +5,9 @@ import {
   Grid,
   GridItem,
   InputGroup,
-  TextInput,
+  Select,
+  SelectOption,
+  SelectVariant, TextInput
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useField } from "formik";
@@ -33,6 +35,8 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
   props
 ) => {
   const [field] = useField(props);
+  const [isOpen, setOpen] = React.useState<boolean>(false)
+  const [selected, setSelected] = React.useState<boolean>(false)
 
   /**
    * Return column segment from the supplied string
@@ -86,21 +90,52 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
     return "";
   };
 
+  const onToggle = (open: boolean) => {
+    setOpen(open)
+  };
+
+  const clearSelection = () => {
+    setSelected(false)
+    setOpen(false)
+  };  
+
+  const onSelect = (e, selection: boolean, isPlaceholder: boolean) => {
+    if (isPlaceholder) {
+      clearSelection();
+    }
+    else {
+      setSelected(selection)
+      setOpen(false)
+      const newVal = getColsValue(field.value)+"&&"+selection+"||"+getSaltValue(field.value);
+      props.setFieldValue(field.name, newVal, true);
+      props.propertyChange(field.name, newVal);
+    }
+  };
+  
+  const selectOptions = [
+    {"value": "Choose...", isPlaceholder: true},
+    {"value": "MD2"},
+    {"value": "MD5"}, 
+    {"value": "SHA-1"}, 
+    {"value": "SHA-256"}, 
+    {"value": "SHA-384"}, 
+    {"value": "SHA-512"}
+  ]
+
   const handleTextInputChange = (
     val: string,
-    event: React.FormEvent<HTMLInputElement>
+    event: React.FormEvent<HTMLInputElement>,
   ) => {
     const currentValue = field.value;
     let newVal = '';
     if (event.target.id.includes("column")) {
       newVal = val+"&&"+getHashValue(currentValue)+"||"+getSaltValue(currentValue);
-    } else if(event.target.id === "hash") {
-      newVal = getColsValue(currentValue)+"&&"+val+"||"+getSaltValue(currentValue);
-    } else if(event.target.id === "salt") {
+    }else if(event.target.id === "salt") {
       newVal = getColsValue(currentValue)+"&&"+getHashValue(currentValue)+"||"+val;
     }
     // console.log("MaskHashSalt.setFieldValue name: " + field.name + ", value: " + newVal);
     props.setFieldValue(field.name, newVal, true);
+    props.propertyChange(field.name, newVal);
   };
 
   const id = field.name;
@@ -127,39 +162,46 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
         <Grid>
           <GridItem span={5}>
             <Flex className={'form-mask-hash-salt-component-column'}>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Columns:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Columns:</FlexItem>
               <FlexItem className={'form-mask-hash-salt-component-column-input'}>
-                <TextInput 
-                  data-testid={id}
-                  id={id}
-                  type={"text"}
-                  validated={props.validated}
-                  onChange={handleTextInputChange}
-                  defaultValue={getColsValue(field.value)}
-                  onKeyPress={(event) => handleKeyPress(event as any)}
-                />
-              </FlexItem>
-            </Flex>
-          </GridItem>
-          <GridItem span={4}>
-            <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Hash:</FlexItem>
-              <FlexItem spacer={{ default: 'spacerXs' }}>
-                <TextInput
-                  data-testid={id}
-                  id={"hash"}
-                  type={"text"}
-                  validated={props.validated}
-                  onChange={handleTextInputChange}
-                  defaultValue={getHashValue(field.value)}
-                  onKeyPress={(event) => handleKeyPress(event as any)}
-                />
+                  <TextInput 
+                    data-testid={id}
+                    id={id}
+                    type={"text"}
+                    validated={props.validated}
+                    onChange={handleTextInputChange}
+                    defaultValue={getColsValue(field.value)}
+                    onKeyPress={(event) => handleKeyPress(event as any)}
+                  />
               </FlexItem>
             </Flex>
           </GridItem>
           <GridItem span={3}>
             <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Salt:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Hash:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }}>
+                <Select
+                  variant={SelectVariant.single}
+                  aria-label="Select Input"
+                  onToggle={onToggle}
+                  onSelect={onSelect}
+                  selections={getHashValue(field.value)}
+                  isOpen={isOpen}
+                >
+                  {selectOptions.map((option, index) => (
+                    <SelectOption
+                      key={index}
+                      value={option.value}
+                      isPlaceholder={option.isPlaceholder}
+                    />
+                  ))}
+                </Select>
+              </FlexItem>
+            </Flex>
+          </GridItem>
+          <GridItem span={4}>
+            <Flex className="pf-l-flex-nowrap">
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Salt:</FlexItem>
               <FlexItem spacer={{ default: 'spacerXs' }}>
                 <TextInput
                   data-testid={id}

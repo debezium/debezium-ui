@@ -5,7 +5,7 @@ import {
   Grid,
   GridItem,
   InputGroup,
-  TextInput,
+  TextInput
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useField } from "formik";
@@ -80,9 +80,9 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
     >
       <InputGroup>
         <Grid>
-          <GridItem span={9}>
+          <GridItem span={8}>
             <Flex className={'form-mask-or-truncate-component-column'}>
-              <FlexItem spacer={{ default: 'spacerXs' }}>Columns:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-or-truncate-component-label">Columns:</FlexItem>
               <FlexItem className={'form-mask-or-truncate-component-column-input'}>
                 <TextInput 
                   data-testid={id}
@@ -96,9 +96,9 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
               </FlexItem>
             </Flex>
           </GridItem>
-          <GridItem span={3}>
+          <GridItem span={4}>
             <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }}>n:</FlexItem>
+              <FlexItem spacer={{ default: 'spacerXs' }}  className="form-mask-or-truncate-component-label">n:</FlexItem>
               <FlexItem>
                 <TextInput
                   min={"1"}
