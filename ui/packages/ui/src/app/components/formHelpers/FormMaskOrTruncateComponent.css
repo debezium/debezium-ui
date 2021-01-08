@@ -4,4 +4,5 @@
     border-width: 1px;
     border-color: var(--pf-global--BorderColor--100);
     border-style: solid;
+    border-radius: 5px;
 }

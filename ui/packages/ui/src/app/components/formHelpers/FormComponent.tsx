@@ -102,6 +102,9 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         helperTextInvalid={props.helperTextInvalid}
         label={props.propertyDefinition.displayName}
         name={props.propertyDefinition.name}
+        i18nAddDefinitionText={t('addDefinition')}
+        i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
+        i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
       />
