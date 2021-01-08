@@ -72,6 +72,9 @@
     "takeBackToHome": "Take back to home",
     "noMatchingTables": "No matching tables",
     "invalidFilters": "Invalid filter(s)",
-    "invalidFilterExpText": "The expression(s) for table filtering are invalid, please correct and try again."
+    "invalidFilterExpText": "The expression(s) for table filtering are invalid, please correct and try again.",
+    "addDefinition": "+ Add definition",
+    "addDefinitionTooltip": "Add another definition row",
+    "removeDefinitionTooltip": "Remove this definition row"
   }
 }
