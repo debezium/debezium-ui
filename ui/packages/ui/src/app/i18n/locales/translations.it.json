@@ -69,6 +69,9 @@
     "connectorPageHeadingText": "Questo elenco mostra tutti i connettori che sono stati creati. Puoi creare un nuovo connettore facendo clic sul pulsante 'Crea un connettore'",
     "pageNotFound": "pagina non trovata",
     "pageNotFoundMsg": "Questa pagina non è stata trovata. Se pensi che si tratti di un bug, segnala il problema.",
-    "takeBackToHome": "Riporta a casa"
+    "takeBackToHome": "Riporta a casa",
+    "addDefinition": "+ Aggiungi definizione",
+    "addDefinitionTooltip": "Aggiungere un'altra riga definizione",
+    "removeDefinitionTooltip": "Rimuovi questa riga di definizione"
   }
 }

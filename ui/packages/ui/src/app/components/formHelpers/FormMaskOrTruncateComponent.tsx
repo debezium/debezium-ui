@@ -2,11 +2,13 @@ import {
   Button, FormGroup,
   InputGroup,
   Stack,
-  StackItem
+  StackItem,
+  Tooltip
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useField } from "formik";
 import * as React from "react";
+import "./FormMaskOrTruncateComponent.css";
 import { HelpInfoIcon } from "./HelpInfoIcon";
 import { MaskOrTruncateItem } from './MaskOrTruncateItem';
 
@@ -18,6 +20,9 @@ export interface IFormMaskOrTruncateComponentProps {
   helperTextInvalid?: any;
   isRequired: boolean;
   validated?: "default" | "success" | "warning" | "error" | undefined;
+  i18nAddDefinitionText: string;
+  i18nAddDefinitionTooltip: string;
+  i18nRemoveDefinitionTooltip: string;
   propertyChange: (name: string, selection: any) => void;
   setFieldValue: (
     field: string,
@@ -93,23 +98,29 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
       validated={props.validated}
     >
       <InputGroup>
-        <Stack hasGutter>
-        {getItemRows().map((row: string, idx: number) => (
-          <StackItem key={idx}>
-            <MaskOrTruncateItem
-              rowId={idx}
-              columnsValue={getColumnsValue(row)}
-              nValue={getNValue(row)}
-              canDelete={getItemRows().length > 1}
-              maskTruncateItemChanged={handleMaskTruncateItemChanged}
-              deleteMaskTruncateItem={handleDeleteMaskTruncateItem}
-            />
-          </StackItem>
+        <Stack hasGutter={true} className={"form-mask-or-truncate-component"}>
+          {getItemRows().map((row: string, idx: number) => (
+            <StackItem key={idx}>
+              <MaskOrTruncateItem
+                rowId={idx}
+                columnsValue={getColumnsValue(row)}
+                nValue={getNValue(row)}
+                canDelete={getItemRows().length > 1}
+                i18nRemoveDefinitionTooltip={props.i18nRemoveDefinitionTooltip}
+                maskTruncateItemChanged={handleMaskTruncateItemChanged}
+                deleteMaskTruncateItem={handleDeleteMaskTruncateItem}
+              />
+            </StackItem>
           ))}
           <StackItem>
-            <Button variant="link" onClick={onAddDefinition}>
-              {"+ Add Definition"}
-            </Button>
+            <Tooltip
+              position={"right"}
+              content={props.i18nAddDefinitionTooltip}
+            >
+              <Button variant="link" onClick={onAddDefinition}>
+                {props.i18nAddDefinitionText}
+              </Button>
+            </Tooltip>
           </StackItem>
         </Stack>
       </InputGroup>

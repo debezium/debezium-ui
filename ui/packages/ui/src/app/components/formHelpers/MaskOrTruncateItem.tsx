@@ -3,7 +3,8 @@ import {
   FlexItem,
   Grid,
   GridItem,
-  TextInput
+  TextInput,
+  Tooltip
 } from "@patternfly/react-core";
 import { MinusCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -14,6 +15,7 @@ export interface IMaskOrTruncateItemProps {
   columnsValue: string;
   nValue: string;
   canDelete: boolean;
+  i18nRemoveDefinitionTooltip: string;
   maskTruncateItemChanged: (rowId: number, maskTruncateValue: string) => void;
   deleteMaskTruncateItem: (rowId: number) => void;
 }
@@ -77,18 +79,20 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
           </FlexItem>
         </Flex>
       </GridItem>
-      {props.canDelete ? 
-      <GridItem span={1}>
-        <Flex className={"mask-or-truncate-item-remove-button"}>
-          <FlexItem>
-            <MinusCircleIcon
-              className={"mask-or-truncate-item-remove-button-icon"}
-              onClick={handleRemoveItemClick}
-            />
-          </FlexItem>
-        </Flex>
-      </GridItem> : null
-    }
+      {props.canDelete ? (
+        <GridItem span={1}>
+          <Flex className={"mask-or-truncate-item-remove-button"}>
+            <FlexItem>
+              <Tooltip position="right" content={props.i18nRemoveDefinitionTooltip}>
+                <MinusCircleIcon
+                  className={"mask-or-truncate-item-remove-button-icon"}
+                  onClick={handleRemoveItemClick}
+                />
+              </Tooltip>
+            </FlexItem>
+          </Flex>
+        </GridItem>
+      ) : null}
     </Grid>
   );
 };
