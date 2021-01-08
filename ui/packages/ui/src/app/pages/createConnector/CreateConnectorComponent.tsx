@@ -106,14 +106,21 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const RUNTIME_OPTIONS_STEP = t("runtimeOptions");
   const REVIEW_STEP = t("review");
 
+  // const CONNECTOR_TYPE_STEP_ID = 1;
+  const PROPERTIES_STEP_ID = 2;
+  const TABLE_SELECTION_STEP_ID = 3;
+  const DATA_OPTIONS_STEP_ID = 4;
+  const RUNTIME_OPTIONS_STEP_ID = 5;
+  const REVIEW_STEP_ID = 6;
+
   const history = useHistory();
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
     string | undefined
   >();
-  const [finishStepName, setFinishStepName] = React.useState<string>(
-    RUNTIME_OPTIONS_STEP
+  const [finishStepId, setFinishStepId] = React.useState<number>(
+    RUNTIME_OPTIONS_STEP_ID
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
   const [
@@ -236,27 +243,27 @@ const onBackButtonEvent = (e:any) => {
     return basicPropValues.get(PropertyName.CONNECTOR_NAME);
   };
 
-  const getFinalProperties = (stepName: string) => {
+  const getFinalProperties = (stepId: number) => {
     // Merge the individual category properties values into a single map for the config
     const allPropValues = new Map<string, string>();
     // Remove connector name from basic, so not passed with properties
     const basicValuesTemp = new Map<string, string>(basicPropValues);
     basicValuesTemp.delete(PropertyName.CONNECTOR_NAME);
-    switch (stepName) {
-      case PROPERTIES_STEP:
+    switch (stepId) {
+      case PROPERTIES_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
-      case TABLE_SELECTION_STEP:
+      case TABLE_SELECTION_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         break;
-      case DATA_OPTIONS_STEP:
+      case DATA_OPTIONS_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
         });
@@ -286,7 +293,7 @@ const onBackButtonEvent = (e:any) => {
     const clusterID = props.clusterId;
     const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
 
-    const finalProperties = getFinalProperties(finishStepName);
+    const finalProperties = getFinalProperties(finishStepId);
 
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.createConnector, connectorService, [
@@ -335,21 +342,21 @@ const onBackButtonEvent = (e:any) => {
   const goToNext = (id: number, onNext: () => void) => {
     setConnectorCreateFailed(false);
     // tslint:disable-next-line: no-unused-expression
-    id === 5 && setFinishStepName(RUNTIME_OPTIONS_STEP);
+    id === 5 && setFinishStepId(RUNTIME_OPTIONS_STEP_ID);
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
     onNext();
   };
 
   const skipToReview = (
-    stepName: string,
-    goToStepByName: (stepName: string) => void
+    stepId: any,
+    goToStepById: (stepId: number) => void
   ) => {
-    setFinishStepName(stepName);
-    goToStepByName(REVIEW_STEP);
+    setFinishStepId(stepId);
+    goToStepById(REVIEW_STEP_ID);
   };
 
-  const backToFinishStep = (goToStepByName: (stepName: string) => void) => {
-    goToStepByName(finishStepName);
+  const backToFinishStep = (goToStepById: (stepId: number) => void) => {
+    goToStepById(finishStepId);
   };
 
   const validateStep = (stepName: ReactNode, onNext: () => void) => {
@@ -702,15 +709,15 @@ const onBackButtonEvent = (e:any) => {
                         <div>
                           {validationSuccessNextMsg}
                           <WizardContextConsumer>
-                            {({ activeStep, goToStepByName }) => {
+                            {({ activeStep, goToStepByName, goToStepById }) => {
                               return (
                                 <Button
                                   variant="link"
                                   type="submit"
                                   onClick={() =>
                                     skipToReview(
-                                      activeStep.name,
-                                      goToStepByName
+                                      activeStep.id,
+                                      goToStepById
                                     )
                                   }
                                 >
@@ -887,7 +894,7 @@ const onBackButtonEvent = (e:any) => {
           connectorName: getConnectorName(),
         })}
         i18nReviewTitle={t("reviewTitle")}
-        propertyValues={getFinalProperties(finishStepName)}
+        propertyValues={getFinalProperties(finishStepId)}
       />
     ),
     canJumpTo: stepIdReached >= 2,
@@ -941,7 +948,7 @@ const onBackButtonEvent = (e:any) => {
                                     : ""
                                 }
                                 onClick={() =>
-                                  skipToReview(activeStep.name, goToStepByName)
+                                  skipToReview(activeStep.id, goToStepById)
                                 }
                               >
                                 {t('review')}
@@ -1027,7 +1034,7 @@ const onBackButtonEvent = (e:any) => {
                 variant="secondary"
                 onClick={
                   activeStep.id === 6
-                    ? () => backToFinishStep(goToStepByName)
+                    ? () => backToFinishStep(goToStepById)
                     : onBack
                 }
                 className={
