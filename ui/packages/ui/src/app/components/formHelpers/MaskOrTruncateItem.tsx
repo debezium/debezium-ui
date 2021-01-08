@@ -3,7 +3,7 @@ import {
   FlexItem,
   Grid,
   GridItem,
-  TextInput,
+  TextInput
 } from "@patternfly/react-core";
 import { MinusCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -56,7 +56,7 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
               id={`${props.rowId}columns`}
               type={"text"}
               onChange={handleColumnsChange}
-              defaultValue={props.columnsValue}
+              value={props.columnsValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
             />
           </FlexItem>
@@ -71,7 +71,7 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
               min={"1"}
               type={"number"}
               onChange={handleNChange}
-              defaultValue={props.nValue}
+              value={props.nValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
             />
           </FlexItem>
