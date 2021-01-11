@@ -23,7 +23,13 @@
     "build": "lerna run build",
     "start": "lerna run start --scope=@debezium/ui"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn build"
+    }
+  },
   "devDependencies": {
+    "husky": "^4.3.7",
     "lerna": "3.21.0"
   },
   "name": "debezium-ui-poc"
