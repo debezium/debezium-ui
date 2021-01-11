@@ -140,7 +140,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
 
     @Override
     protected ConnectorDescriptor getConnectorDescriptor() {
-        return new ConnectorDescriptor("mongodb", "MongoDB", false);
+        return new ConnectorDescriptor("mongodb", "MongoDB", true);
     }
 
     @Override
