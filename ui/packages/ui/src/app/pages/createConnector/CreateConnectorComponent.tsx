@@ -671,6 +671,8 @@ const onBackButtonEvent = (e:any) => {
           )}
           advancedPropertyValues={advancedPropValues}
           i18nAdvancedPropertiesText={t("advancedPropertiesText")}
+          i18nAdvancedPublicationPropertiesText={t("advancedPublicationPropertiesText")}
+          i18nAdvancedReplicationPropertiesText={t("advancedReplicationPropertiesText")}
           i18nBasicPropertiesText={t("basicPropertiesText")}
           onValidateProperties={handleValidateConnectionProperties}
           ref={connectionPropsRef}
