@@ -287,13 +287,19 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
           }
         }
       }else if(propDefn.name.startsWith("column_mask_hash") && value !== "") {
-        // The value is of form : Cols&&Hash||Salt - where && and || are used as separators
-        const [cols, trailing] = value.split("&&");
-        if (trailing) {
-          const [hash, salt] = trailing.split("||");
-          if(cols !== "" && hash !== "" && salt && salt !== ""){
-            const updatedKey = "column.mask.hash.([^.]+).with.salt.(.+)".replace("([^.]+)",hash).replace("(.+)",salt);
-            minimizedValues.set(updatedKey, cols);
+        // The value value can have multiple entries (entries are separated by '#$')
+        // Example Cols&&Hash||Salt #$ Cols&&Hash||Salt
+        const entries = value.split("#$");
+        for(const entry of entries) {
+          if (entry && entry !== "") {
+            const [cols, trailing] = entry.split("&&");
+            if (trailing) {
+              const [hash, salt] = trailing.split("||");
+              if(cols !== "" && hash !== "" && salt && salt !== ""){
+                const updatedKey = "column.mask.hash.([^.]+).with.salt.(.+)".replace("([^.]+)",hash).replace("(.+)",salt);
+                minimizedValues.set(updatedKey, cols);
+              }
+            }
           }
         }
       // Include non-mandatory if no default, and not empty

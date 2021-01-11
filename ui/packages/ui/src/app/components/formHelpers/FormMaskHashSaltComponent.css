@@ -1,19 +1,8 @@
 .form-mask-hash-salt-component{
-    &-column{
-        margin-right: 20px;
-        &-input{
-            flex-grow:1;
-        }
-    }
-    &-label{
-        font-size: var(--pf-global--FontSize--sm);
-    }
-}
-.pf-l-flex{
-    &-nowrap{
-        flex-wrap: nowrap;
-        @media screen and (max-width: 1200px) {
-            flex-wrap: wrap;
-        }
-    }
+    padding-left: 5px;
+    padding-top: 5px;
+    border-width: 1px;
+    border-color: var(--pf-global--BorderColor--100);
+    border-style: solid;
+    border-radius: 5px;
 }

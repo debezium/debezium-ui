@@ -1,19 +1,16 @@
 import {
-  Flex,
-  FlexItem,
-  FormGroup,
-  Grid,
-  GridItem,
+  Button, FormGroup,
   InputGroup,
-  Select,
-  SelectOption,
-  SelectVariant, TextInput
+  Stack, 
+  StackItem, 
+  Tooltip
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { useField } from "formik";
 import * as React from "react";
 import "./FormMaskHashSaltComponent.css";
 import { HelpInfoIcon } from "./HelpInfoIcon";
+import { MaskHashSaltItem } from './MaskHashSaltItem';
 
 export interface IFormMaskHashSaltComponentProps {
   label: string;
@@ -23,6 +20,9 @@ export interface IFormMaskHashSaltComponentProps {
   helperTextInvalid?: any;
   isRequired: boolean;
   validated?: "default" | "success" | "warning" | "error" | undefined;
+  i18nAddDefinitionText: string;
+  i18nAddDefinitionTooltip: string;
+  i18nRemoveDefinitionTooltip: string;
   propertyChange: (name: string, selection: any) => void;
   setFieldValue: (
     field: string,
@@ -35,8 +35,36 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
   props
 ) => {
   const [field] = useField(props);
-  const [isOpen, setOpen] = React.useState<boolean>(false)
-  const [selected, setSelected] = React.useState<boolean>(false)
+
+  const getItemRows = () => {
+    return (field.value).split("#$");
+  }
+
+  const handleMaskHashSaltItemChanged = (rowId: number, maskHashSaltValue: string) => {
+    // Break into rows
+    const rows = [...getItemRows()];
+    // replace element with updated content
+    rows[rowId] = maskHashSaltValue;
+    // Join elements back together
+    const newValue = rows.join("#$");
+    // Set new value
+    props.setFieldValue(field.name, newValue, true);
+  }
+
+  const handleDeleteMaskHashSaltItem = (rowIndex: number) => {
+    // Break into rows
+    const rows = [...getItemRows()];
+    rows.splice(rowIndex,1);
+    // Join elements back together
+    const newValue = rows.join("#$");
+    // Set new value
+    props.setFieldValue(field.name, newValue, true);
+  }
+
+  const onAddDefinition = () => {
+    const newValue = field.value+"#$";
+    props.setFieldValue(field.name, newValue, true);
+  }
 
   /**
    * Return column segment from the supplied string
@@ -62,13 +90,14 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
    * @param val the 3 segment string
    */
   const getHashValue = (val: string) => {
+    let hashVal = "";
     if (val && val.includes("&&")) {
-      if (val.split("&&")[1]) {
-        return val.split("&&")[1].split("||")[0];
+      const trailing = val.split("&&")[1];
+      if (trailing) {
+        hashVal = trailing.split("||")[0];
       }
-      return "";
     }
-    return "";
+    return hashVal;
   };
 
   /**
@@ -80,71 +109,15 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
    * @param val the 3 segment string
    */
   const getSaltValue = (val: string) => {
-    if (val && val.includes("&&")) {
-      if (val.split("&&")[1]) {
-        const trailing = val.split("&&")[1].split("||");
-        return trailing[1] ? trailing[1] : "";
-      }
-      return "";
+    let saltVal = "";
+    if (val && val.includes("||")) {
+      const trailing = val.split("||")[1];
+      saltVal = trailing ? trailing : "";
     }
-    return "";
-  };
-
-  const onToggle = (open: boolean) => {
-    setOpen(open)
-  };
-
-  const clearSelection = () => {
-    setSelected(false)
-    setOpen(false)
-  };  
-
-  const onSelect = (e, selection: boolean, isPlaceholder: boolean) => {
-    if (isPlaceholder) {
-      clearSelection();
-    }
-    else {
-      setSelected(selection)
-      setOpen(false)
-      const newVal = getColsValue(field.value)+"&&"+selection+"||"+getSaltValue(field.value);
-      props.setFieldValue(field.name, newVal, true);
-      props.propertyChange(field.name, newVal);
-    }
-  };
-  
-  const selectOptions = [
-    {"value": "Choose...", isPlaceholder: true},
-    {"value": "MD2"},
-    {"value": "MD5"}, 
-    {"value": "SHA-1"}, 
-    {"value": "SHA-256"}, 
-    {"value": "SHA-384"}, 
-    {"value": "SHA-512"}
-  ]
-
-  const handleTextInputChange = (
-    val: string,
-    event: React.FormEvent<HTMLInputElement>,
-  ) => {
-    const currentValue = field.value;
-    let newVal = '';
-    if (event.target.id.includes("column")) {
-      newVal = val+"&&"+getHashValue(currentValue)+"||"+getSaltValue(currentValue);
-    }else if(event.target.id === "salt") {
-      newVal = getColsValue(currentValue)+"&&"+getHashValue(currentValue)+"||"+val;
-    }
-    // console.log("MaskHashSalt.setFieldValue name: " + field.name + ", value: " + newVal);
-    props.setFieldValue(field.name, newVal, true);
-    props.propertyChange(field.name, newVal);
+    return saltVal;
   };
 
   const id = field.name;
-  const handleKeyPress = (keyEvent: KeyboardEvent) => {
-    // do not allow entry of '.' or '-'
-    if (keyEvent.key === "." || keyEvent.key === "-") {
-      keyEvent.preventDefault();
-    }
-  };
 
   return (
     <FormGroup
@@ -159,63 +132,32 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
       validated={props.validated}
     >
       <InputGroup>
-        <Grid>
-          <GridItem span={5}>
-            <Flex className={'form-mask-hash-salt-component-column'}>
-              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Columns:</FlexItem>
-              <FlexItem className={'form-mask-hash-salt-component-column-input'}>
-                  <TextInput 
-                    data-testid={id}
-                    id={id}
-                    type={"text"}
-                    validated={props.validated}
-                    onChange={handleTextInputChange}
-                    defaultValue={getColsValue(field.value)}
-                    onKeyPress={(event) => handleKeyPress(event as any)}
-                  />
-              </FlexItem>
-            </Flex>
-          </GridItem>
-          <GridItem span={3}>
-            <Flex>
-              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Hash:</FlexItem>
-              <FlexItem spacer={{ default: 'spacerXs' }}>
-                <Select
-                  variant={SelectVariant.single}
-                  aria-label="Select Input"
-                  onToggle={onToggle}
-                  onSelect={onSelect}
-                  selections={getHashValue(field.value)}
-                  isOpen={isOpen}
-                >
-                  {selectOptions.map((option, index) => (
-                    <SelectOption
-                      key={index}
-                      value={option.value}
-                      isPlaceholder={option.isPlaceholder}
-                    />
-                  ))}
-                </Select>
-              </FlexItem>
-            </Flex>
-          </GridItem>
-          <GridItem span={4}>
-            <Flex className="pf-l-flex-nowrap">
-              <FlexItem spacer={{ default: 'spacerXs' }} className="form-mask-hash-salt-component-label">Salt:</FlexItem>
-              <FlexItem spacer={{ default: 'spacerXs' }}>
-                <TextInput
-                  data-testid={id}
-                  id={"salt"}
-                  type={"text"}
-                  validated={props.validated}
-                  onChange={handleTextInputChange}
-                  defaultValue={getSaltValue(field.value)}
-                  onKeyPress={(event) => handleKeyPress(event as any)}
-                />
-              </FlexItem>
-            </Flex>
-          </GridItem>
-        </Grid>
+        <Stack hasGutter={true} className={"form-mask-hash-salt-component"}>
+          {getItemRows().map((row: string, idx: number) => (
+            <StackItem key={idx}>
+              <MaskHashSaltItem
+                rowId={idx}
+                columnsValue={getColsValue(row)}
+                hashValue={getHashValue(row)}
+                saltValue={getSaltValue(row)}
+                canDelete={getItemRows().length > 1}
+                i18nRemoveDefinitionTooltip={props.i18nRemoveDefinitionTooltip}
+                maskHashSaltItemChanged={handleMaskHashSaltItemChanged}
+                deleteMaskHashSaltItem={handleDeleteMaskHashSaltItem}
+              />
+            </StackItem>
+          ))}
+          <StackItem>
+            <Tooltip
+              position={"right"}
+              content={props.i18nAddDefinitionTooltip}
+            >
+              <Button variant="link" onClick={onAddDefinition}>
+                {props.i18nAddDefinitionText}
+              </Button>
+            </Tooltip>
+          </StackItem>
+        </Stack>
       </InputGroup>
     </FormGroup>
   );
