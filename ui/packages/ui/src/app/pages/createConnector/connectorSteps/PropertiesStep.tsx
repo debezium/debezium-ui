@@ -19,6 +19,8 @@ export interface IPropertiesStepProps {
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
   i18nAdvancedPropertiesText: string;
+  i18nAdvancedPublicationPropertiesText: string;
+  i18nAdvancedReplicationPropertiesText: string;
   i18nBasicPropertiesText: string;
   setConnectionPropsValid: () => void;
   setConnectionStepsValid: () => void;
@@ -92,6 +94,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
       } else if (key.type === "PASSWORD") {
         basicValidationSchema[key.name] = Yup.string();
       } else if (key.type === "INT") {
+        basicValidationSchema[key.name] = Yup.string();
+      } else if (key.type === "LIST") {
         basicValidationSchema[key.name] = Yup.string();
       }
       if (key.isMandatory) {
@@ -290,12 +294,14 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                         )}
                       </Grid>
                     </GridItem>
-                    <Title
-                      headingLevel="h2"
-                      className="properties-step-grouping"
-                    >
-                      Replication
-                    </Title>
+                    {advancedReplicationPropertyDefinitions.length > 0 ? (
+                      <Title
+                        headingLevel="h2"
+                        className="properties-step-grouping"
+                      >
+                        {props.i18nAdvancedReplicationPropertiesText}
+                      </Title>
+                    ) : null}
                     <GridItem span={9}>
                       <Grid
                         hasGutter={true}
@@ -333,18 +339,18 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                     </GridItem>
                     {showPublication && (
                       <>
-                        <Title
-                          headingLevel="h2"
-                          className="properties-step-grouping"
-                        >
-                          Publication
-                        </Title>
+                        {advancedPublicationPropertyDefinitions.length > 0 ? (
+                          <Title
+                            headingLevel="h2"
+                            className="properties-step-grouping"
+                          >
+                            {props.i18nAdvancedPublicationPropertiesText}
+                          </Title>
+                        ) : null}
                         <GridItem span={9}>
                           <Grid
                             hasGutter={true}
-                            className={
-                              "properties-step-expansion-content"
-                            }
+                            className={"properties-step-expansion-content"}
                           >
                             {advancedPublicationPropertyDefinitions.map(
                               (

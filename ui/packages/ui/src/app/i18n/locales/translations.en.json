@@ -3,6 +3,8 @@
     "additionalProperties": "Additional properties",
     "advancedMappingPropertiesText": "Advanced mapping properties",
     "advancedPropertiesText": "Advanced Properties",
+    "advancedPublicationPropertiesText": "Publication",
+    "advancedReplicationPropertiesText": "Replication",
     "basicPropertiesText": "Basic Properties",
     "engineProperties": "Engine properties",
     "heartbeatProperties": "Heartbeat properties",

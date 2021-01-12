@@ -3,6 +3,8 @@
     "additionalProperties": "Proprietà aggiuntive",
     "advancedMappingPropertiesText": "Proprietà di mappatura avanzate",
     "advancedPropertiesText": "Proprietà avanzate",
+    "advancedPublicationPropertiesText": "Pubblicazione",
+    "advancedReplicationPropertiesText": "Replica",
     "basicPropertiesText": "Proprietà di base",
     "engineProperties": "Proprietà del motore",
     "heartbeatProperties": "Proprietà del battito cardiaco",
