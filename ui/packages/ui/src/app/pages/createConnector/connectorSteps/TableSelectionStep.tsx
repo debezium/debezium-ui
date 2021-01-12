@@ -435,7 +435,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
         </ActionGroup>
       </Form>
       <Divider />
-      {loading ? (
+      {!apiError && (loading ? (
         <Spinner />
       ) : (invalidMsg?.size !== 0) ? (
         <Alert
@@ -464,7 +464,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           isInline={true}
           title={`${tableNo} ${props.i18nFilterExpressionResultText}`}
         />
-      )}
+      ))}
 
       <FilterTreeComponent
         treeData={treeData}
