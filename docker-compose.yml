@@ -31,6 +31,7 @@ services:
     container_name: dbzui-db-mongo
     #image: debezium/example-mongo:1.4
     image: mongo:3.6
+    command: ["mongod", "--replSet", "rs0", "--auth"]
     ports:
       - "37017:27017"
     volumes:
