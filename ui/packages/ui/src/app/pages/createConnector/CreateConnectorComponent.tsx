@@ -32,6 +32,7 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
+  getFilterConfigurationPageContent,
   getFormattedProperties,
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
@@ -44,10 +45,10 @@ import {
 import {
   ConnectorTypeStepComponent,
   DataOptionsComponent,
+  FilterConfigComponent,
   PropertiesStep,
   ReviewStepComponent,
   RuntimeOptionsComponent,
-  TableSelectionStep,
 } from "./connectorSteps";
 import "./CreateConnectorComponent.css";
 
@@ -101,14 +102,14 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       {t("properties")} <span className="pf-m-required"> *</span>
     </div>
   );
-  const TABLE_SELECTION_STEP = t("tableSelection");
+  const FILTER_CONFIGURATION_STEP = t("filterConfiguration");
   const DATA_OPTIONS_STEP = t("dataOptions");
   const RUNTIME_OPTIONS_STEP = t("runtimeOptions");
   const REVIEW_STEP = t("review");
 
   // const CONNECTOR_TYPE_STEP_ID = 1;
   const PROPERTIES_STEP_ID = 2;
-  const TABLE_SELECTION_STEP_ID = 3;
+  const FILTER_CONFIGURATION_STEP_ID = 3;
   const DATA_OPTIONS_STEP_ID = 4;
   const RUNTIME_OPTIONS_STEP_ID = 5;
   const REVIEW_STEP_ID = 6;
@@ -256,7 +257,7 @@ const onBackButtonEvent = (e:any) => {
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
-      case TABLE_SELECTION_STEP_ID:
+      case FILTER_CONFIGURATION_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
         });
@@ -404,6 +405,7 @@ const onBackButtonEvent = (e:any) => {
       initPropertyValues();
     }
   };
+  const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(selectedConnectorType || "");
 
   const initPropertyValues = (): void => {
     setFilterValues(new Map<string, string>());
@@ -748,9 +750,9 @@ const onBackButtonEvent = (e:any) => {
     steps: [
       {
         id: 3,
-        name: TABLE_SELECTION_STEP,
+        name: FILTER_CONFIGURATION_STEP,
         component: (
-          <TableSelectionStep
+          <FilterConfigComponent
             propertyValues={
               new Map([...basicPropValues, ...advancedPropValues])
             }
@@ -758,29 +760,44 @@ const onBackButtonEvent = (e:any) => {
             updateFilterValues={handleFilterUpdate}
             connectorType={selectedConnectorType || ""}
             setIsValidFilter={setIsValidFilter}
-            i18nFilterSchemaInfoMsg={t("filterSchemaInfoMsg")}
-            i18nFilterTableInfoMsg={t("filterTableInfoMsg")}
-            i18nTableSelection={t("tableSelection")}
-            i18nFilterPageHeadingText={t("filterPageHeadingText")}
-            i18nSchemaFilter={t("schemaFilter")}
-            i18nSchemaFilterHelperText={t("schemaFilterHelperText")}
+            parent={filterConfigurationPageContentObj.parent}
+            child={filterConfigurationPageContentObj.child}
+            parentExcludeList={filterConfigurationPageContentObj.parentExcludeList}
+            parentIncludeList={filterConfigurationPageContentObj.parentIncludeList}
+            childExcludeList={filterConfigurationPageContentObj.childExcludeList}
+            childIncludeList={filterConfigurationPageContentObj.childIncludeList}
+            i18nFilterParentInfoMsg={t("filterParentInfoMsg", {parent: filterConfigurationPageContentObj.parent})}
+            i18nFilterChildInfoMsg={t("filterChildInfoMsg", {
+              parent: filterConfigurationPageContentObj.parent,
+              child: filterConfigurationPageContentObj.child
+            })}
+            i18nFilterConfiguration={t("filterConfiguration")}
+            i18nFilterPageHeadingText={t("filterPageHeadingText", {
+              parent: filterConfigurationPageContentObj.parent,
+              child: filterConfigurationPageContentObj.child
+            })}
+            i18nFilterParentLabel={t("filterFieldLabel", {field: _.upperFirst(filterConfigurationPageContentObj.parent)})}
+            i18nFilterChildLabel={t("filterFieldLabel", {field: _.upperFirst(filterConfigurationPageContentObj.child)})}
+            i18nFilterParentHelperText={t("filterFieldHelperText", {field: filterConfigurationPageContentObj.parent})}
+            i18nFilterChildHelperText={t("filterFieldHelperText", {field: filterConfigurationPageContentObj.child})}
             i18nInclude={t("include")}
             i18nExclude={t("exclude")}
-            i18nTableFilter={t("tableFilter")}
-            i18nTableFilterHelperText={t("tableFilterHelperText")}
             i18nApply={t("apply")}
             i18nClearFilters={t("clearFilters")}
-            i18nInvalidFilterText={t("invalidFilterText")}
-            i18nMatchingFilterExpMsg={t("matchingFilterExpMsg")}
-            i18nNoMatchingFilterExpMsg={t("noMatchingFilterExpMsg")}
-            i18nClearFilterText={t("clearFilterText")}
-            i18nFilterExpressionResultText={t("filterExpressionResultText")}
+            i18nInvalidFilterText={t("invalidFilterText", {name: filterConfigurationPageContentObj.child})}
+            i18nMatchingFilterExpMsg={t("matchingFilterExpMsg", {name: filterConfigurationPageContentObj.child})}
+            i18nNoMatchingFilterExpMsg={t("noMatchingFilterExpMsg", {name: filterConfigurationPageContentObj.child})}
+            i18nClearFilterText={t("clearFilterText", {
+              parent: filterConfigurationPageContentObj.parent, 
+              child: filterConfigurationPageContentObj.child
+            })}
+            i18nFilterExpressionResultText={t("filterExpressionResultText", {name: filterConfigurationPageContentObj.child})}
             i18nCancel={t("cancel")}
             i18nClear={t("clear")}
             i18nClearFilterConfMsg={t("clearFilterConfMsg")}
-            i18nNoMatchingTables={t("noMatchingTables")}
+            i18nNoMatchingTables={t("noMatchingTables", {name: filterConfigurationPageContentObj.child})}
             i18nInvalidFilters={t("invalidFilters")}
-            i18nInvalidFilterExpText={t("invalidFilterExpText")}
+            i18nInvalidFilterExpText={t("invalidFilterExpText", {name: filterConfigurationPageContentObj.child})}
           />
         ),
         canJumpTo: stepIdReached >= 3,
@@ -943,7 +960,7 @@ const onBackButtonEvent = (e:any) => {
                                 variant="link"
                                 type="submit"
                                 className={
-                                  activeStep.name === TABLE_SELECTION_STEP &&
+                                  activeStep.name === FILTER_CONFIGURATION_STEP &&
                                   !isValidFilter
                                     ? "pf-m-disabled"
                                     : ""
@@ -1003,7 +1020,7 @@ const onBackButtonEvent = (e:any) => {
                   variant="primary"
                   type="submit"
                   className={
-                    (activeStep.name === TABLE_SELECTION_STEP &&
+                    (activeStep.name === FILTER_CONFIGURATION_STEP &&
                       !isValidFilter) ||
                     (activeStep.name === CONNECTOR_TYPE_STEP &&
                       selectedConnectorType === undefined)
@@ -1019,7 +1036,7 @@ const onBackButtonEvent = (e:any) => {
                   variant="primary"
                   type="submit"
                   className={
-                    (activeStep.name === TABLE_SELECTION_STEP &&
+                    (activeStep.name === FILTER_CONFIGURATION_STEP &&
                       !isValidFilter) ||
                     (activeStep.name === CONNECTOR_TYPE_STEP &&
                       selectedConnectorType === undefined)
