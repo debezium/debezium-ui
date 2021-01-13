@@ -32,24 +32,30 @@ import {
   fetch_retry,
   mapToObject,
 } from "src/app/shared";
-import "./TableSelectionStep.css";
+import "./FilterConfigComponent.css";
 
-export interface ITableSelectionStepProps {
+export interface IFilterConfigComponentProps {
   propertyValues: Map<string, string>;
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val:SetStateAction<boolean>) => void;
-  i18nFilterSchemaInfoMsg: string;
-  i18nFilterTableInfoMsg: string;
-  i18nTableSelection: string;
+  parent: string;
+  child: string;
+  parentExcludeList: string;
+  parentIncludeList: string;
+  childExcludeList: string;
+  childIncludeList: string;
+  i18nFilterParentInfoMsg: string;
+  i18nFilterChildInfoMsg: string;
+  i18nFilterConfiguration: string;
   i18nFilterPageHeadingText: string;
-  i18nSchemaFilter: string;
-  i18nSchemaFilterHelperText: string;
+  i18nFilterParentLabel: string;
+  i18nFilterChildLabel: string;
+  i18nFilterParentHelperText: string;
+  i18nFilterChildHelperText: string;
   i18nInclude: string;
   i18nExclude: string;
-  i18nTableFilter: string;
-  i18nTableFilterHelperText: string;
   i18nApply: string;
   i18nClearFilters: string;
   i18nInvalidFilterText: string;
@@ -90,14 +96,14 @@ const formatResponseData = (data: DataCollection[]) => {
   }, []);
 };
 
-const getSchemaExpression = (data: Map<string, string>): string => {
+const getParentExpression = (data: Map<string, string>, parentExclude: string, parentInclude: string): string => {
   return (
-    data.get("schema.exclude.list") || data.get("schema.include.list") || ""
+    data.get(parentExclude) || data.get(parentInclude) || ""
   );
 };
 
-const getTableExpression = (data: Map<string, string>): string => {
-  return data.get("table.exclude.list") || data.get("table.include.list") || "";
+const getChildExpression = (data: Map<string, string>, childExclude: string, childInclude: string): string => {
+  return data.get(childExclude) || data.get(childInclude) || "";
 };
 
 const getInvalidFilterMsg = (
@@ -113,24 +119,24 @@ const getInvalidFilterMsg = (
   return returnVal;
 };
 
-export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProps> = (
+export const FilterConfigComponent: React.FunctionComponent<IFilterConfigComponentProps> = (
   props
 ) => {
-  const [schemaFilter, setSchemaFilter] = React.useState<string>(
-    getSchemaExpression(props.filterValues)
+  const [parentFilter, setParentFilter] = React.useState<string>(
+    getParentExpression(props.filterValues,props.parentExcludeList,props.parentIncludeList)
   );
-  const [tableFilter, setTableFilter] = React.useState<string>(
-    getTableExpression(props.filterValues)
+  const [childFilter, setChildFilter] = React.useState<string>(
+    getChildExpression(props.filterValues, props.childExcludeList, props.childIncludeList)
   );
-  const [schemaSelected, setSchemaSelected] = React.useState<string>(
-    props.filterValues.has("schema.exclude.list")
-      ? "schemaExclude"
-      : "schemaInclude"
+  const [parentSelected, setParentSelected] = React.useState<string>(
+    props.filterValues.has(props.parentExcludeList)
+      ? "parentExclude"
+      : "parentInclude"
   );
-  const [tableSelected, setTableSelected] = React.useState<string>(
-    props.filterValues.has("schema.exclude.list")
-      ? "tableExclude"
-      : "tableInclude"
+  const [childSelected, setChildSelected] = React.useState<string>(
+    props.filterValues.has(props.childExcludeList)
+      ? "childExclude"
+      : "childInclude"
   );
 
   const [formData, setFormData] = React.useState<Map<string, string>>(
@@ -138,31 +144,31 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
   );
   const [treeData, setTreeData] = React.useState<any[]>([]);
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>();
-  const [tableNo, setTableNo] = React.useState<number>(0);
+  const [childNo, setChildNo] = React.useState<number>(0);
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
-  const schemaFilterInfo = props.i18nFilterSchemaInfoMsg;
-  const tableFilterInfo = props.i18nFilterTableInfoMsg;
+  const parentFilterInfo = props.i18nFilterParentInfoMsg;
+  const childFilterInfo = props.i18nFilterChildInfoMsg;
 
-  const handleSchemaFilter = (val: string) => {
-    setSchemaFilter(val);
+  const handleParentFilter = (val: string) => {
+    setParentFilter(val);
   };
-  const handleTableFilter = (val: string) => {
-    setTableFilter(val);
+  const handleChildFilter = (val: string) => {
+    setChildFilter(val);
   };
 
-  const handleSchemaToggle = (isSelected: any, event: any) => {
+  const handleParentToggle = (isSelected: any, event: any) => {
     const id = event.currentTarget.id;
-    setSchemaSelected(id);
+    setParentSelected(id);
   };
 
-  const handleTableToggle = (isSelected: any, event: any) => {
+  const handleChildToggle = (isSelected: any, event: any) => {
     const id = event.currentTarget.id;
-    setTableSelected(id);
+    setChildSelected(id);
   };
 
   const connectorService = Services.getConnectorService();
@@ -192,13 +198,13 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           setInvalidMsg(errorMap);
           props.setIsValidFilter(false);
           setTreeData([]);
-          setTableNo(result.matchedCollections.length);
+          setChildNo(result.matchedCollections.length);
         } else {
           // tslint:disable-next-line: no-unused-expression
           saveFilter && props.updateFilterValues(filterExpression);
           props.setIsValidFilter(true)
           setInvalidMsg(new Map());
-          setTableNo(result.matchedCollections.length);
+          setChildNo(result.matchedCollections.length);
           setTreeData(formatResponseData(result.matchedCollections));
         }
         setLoading(false);
@@ -214,10 +220,10 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
   };
 
   const doClear = () => {
-    setSchemaSelected("schemaInclude");
-    setTableSelected("tableInclude");
-    setSchemaFilter("");
-    setTableFilter("");
+    setParentSelected("parentInclude");
+    setChildSelected("childInclude");
+    setParentFilter("");
+    setChildFilter("");
     setFormData(new Map());
     getFilterSchema(true, new Map());
     setShowClearDialog(false);
@@ -225,37 +231,37 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
 
   React.useEffect(() => {
     const formDataCopy = new Map(formData);
-    if (schemaSelected === "schemaExclude") {
-      formDataCopy.delete("schema.include.list");
-      schemaFilter
-        ? formDataCopy.set("schema.exclude.list", schemaFilter)
-        : formDataCopy.delete("schema.exclude.list");
+    if (parentSelected === "parentExclude") {
+      formDataCopy.delete(props.parentIncludeList);
+      parentFilter
+        ? formDataCopy.set(props.parentExcludeList, parentFilter)
+        : formDataCopy.delete(props.parentExcludeList);
     } else {
-      formDataCopy.delete("schema.exclude.list");
-      schemaFilter
-        ? formDataCopy.set("schema.include.list", schemaFilter)
-        : formDataCopy.delete("schema.include.list");
+      formDataCopy.delete(props.parentExcludeList);
+      parentFilter
+        ? formDataCopy.set(props.parentIncludeList, parentFilter)
+        : formDataCopy.delete(props.parentIncludeList);
     }
     setFormData(formDataCopy);
     props.setIsValidFilter(false);
-  }, [schemaSelected, schemaFilter]);
+  }, [parentSelected, parentFilter]);
 
   React.useEffect(() => {
     const formDataCopy = new Map(formData);
-    if (tableSelected === "tableExclude") {
-      formDataCopy.delete("table.include.list");
-      tableFilter
-        ? formDataCopy.set("table.exclude.list", tableFilter)
-        : formDataCopy.delete("table.exclude.list");
+    if (childSelected === "childExclude") {
+      formDataCopy.delete(props.childIncludeList);
+      childFilter
+        ? formDataCopy.set(props.childExcludeList, childFilter)
+        : formDataCopy.delete(props.childExcludeList);
     } else {
-      formDataCopy.delete("table.exclude.list");
-      tableFilter
-        ? formDataCopy.set("table.include.list", tableFilter)
-        : formDataCopy.delete("table.include.list");
+      formDataCopy.delete(props.childExcludeList);
+      childFilter
+        ? formDataCopy.set(props.childIncludeList, childFilter)
+        : formDataCopy.delete(props.childIncludeList);
     }
     setFormData(formDataCopy);
     props.setIsValidFilter(false);
-  }, [tableSelected, tableFilter]);
+  }, [childSelected, childFilter]);
 
   React.useEffect(() => {
     getFilterSchema(false, props.filterValues);
@@ -264,30 +270,30 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
   return (
     <>
       <Title headingLevel="h2" size="3xl">
-        {props.i18nTableSelection}
+        {props.i18nFilterConfiguration}
       </Title>
       <Text component={TextVariants.h2}>
         {props.i18nFilterPageHeadingText}
       </Text>
-      <Form className="table-selection-step_form">
+      <Form className="child-selection-step_form">
         <FormGroup
-          label={props.i18nSchemaFilter}
-          fieldId="schema_filter"
+          label={props.i18nFilterParentLabel}
+          fieldId="parent_filter"
           helperText={
-            schemaSelected === "schemaExclude" ? (
+            parentSelected === "parentExclude" ? (
               <Text
                 component={TextVariants.h4}
-                className="table-selection-step_info"
+                className="child-selection-step_info"
               >
                 <InfoCircleIcon />
-                {props.i18nSchemaFilterHelperText}
+                {props.i18nFilterParentHelperText}
               </Text>
             ) : (
               ""
             )
           }
           labelIcon={
-            <Popover bodyContent={<div>{schemaFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
+            <Popover bodyContent={<div>{parentFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
               <button
                 aria-label="More info for schema filter field"
                 onClick={(e) => e.preventDefault()}
@@ -300,12 +306,12 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           }
           helperTextInvalid={
             invalidMsg?.size !== 0
-              ? getInvalidFilterMsg("schema", invalidMsg)
+              ? getInvalidFilterMsg("parent", invalidMsg)
               : ""
           }
           helperTextInvalidIcon={<ExclamationCircleIcon />}
           validated={
-            invalidMsg?.size !== 0 && getInvalidFilterMsg("schema", invalidMsg)
+            invalidMsg?.size !== 0 && getInvalidFilterMsg("parent", invalidMsg)
               ? "error"
               : "default"
           }
@@ -313,34 +319,34 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           <Flex>
             <FlexItem>
               <TextInput
-                value={schemaFilter}
+                value={parentFilter}
                 validated={
                   invalidMsg?.size !== 0 &&
-                  getInvalidFilterMsg("schema", invalidMsg)
+                  getInvalidFilterMsg("parent", invalidMsg)
                     ? "error"
                     : "default"
                 }
                 type="text"
-                id="schema_filter"
+                id="parent_filter"
                 aria-describedby="schema_filter-helper"
-                name="schema_filter"
-                onChange={handleSchemaFilter}
-                placeholder="e.g schema1,schema2"
+                name="parent_filter"
+                onChange={handleParentFilter}
+                placeholder={`e.g ${props.parent}1,${props.parent}2`}
               />
             </FlexItem>
             <FlexItem>
               <ToggleGroup aria-label="Include Exclude schema toggle group">
                 <ToggleGroupItem
-                  buttonId="schemaInclude"
-                  isSelected={schemaSelected === "schemaInclude"}
-                  onChange={handleSchemaToggle}
+                  buttonId="parentInclude"
+                  isSelected={parentSelected === "parentInclude"}
+                  onChange={handleParentToggle}
                   onClick={(e) => e.preventDefault()}
                   text={props.i18nInclude}
                 />
                 <ToggleGroupItem
-                  buttonId="schemaExclude"
-                  isSelected={schemaSelected === "schemaExclude"}
-                  onChange={handleSchemaToggle}
+                  buttonId="parentExclude"
+                  isSelected={parentSelected === "parentExclude"}
+                  onChange={handleParentToggle}
                   onClick={(e) => e.preventDefault()}
                   text={props.i18nExclude}
                 />
@@ -349,23 +355,23 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           </Flex>
         </FormGroup>
         <FormGroup
-          label={props.i18nTableFilter}
-          fieldId="table_filter"
+          label={props.i18nFilterChildLabel}
+          fieldId="child_filter"
           helperText={
-            tableSelected === "tableExclude" ? (
+            childSelected === "childExclude" ? (
               <Text
                 component={TextVariants.h4}
-                className="table-selection-step_info"
+                className="child-selection-step_info"
               >
                 <InfoCircleIcon />
-                {props.i18nTableFilterHelperText}
+                {props.i18nFilterChildHelperText}
               </Text>
             ) : (
               ""
             )
           }
           labelIcon={
-            <Popover bodyContent={<div>{tableFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
+            <Popover bodyContent={<div>{childFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
               <button
                 aria-label="More info for table filter field"
                 onClick={(e) => e.preventDefault()}
@@ -378,12 +384,12 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
           }
           helperTextInvalid={
             invalidMsg?.size !== 0
-              ? getInvalidFilterMsg("table", invalidMsg)
+              ? getInvalidFilterMsg("child", invalidMsg)
               : ""
           }
           helperTextInvalidIcon={<ExclamationCircleIcon />}
           validated={
-            invalidMsg?.size !== 0 && getInvalidFilterMsg("table", invalidMsg)
+            invalidMsg?.size !== 0 && getInvalidFilterMsg("child", invalidMsg)
               ? "error"
               : "default"
           }
@@ -393,31 +399,31 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
               <TextInput
                 validated={
                   invalidMsg?.size !== 0 &&
-                  getInvalidFilterMsg("table", invalidMsg)
+                  getInvalidFilterMsg("child", invalidMsg)
                     ? "error"
                     : "default"
                 }
-                value={tableFilter}
-                onChange={handleTableFilter}
+                value={childFilter}
+                onChange={handleChildFilter}
                 type="text"
-                id="table_filter"
-                name="table_filter"
-                placeholder="e.g schema1.*,schema2.table1"
+                id="child_filter"
+                name="child_filter"
+                placeholder={`e.g ${props.parent}1.*,${props.parent}2.${props.child}1`}
               />
             </FlexItem>
             <FlexItem>
               <ToggleGroup aria-label="Include Exclude tables toggle group">
                 <ToggleGroupItem
-                  buttonId="tableInclude"
-                  isSelected={tableSelected === "tableInclude"}
-                  onChange={handleTableToggle}
+                  buttonId="childInclude"
+                  isSelected={childSelected === "childInclude"}
+                  onChange={handleChildToggle}
                   onClick={(e) => e.preventDefault()}
                   text={props.i18nInclude}
                 />
                 <ToggleGroupItem
-                  buttonId="tableExclude"
-                  isSelected={tableSelected === "tableExclude"}
-                  onChange={handleTableToggle}
+                  buttonId="childExclude"
+                  isSelected={childSelected === "childExclude"}
+                  onChange={handleChildToggle}
                   onClick={(e) => e.preventDefault()}
                   text={props.i18nExclude}
                 />
@@ -445,11 +451,11 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
         />
       ) : props.filterValues.size !== 0 ? (
         <Alert
-          variant={tableNo !== 0 ? "info" : "warning"}
+          variant={childNo !== 0 ? "info" : "warning"}
           isInline={true}
           title={
-            tableNo !== 0
-              ? `${tableNo} ${props.i18nMatchingFilterExpMsg}`
+            childNo !== 0
+              ? `${childNo} ${props.i18nMatchingFilterExpMsg}`
               : props.i18nNoMatchingFilterExpMsg
           }
         >
@@ -462,7 +468,7 @@ export const TableSelectionStep: React.FunctionComponent<ITableSelectionStepProp
         <Alert
           variant="info"
           isInline={true}
-          title={`${tableNo} ${props.i18nFilterExpressionResultText}`}
+          title={`${childNo} ${props.i18nFilterExpressionResultText}`}
         />
       ))}
 

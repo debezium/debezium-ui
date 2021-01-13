@@ -461,6 +461,34 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
   return formattedPropertyDefns;
 }
 
+/**
+ * Get a Filter configuration page content Obj, based on the 
+ * @param connectorType the connector type
+ */
+export function getFilterConfigurationPageContent(connectorType: string): any {
+  let returnObj;
+  if(connectorType==='mongodb'){
+    returnObj = {
+      parent: 'database',
+      child: 'collection',
+      parentExcludeList:'database.exclude.list',
+      parentIncludeList:'database.include.list',
+      childExcludeList:'collection.exclude.list',
+      childIncludeList:'collection.include.list'
+    }
+  }else{
+    returnObj = {
+      parent: 'schema',
+      child: 'table',
+      parentExcludeList:'schema.exclude.list',
+      parentIncludeList:'schema.include.list',
+      childExcludeList:'table.exclude.list',
+      childIncludeList:'table.include.list'
+    }
+  }
+  return returnObj;
+}
+
 export function mapToObject(inputMap: Map<string, string>) {
   const obj = {};
   inputMap.forEach((value, key) => {
