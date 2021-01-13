@@ -78,7 +78,29 @@ export enum PropertyName {
   SOURCE_STRUCT_VERSION = "source.struct.version",
   STATUS_UPDATE_INTERVAL_MS = "status.update.interval.ms",
   XMIN_FETCH_INTERVAL_MS = "xmin.fetch.interval.ms",
-  CONVERTERS = "converters"
+  CONVERTERS = "converters",
+  MONGODB_HOSTS = "mongodb.hosts",
+  MONGODB_MEMBERS_AUTO_DISCOVER = "mongodb.members.auto.discover",
+  MONGODB_POLL_INTERVAL_MS = "mongodb.poll.interval.ms",
+  MONGODB_USER = "mongodb.user",
+  MONGODB_PASSWORD = "mongodb.password",
+  MONGODB_NAME = "mongodb.name",
+  MONGODB_SSL_ENABLED = "mongodb.ssl.enabled",
+  MONGODB_SSL_INVALID_HOSTNAME_ALLOWED = "mongodb.ssl.invalid.hostname.allowed",
+  MONGODB_CONNECT_TIMEOUT_MS = "mongodb.connect.timeout.ms",
+  CONNECT_BACKOFF_INITIAL_DELAY_MS = "connect.backoff.initial.delay.ms",
+  CONNECT_BACKOFF_MAX_DELAY_MS = "connect.backoff.max.delay.ms",
+  MONGODB_AUTHSOURCE = "mongodb.authsource",
+  CONNECT_MAX_ATTEMPTS = "connect.max.attempts",
+  MONGODB_SERVER_SELECTION_TIMEOUT_MS = "mongodb.server.selection.timeout.ms",
+  MONGODB_SOCKET_TIMEOUT_MS = "mongodb.socket.timeout.ms",
+  DATABASE_INCLUDE_LIST = "database.include.list",
+  DATABASE_EXCLUDE_LIST = "database.exclude.list",
+  COLLECTION_INCLUDE_LIST = "collection.include.list",
+  COLLECTION_EXCLUDE_LIST = "collection.exclude.list",
+  FIELD_EXCLUDE_LIST = "field.exclude.list",
+  QUERY_FETCH_SIZE = "query.fetch.size",
+  FIELD_RENAMES = "field.renames"
 }
 
 export enum PropertyCategory {
@@ -319,72 +341,120 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
  * @param propertyDefns the array of property definitions
  * @returns the array of altered property definitions
  */
-export function getFormattedProperties (propertyDefns: ConnectorProperty[]): ConnectorProperty[] {
+export function getFormattedProperties (propertyDefns: ConnectorProperty[], connectorType: ConnectorType): ConnectorProperty[] {
   const formattedPropertyDefns: ConnectorProperty[] = [...propertyDefns];
 
-  for (const propDefn of formattedPropertyDefns) {
-    switch (propDefn.name) {
-      case PropertyName.BINARY_HANDLING_MODE:
-      case PropertyName.DECIMAL_HANDLING_MODE:
-      case PropertyName.HSTORE_HANDLING_MODE:
-      case PropertyName.INTERVAL_HANDLING_MODE:
-      case PropertyName.TIME_PRECISION_MODE:
-      case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
-      case PropertyName.PLUGIN_NAME:
-      case PropertyName.PUBLICATION_AUTOCREATE_MODE:
-      case PropertyName.SCHEMA_REFRESH_MODE:
-        propDefn.gridWidth = 4;
-        break;
-      case PropertyName.SLOT_MAX_RETRIES:
-        propDefn.gridWidth = 6;
-        propDefn.type =  "NON-NEG-INT";
-        break;
-      case PropertyName.DATABASE_HOSTNAME:
-        propDefn.gridWidth = 8;
-        break;
-      case PropertyName.SNAPSHOT_MODE:
-        propDefn.gridWidth = 9;
-        break;
-      case PropertyName.DATABASE_TCPKEEPALIVE:
-      case PropertyName.SLOT_DROP_ON_STOP:
-        propDefn.gridWidth = 12;
-        propDefn.type = "BOOLEAN-SWITCH";
-        break;
-      case PropertyName.SNAPSHOT_DELAY_MS:
-      case PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS:
-      case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
-      case PropertyName.HEARTBEAT_INTERVAL_MS:
-      case PropertyName.POLL_INTERVAL_MS:
-        propDefn.gridWidth = 4;
-        propDefn.type = "DURATION";
-        propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
-        break;
-      case PropertyName.SLOT_RETRY_DELAY_MS:
-      case PropertyName.STATUS_UPDATE_INTERVAL_MS:
-      case PropertyName.XMIN_FETCH_INTERVAL_MS:
-        propDefn.gridWidth = 6;
-        propDefn.type = "DURATION";
-        propDefn.displayName = propDefn.displayName.replace("(ms)", "");
-        break;
-      case PropertyName.DATABASE_PORT:
-      case PropertyName.SNAPSHOT_FETCH_SIZE:
-      case PropertyName.MAX_QUEUE_SIZE:
-      case PropertyName.MAX_BATCH_SIZE:
-        propDefn.gridWidth = 4;
-        propDefn.type =  "NON-NEG-INT";
-        break;
-      case PropertyName.COLUMN_TRUNCATE:
-      case PropertyName.COLUMN_MASK:
-        propDefn.gridWidth = 12;
-        propDefn.type =  "COL_MASK_OR_TRUNCATE";
-        break;
-      case PropertyName.COLUMN_MASK_HASH_SALT:
-        propDefn.gridWidth = 12;
-        propDefn.type =  "COL_MASK_HASH_SALT";
-        break;
-      default:
-        propDefn.gridWidth = 12;
-        break;
+  if (connectorType.id === ConnectorTypeId.POSTGRES) {
+    for (const propDefn of formattedPropertyDefns) {
+      switch (propDefn.name) {
+        case PropertyName.BINARY_HANDLING_MODE:
+        case PropertyName.DECIMAL_HANDLING_MODE:
+        case PropertyName.HSTORE_HANDLING_MODE:
+        case PropertyName.INTERVAL_HANDLING_MODE:
+        case PropertyName.TIME_PRECISION_MODE:
+        case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
+        case PropertyName.PLUGIN_NAME:
+        case PropertyName.PUBLICATION_AUTOCREATE_MODE:
+        case PropertyName.SCHEMA_REFRESH_MODE:
+          propDefn.gridWidth = 4;
+          break;
+        case PropertyName.SLOT_MAX_RETRIES:
+          propDefn.gridWidth = 6;
+          propDefn.type =  "NON-NEG-INT";
+          break;
+        case PropertyName.DATABASE_HOSTNAME:
+          propDefn.gridWidth = 8;
+          break;
+        case PropertyName.SNAPSHOT_MODE:
+          propDefn.gridWidth = 9;
+          break;
+        case PropertyName.DATABASE_TCPKEEPALIVE:
+        case PropertyName.SLOT_DROP_ON_STOP:
+          propDefn.gridWidth = 12;
+          propDefn.type = "BOOLEAN-SWITCH";
+          break;
+        case PropertyName.SNAPSHOT_DELAY_MS:
+        case PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS:
+        case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
+        case PropertyName.HEARTBEAT_INTERVAL_MS:
+        case PropertyName.POLL_INTERVAL_MS:
+          propDefn.gridWidth = 4;
+          propDefn.type = "DURATION";
+          propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
+          break;
+        case PropertyName.SLOT_RETRY_DELAY_MS:
+        case PropertyName.STATUS_UPDATE_INTERVAL_MS:
+        case PropertyName.XMIN_FETCH_INTERVAL_MS:
+          propDefn.gridWidth = 6;
+          propDefn.type = "DURATION";
+          propDefn.displayName = propDefn.displayName.replace("(ms)", "");
+          break;
+        case PropertyName.DATABASE_PORT:
+        case PropertyName.SNAPSHOT_FETCH_SIZE:
+        case PropertyName.MAX_QUEUE_SIZE:
+        case PropertyName.MAX_BATCH_SIZE:
+          propDefn.gridWidth = 4;
+          propDefn.type =  "NON-NEG-INT";
+          break;
+        case PropertyName.COLUMN_TRUNCATE:
+        case PropertyName.COLUMN_MASK:
+          propDefn.gridWidth = 12;
+          propDefn.type =  "COL_MASK_OR_TRUNCATE";
+          break;
+        case PropertyName.COLUMN_MASK_HASH_SALT:
+          propDefn.gridWidth = 12;
+          propDefn.type =  "COL_MASK_HASH_SALT";
+          break;
+        default:
+          propDefn.gridWidth = 12;
+          break;
+      }
+    }
+  } else if (connectorType.id === ConnectorTypeId.MONGO) {
+    for (const propDefn of formattedPropertyDefns) {
+      switch (propDefn.name) {
+        case PropertyName.MONGODB_MEMBERS_AUTO_DISCOVER:
+          propDefn.gridWidth = 12;
+          propDefn.type = "BOOLEAN-SWITCH";
+          break;
+        case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
+          propDefn.gridWidth = 4;
+          break;
+        case PropertyName.SNAPSHOT_MODE:
+          propDefn.gridWidth = 9;
+          break;
+        case PropertyName.MONGODB_POLL_INTERVAL_MS:
+        case PropertyName.MONGODB_CONNECT_TIMEOUT_MS:
+        case PropertyName.CONNECT_BACKOFF_INITIAL_DELAY_MS:
+        case PropertyName.CONNECT_BACKOFF_MAX_DELAY_MS:
+        case PropertyName.MONGODB_SERVER_SELECTION_TIMEOUT_MS:
+        case PropertyName.MONGODB_SOCKET_TIMEOUT_MS:
+        case PropertyName.SNAPSHOT_DELAY_MS:
+        case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
+        case PropertyName.HEARTBEAT_INTERVAL_MS:
+        case PropertyName.POLL_INTERVAL_MS:
+          propDefn.gridWidth = 4;
+          propDefn.type = "DURATION";
+          propDefn.displayName = propDefn.displayName.replace("(ms)", "")
+                                                     .replace("(milli-seconds)","")
+                                                     .replace("(milliseconds)","")
+                                                     .replace(" MS","");
+          break;
+        case PropertyName.SNAPSHOT_FETCH_SIZE:
+        case PropertyName.MAX_QUEUE_SIZE:
+        case PropertyName.MAX_BATCH_SIZE:
+          propDefn.gridWidth = 4;
+          propDefn.type =  "NON-NEG-INT";
+          break;
+        case PropertyName.CONNECT_MAX_ATTEMPTS:
+        case PropertyName.QUERY_FETCH_SIZE:
+          propDefn.gridWidth = 9;
+          propDefn.type =  "NON-NEG-INT";
+          break;
+        default:
+          propDefn.gridWidth = 12;
+          break;
+      }
     }
   }
  

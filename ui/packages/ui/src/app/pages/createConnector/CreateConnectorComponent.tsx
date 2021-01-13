@@ -400,8 +400,7 @@ const onBackButtonEvent = (e:any) => {
             obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
             ).name= "column.mask.hash";
         }
-
-      setSelectedConnectorPropertyDefns(connType!.properties);
+      setSelectedConnectorPropertyDefns(getFormattedProperties(connType!.properties, connType));
       initPropertyValues();
     }
   };
@@ -618,7 +617,7 @@ const onBackButtonEvent = (e:any) => {
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.properties &&
       setSelectedConnectorPropertyDefns(
-        getFormattedProperties(connectorTypes[0]!.properties)
+        getFormattedProperties(connectorTypes[0]!.properties, connectorTypes[0]!)
       );
 
     // Init the connector property values
