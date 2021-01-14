@@ -189,12 +189,12 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const dataOptionRef = React.useRef();
   const runtimeOptionRef = React.useRef();
 
-const onBackButtonEvent = (e:any) => {
+  const onBackButtonEvent = (e:any) => {
     e.preventDefault();
     if (!backEnable) {
         setShowBackConfirmationDialog(true);
     }
-}
+  }
 
   React.useEffect(() => {
     window.history.pushState(null, '', basename+history.location.pathname);
@@ -404,7 +404,12 @@ const onBackButtonEvent = (e:any) => {
       setSelectedConnectorPropertyDefns(getFormattedProperties(connType!.properties, connType));
       initPropertyValues();
     }
+    setConnectionPropsValid(false);
+    setConnectionPropsValidMsg([]);
+    setConnectionStepsValid(0);
+    setStepIdReached(1);
   };
+
   const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(selectedConnectorType || "");
 
   const initPropertyValues = (): void => {
@@ -451,7 +456,7 @@ const onBackButtonEvent = (e:any) => {
 
   const validateConnectionName = (connName: string | undefined): string => {
     const currentNames = props.connectorNames;
-    if (currentNames.indexOf(connName) > -1) {
+    if (connName && currentNames.indexOf(connName) > -1) {
       return t("duplicateConnectorErrorMsg");
     }
     return "";
@@ -1086,19 +1091,9 @@ const onBackButtonEvent = (e:any) => {
         i18nConfirmButtonText={t("leave")}
         i18nConfirmationMessage={t("cancelWarningMsg")}
         i18nTitle={t("exitWizard")}
-        showDialog={showCancelConfirmationDialog}
-        onCancel={doCancelConfirmed}
-        onConfirm={doGotoConnectorsListPage}
-      />
-      <ConfirmationDialog
-        buttonStyle={ConfirmationButtonStyle.NORMAL}
-        i18nCancelButtonText={t("stay")}
-        i18nConfirmButtonText={t("leave")}
-        i18nConfirmationMessage={t("cancelWarningMsg")}
-        i18nTitle={t("exitWizard")}
-        showDialog={showBackConfirmationDialog}
-        onCancel={doStay}
-        onConfirm={doGotoBack}
+        showDialog={ (showCancelConfirmationDialog || showBackConfirmationDialog) }
+        onCancel={ showCancelConfirmationDialog ? doCancelConfirmed: doStay }
+        onConfirm={ showCancelConfirmationDialog ? doGotoConnectorsListPage : doGotoBack }
       />
     </>
   );
