@@ -23,7 +23,7 @@ import {
 import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { Prompt, useHistory } from "react-router-dom";
 import { ToastAlertComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
@@ -147,7 +147,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     runtimeOptionsPropValues,
     setRuntimeOptionsPropValues,
   ] = React.useState<Map<string, string>>(new Map<string, string>());
-  const [backEnable, setBackEnable] = React.useState(false);
 
   const [validateInProgress, setValidateInProgress] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -157,11 +156,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const [
     showCancelConfirmationDialog,
     setShowCancelConfirmationDialog,
-  ] = React.useState(false);
-
-  const [
-    showBackConfirmationDialog,
-    setShowBackConfirmationDialog,
   ] = React.useState(false);
 
   const [connectionStepsValid, setConnectionStepsValid] = React.useState<
@@ -188,23 +182,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const connectionPropsRef = React.useRef();
   const dataOptionRef = React.useRef();
   const runtimeOptionRef = React.useRef();
-
-  const onBackButtonEvent = (e:any) => {
-    e.preventDefault();
-    if (!backEnable) {
-        setShowBackConfirmationDialog(true);
-    }
-  }
-
-  React.useEffect(() => {
-    window.history.pushState(null, '', basename+history.location.pathname);
-    window.addEventListener('popstate', onBackButtonEvent);
-    return () => {
-      window.removeEventListener('popstate', onBackButtonEvent);  
-    };
-  }, []);
-
-
 
   const addAlert = (msg?: string) => {
     const alertsCopy = [...alerts];
@@ -319,21 +296,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setShowCancelConfirmationDialog(false);
   };
 
-  const doStay = () => {
-    setShowBackConfirmationDialog(false);
-    window.history.pushState(null, '', basename+history.location.pathname);
-    setBackEnable(false)
-  };
-
   const doGotoConnectorsListPage = () => {
     setShowCancelConfirmationDialog(false);
     props.onCancelCallback();
-  };
-
-  const doGotoBack = () => {
-    setShowBackConfirmationDialog(false);
-    setBackEnable(true);
-    history.goBack();
   };
 
   const onCancel = () => {
@@ -1078,22 +1043,36 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   return (
     <>
+      <Prompt
+        message={(location: any, action: any) => {
+          if (action === "POP") {
+            // Going back...
+          }
+          return location.pathname.startsWith("/app")
+            ? true
+            : `Are you sure you want to go to ${location.pathname}?`;
+        }}
+      />
       <Wizard
         onClose={onCancel}
         footer={CustomFooter}
         steps={wizardSteps}
         className="create-connector-page_wizard"
       />
-      <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} i18nDetails={t('details')}/>
+      <ToastAlertComponent
+        alerts={alerts}
+        removeAlert={removeAlert}
+        i18nDetails={t("details")}
+      />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
         i18nCancelButtonText={t("stay")}
         i18nConfirmButtonText={t("leave")}
         i18nConfirmationMessage={t("cancelWarningMsg")}
         i18nTitle={t("exitWizard")}
-        showDialog={ (showCancelConfirmationDialog || showBackConfirmationDialog) }
-        onCancel={ showCancelConfirmationDialog ? doCancelConfirmed: doStay }
-        onConfirm={ showCancelConfirmationDialog ? doGotoConnectorsListPage : doGotoBack }
+        showDialog={showCancelConfirmationDialog}
+        onCancel={doCancelConfirmed}
+        onConfirm={doGotoConnectorsListPage}
       />
     </>
   );
