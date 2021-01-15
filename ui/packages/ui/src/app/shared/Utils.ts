@@ -346,7 +346,8 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
 
   if (connectorType.id === ConnectorTypeId.POSTGRES) {
     for (const propDefn of formattedPropertyDefns) {
-      switch (propDefn.name) {
+      const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
+      switch (propName) {
         case PropertyName.BINARY_HANDLING_MODE:
         case PropertyName.DECIMAL_HANDLING_MODE:
         case PropertyName.HSTORE_HANDLING_MODE:
@@ -412,7 +413,8 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
     }
   } else if (connectorType.id === ConnectorTypeId.MONGO) {
     for (const propDefn of formattedPropertyDefns) {
-      switch (propDefn.name) {
+      const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
+      switch (propName) {
         case PropertyName.MONGODB_MEMBERS_AUTO_DISCOVER:
           propDefn.gridWidth = 12;
           propDefn.type = "BOOLEAN-SWITCH";
@@ -457,7 +459,6 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
       }
     }
   }
- 
   return formattedPropertyDefns;
 }
 
