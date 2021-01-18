@@ -190,7 +190,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                 {namePropertyDefinitions.map(
                   (propertyDefinition: ConnectorProperty, index: any) => {
                     return (
-                      <GridItem key={index} span={4}>
+                      <GridItem key={index} lg={4} sm={12}>
                         <FormComponent
                           propertyDefinition={propertyDefinition}
                           propertyChange={handlePropertyChange}
@@ -209,7 +209,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                 )}
               </Grid>
               <Grid>
-                <GridItem span={9}>
+                <GridItem lg={9} sm={12}>
                   <ExpandableSection
                     toggleText={
                       basicExpanded
@@ -228,7 +228,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                           return (
                             <GridItem
                               key={index}
-                              span={propertyDefinition.gridWidth}
+                              lg={propertyDefinition.gridWidthLg}
+                              sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
                                 propertyDefinition={propertyDefinition}
@@ -272,7 +273,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                             return (
                               <GridItem
                                 key={index}
-                                span={propertyDefinition.gridWidth}
+                                lg={propertyDefinition.gridWidthLg}
+                                sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
                                   propertyDefinition={propertyDefinition}
@@ -315,7 +317,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                             return (
                               <GridItem
                                 key={index}
-                                span={propertyDefinition.gridWidth}
+                                lg={propertyDefinition.gridWidthLg}
+                                sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
                                   propertyDefinition={propertyDefinition}
@@ -360,7 +363,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                 return (
                                   <GridItem
                                     key={index}
-                                    span={propertyDefinition.gridWidth}
+                                    lg={propertyDefinition.gridWidthLg}
+                                    sm={propertyDefinition.gridWidthSm}
                                   >
                                     <FormComponent
                                       propertyDefinition={propertyDefinition}

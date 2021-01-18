@@ -140,7 +140,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
           {({ errors, touched, setFieldValue }) => (
             <Form className="pf-c-form">
               <Grid>
-                <GridItem span={9}>
+                <GridItem lg={9} sm={12}>
                   <ExpandableSection
                     toggleText={
                       engineExpanded
@@ -159,7 +159,8 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                           return (
                             <GridItem
                               key={index}
-                              span={propertyDefinition.gridWidth}
+                              lg={propertyDefinition.gridWidthLg}
+                              sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
                                 propertyDefinition={propertyDefinition}
@@ -199,7 +200,8 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                           return (
                             <GridItem
                               key={index}
-                              span={propertyDefinition.gridWidth}
+                              lg={propertyDefinition.gridWidthLg}
+                              sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
                                 propertyDefinition={propertyDefinition}
