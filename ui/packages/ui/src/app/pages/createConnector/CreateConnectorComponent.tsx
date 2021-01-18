@@ -455,19 +455,27 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             getBasicPropertyDefinitions(selectedConnectorPropertyDefns),
             getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns)
           );
-          for (const connectionValue of connectorPropertyDefns) {
-            const propertyName = connectionValue.name.replace(/_/g, ".");
-            for (const msg in result.propertyValidationResults) {
-              if (
-                result.propertyValidationResults[msg].property === propertyName
-              ) {
-                result.propertyValidationResults[msg].displayName =
-                  connectionValue.displayName;
+          if (result.genericValidationResults.length > 0) {
+            const genericValidation = {
+              property: "Generic",
+              message: result.genericValidationResults[0].message,
+              displayName: t("propertyValidationError"),
+            };
+            setConnectionPropsValidMsg([genericValidation]);
+          } else {
+            for (const connectionValue of connectorPropertyDefns) {
+              const propertyName = connectionValue.name.replace(/_/g, ".");
+              for (const msg in result.propertyValidationResults) {
+                if (
+                  result.propertyValidationResults[msg].property === propertyName
+                ) {
+                  result.propertyValidationResults[msg].displayName =
+                    connectionValue.displayName;
+                }
               }
             }
+            setConnectionPropsValidMsg(result.propertyValidationResults);
           }
-
-          setConnectionPropsValidMsg(result.propertyValidationResults);
         } else {
           setConnectionPropsValid(true);
         }
@@ -483,7 +491,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     propertyValues: Map<string, string>,
     propertyCategory: PropertyCategory
   ) => {
-    // alert("Validate Option Properties: " + JSON.stringify(mapToObject(propertyValues)));
     setValidateInProgress(true);
     const minimizedValues = minimizePropertyValues(
       propertyValues,
@@ -514,7 +521,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               }
             }
           } else if (isRuntimeOptions(propertyCategory)) {
-            const connectorPropertyDefns = getDataOptionsPropertyDefinitions(
+            const connectorPropertyDefns = getRuntimeOptionsPropertyDefinitions(
               selectedConnectorPropertyDefns
             );
             for (const connectionValue of connectorPropertyDefns) {
@@ -793,8 +800,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             {validateInProgress ? (
               <Spinner size="lg" />
             ) : (
-              dataStepsValid === 1 &&
-              (!dataOptionsValid ? (
+              dataStepsValid === 1 && !dataOptionsValid ? 
+              (
                 <div style={{ padding: "15px 0" }}>
                   <Alert
                     variant="danger"
@@ -806,15 +813,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                     }
                   />
                 </div>
-              ) : (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert
-                    variant="success"
-                    isInline={true}
-                    title={validationSuccessNextMsg}
-                  />
-                </div>
-              ))
+              ) : null
             )}
           </>
         ),
@@ -841,8 +840,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               <Spinner size="lg" />
             ) : (
               runtimeStepsValid === 1 &&
-              !connectorCreateFailed &&
-              (!runtimeOptionsValid ? (
+              !connectorCreateFailed && !runtimeOptionsValid ? 
+              (
                 <div style={{ padding: "15px 0" }}>
                   <Alert
                     variant="danger"
@@ -854,15 +853,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                     }
                   />
                 </div>
-              ) : (
-                <div style={{ padding: "15px 0" }}>
-                  <Alert
-                    variant="success"
-                    isInline={true}
-                    title={validationSuccessNextMsg}
-                  />
-                </div>
-              ))
+              ) : null
             )}
           </>
         ),

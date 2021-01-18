@@ -403,11 +403,15 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
           break;
         case PropertyName.DATABASE_PORT:
         case PropertyName.SNAPSHOT_FETCH_SIZE:
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
+          propDefn.type =  "NON-NEG-INT";
+          break;
         case PropertyName.MAX_QUEUE_SIZE:
         case PropertyName.MAX_BATCH_SIZE:
           propDefn.gridWidthLg = 4;
           propDefn.gridWidthSm = 12;
-          propDefn.type =  "NON-NEG-INT";
+          propDefn.type = "POS-INT";
           break;
         case PropertyName.COLUMN_TRUNCATE:
         case PropertyName.COLUMN_MASK:
@@ -462,17 +466,25 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
                                                      .replace(" MS","");
           break;
         case PropertyName.SNAPSHOT_FETCH_SIZE:
-        case PropertyName.MAX_QUEUE_SIZE:
-        case PropertyName.MAX_BATCH_SIZE:
           propDefn.gridWidthLg = 4;
           propDefn.gridWidthSm = 12;
           propDefn.type =  "NON-NEG-INT";
           break;
-        case PropertyName.CONNECT_MAX_ATTEMPTS:
         case PropertyName.QUERY_FETCH_SIZE:
           propDefn.gridWidthLg = 9;
           propDefn.gridWidthSm = 12;
           propDefn.type =  "NON-NEG-INT";
+          break;
+        case PropertyName.MAX_QUEUE_SIZE:
+        case PropertyName.MAX_BATCH_SIZE:
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
+          propDefn.type = "POS-INT";
+          break;
+        case PropertyName.CONNECT_MAX_ATTEMPTS:
+          propDefn.gridWidthLg = 9;
+          propDefn.gridWidthSm = 12;
+          propDefn.type =  "POS-INT";
           break;
         default:
           propDefn.gridWidthLg = 12;

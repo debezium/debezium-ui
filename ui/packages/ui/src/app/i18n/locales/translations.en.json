@@ -75,6 +75,7 @@
     "invalidFilterExpText": "The expression(s) for {{name}} filtering are invalid, please correct and try again.",
     "addDefinition": "+ Add definition",
     "addDefinitionTooltip": "Add another definition row",
-    "removeDefinitionTooltip": "Remove this definition row"
+    "removeDefinitionTooltip": "Remove this definition row",
+    "propertyValidationError": "Property validation error"
   }
 }

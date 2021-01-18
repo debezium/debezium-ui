@@ -75,6 +75,7 @@
     "invalidFilterExpText": "Le espressioni per il filtro {{name}} non sono valide, correggile e riprova.",
     "addDefinition": "+ Aggiungi definizione",
     "addDefinitionTooltip": "Aggiungere un'altra riga definizione",
-    "removeDefinitionTooltip": "Rimuovi questa riga di definizione"
+    "removeDefinitionTooltip": "Rimuovi questa riga di definizione",
+    "propertyValidationError": "Errore di convalida della proprietà"
   }
 }
