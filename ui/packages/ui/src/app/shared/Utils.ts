@@ -348,6 +348,10 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
     for (const propDefn of formattedPropertyDefns) {
       const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
       switch (propName) {
+        case PropertyName.CONNECTOR_NAME:
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
+          break;
         case PropertyName.BINARY_HANDLING_MODE:
         case PropertyName.DECIMAL_HANDLING_MODE:
         case PropertyName.HSTORE_HANDLING_MODE:
@@ -357,21 +361,26 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
         case PropertyName.PLUGIN_NAME:
         case PropertyName.PUBLICATION_AUTOCREATE_MODE:
         case PropertyName.SCHEMA_REFRESH_MODE:
-          propDefn.gridWidth = 4;
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
           break;
         case PropertyName.SLOT_MAX_RETRIES:
-          propDefn.gridWidth = 6;
+          propDefn.gridWidthLg = 6;
+          propDefn.gridWidthSm = 12;
           propDefn.type =  "NON-NEG-INT";
           break;
         case PropertyName.DATABASE_HOSTNAME:
-          propDefn.gridWidth = 8;
+          propDefn.gridWidthLg = 8;
+          propDefn.gridWidthSm = 12;
           break;
         case PropertyName.SNAPSHOT_MODE:
-          propDefn.gridWidth = 9;
+          propDefn.gridWidthLg = 9;
+          propDefn.gridWidthSm = 12;
           break;
         case PropertyName.DATABASE_TCPKEEPALIVE:
         case PropertyName.SLOT_DROP_ON_STOP:
-          propDefn.gridWidth = 12;
+          propDefn.gridWidthLg = 12;
+          propDefn.gridWidthSm = 12;
           propDefn.type = "BOOLEAN-SWITCH";
           break;
         case PropertyName.SNAPSHOT_DELAY_MS:
@@ -379,14 +388,16 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
         case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
         case PropertyName.HEARTBEAT_INTERVAL_MS:
         case PropertyName.POLL_INTERVAL_MS:
-          propDefn.gridWidth = 4;
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
           propDefn.type = "DURATION";
           propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
           break;
         case PropertyName.SLOT_RETRY_DELAY_MS:
         case PropertyName.STATUS_UPDATE_INTERVAL_MS:
         case PropertyName.XMIN_FETCH_INTERVAL_MS:
-          propDefn.gridWidth = 6;
+          propDefn.gridWidthLg = 6;
+          propDefn.gridWidthSm = 12;
           propDefn.type = "DURATION";
           propDefn.displayName = propDefn.displayName.replace("(ms)", "");
           break;
@@ -394,20 +405,24 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
         case PropertyName.SNAPSHOT_FETCH_SIZE:
         case PropertyName.MAX_QUEUE_SIZE:
         case PropertyName.MAX_BATCH_SIZE:
-          propDefn.gridWidth = 4;
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
           propDefn.type =  "NON-NEG-INT";
           break;
         case PropertyName.COLUMN_TRUNCATE:
         case PropertyName.COLUMN_MASK:
-          propDefn.gridWidth = 12;
+          propDefn.gridWidthLg = 12;
+          propDefn.gridWidthSm = 12;
           propDefn.type =  "COL_MASK_OR_TRUNCATE";
           break;
         case PropertyName.COLUMN_MASK_HASH_SALT:
-          propDefn.gridWidth = 12;
+          propDefn.gridWidthLg = 12;
+          propDefn.gridWidthSm = 12;
           propDefn.type =  "COL_MASK_HASH_SALT";
           break;
         default:
-          propDefn.gridWidth = 12;
+          propDefn.gridWidthLg = 12;
+          propDefn.gridWidthSm = 12;
           break;
       }
     }
@@ -416,14 +431,17 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
       const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
       switch (propName) {
         case PropertyName.MONGODB_MEMBERS_AUTO_DISCOVER:
-          propDefn.gridWidth = 12;
+          propDefn.gridWidthLg = 12;
+          propDefn.gridWidthSm = 12;
           propDefn.type = "BOOLEAN-SWITCH";
           break;
         case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
-          propDefn.gridWidth = 4;
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
           break;
         case PropertyName.SNAPSHOT_MODE:
-          propDefn.gridWidth = 9;
+          propDefn.gridWidthLg = 9;
+          propDefn.gridWidthSm = 12;
           break;
         case PropertyName.MONGODB_POLL_INTERVAL_MS:
         case PropertyName.MONGODB_CONNECT_TIMEOUT_MS:
@@ -435,7 +453,8 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
         case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
         case PropertyName.HEARTBEAT_INTERVAL_MS:
         case PropertyName.POLL_INTERVAL_MS:
-          propDefn.gridWidth = 4;
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
           propDefn.type = "DURATION";
           propDefn.displayName = propDefn.displayName.replace("(ms)", "")
                                                      .replace("(milli-seconds)","")
@@ -445,16 +464,19 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
         case PropertyName.SNAPSHOT_FETCH_SIZE:
         case PropertyName.MAX_QUEUE_SIZE:
         case PropertyName.MAX_BATCH_SIZE:
-          propDefn.gridWidth = 4;
+          propDefn.gridWidthLg = 4;
+          propDefn.gridWidthSm = 12;
           propDefn.type =  "NON-NEG-INT";
           break;
         case PropertyName.CONNECT_MAX_ATTEMPTS:
         case PropertyName.QUERY_FETCH_SIZE:
-          propDefn.gridWidth = 9;
+          propDefn.gridWidthLg = 9;
+          propDefn.gridWidthSm = 12;
           propDefn.type =  "NON-NEG-INT";
           break;
         default:
-          propDefn.gridWidth = 12;
+          propDefn.gridWidthLg = 12;
+          propDefn.gridWidthSm = 12;
           break;
       }
     }

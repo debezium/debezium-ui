@@ -10,7 +10,7 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import React from "react";
-import {useHistory, useLocation} from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import CreateConnectorComponent from "./CreateConnectorComponent";
 import "./CreateConnectorComponent.css";
 
