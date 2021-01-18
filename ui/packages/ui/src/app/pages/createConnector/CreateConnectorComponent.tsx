@@ -23,7 +23,7 @@ import {
 import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
-import { Prompt, useHistory } from "react-router-dom";
+import { Prompt } from "react-router-dom";
 import { ToastAlertComponent } from "src/app/components";
 import {
   ConfirmationButtonStyle,
@@ -75,7 +75,6 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 type IOnSuccessCallbackFn = () => void;
 
 type IOnCancelCallbackFn = () => void;
-const basename = "/#app"
 
 export interface ICreateConnectorComponentProps {
   onSuccessCallback: IOnSuccessCallbackFn;
@@ -113,8 +112,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const DATA_OPTIONS_STEP_ID = 4;
   const RUNTIME_OPTIONS_STEP_ID = 5;
   const REVIEW_STEP_ID = 6;
-
-  const history = useHistory();
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
@@ -298,6 +295,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const doGotoConnectorsListPage = () => {
     setShowCancelConfirmationDialog(false);
+    // On cancel, redirect to connectors page
     props.onCancelCallback();
   };
 
@@ -1044,13 +1042,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   return (
     <>
       <Prompt
-        message={(location: any, action: any) => {
-          if (action === "POP") {
-            // Going back...
-          }
-          return location.pathname.startsWith("/app")
-            ? true
-            : `Are you sure you want to go to ${location.pathname}?`;
+        message={(location, action) => {
+          return action !== "POP"
+            ? `Code navigation`
+            : `Browser back navigation to ${location.pathname}?`;
         }}
       />
       <Wizard

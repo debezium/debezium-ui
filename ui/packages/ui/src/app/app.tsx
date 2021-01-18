@@ -16,8 +16,12 @@ const App: React.FC = () => {
   const [confirm, setConfirm] = React.useState(false);
   const [confirmCallback, setConfirmCallback] = React.useState(null);
   const getConfirmation = (message: any, callback: any) => {
-    setConfirmCallback(() => callback);
-    setConfirm(true);
+    if(message === 'Code navigation'){
+      callback(true);
+    }else{
+      setConfirmCallback(() => callback);
+      setConfirm(true);
+    }
   };
   return (
     <Router basename="/#app" getUserConfirmation={getConfirmation}>
