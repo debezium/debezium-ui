@@ -106,6 +106,10 @@ const getChildExpression = (data: Map<string, string>, childExclude: string, chi
   return data.get(childExclude) || data.get(childInclude) || "";
 };
 
+const getColumnExpression = (data: Map<string, string>, columnExclude: string, columnInclude: string): string => {
+  return data.get(columnExclude) || data.get(columnInclude) || "";
+};
+
 const getInvalidFilterMsg = (
   filter: string,
   errorMsg: Map<string, string> | undefined
@@ -128,6 +132,9 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   const [childFilter, setChildFilter] = React.useState<string>(
     getChildExpression(props.filterValues, props.childExcludeList, props.childIncludeList)
   );
+  const [columnFilter, setColumnFilter] = React.useState<string>(
+    getColumnExpression(props.filterValues, "column.exclude.list", "column.include.list")
+  );
   const [parentSelected, setParentSelected] = React.useState<string>(
     props.filterValues.has(props.parentExcludeList)
       ? "parentExclude"
@@ -137,6 +144,12 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
     props.filterValues.has(props.childExcludeList)
       ? "childExclude"
       : "childInclude"
+  );
+
+  const [columnSelected, setColumnSelected] = React.useState<string>(
+    props.filterValues.has("column.exclude.list")
+      ? "columnExclude"
+      : "columnInclude"
   );
 
   const [formData, setFormData] = React.useState<Map<string, string>>(
@@ -160,6 +173,9 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   const handleChildFilter = (val: string) => {
     setChildFilter(val);
   };
+  const handleColumnFilter = (val: string) => {
+    setColumnFilter(val);
+  };
 
   const handleParentToggle = (isSelected: any, event: any) => {
     const id = event.currentTarget.id;
@@ -169,6 +185,11 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   const handleChildToggle = (isSelected: any, event: any) => {
     const id = event.currentTarget.id;
     setChildSelected(id);
+  };
+
+  const handleColumnToggle = (isSelected: any, event: any) => {
+    const id = event.currentTarget.id;
+    setColumnSelected(id);
   };
 
   const connectorService = Services.getConnectorService();
@@ -222,8 +243,10 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   const doClear = () => {
     setParentSelected("parentInclude");
     setChildSelected("childInclude");
+    setColumnSelected("columnInclude");
     setParentFilter("");
     setChildFilter("");
+    setColumnFilter("");
     setFormData(new Map());
     getFilterSchema(true, new Map());
     setShowClearDialog(false);
@@ -262,6 +285,23 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
     setFormData(formDataCopy);
     props.setIsValidFilter(false);
   }, [childSelected, childFilter]);
+
+  React.useEffect(() => {
+    const formDataCopy = new Map(formData);
+    if (columnSelected === "columnExclude") {
+      formDataCopy.delete("column.include.list");
+      columnFilter
+        ? formDataCopy.set("column.exclude.list", columnFilter)
+        : formDataCopy.delete("column.exclude.list");
+    } else {
+      formDataCopy.delete("column.exclude.list");
+      columnFilter
+        ? formDataCopy.set("column.include.list", columnFilter)
+        : formDataCopy.delete("column.include.list");
+    }
+    setFormData(formDataCopy);
+    props.setIsValidFilter(false);
+  }, [columnSelected, columnFilter]);
 
   React.useEffect(() => {
     getFilterSchema(false, props.filterValues);
@@ -424,6 +464,83 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
                   buttonId="childExclude"
                   isSelected={childSelected === "childExclude"}
                   onChange={handleChildToggle}
+                  onClick={(e) => e.preventDefault()}
+                  text={props.i18nExclude}
+                />
+              </ToggleGroup>
+            </FlexItem>
+          </Flex>
+        </FormGroup>
+        <FormGroup
+          label={"column filter"}
+          fieldId="column_filter"
+          helperText={
+            columnSelected === "columnExclude" ? (
+              <Text
+                component={TextVariants.h4}
+                className="child-selection-step_info"
+              >
+                <InfoCircleIcon />
+                {props.i18nFilterChildHelperText}
+              </Text>
+            ) : (
+              ""
+            )
+          }
+          labelIcon={
+            <Popover bodyContent={<div>{childFilterInfo}<br /><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">More Info</a></div>}>
+              <button
+                aria-label="More info for column filter field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="simple-form-table"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign={true} />
+              </button>
+            </Popover>
+          }
+          helperTextInvalid={
+            invalidMsg?.size !== 0
+              ? getInvalidFilterMsg("column", invalidMsg)
+              : ""
+          }
+          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          validated={
+            invalidMsg?.size !== 0 && getInvalidFilterMsg("column", invalidMsg)
+              ? "error"
+              : "default"
+          }
+        >
+          <Flex>
+            <FlexItem>
+              <TextInput
+                validated={
+                  invalidMsg?.size !== 0 &&
+                  getInvalidFilterMsg("column", invalidMsg)
+                    ? "error"
+                    : "default"
+                }
+                value={columnFilter}
+                onChange={handleColumnFilter}
+                type="text"
+                id="column_filter"
+                name="column_filter"
+                placeholder={`e.g ${props.parent}1.*,${props.parent}2.${props.child}1`}
+              />
+            </FlexItem>
+            <FlexItem>
+              <ToggleGroup aria-label="Include Exclude column toggle group">
+                <ToggleGroupItem
+                  buttonId="columnInclude"
+                  isSelected={columnSelected === "columnInclude"}
+                  onChange={handleColumnToggle}
+                  onClick={(e) => e.preventDefault()}
+                  text={props.i18nInclude}
+                />
+                <ToggleGroupItem
+                  buttonId="columnExclude"
+                  isSelected={columnSelected === "columnExclude"}
+                  onChange={handleColumnToggle}
                   onClick={(e) => e.preventDefault()}
                   text={props.i18nExclude}
                 />
