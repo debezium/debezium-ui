@@ -22,13 +22,30 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
   const [field] = useField(props);
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
-    // disallow entry of "." and "-" for NON-NEG-INT or NON-NEG-LONG
+    // disallow entry of "." and "-" for NON-NEG-INT or NON-NEG-LONG or POS-INT
     // disallow entry of "." for INT or LONG
-    if ( ( (props.type === 'NON-NEG-INT' || props.type === 'NON-NEG-LONG') && (keyEvent.key === "." || keyEvent.key === "-")) ||
+    if ( ( (props.type === 'NON-NEG-INT' || props.type === 'NON-NEG-LONG' || props.type === 'POS-INT') && (keyEvent.key === "." || keyEvent.key === "-")) ||
          ( (props.type === 'INT' || props.type === 'LONG') && keyEvent.key === "." ) ) {
       keyEvent.preventDefault();
     }
   };
+
+  const minValue = (propType: string) => {
+    let result = null;
+    switch (propType) {
+      case "NON-NEG-INT":
+      case "NON-NEG-LONG":
+        result = 0;
+        break;
+      case "POS-INT":
+        result = 1;
+        break;
+      default:
+        result = undefined;
+        break;
+    }
+    return result;
+  }
 
   return (
     <FormGroup
@@ -50,13 +67,13 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
         aria-label={field.name}
         validated={props.validated}
         type={
-          props.type === "INT" || props.type === "LONG" || props.type === "NON-NEG-INT" || props.type === "NON-NEG-LONG"
+          props.type === "INT" || props.type === "LONG" || props.type === "NON-NEG-INT" || props.type === "NON-NEG-LONG" || props.type === "POS-INT"
             ? "number"
             : props.type === "PASSWORD"
             ? "password"
             : "text"
         }
-        min={ props.type === "NON-NEG-INT" || props.type === "NON-NEG-LONG" ? 0 : undefined }
+        min={ minValue(props.type) }
         onKeyPress={(event) => handleKeyPress(event as any)}
       />
     </FormGroup>

@@ -86,7 +86,8 @@ export interface ConnectorProperty {
     defaultValue?: any;
     description: string;
     displayName: string;
-    gridWidth?: number;
+    gridWidthLg?: number;
+    gridWidthSm?: number;
     name: string;
     isMandatory: boolean;
     type: 'BOOLEAN' | 
@@ -95,6 +96,7 @@ export interface ConnectorProperty {
           'STRING' | 
           'INT' | 
           'NON-NEG-INT' | 
+          'POS-INT' | 
           'SHORT' | 
           'LONG' | 
           'NON-NEG-LONG' |
