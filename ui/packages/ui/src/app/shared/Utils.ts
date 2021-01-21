@@ -492,21 +492,31 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
   let returnObj;
   if(connectorType==='mongodb'){
     returnObj = {
-      parent: 'database',
-      child: 'collection',
-      parentExcludeList:'database.exclude.list',
-      parentIncludeList:'database.include.list',
-      childExcludeList:'collection.exclude.list',
-      childIncludeList:'collection.include.list'
+      fieldArray: [
+        {
+          field: 'database',
+          valueSample: 'databaseName'
+        },
+        {
+          field: 'collection',
+          valueSample: 'databaseName.collectionName'
+        }]
     }
   }else{
     returnObj = {
-      parent: 'schema',
-      child: 'table',
-      parentExcludeList:'schema.exclude.list',
-      parentIncludeList:'schema.include.list',
-      childExcludeList:'table.exclude.list',
-      childIncludeList:'table.include.list'
+      fieldArray: [
+        {
+          field: 'schema',
+          valueSample: 'schemaName'
+        },
+        {
+          field: 'table',
+          valueSample: 'schemaName.tableName'
+        },
+        {
+          field: 'column',
+          valueSample: 'schemaName.tableName.columnName'
+        },]
     }
   }
   return returnObj;
