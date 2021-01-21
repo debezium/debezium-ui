@@ -10,6 +10,9 @@
     "heartbeatProperties": "Proprietà del battito cardiaco",
     "mappingPropertiesText": "Proprietà di mappatura",
     "snapshotPropertiesText": "Proprietà snapshot",
+    "pause": "Pausa",
+    "resume":"Riprendere",
+    "restart":"Ricomincia",
     "delete": "Elimina",
     "name": "Nome",
     "reviewMessage": "Rivedere le proprietà da utilizzare per la creazione del connettore '{{connectorName}}'. Fare clic su 'Fine' per creare il connettore.",
@@ -76,6 +79,18 @@
     "addDefinition": "+ Aggiungi definizione",
     "addDefinitionTooltip": "Aggiungere un'altra riga definizione",
     "removeDefinitionTooltip": "Rimuovi questa riga di definizione",
-    "propertyValidationError": "Errore di convalida della proprietà"
+    "propertyValidationError": "Errore di convalida della proprietà",
+    "pauseConnector": "Connettore di pausa",
+    "resumeConnector": "Riprendi connettore",
+    "restartConnector": "Riavvia connettore",
+    "connectorPauseWarningMsg": "Sei sicuro di voler mettere in pausa?",
+    "connectorResumeWarningMsg": "Sei sicuro di voler riprendere?",
+    "connectorRestartWarningMsg": "Sei sicuro di voler riavviare?",
+    "connectorPausedSuccess": "Connettore messo in pausa con successo!",
+    "connectorPauseFailed": "Pausa connettore non riuscita!",
+    "connectorResumedSuccess": "Il connettore è stato ripristinato correttamente!",
+    "connectorResumeFailed": "Ripresa connettore non riuscita!",
+    "connectorRestartSuccess": "Connettore riavviato con successo!",
+    "connectorRestartFailed": "Riavvio del connettore non riuscito!"
   }
 }

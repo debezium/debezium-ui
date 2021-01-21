@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-import {
-    Connector, ConnectionValidationResult, FilterValidationResult, PropertiesValidationResult
-} from "@debezium/ui-models";
-import {BaseService} from "../baseService";
+import { ConnectionValidationResult, Connector, FilterValidationResult, PropertiesValidationResult } from "@debezium/ui-models";
+import { BaseService } from "../baseService";
 
 /**
  * The connector service.  Used to fetch connectors and other connector operations.
@@ -130,5 +128,35 @@ export class ConnectorService extends BaseService {
         const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
         return this.httpDelete<any>(endpoint);
     }
+
+    /**
+     * Pause the Connector for the supplied clusterId
+     */
+    public pauseConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
+        this.logger.info("[ConnectorService] Pause the connector");
+
+        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
+        return this.httpPost(endpoint, body);
+    }
+    
+    /**
+     * Resume the Connector for the supplied clusterId
+     */
+    public resumeConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
+        this.logger.info("[ConnectorService] Resume the connector");
+
+        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
+        return this.httpPost(endpoint, body);
+    }
+    
+    /**
+     * Restart the Connector for the supplied clusterId
+     */
+    public restartConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
+        this.logger.info("[ConnectorService] Restart the connector");
+
+        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
+        return this.httpPost(endpoint, body);
+    }    
 
 }
