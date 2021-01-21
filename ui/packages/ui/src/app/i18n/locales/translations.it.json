@@ -44,8 +44,7 @@
     "noConnectors": "Nessun connettore",
     "connectorEmptyStateMsg": "Fare clic su 'Crea un connettore' per creare un nuovo connettore.",
     "connectors": "Connettori",
-    "filterFieldInfoMsg": "
-    Un elenco separato da virgole di espressioni regolari per il filtro {{field}} (ad esempio {{sampleVal}} 1, {{sampleVal}} 2). Fare clic per ulteriori informazioni sulle espressioni regolari:",
+    "filterFieldInfoMsg": "Un elenco separato da virgole di espressioni regolari per il filtro {{field}} (ad esempio {{sampleVal}} 1, {{sampleVal}} 2). Fare clic per ulteriori informazioni sulle espressioni regolari:",
     "filterFieldLabel": "{{field}} filtro",
     "filterFieldHelperText": "Gli {{field}} che corrispondono ai filtri delle espressioni regolari verranno esclusi.",
     "filterPageHeadingText": "Selezionare le {{child}} per la cattura delle modifiche inserendo elenchi separati da virgole di espressioni regolari per {{parent}} e {{child}}.",
