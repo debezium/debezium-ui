@@ -40,15 +40,23 @@ interface IConnectorsTableComponentProps {
 export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableComponentProps> = (props: IConnectorsTableComponentProps) => {
   const [connectors, setConnectors] = React.useState<Connector[]>([] as Connector[]);
   const [tableRows, setTableRows] = React.useState<any[]>([]);
-
   const [loading, setLoading] = React.useState(true);
   const [apiError, setApiError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
   const appLayoutContext = React.useContext(AppLayoutContext);
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+  const [showPauseDialog, setShowPauseDialog] = React.useState(false);
+  const [showResumeDialog, setShowResumeDialog] = React.useState(false);
+  const [showRestartDialog, setShowRestartDialog] = React.useState(false);
+  
   const [alerts, setAlerts] = React.useState<any[]>([]);
   const [connectorToDelete, setConnectorToDelete] = React.useState('');
+
+  const [connectorToPause, setConnectorToPause] = React.useState('');
+  const [connectorToResume, setConnectorToResume] = React.useState('');
+  const [connectorToRestart, setConnectorToRestart] = React.useState('');
+
   const { t } = useTranslation(['app']);
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
@@ -92,6 +100,65 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setShowDeleteDialog(true);
   };
 
+  const showPauseConfirmationDialog = () => {
+    setShowPauseDialog(true);
+  };
+  
+  const doPauseCancel = () => {
+    setShowPauseDialog(false);
+  }
+
+  const doPause = () => {
+    setShowPauseDialog(false);
+    const connectorService = Services.getConnectorService();
+    connectorService
+      .pauseConnector(appLayoutContext.clusterId, connectorToPause, {})
+      .then((cConnectors: any) => {
+        addAlert("success", t('connectorPausedSuccess'));
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        addAlert("danger",t('connectorPauseFailed'), err?.message);
+      });    
+  }
+  
+  const showResumeConfirmationDialog = () => {
+    setShowResumeDialog(true);
+  };
+  const doResumeCancel = () => {
+    setShowResumeDialog(false);
+  }
+  const doResume = () => {
+    setShowResumeDialog(false);
+    const connectorService = Services.getConnectorService();
+    connectorService
+      .resumeConnector(appLayoutContext.clusterId, connectorToResume, {})
+      .then((cConnectors: any) => {
+        addAlert("success", t('connectorResumedSuccess'));
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        addAlert("danger",t('connectorResumeFailed'), err?.message);
+      });    
+  }
+
+  const showRestartConfirmationDialog = () => {
+    setShowRestartDialog(true);
+  };
+  const doRestartCancel = () => {
+    setShowRestartDialog(false);
+  }
+  const doRestart = () => {
+    setShowRestartDialog(false);
+    const connectorService = Services.getConnectorService();
+    connectorService
+      .restartConnector(appLayoutContext.clusterId, connectorToRestart, {})
+      .then((cConnectors: any) => {
+        addAlert("success", t('connectorRestartSuccess'));
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        addAlert("danger",t('connectorRestartFailed'), err?.message);
+      });
+  }
+  
   const createConnector = () => {
     const connectorNames = connectors.map( (conn) => {
       return conn.name;
@@ -113,7 +180,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         setErrorMsg(err);
       });
   }
-
+  
   const getTaskStates = (conn: Connector) => {
     const taskElements: any = [];
     const statesMap = new Map(Object.entries(conn.taskStates));
@@ -231,21 +298,52 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
             title: getTaskStates(conn)
           }
         ],
-        connName: conn.name
+        connName: conn.name,
+        connStatus: conn.connectorStatus
       };
       rows.push(row);
     }
     setTableRows(rows);
   };
 
-  const tableActionResolver = () => {
-    return [
+  const tableActionResolver = (row) => {
+    return [      
+      {
+        title: t('pause'),
+        onClick: (event, rowId, rowData, extra) => {
+          setConnectorToPause(rowData.connName);
+          showPauseConfirmationDialog();
+        },
+        isDisabled: row.connStatus === "RUNNING" ? false : true        
+      },
+      {
+        title: t('resume'),
+        onClick: (event, rowId, rowData, extra) => {
+          setConnectorToResume(rowData.connName);
+          showResumeConfirmationDialog();
+        },
+        isDisabled: row.connStatus === "PAUSED" ? false : true 
+      },
+      {
+        title: t('restart'),
+        onClick: (event, rowId, rowData, extra) => {
+          setConnectorToRestart(rowData.connName);
+          showRestartConfirmationDialog();
+        },
+        isDisabled: row.connStatus === "FAILED" 
+                    || row.connStatus === "UNASSIGNED"  
+                    || row.connStatus === "DESTROYED" ? false : true 
+      },
+      {
+        isSeparator: true
+      },
       {
         title: t('delete'),
         onClick: (event, rowId, rowData, extra) => {
           setConnectorToDelete(rowData.connName);
           showConfirmationDialog();
-        }
+        },
+        isDisabled: false
       }
     ];
   }
@@ -265,7 +363,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const onSortingToggle = (isOpen) => {
     setIsSortingDropdownOpen(isOpen)
   };
-  
+
   const toolbarItems = (
     <React.Fragment>
       <ToolbarContent>
@@ -291,7 +389,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       </ToolbarContent>
     </React.Fragment>
   );    
-
   return (
     <WithLoader
       error={apiError}
@@ -307,13 +404,47 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 buttonStyle={ConfirmationButtonStyle.DANGER}
                 i18nCancelButtonText={t('cancel')}
                 i18nConfirmButtonText={t('delete')}
-                i18nConfirmationMessage={t('deleteWarningMsg')}
+                i18nConfirmationMessage={t('deleteWarningMsg') }
                 i18nTitle={t('deleteConnector')}
                 type={ConfirmationType.DANGER}
                 showDialog={showDeleteDialog}
                 onCancel={doCancel}
                 onConfirm={doDelete}
               />
+              <ConfirmationDialog
+                buttonStyle={ConfirmationButtonStyle.DANGER}
+                i18nCancelButtonText={t('cancel')}
+                i18nConfirmButtonText={t('pause')}
+                i18nConfirmationMessage={t('connectorPauseWarningMsg')}
+                i18nTitle={t('pauseConnector')}
+                type={ConfirmationType.DANGER}
+                showDialog={showPauseDialog}
+                onCancel={doPauseCancel}
+                onConfirm={doPause}
+              />
+              <ConfirmationDialog
+                buttonStyle={ConfirmationButtonStyle.DANGER}
+                i18nCancelButtonText={t('cancel')}
+                i18nConfirmButtonText={t('resume')}
+                i18nConfirmationMessage={t('connectorResumeWarningMsg')}
+                i18nTitle={t('resumeConnector')}
+                type={ConfirmationType.DANGER}
+                showDialog={showResumeDialog}
+                onCancel={doResumeCancel}
+                onConfirm={doResume}
+              />
+              <ConfirmationDialog
+                buttonStyle={ConfirmationButtonStyle.DANGER}
+                i18nCancelButtonText={t('cancel')}
+                i18nConfirmButtonText={t('restart')}
+                i18nConfirmationMessage={t('connectorRestartWarningMsg')}
+                i18nTitle={t('restartConnector')}
+                type={ConfirmationType.DANGER}
+                showDialog={showRestartDialog}
+                onCancel={doRestartCancel}
+                onConfirm={doRestart}
+              />   
+                
               <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} i18nDetails={t('details')}/>
               <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
                 <FlexItem>

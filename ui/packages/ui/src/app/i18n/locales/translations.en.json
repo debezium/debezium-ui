@@ -10,6 +10,9 @@
     "heartbeatProperties": "Heartbeat properties",
     "mappingPropertiesText": "Mapping properties",
     "snapshotPropertiesText": "Snapshot properties",
+    "pause": "Pause",
+    "resume":"Resume",
+    "restart":"Restart",
     "delete": "Delete",
     "name": "Name",
     "reviewMessage": "Review the properties to be used for creation of connector '{{connectorName}}'. Click 'Finish' to create the connector.",
@@ -76,6 +79,18 @@
     "addDefinition": "+ Add definition",
     "addDefinitionTooltip": "Add another definition row",
     "removeDefinitionTooltip": "Remove this definition row",
-    "propertyValidationError": "Property validation error"
+    "propertyValidationError": "Property validation error",
+    "pauseConnector": "Pause connector",
+    "resumeConnector": "Resume connector",
+    "restartConnector": "Restart connector",
+    "connectorPauseWarningMsg": "Are you sure want to pause?",
+    "connectorResumeWarningMsg": "Are you sure want to resume?",
+    "connectorRestartWarningMsg": "Are you sure want to restart?",
+    "connectorPausedSuccess": "Connector paused successfully!",
+    "connectorPauseFailed": "Connector pause failed!",
+    "connectorResumedSuccess": "Connector resumed successfully!",
+    "connectorResumeFailed": "Connector resume failed!",
+    "connectorRestartSuccess": "Connector restarted successfully!",
+    "connectorRestartFailed": "Connector restart failed!"
   }
 }
