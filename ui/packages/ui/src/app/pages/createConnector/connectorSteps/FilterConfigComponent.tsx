@@ -233,10 +233,10 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
               childNo !== 0
                 ? `${childNo} ${t("matchingFilterExpMsg", {
                     name: filterConfigurationPageContentObj.fieldArray[1].field,
-                  })}, column filter applied successfully.`
+                  })}`
                 : `${t("noMatchingFilterExpMsg", {
                     name: filterConfigurationPageContentObj.fieldArray[1].field,
-                  })}, column filter applied successfully.`
+                  })}`
             }
           >
             <p>
