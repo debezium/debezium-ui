@@ -49,6 +49,7 @@
     "connectors": "Connectors",
     "filterFieldInfoMsg": "A comma-separated list of regular expressions for {{field}} filtering (e.g {{sampleVal}}1,{{sampleVal}}2).  Click for more information about regular expressions:",
     "filterFieldLabel": "{{field}} filter",
+    "filterExcludeFieldLabel": "{{field}} exclude filter",
     "filterFieldHelperText": "{{field}}(s) matching the regular expression filter(s) will be excluded.",
     "filterPageHeadingText": "Select {{child}}s for change capture by entering comma-separated lists of regular expressions for {{parent}}s and {{child}}s.",
     "include": "Include",

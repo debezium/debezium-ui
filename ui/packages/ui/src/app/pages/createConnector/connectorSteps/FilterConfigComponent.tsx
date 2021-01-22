@@ -15,6 +15,7 @@ import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { FilterTreeComponent } from "src/app/components";
+import { FilterExcludeFieldComponent } from "src/app/components/FilterExcludeFieldComponent";
 import { FilterInputFieldComponent } from "src/app/components/FilterInputFieldComponent";
 import {
   ConfirmationButtonStyle,
@@ -162,7 +163,23 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
       <Form className="child-selection-step_form">
         {filterConfigurationPageContentObj.fieldArray.map(
           (fieldFilter: any) => (
-            <FilterInputFieldComponent
+            fieldFilter.excludeFilter ? (<FilterExcludeFieldComponent
+              key={fieldFilter.field}
+              fieldName={fieldFilter.field}
+              filterValues={props.filterValues}
+              setFormData={setFormData}
+              formData={formData}
+              invalidMsg={invalidMsg}
+              fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+              fieldPlaceholder={fieldFilter.valueSample}
+              i18nFilterExcludeFieldLabel={t("filterExcludeFieldLabel", {
+                field: _.capitalize(fieldFilter.field),
+              })}
+              i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                field: `${fieldFilter.field} exclude`,
+                sampleVal: fieldFilter.valueSample
+              })}
+            />) : (<FilterInputFieldComponent
               key={fieldFilter.field}
               fieldName={fieldFilter.field}
               filterValues={props.filterValues}
@@ -184,7 +201,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
                 field: fieldFilter.field,
                 sampleVal: fieldFilter.valueSample
               })}
-            />
+            />)
           )
         )}
         <ActionGroup>
@@ -216,10 +233,10 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
               childNo !== 0
                 ? `${childNo} ${t("matchingFilterExpMsg", {
                     name: filterConfigurationPageContentObj.fieldArray[1].field,
-                  })}`
-                : t("noMatchingFilterExpMsg", {
+                  })}, column filter applied successfully.`
+                : `${t("noMatchingFilterExpMsg", {
                     name: filterConfigurationPageContentObj.fieldArray[1].field,
-                  })
+                  })}, column filter applied successfully.`
             }
           >
             <p>

@@ -507,11 +507,18 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
       fieldArray: [
         {
           field: 'database',
-          valueSample: 'databaseName'
+          valueSample: 'databaseName',
+          excludeFilter: false
         },
         {
           field: 'collection',
-          valueSample: 'databaseName.collectionName'
+          valueSample: 'databaseName.collectionName',
+          excludeFilter: false
+        },
+        {
+          field: 'field',
+          valueSample: 'databaseName.collectionName.fieldName',
+          excludeFilter: true
         }]
     }
   }else{
@@ -519,15 +526,18 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
       fieldArray: [
         {
           field: 'schema',
-          valueSample: 'schemaName'
+          valueSample: 'schemaName',
+          excludeFilter: false
         },
         {
           field: 'table',
-          valueSample: 'schemaName.tableName'
+          valueSample: 'schemaName.tableName',
+          excludeFilter: false
         },
         {
           field: 'column',
-          valueSample: 'schemaName.tableName.columnName'
+          valueSample: 'schemaName.tableName.columnName',
+          excludeFilter: false
         },]
     }
   }
