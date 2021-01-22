@@ -32,7 +32,6 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
-  getFilterConfigurationPageContent,
   getFormattedProperties,
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
@@ -372,8 +371,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setConnectionStepsValid(0);
     setStepIdReached(1);
   };
-
-  const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(selectedConnectorType || "");
 
   const initPropertyValues = (): void => {
     setFilterValues(new Map<string, string>());
@@ -735,44 +732,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             updateFilterValues={handleFilterUpdate}
             connectorType={selectedConnectorType || ""}
             setIsValidFilter={setIsValidFilter}
-            parent={filterConfigurationPageContentObj.parent}
-            child={filterConfigurationPageContentObj.child}
-            parentExcludeList={filterConfigurationPageContentObj.parentExcludeList}
-            parentIncludeList={filterConfigurationPageContentObj.parentIncludeList}
-            childExcludeList={filterConfigurationPageContentObj.childExcludeList}
-            childIncludeList={filterConfigurationPageContentObj.childIncludeList}
-            i18nFilterParentInfoMsg={t("filterParentInfoMsg", {parent: filterConfigurationPageContentObj.parent})}
-            i18nFilterChildInfoMsg={t("filterChildInfoMsg", {
-              parent: filterConfigurationPageContentObj.parent,
-              child: filterConfigurationPageContentObj.child
-            })}
-            i18nFilterConfiguration={t("filterConfiguration")}
-            i18nFilterPageHeadingText={t("filterPageHeadingText", {
-              parent: filterConfigurationPageContentObj.parent,
-              child: filterConfigurationPageContentObj.child
-            })}
-            i18nFilterParentLabel={t("filterFieldLabel", {field: _.upperFirst(filterConfigurationPageContentObj.parent)})}
-            i18nFilterChildLabel={t("filterFieldLabel", {field: _.upperFirst(filterConfigurationPageContentObj.child)})}
-            i18nFilterParentHelperText={t("filterFieldHelperText", {field: filterConfigurationPageContentObj.parent})}
-            i18nFilterChildHelperText={t("filterFieldHelperText", {field: filterConfigurationPageContentObj.child})}
-            i18nInclude={t("include")}
-            i18nExclude={t("exclude")}
-            i18nApply={t("apply")}
-            i18nClearFilters={t("clearFilters")}
-            i18nInvalidFilterText={t("invalidFilterText", {name: filterConfigurationPageContentObj.child})}
-            i18nMatchingFilterExpMsg={t("matchingFilterExpMsg", {name: filterConfigurationPageContentObj.child})}
-            i18nNoMatchingFilterExpMsg={t("noMatchingFilterExpMsg", {name: filterConfigurationPageContentObj.child})}
-            i18nClearFilterText={t("clearFilterText", {
-              parent: filterConfigurationPageContentObj.parent, 
-              child: filterConfigurationPageContentObj.child
-            })}
-            i18nFilterExpressionResultText={t("filterExpressionResultText", {name: filterConfigurationPageContentObj.child})}
-            i18nCancel={t("cancel")}
-            i18nClear={t("clear")}
-            i18nClearFilterConfMsg={t("clearFilterConfMsg")}
-            i18nNoMatchingTables={t("noMatchingTables", {name: filterConfigurationPageContentObj.child})}
-            i18nInvalidFilters={t("invalidFilters")}
-            i18nInvalidFilterExpText={t("invalidFilterExpText", {name: filterConfigurationPageContentObj.child})}
+            selectedConnectorType={selectedConnectorType || ''}
           />
         ),
         canJumpTo: stepIdReached >= 3,
