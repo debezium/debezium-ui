@@ -32,7 +32,6 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
-  getFilterConfigurationPageContent,
   getFormattedProperties,
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
@@ -372,8 +371,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setConnectionStepsValid(0);
     setStepIdReached(1);
   };
-
-  const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(selectedConnectorType || "");
 
   const initPropertyValues = (): void => {
     setFilterValues(new Map<string, string>());
@@ -729,7 +726,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             connectorType={selectedConnectorType || ""}
             setIsValidFilter={setIsValidFilter}
             selectedConnectorType={selectedConnectorType || ''}
-            filtersArray={filterConfigurationPageContentObj.fieldArray}
           />
         ),
         canJumpTo: stepIdReached >= 3,

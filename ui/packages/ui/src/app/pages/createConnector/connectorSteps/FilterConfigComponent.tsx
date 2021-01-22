@@ -32,7 +32,6 @@ export interface IFilterConfigComponentProps {
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
   selectedConnectorType: string;
-  filtersArray: string[];
 }
 
 const formatResponseData = (data: DataCollection[]) => {

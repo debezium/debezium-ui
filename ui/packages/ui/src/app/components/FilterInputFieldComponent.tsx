@@ -66,8 +66,8 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
 
   const [fieldSelected, setFieldSelected] = React.useState<string>(
     props.filterValues.has(props.fieldExcludeList)
-      ? "filedExclude"
-      : "filedInclude"
+      ? "fieldExclude"
+      : "fieldInclude"
   );
 
   const handleParentFilter = (val: string) => {
@@ -89,14 +89,14 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
     );
     setFieldSelected(
       props.filterValues.has(props.fieldExcludeList)
-        ? "filedExclude"
-        : "filedInclude"
+        ? "fieldExclude"
+        : "fieldInclude"
     );
   }, [props.filterValues, props.fieldExcludeList, props.fieldIncludeList]);
 
   React.useEffect(() => {
     const formDataCopy = new Map<string, string>(props.formData);
-    if (fieldSelected === "filedExclude") {
+    if (fieldSelected === "fieldExclude") {
       formDataCopy.delete(props.fieldIncludeList);
       filterField
         ? formDataCopy.set(props.fieldExcludeList, filterField)
@@ -115,7 +115,7 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
       label={props.i18nFilterFieldLabel}
       fieldId="field_filter"
       helperText={
-        fieldSelected === "filedExclude" ? (
+        fieldSelected === "fieldExclude" ? (
           <Text
             component={TextVariants.h4}
             className="child-selection-step_info"
@@ -186,15 +186,15 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
         <FlexItem>
           <ToggleGroup aria-label="Include Exclude field toggle group">
             <ToggleGroupItem
-              buttonId="filedInclude"
-              isSelected={fieldSelected === "filedInclude"}
+              buttonId="fieldInclude"
+              isSelected={fieldSelected === "fieldInclude"}
               onChange={handleParentToggle}
               onClick={(e) => e.preventDefault()}
               text={props.i18nInclude}
             />
             <ToggleGroupItem
-              buttonId="filedExclude"
-              isSelected={fieldSelected === "filedExclude"}
+              buttonId="fieldExclude"
+              isSelected={fieldSelected === "fieldExclude"}
               onChange={handleParentToggle}
               onClick={(e) => e.preventDefault()}
               text={props.i18nExclude}
