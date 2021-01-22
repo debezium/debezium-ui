@@ -10,6 +10,7 @@ import {
   HelpIcon,
 } from "@patternfly/react-icons";
 import React from "react";
+import './FilterExcludeFieldComponent.css';
 
 export interface IFilterExcludeFieldComponentProps {
   fieldName: string;
@@ -119,7 +120,7 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<IFilterExclude
       }
     >
       <Flex>
-        <FlexItem>
+        <FlexItem className={"filter_exclude_field_component-input"}>
           <TextInput
             value={filterField}
             validated={
