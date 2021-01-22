@@ -91,6 +91,16 @@
     "connectorResumedSuccess": "Il connettore è stato ripristinato correttamente!",
     "connectorResumeFailed": "Ripresa connettore non riuscita!",
     "connectorRestartSuccess": "Connettore riavviato con successo!",
-    "connectorRestartFailed": "Riavvio del connettore non riuscito!"
+    "connectorRestartFailed": "Riavvio del connettore non riuscito!",
+    "reloadPage": "Ricarica la pagina",
+    "reportIssue": "Segnala il problema",
+    "showDetails": "Mostra dettagli",
+    "hideDetails": "Nascondere dettagli",
+    "noDetailsAvailable": "Nessun dettaglio disponibile",
+    "apiErrorTitle": "Problema dell'API del server",
+    "apiErrorMsg": "Si è verificato un problema durante l'interazione con il server. Vedi sotto per maggiori informazioni (se disponibili). Se il problema persiste, puoi provare a ricaricare o segnalare il problema a un amministratore.",
+    "applicationErrorTitle": "Errore dell'applicazione",
+    "applicationErrorMsg": "Si è verificato un errore dell'applicazione",
+    "createConnector": "Crea connettore"
   }
 }

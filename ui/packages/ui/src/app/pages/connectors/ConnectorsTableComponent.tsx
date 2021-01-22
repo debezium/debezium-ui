@@ -32,8 +32,10 @@ import { ConnectorTask } from './ConnectorTask';
 type ICreateConnectorCallbackFn = (connectorNames: string[], clusterId: number) => void
 
 interface IConnectorsTableComponentProps {
-  clusterId: number
-  title: string
+  clusterId: number;
+  title: string;
+  i18nApiErrorTitle?: string;
+  i18nApiErrorMsg?: string;
   createConnectorCallback: ICreateConnectorCallbackFn
 }
 
@@ -394,7 +396,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       error={apiError}
       loading={loading}
       loaderChildren={<PageLoader />}
-      errorChildren={<ApiError error={errorMsg} />}
+      errorChildren={<ApiError i18nErrorTitle={props.i18nApiErrorTitle} i18nErrorMsg={props.i18nApiErrorMsg} error={errorMsg} />}
     >
       {() => (
         <>

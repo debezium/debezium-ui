@@ -10,12 +10,14 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from "react-router-dom";
 import CreateConnectorComponent from "./CreateConnectorComponent";
 import "./CreateConnectorComponent.css";
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
 
+  const { t } = useTranslation(["app"]);
   const history = useHistory();
 
   const onSuccess = () => {
@@ -39,7 +41,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>Create connector</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>{t("createConnector")}</BreadcrumbItem>
         </Breadcrumb>
         <Level hasGutter={true}>
           <LevelItem>

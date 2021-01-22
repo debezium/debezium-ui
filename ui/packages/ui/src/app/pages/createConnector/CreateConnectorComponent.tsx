@@ -620,6 +620,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     component: (
       <ConnectorTypeStepComponent
         connectorTypesList={connectorTypes}
+        i18nApiErrorTitle={t("apiErrorTitle")}
+        i18nApiErrorMsg={t("apiErrorMsg")}
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}

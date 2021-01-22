@@ -19,5 +19,10 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
   };
 
   const appLayoutContext = React.useContext(AppLayoutContext);
-  return <ConnectorsTableComponent createConnectorCallback={createConnector} title={t('connectors')} clusterId={appLayoutContext.clusterId}/>;
+  return <ConnectorsTableComponent 
+            createConnectorCallback={createConnector} 
+            i18nApiErrorTitle={t("apiErrorTitle")}
+            i18nApiErrorMsg={t("apiErrorMsg")}
+            title={t('connectors')} 
+            clusterId={appLayoutContext.clusterId}/>;
 }

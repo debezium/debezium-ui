@@ -23,6 +23,8 @@ export interface IConnectorTypeStepComponentProps {
   selectedConnectorType?: string;
   onSelectionChange: (connectorType: string | undefined) => void;
   connectorTypesList: ConnectorType[];
+  i18nApiErrorTitle?: string;
+  i18nApiErrorMsg?: string;
   loading: boolean;
   apiError: boolean;
   errorMsg: Error;
@@ -50,7 +52,7 @@ export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeS
       error={props.apiError}
       loading={props.loading}
       loaderChildren={<PageLoader />}
-      errorChildren={<ApiError error={props.errorMsg} />}
+      errorChildren={<ApiError i18nErrorTitle={props.i18nApiErrorTitle} i18nErrorMsg={props.i18nApiErrorMsg} error={props.errorMsg} />}
     >
       {() => (
         <Flex className="connector-type-step-component_flex">
