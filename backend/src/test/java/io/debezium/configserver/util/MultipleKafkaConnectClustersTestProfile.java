@@ -1,6 +1,6 @@
 package io.debezium.configserver.util;
 
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
 import io.quarkus.test.junit.QuarkusTestProfile;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class MultipleKafkaConnectClustersTestProfile implements QuarkusTestProfi
     public Map<String, String> getConfigOverrides() {
         Map<String, String> config = new HashMap<>();
         config.put(
-                ConnectorResource.PROPERTY_KAFKA_CONNECT_URI,
+                KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URI,
                 "http://localhost:1234,http://localhorst:4567 , http://localhosst:7890"
         );
         return config;

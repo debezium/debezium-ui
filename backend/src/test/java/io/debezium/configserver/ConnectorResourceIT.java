@@ -40,7 +40,8 @@ public class ConnectorResourceIT {
             .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
                     equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.SnapshotMode.values())))
             .body("properties.find { it.name == 'decimal.handling.mode' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.DecimalHandlingMode.values())));
+                    equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.DecimalHandlingMode.values())))
+            .body("enabled", is(true));
     }
     @Test
     public void testMongoDbConnectorTypesEndpoint() {
@@ -51,7 +52,8 @@ public class ConnectorResourceIT {
             .body("className", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
             .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
                     equalTo(ConnectorIntegratorBase.enumArrayToList(MongoDbConnectorConfig.SnapshotMode.values())))
-            .body("properties.find { it.name == 'field.renames' }.category", is(ConnectorProperty.Category.CONNECTOR_ADVANCED.name()));
+            .body("properties.find { it.name == 'field.renames' }.category", is(ConnectorProperty.Category.CONNECTOR_ADVANCED.name()))
+            .body("enabled", is(true));
     }
 
     @Test

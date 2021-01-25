@@ -1,6 +1,6 @@
 package io.debezium.configserver.util;
 
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public abstract class AbstractInfrastructureTestResourceLifecycleManager impleme
     public Map<String, String> start() {
         Map<String, String> config = new HashMap<>();
         config.put(
-                ConnectorResource.PROPERTY_KAFKA_CONNECT_URI,
+                KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URI,
                 "http://" + Infrastructure.getDebeziumContainer().getHost() + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8083)
         );
         return config;
