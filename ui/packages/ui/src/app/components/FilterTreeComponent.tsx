@@ -19,6 +19,8 @@ export interface IFilterTreeComponentProps {
   apiError: boolean;
   errorMsg: Error;
   invalidMsg: Map<string,string> | undefined;
+  i18nApiErrorTitle?: string;
+  i18nApiErrorMsg?: string;
   i18nNoMatchingTables: string;
   i18nNoMatchingFilterExpMsg: string;
   i18nInvalidFilters: string;
@@ -37,7 +39,7 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
       error={props.apiError}
       loading={props.loading}
       loaderChildren={<PageLoader />}
-      errorChildren={<ApiError error={props.errorMsg} />}
+      errorChildren={<ApiError i18nErrorTitle={props.i18nApiErrorTitle} i18nErrorMsg={props.i18nApiErrorMsg} error={props.errorMsg} />}
     >
       {() =>
         props.treeData.length === 0 ? props.invalidMsg?.size === 0 ?(

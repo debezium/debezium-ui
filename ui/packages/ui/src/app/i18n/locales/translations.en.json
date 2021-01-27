@@ -91,6 +91,16 @@
     "connectorResumedSuccess": "Connector resumed successfully!",
     "connectorResumeFailed": "Connector resume failed!",
     "connectorRestartSuccess": "Connector restarted successfully!",
-    "connectorRestartFailed": "Connector restart failed!"
+    "connectorRestartFailed": "Connector restart failed!",
+    "reloadPage": "Reload page",
+    "reportIssue": "Report the issue",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "noDetailsAvailable": "No details available",
+    "apiErrorTitle": "Server API problem",
+    "apiErrorMsg": "A problem was encountered interacting with the server.  See below for more information (if available). If the problem persists, you may try reloading or report the problem to an admin.",
+    "applicationErrorTitle": "Application error",
+    "applicationErrorMsg": "An application error has occurred",
+    "createConnector": "Create connector"
   }
 }

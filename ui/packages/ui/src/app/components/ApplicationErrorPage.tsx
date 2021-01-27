@@ -8,11 +8,12 @@ import {
   PageSection,
   PageSectionVariants,
   Text,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
-import { useState } from "react";
 import * as React from "react";
+import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import "./ApplicationErrorPage.css";
 
 export interface IApplicationErrorPageProps {
@@ -26,10 +27,23 @@ export interface IApplicationErrorPageProps {
 export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
   props
 ) => {
+  const { t } = useTranslation(["app"]);
+  
   const [showErrorInfo, setShowErrorInfo] = useState(false);
   const reloadPage = (): void => {
     window.location.reload();
   };
+
+  const errorDetail = () => {
+    const msg = props.errorInfo ? props.errorInfo.componentStack
+                  : props.error ? JSON.stringify(props.error) : t('noDetailsAvailable');
+    return (
+      <Text component={"pre"} className={"pf-u-text-align-left"}>
+        {msg}
+      </Text>
+    );
+  }
+
   return (
     <React.Fragment>
       <PageSection className="ps_error" variant={PageSectionVariants.light}>
@@ -37,13 +51,13 @@ export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
           <EmptyState variant={EmptyStateVariant.large}>
             <EmptyStateIcon icon={props.icon || ExclamationTriangleIcon} />
             <Title headingLevel="h5" size="lg">
-              {props.title || "Something is wrong"}
+              {props.title || t("applicationErrorTitle")}
             </Title>
             <EmptyStateBody>
-              {props.msg || "Looks like something went wrong on out end."}
+              {props.msg || t("applicationErrorMsg")}
             </EmptyStateBody>
             <Button variant="primary" onClick={reloadPage}>
-              Reload page
+              {t('reloadPage')}
             </Button>
             <EmptyStateSecondaryActions>
               <Button
@@ -51,9 +65,9 @@ export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
                 data-testid="error-btn-artifacts"
                 // isDisabled={true}
                 // tslint:disable-next-line: jsx-no-lambda
-                onClick={() => alert("Comming soon!")}
+                onClick={() => alert("Coming soon!")}
               >
-                Report the issue
+                {t('reportIssue')}
               </Button>
               <Button
                 variant="link"
@@ -61,7 +75,7 @@ export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
                 // tslint:disable-next-line: jsx-no-lambda
                 onClick={() => setShowErrorInfo(!showErrorInfo)}
               >
-                Show details
+                { showErrorInfo ? t('hideDetails') : t('showDetails') }
               </Button>
             </EmptyStateSecondaryActions>
           </EmptyState>
@@ -70,13 +84,8 @@ export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
             <div
               className="application-error-page_details pf-c-empty-state pf-m-lg"
               id="ace-wrapper"
-            >
-              {props.error?.name}: {props.error?.message}
-              {props.errorInfo && (
-                <Text component={"pre"} className={"pf-u-text-align-left"}>
-                  {props.errorInfo?.componentStack}
-                </Text>
-              )}
+            > 
+              {errorDetail()}
             </div>
           ) : (
             <div />

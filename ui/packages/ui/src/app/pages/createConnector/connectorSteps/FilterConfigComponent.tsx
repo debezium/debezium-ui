@@ -92,6 +92,10 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
     saveFilter: boolean,
     filterExpression: Map<string, string> = formData
   ) => {
+    if (apiError) {
+      setApiError(false);
+      setErrorMsg(new Error());
+    }
     fetch_retry(connectorService.validateFilters, connectorService, [
       props.connectorType,
       mapToObject(new Map([...props.propertyValues, ...filterExpression])),
@@ -127,6 +131,10 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   };
 
   const doClear = () => {
+    if(apiError) {
+      setApiError(false);
+      setErrorMsg(new Error());
+    }
     props.setIsValidFilter(true);
     setFormData(new Map());
     getFilterSchema(true, new Map());
@@ -263,6 +271,8 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         apiError={apiError}
         errorMsg={errorMsg}
         invalidMsg={invalidMsg}
+        i18nApiErrorTitle={t("apiErrorTitle")}
+        i18nApiErrorMsg={t("apiErrorMsg")}
         i18nNoMatchingTables={t("noMatchingTables", {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}

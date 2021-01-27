@@ -5,11 +5,8 @@ import { ApplicationErrorPage } from "../components";
 export interface IApiErrorProps {
   error: Error | string;
   errorInfo?: React.ErrorInfo;
-}
-
-export interface IApiErrorProps {
-  error: Error | string;
-  errorInfo?: React.ErrorInfo;
+  i18nErrorTitle?: string;
+  i18nErrorMsg?: string;
 }
 
 export const ApiError: React.FC<IApiErrorProps> = (props) => (
@@ -18,11 +15,8 @@ export const ApiError: React.FC<IApiErrorProps> = (props) => (
     className="app-page-section-border-bottom"
   >
     <ApplicationErrorPage
-    title="Internal server error"
-    msg={`Something went seriously wrong on the server. We'll try to provide
-    you with some more information about the problem (see below) but
-    you might want to try reloading. If things still don't work then
-    you'll have to report the problem to an admin.`}
+      title={props.i18nErrorTitle}
+      msg={props.i18nErrorMsg}
       error={
         typeof props.error === "string" ? new Error(props.error) : props.error
       }
