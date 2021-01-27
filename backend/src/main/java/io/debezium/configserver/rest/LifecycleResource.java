@@ -6,7 +6,6 @@ import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
 import io.debezium.configserver.rest.client.KafkaConnectException;
 import io.debezium.configserver.rest.model.NotFoundResponse;
 import io.debezium.configserver.rest.model.ServerError;
-import io.debezium.configserver.service.StacktraceHelper;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
@@ -21,16 +20,15 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.net.URI;
 
 @Path(ConnectorURIs.API_PREFIX)
-public class LifecycleResource implements ConnectorURIs {
+public class LifecycleResource {
 
     private static final Logger LOGGER = Logger.getLogger(LifecycleResource.class);
 
-    @Path(CONNECTOR_PAUSE_ENDPOINT)
+    @Path(ConnectorURIs.CONNECTOR_PAUSE_ENDPOINT)
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,32 +62,22 @@ public class LifecycleResource implements ConnectorURIs {
     public Response pauseConnector(
             @PathParam("cluster") int cluster,
             @PathParam("connectorname") String connectorName
-    ) {
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         Response result;
         try {
             result = kafkaConnectClient.pauseConnector(connectorName);
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-        LOGGER.error("Kafka Connect response: " + result);
+        LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
 
         return result;
     }
 
-    @Path(CONNECTOR_RESUME_ENDPOINT)
+    @Path(ConnectorURIs.CONNECTOR_RESUME_ENDPOINT)
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -123,32 +111,22 @@ public class LifecycleResource implements ConnectorURIs {
     public Response resumeConnector(
             @PathParam("cluster") int cluster,
             @PathParam("connectorname") String connectorName
-    ) {
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         Response result;
         try {
             result = kafkaConnectClient.resumeConnector(connectorName);
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-        LOGGER.debug("Kafka Connect response: " + result);
+        LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
 
         return result;
     }
 
-    @Path(CONNECTOR_RESTART_ENDPOINT)
+    @Path(ConnectorURIs.CONNECTOR_RESTART_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -186,32 +164,22 @@ public class LifecycleResource implements ConnectorURIs {
     public Response restartConnector(
             @PathParam("cluster") int cluster,
             @PathParam("connectorname") String connectorName
-    ) {
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         Response result;
         try {
             result = kafkaConnectClient.restartConnector(connectorName);
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-        LOGGER.debug("Kafka Connect response: " + result);
+        LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
 
         return Response.fromResponse(result).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
-    @Path(CONNECTOR_TASK_RESTART_ENDPOINT)
+    @Path(ConnectorURIs.CONNECTOR_TASK_RESTART_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -250,27 +218,17 @@ public class LifecycleResource implements ConnectorURIs {
             @PathParam("cluster") int cluster,
             @PathParam("connectorname") String connectorName,
             @PathParam("tasknumber") int taskNumber
-    ) {
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         Response result;
         try {
             result = kafkaConnectClient.restartConnectorTask(connectorName, taskNumber);
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-        LOGGER.debug("Kafka Connect response: " + result);
+        LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
 
         return Response.fromResponse(result).type(MediaType.APPLICATION_JSON_TYPE).build();
     }

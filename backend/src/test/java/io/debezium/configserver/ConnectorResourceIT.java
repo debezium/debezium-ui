@@ -1,7 +1,7 @@
 package io.debezium.configserver;
 
 import io.debezium.configserver.model.ConnectorProperty;
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.connector.postgresql.PostgresConnectorConfig;
@@ -19,7 +19,7 @@ public class ConnectorResourceIT {
     @Test
     public void testConnectorTypesEndpoint() {
         given()
-          .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTOR_TYPES_ENDPOINT)
+          .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TYPES_ENDPOINT)
           .then().log().all()
              .statusCode(200)
              .body("className", hasItems(
@@ -33,7 +33,7 @@ public class ConnectorResourceIT {
     @Test
     public void testPostgresConnectorTypesEndpoint() {
         given()
-            .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "postgres")
+            .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "postgres")
             .then().log().all()
             .statusCode(200)
             .body("className", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
@@ -46,7 +46,7 @@ public class ConnectorResourceIT {
     @Test
     public void testMongoDbConnectorTypesEndpoint() {
         given()
-            .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "mongodb")
+            .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "mongodb")
             .then().log().all()
             .statusCode(200)
             .body("className", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
@@ -59,7 +59,7 @@ public class ConnectorResourceIT {
     @Test
     public void testClustersEndpoint() {
         given()
-          .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECT_CLUSTERS_ENDPOINT)
+          .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
           .then().log().all()
              .statusCode(200)
              .body("size()", is(1))

@@ -44,8 +44,8 @@ import io.debezium.configserver.rest.model.BadRequestResponse;
 import io.debezium.configserver.rest.model.ServerError;
 import io.debezium.configserver.service.ConnectorIntegrator;
 
-@Path(ConnectorResource.API_PREFIX)
-public class ConnectorResource implements ConnectorURIs {
+@Path(ConnectorURIs.API_PREFIX)
+public class ConnectorResource {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
 
@@ -60,7 +60,7 @@ public class ConnectorResource implements ConnectorURIs {
         this.integrators = Collections.unmodifiableMap(integrators);
     }
 
-    @Path(CONNECT_CLUSTERS_ENDPOINT)
+    @Path(ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(
@@ -76,18 +76,11 @@ public class ConnectorResource implements ConnectorURIs {
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
-    public Response getClusters() {
-        try {
-            return Response.ok(KafkaConnectClientFactory.getAllKafkaConnectClusters()).build();
-        } catch (RuntimeException | InvalidClusterException e) {
-            String errorMessage = "Error with Kafka Connect cluster URI: " + e.getMessage();
-            LOGGER.error(errorMessage);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
-        }
-
+    public Response getClusters() throws InvalidClusterException {
+        return Response.ok(KafkaConnectClientFactory.getAllKafkaConnectClusters()).build();
     }
 
-    @Path(CONNECTOR_TYPES_ENDPOINT)
+    @Path(ConnectorURIs.CONNECTOR_TYPES_ENDPOINT)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ConnectorType> getConnectorTypes() {
@@ -97,7 +90,7 @@ public class ConnectorResource implements ConnectorURIs {
                 .collect(Collectors.toList());
     }
 
-    @Path(CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR)
+    @Path(ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(
@@ -136,7 +129,7 @@ public class ConnectorResource implements ConnectorURIs {
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     }
 
-    @Path(CONNECTION_VALIDATION_ENDPOINT)
+    @Path(ConnectorURIs.CONNECTION_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -168,7 +161,7 @@ public class ConnectorResource implements ConnectorURIs {
                 .build();
     }
 
-    @Path(FILTERS_VALIDATION_ENDPOINT)
+    @Path(ConnectorURIs.FILTERS_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -215,7 +208,7 @@ public class ConnectorResource implements ConnectorURIs {
         }
     }
 
-    @Path(PROPERTIES_VALIDATION_ENDPOINT)
+    @Path(ConnectorURIs.PROPERTIES_VALIDATION_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -247,7 +240,7 @@ public class ConnectorResource implements ConnectorURIs {
                 .build();
     }
 
-    @Path(CREATE_CONNECTOR_ENDPOINT)
+    @Path(ConnectorURIs.CREATE_CONNECTOR_ENDPOINT)
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -282,7 +275,7 @@ public class ConnectorResource implements ConnectorURIs {
             @PathParam("cluster") int cluster,
             @PathParam("connector-type-id") String connectorTypeId,
             ConnectConnectorConfigResponse kafkaConnectConfig
-            ) {
+            ) throws KafkaConnectClientException, KafkaConnectException {
         if (kafkaConnectConfig.getConfig() == null || kafkaConnectConfig.getConfig().isEmpty()) {
             return Response.status(Status.BAD_REQUEST)
                     .entity(new BadRequestResponse("Connector \"config\" property is not set!"))
@@ -308,14 +301,8 @@ public class ConnectorResource implements ConnectorURIs {
             return Response.status(Status.BAD_REQUEST).entity(validationResult).build();
         }
 
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         kafkaConnectConfig.getConfig().put("connector.class", integrator.getDescriptor().className);
 
@@ -324,17 +311,14 @@ public class ConnectorResource implements ConnectorURIs {
         try {
             result = kafkaConnectClient.createConnector(kafkaConnectConfig);
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         LOGGER.debug("Kafka Connect response: " + result);
 
         return Response.ok(result).build();
     }
 
-    @Path(LIST_CONNECTORS_ENDPOINT)
+    @Path(ConnectorURIs.LIST_CONNECTORS_ENDPOINT)
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -358,24 +342,16 @@ public class ConnectorResource implements ConnectorURIs {
                     mediaType = MediaType.APPLICATION_JSON,
                     schema = @Schema(implementation = ServerError.class)
             ))
-    public Response listConnectors(@PathParam("cluster") int cluster) {
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+    public Response listConnectors(@PathParam("cluster") int cluster)
+            throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         List<String> activeConnectors;
         try {
             activeConnectors = kafkaConnectClient.listConnectors();
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
 
         LOGGER.debug("Kafka Connect response: " + activeConnectors);
@@ -399,11 +375,14 @@ public class ConnectorResource implements ConnectorURIs {
                                             taskStatus -> connectorState.setTaskState(
                                                     taskStatus.id,
                                                     taskStatus.status,
-                                                    (taskStatus.getErrorsAsList() != null ? taskStatus.getErrorsAsList().stream().filter(s -> s.startsWith("Caused by:")).collect(Collectors.toList()) : null)
+                                                    (taskStatus.getErrorsAsList() != null
+                                                            ? taskStatus.getErrorsAsList().stream().filter(s -> s.startsWith("Caused by:")).collect(Collectors.toList())
+                                                            : null
+                                                    )
                                                 ));
                                     return connectorState;
-                                } catch (IOException e) {
-                                    LOGGER.error(e.getMessage());
+                                } catch (ProcessingException | IOException e) {
+                                    LOGGER.error(e.getMessage(), e);
                                 }
                                 return null;
                             }).collect(Collectors.toList());
@@ -414,7 +393,7 @@ public class ConnectorResource implements ConnectorURIs {
         return Response.ok(connectorData).build();
     }
 
-    @Path(MANAGE_CONNECTORS_ENDPOINT)
+    @Path(ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT)
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -441,27 +420,18 @@ public class ConnectorResource implements ConnectorURIs {
     public Response deleteConnector(
             @PathParam("cluster") int cluster,
             @PathParam("connector-name") String connectorName
-    ) {
-        KafkaConnectClient kafkaConnectClient;
-        URI kafkaConnectURI;
-        try {
-            kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-            kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
-        } catch (KafkaConnectException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getServerError()).build();
-        }
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
         Response kafkaConnectDeleteConnectorResponse;
         try {
             kafkaConnectDeleteConnectorResponse = kafkaConnectClient.deleteConnector(connectorName);
         } catch (ProcessingException | IOException e) {
-            String errorMessage = "Could not connect to Kafka Connect! Kafka Connect REST API is not available at \""
-                    + kafkaConnectURI + "\". (" + e.getMessage() + ")";
-            LOGGER.error(errorMessage);
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(new ServerError(errorMessage, StacktraceHelper.traceAsString(e))).build();
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
 
-        LOGGER.debug("Kafka Connect response: " + kafkaConnectDeleteConnectorResponse);
+        LOGGER.debug("Kafka Connect response: " + kafkaConnectDeleteConnectorResponse.readEntity(String.class));
 
         return Response.fromResponse(kafkaConnectDeleteConnectorResponse).type(MediaType.APPLICATION_JSON).build();
     }

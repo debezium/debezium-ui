@@ -1,6 +1,6 @@
 package io.debezium.configserver;
 
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.MongoDbInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
@@ -22,7 +22,7 @@ public class CreateAndDeleteMongoDbConnectorIT {
     @Test
     public void testMongoDbClustersEndpoint() {
         given()
-                .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECT_CLUSTERS_ENDPOINT)
+                .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1))
@@ -43,7 +43,7 @@ public class CreateAndDeleteMongoDbConnectorIT {
 
         MongoDBContainer mongoDbContainer = Infrastructure.getMongoDbContainer();
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
-                .post(ConnectorResource.API_PREFIX + ConnectorResource.CREATE_CONNECTOR_ENDPOINT, 1, "mongodb")
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CREATE_CONNECTOR_ENDPOINT, 1, "mongodb")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("name", equalTo("my-mongodb-connector"))
@@ -58,7 +58,7 @@ public class CreateAndDeleteMongoDbConnectorIT {
     public void testMongoDbDeleteConnectorFailed() {
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
         given()
-                .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
+                .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
                 .then().log().all()
                 .statusCode(404)
                 .body("size()", is(2))
@@ -77,7 +77,7 @@ public class CreateAndDeleteMongoDbConnectorIT {
                 deleteMongoDbConnectorName, 0, Connector.State.RUNNING);
 
         given()
-                .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, deleteMongoDbConnectorName)
+                .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, deleteMongoDbConnectorName)
                 .then().log().all()
                 .statusCode(204);
 

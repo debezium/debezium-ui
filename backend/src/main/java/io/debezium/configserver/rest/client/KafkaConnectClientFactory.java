@@ -47,9 +47,8 @@ public class KafkaConnectClientFactory {
                     kafkaConnectBaseURIsList.add(new URI(s.trim()));
                 } catch (URISyntaxException e) {
                     throw new InvalidClusterException(
-                            new ServerError(
-                                    "Error parsing Kafka Connect cluster URI \"" + s.trim() + "\": " + e.getMessage(),
-                                    StacktraceHelper.traceAsString(e)));
+                            "Error parsing Kafka Connect cluster URI \"" + s.trim() + "\": " + e.getMessage(),
+                            e);
                 }
             }
         }
@@ -66,17 +65,15 @@ public class KafkaConnectClientFactory {
 
         if (baseURIsList.isEmpty()) {
             throw new InvalidClusterException(
-                    new ServerError(
-                            "Kafka Connect cluster list is empty! Did you forget to set a value for configuration property \"" + PROPERTY_KAFKA_CONNECT_URI + "\"?",
-                            null));
+                    "Kafka Connect cluster list is empty! Did you forget to set a value for configuration property \"" + PROPERTY_KAFKA_CONNECT_URI + "\"?"
+            );
         }
 
         if (baseURIsList.size() < cluster) {
             throw new InvalidClusterException(
-                    new ServerError(
-                            "Selected cluster (" + cluster + ") is not available in the list of configured clusters ["
-                            + Arrays.toString(baseURIsList.toArray()) +"].",
-                            null));
+                    "Selected cluster (" + cluster + ") is not available in the list of configured clusters ["
+                    + Arrays.toString(baseURIsList.toArray()) +"]."
+            );
         }
 
         return baseURIsList.get(cluster - 1);
@@ -91,9 +88,7 @@ public class KafkaConnectClientFactory {
                     .baseUri(kafkaConnectURI)
                     .build(KafkaConnectClient.class);
         } catch (RuntimeException | InvalidClusterException e) {
-            String errorMessage = "Error on choosing the Kafka Connect cluster URI: " + e.getMessage();
-            LOGGER.error(errorMessage);
-            throw new KafkaConnectException(new ServerError(errorMessage, StacktraceHelper.traceAsString(e)));
+            throw new KafkaConnectException(e.getMessage(), e);
         }
         return kafkaConnectClient;
     }

@@ -1,7 +1,7 @@
 package io.debezium.configserver;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.MongoDbInfrastructureTestProfile;
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
@@ -30,7 +30,7 @@ public class ValidateMongoDbFiltersIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "mongodb")
+            .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mongodb")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
@@ -55,7 +55,7 @@ public class ValidateMongoDbFiltersIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "mongodb")
+            .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mongodb")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
@@ -76,7 +76,7 @@ public class ValidateMongoDbFiltersIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "mongodb")
+            .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mongodb")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
@@ -99,7 +99,7 @@ public class ValidateMongoDbFiltersIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "mongodb")
+            .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mongodb")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("INVALID"))
@@ -119,7 +119,7 @@ public class ValidateMongoDbFiltersIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-            .post(ConnectorResource.API_PREFIX + ConnectorResource.FILTERS_VALIDATION_ENDPOINT, "mongodb")
+            .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mongodb")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("INVALID"))

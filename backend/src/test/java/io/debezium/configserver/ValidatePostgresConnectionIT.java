@@ -1,7 +1,7 @@
 package io.debezium.configserver;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.ConnectorConfigurationTestingHelper;
@@ -18,7 +18,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 
 @QuarkusTest
 @TestProfile(PostgresInfrastructureTestProfile.class)
@@ -33,7 +32,7 @@ public class ValidatePostgresConnectionIT {
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-            .post(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTION_VALIDATION_ENDPOINT, "postgres")
+            .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTION_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
@@ -49,7 +48,7 @@ public class ValidatePostgresConnectionIT {
 
         Locale.setDefault(new Locale("en", "US"));
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
-                .post(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTION_VALIDATION_ENDPOINT, "postgres")
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTION_VALIDATION_ENDPOINT, "postgres")
                 .then().log().all()
                 .statusCode(200)
                 .assertThat().body("status", equalTo("INVALID"))
@@ -63,7 +62,7 @@ public class ValidatePostgresConnectionIT {
     @Test
     public void testInvalidPostgresConnection() {
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body("{\"connector.class\":\"io.debezium.connector.postgresql.PostgresConnector\"}")
-                .post(ConnectorResource.API_PREFIX + ConnectorResource.CONNECTION_VALIDATION_ENDPOINT, "postgres")
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTION_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("status", equalTo("INVALID"))

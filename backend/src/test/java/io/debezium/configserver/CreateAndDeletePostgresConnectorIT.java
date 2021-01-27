@@ -1,6 +1,6 @@
 package io.debezium.configserver;
 
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
@@ -21,7 +21,7 @@ public class CreateAndDeletePostgresConnectorIT {
     @Test
     public void testPostgresClustersEndpoint() {
         given()
-                .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECT_CLUSTERS_ENDPOINT)
+                .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1))
@@ -42,7 +42,7 @@ public class CreateAndDeletePostgresConnectorIT {
             );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
-                .post(ConnectorResource.API_PREFIX + ConnectorResource.CREATE_CONNECTOR_ENDPOINT, 1, "postgres")
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CREATE_CONNECTOR_ENDPOINT, 1, "postgres")
             .then().log().all()
             .statusCode(200)
             .assertThat().body("name", equalTo("my-postgres-connector"))
@@ -55,7 +55,7 @@ public class CreateAndDeletePostgresConnectorIT {
     public void testPostgresDeleteConnectorFailed() {
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
         given()
-                .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
+                .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
                 .then().log().all()
                 .statusCode(404)
                 .body("size()", is(2))
@@ -74,7 +74,7 @@ public class CreateAndDeletePostgresConnectorIT {
                 deletePostgresConnectorName, 0, Connector.State.RUNNING);
 
         given()
-                .when().delete(ConnectorResource.API_PREFIX + ConnectorResource.MANAGE_CONNECTORS_ENDPOINT, 1, deletePostgresConnectorName)
+                .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, deletePostgresConnectorName)
                 .then().log().all()
                 .statusCode(204);
 
