@@ -1,4 +1,4 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import { ConnectorProperty, PropertyValidationResult } from "@debezium/ui-models";
 import {
   ExpandableSection,
   Grid,
@@ -18,6 +18,7 @@ export interface IPropertiesStepProps {
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
+  invalidMsg: PropertyValidationResult[];
   i18nAdvancedPropertiesText: string;
   i18nAdvancedPublicationPropertiesText: string;
   i18nAdvancedReplicationPropertiesText: string;
@@ -196,9 +197,9 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                           propertyChange={handlePropertyChange}
                           setFieldValue={setFieldValue}
                           helperTextInvalid={errors[propertyDefinition.name]}
-                          validated={
-                            errors[propertyDefinition.name] &&
-                            touched[propertyDefinition.name]
+                          invalidMsg={props.invalidMsg}
+                          validated={ errors[propertyDefinition.name] &&
+                            touched[propertyDefinition.name] 
                               ? "error"
                               : "default"
                           }
@@ -238,8 +239,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
-                                validated={
-                                  errors[propertyDefinition.name] &&
+                                invalidMsg={props.invalidMsg}
+                                validated={ errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]
                                     ? "error"
                                     : "default"
@@ -283,8 +284,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                   helperTextInvalid={
                                     errors[propertyDefinition.name]
                                   }
-                                  validated={
-                                    errors[propertyDefinition.name] &&
+                                  invalidMsg={props.invalidMsg}
+                                  validated={errors[propertyDefinition.name] &&
                                     touched[propertyDefinition.name]
                                       ? "error"
                                       : "default"
@@ -327,8 +328,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                   helperTextInvalid={
                                     errors[propertyDefinition.name]
                                   }
-                                  validated={
-                                    errors[propertyDefinition.name] &&
+                                  invalidMsg={props.invalidMsg}
+                                  validated={ errors[propertyDefinition.name] &&
                                     touched[propertyDefinition.name]
                                       ? "error"
                                       : "default"
@@ -373,6 +374,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                       helperTextInvalid={
                                         errors[propertyDefinition.name]
                                       }
+                                      invalidMsg={props.invalidMsg}
                                       validated={
                                         errors[propertyDefinition.name] &&
                                         touched[propertyDefinition.name]

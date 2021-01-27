@@ -1,4 +1,4 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import { ConnectorProperty, PropertyValidationResult } from "@debezium/ui-models";
 import {
   ExpandableSection,
   Grid,
@@ -15,6 +15,7 @@ import "./DataOptionsComponent.css";
 export interface IDataOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  invalidMsg: PropertyValidationResult[];
   i18nAdvancedMappingPropertiesText: string;
   i18nMappingPropertiesText: string;
   i18nSnapshotPropertiesText: string;
@@ -166,6 +167,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
+                                invalidMsg={props.invalidMsg}
                                 validated={
                                   errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]
@@ -206,6 +208,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
+                                invalidMsg={props.invalidMsg}
                                 validated={
                                   errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]
@@ -243,6 +246,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
+                                invalidMsg={props.invalidMsg}
                                 validated={
                                   errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]

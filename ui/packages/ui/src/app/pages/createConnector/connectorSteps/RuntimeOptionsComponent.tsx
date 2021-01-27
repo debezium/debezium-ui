@@ -1,4 +1,4 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import { ConnectorProperty, PropertyValidationResult } from "@debezium/ui-models";
 import { ExpandableSection, Grid, GridItem } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
@@ -11,6 +11,7 @@ import "./RuntimeOptionsComponent.css";
 export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
+  invalidMsg: PropertyValidationResult[];
   i18nEngineProperties: string;
   i18nHeartbeatProperties: string;
   setRuntimeOptionsValid: () => void;
@@ -168,6 +169,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
+                                invalidMsg={props.invalidMsg}
                                 validated={
                                   errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]
@@ -210,6 +212,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
                                 helperTextInvalid={
                                   errors[propertyDefinition.name]
                                 }
+                                invalidMsg={props.invalidMsg}
                                 validated={
                                   errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]

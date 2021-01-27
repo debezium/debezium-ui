@@ -25,6 +25,7 @@ import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Prompt } from "react-router-dom";
 import { ToastAlertComponent } from "src/app/components";
+import { ConnectionPropertiesError } from "src/app/components/ConnectionPropertiesError";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -87,7 +88,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 ) => {
   const { t } = useTranslation(["app"]);
 
-  const validationErrorMsg = t("resolvePropertyErrorsMsg");
   const validationSuccessNextMsg = t("resolvePropertySucessMsg");
   const createConnectorUnknownErrorMsg = t("unknownError");
   const CONNECTOR_TYPE_STEP = (
@@ -475,6 +475,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           }
         } else {
           setConnectionPropsValid(true);
+          setConnectionPropsValidMsg([]);
         }
         setValidateInProgress(false);
       })
@@ -536,6 +537,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           }
           setConnectionPropsValidMsg(result.propertyValidationResults);
         } else {
+          setConnectionPropsValidMsg([]);
           if (isDataOptions(propertyCategory)) {
             setDataOptionsValid(true);
           } else if (isRuntimeOptions(propertyCategory)) {
@@ -598,22 +600,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     initPropertyValues();
   }, [connectorTypes]);
 
-  const ConnectionPropertiesError = ({ connectionPropsMsg }) => {
-    if (connectionPropsMsg.length !== 0) {
-      return (
-        <ul>
-          {connectionPropsMsg.map((item, index) => (
-            <li key={index}>
-              {item.displayName}: {item.message}
-            </li>
-          ))}
-        </ul>
-      );
-    } else {
-      return <div>{validationErrorMsg}</div>;
-    }
-  };
-
   const connectorTypeStep = {
     id: 1,
     name: CONNECTOR_TYPE_STEP,
@@ -651,6 +637,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           ref={connectionPropsRef}
           setConnectionPropsValid={setConnectionPropsValid}
           setConnectionStepsValid={setConnectionStepsValid}
+          invalidMsg={connectionPropsValidMsg}
         />
         {validateInProgress ? (
           <Spinner size="lg" />
@@ -664,6 +651,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 title={
                   <ConnectionPropertiesError
                     connectionPropsMsg={connectionPropsValidMsg}
+                    validationErrorMsg={t("resolvePropertyErrorsMsg")}
                   />
                 }
               />
@@ -756,6 +744,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               ref={dataOptionRef}
               setDataOptionsValid={setDataOptionsValid}
               setDataStepsValid={setDataStepsValid}
+              invalidMsg={connectionPropsValidMsg}
             />
             {validateInProgress ? (
               <Spinner size="lg" />
@@ -769,6 +758,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                     title={
                       <ConnectionPropertiesError
                         connectionPropsMsg={connectionPropsValidMsg}
+                        validationErrorMsg={t("resolvePropertyErrorsMsg")}
                       />
                     }
                   />
@@ -795,6 +785,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               ref={runtimeOptionRef}
               setRuntimeOptionsValid={setRuntimeOptionsValid}
               setRuntimeStepsValid={setRuntimeStepsValid}
+              invalidMsg={connectionPropsValidMsg}
             />
             {validateInProgress ? (
               <Spinner size="lg" />
@@ -809,6 +800,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                     title={
                       <ConnectionPropertiesError
                         connectionPropsMsg={connectionPropsValidMsg}
+                        validationErrorMsg={t("resolvePropertyErrorsMsg")}
                       />
                     }
                   />
