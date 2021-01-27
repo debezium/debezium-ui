@@ -70,7 +70,7 @@ export interface IFormDurationComponentProps {
   fieldId: string;
   helperTextInvalid?: any;
   isRequired: boolean;
-  validated?: "default" | "success" | "warning" | "error" | undefined;
+  validated: "default" | "success" | "warning" | "error";
   propertyChange: (name: string, selection: any) => void;
   setFieldValue: (
     field: string,

@@ -19,7 +19,7 @@ export interface IFormMaskHashSaltComponentProps {
   fieldId: string;
   helperTextInvalid?: any;
   isRequired: boolean;
-  validated?: "default" | "success" | "warning" | "error" | undefined;
+  validated: "default" | "success" | "warning" | "error";
   i18nAddDefinitionText: string;
   i18nAddDefinitionTooltip: string;
   i18nRemoveDefinitionTooltip: string;
