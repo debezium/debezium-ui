@@ -1,6 +1,6 @@
 package io.debezium.configserver;
 
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.MultipleKafkaConnectClustersTestProfile;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
@@ -17,7 +17,7 @@ public class MultipleKafkaConnectClustersIT {
     @Test
     public void testMultipleClustersEndpoint() {
         given()
-          .when().get(ConnectorResource.API_PREFIX + ConnectorResource.CONNECT_CLUSTERS_ENDPOINT)
+          .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
           .then().log().all()
              .statusCode(200)
              .body("size()", is(3))

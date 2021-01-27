@@ -1,18 +1,18 @@
 package io.debezium.configserver.rest;
 
-public interface ConnectorURIs {
-    String API_PREFIX = "/api";
-    String CONNECT_CLUSTERS_ENDPOINT = "/connect-clusters";
-    String CONNECTOR_TYPES_ENDPOINT = "/connector-types";
-    String CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR = "/connector-types/{id}";
-    String CONNECTION_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/connection";
-    String FILTERS_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/filters";
-    String PROPERTIES_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/properties";
-    String CREATE_CONNECTOR_ENDPOINT = "/connector/{cluster}/{connector-type-id}";
-    String LIST_CONNECTORS_ENDPOINT = "/connectors/{cluster}";
-    String MANAGE_CONNECTORS_ENDPOINT = "/connectors/{cluster}/{connector-name}";
-    String CONNECTOR_PAUSE_ENDPOINT = "/connector/{cluster}/{connectorname}/pause";
-    String CONNECTOR_RESUME_ENDPOINT = "/connector/{cluster}/{connectorname}/resume";
-    String CONNECTOR_RESTART_ENDPOINT = "/connector/{cluster}/{connectorname}/restart";
-    String CONNECTOR_TASK_RESTART_ENDPOINT = "/connector/{cluster}/{connectorname}/task/{tasknumber}/restart";
+public final class ConnectorURIs {
+    public static final String API_PREFIX = "/api";
+    public static final String CONNECT_CLUSTERS_ENDPOINT = "/connect-clusters";
+    public static final String CONNECTOR_TYPES_ENDPOINT = "/connector-types";
+    public static final String CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR = "/connector-types/{id}";
+    public static final String CONNECTION_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/connection";
+    public static final String FILTERS_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/filters";
+    public static final String PROPERTIES_VALIDATION_ENDPOINT = "/connector-types/{id}/validation/properties";
+    public static final String CREATE_CONNECTOR_ENDPOINT = "/connector/{cluster}/{connector-type-id}";
+    public static final String LIST_CONNECTORS_ENDPOINT = "/connectors/{cluster}";
+    public static final String MANAGE_CONNECTORS_ENDPOINT = "/connectors/{cluster}/{connector-name}";
+    public static final String CONNECTOR_PAUSE_ENDPOINT = "/connector/{cluster}/{connectorname}/pause";
+    public static final String CONNECTOR_RESUME_ENDPOINT = "/connector/{cluster}/{connectorname}/resume";
+    public static final String CONNECTOR_RESTART_ENDPOINT = "/connector/{cluster}/{connectorname}/restart";
+    public static final String CONNECTOR_TASK_RESTART_ENDPOINT = "/connector/{cluster}/{connectorname}/task/{tasknumber}/restart";
 }

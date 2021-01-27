@@ -1,7 +1,7 @@
 package io.debezium.configserver;
 
 import io.debezium.configserver.model.ConnectorStatus;
-import io.debezium.configserver.rest.ConnectorResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
@@ -10,7 +10,6 @@ import io.quarkus.test.junit.TestProfile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -32,7 +31,7 @@ public class ListPostgresConnectorIT {
 
     @Test
     public void testListConnectorsEndpointEmpty() {
-        given().when().get(ConnectorResource.API_PREFIX + ConnectorResource.LIST_CONNECTORS_ENDPOINT, "1")
+        given().when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.LIST_CONNECTORS_ENDPOINT, "1")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(0));
@@ -57,7 +56,7 @@ public class ListPostgresConnectorIT {
         Infrastructure.getDebeziumContainer().ensureConnectorTaskState(failedConnectorName, 0, Connector.State.FAILED);
 
         given()
-                .when().get(ConnectorResource.API_PREFIX + ConnectorResource.LIST_CONNECTORS_ENDPOINT, "1")
+                .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.LIST_CONNECTORS_ENDPOINT, "1")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(3))

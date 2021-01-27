@@ -1,6 +1,6 @@
 package io.debezium.configserver;
 
-import io.debezium.configserver.rest.LifecycleResource;
+import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
@@ -26,7 +26,7 @@ public class LifecycleResourceIT {
                 Infrastructure.getPostgresConnectorConfiguration(1));
 
         given()
-                .when().put(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_PAUSE_ENDPOINT, 1, connectorName)
+                .when().put(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_PAUSE_ENDPOINT, 1, connectorName)
                 .then().log().all()
                 .statusCode(202)
                 .body(is(""));
@@ -39,7 +39,7 @@ public class LifecycleResourceIT {
         Assertions.assertEquals(Connector.State.PAUSED, Infrastructure.getDebeziumContainer().getConnectorState(connectorName));
 
         given()
-                .when().put(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_RESUME_ENDPOINT, 1, connectorName)
+                .when().put(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_RESUME_ENDPOINT, 1, connectorName)
                 .then().log().all()
                 .statusCode(202)
                 .body(is(""));
@@ -56,7 +56,7 @@ public class LifecycleResourceIT {
     public void testPausePostgresConnectorNotFound() {
         final var connectorName = "not-found-postgres-connector-pause";
         given()
-                .when().put(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_PAUSE_ENDPOINT, 1, connectorName)
+                .when().put(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_PAUSE_ENDPOINT, 1, connectorName)
                 .then().log().all()
                 .statusCode(404)
                 .body("error_code", is(404))
@@ -67,7 +67,7 @@ public class LifecycleResourceIT {
     public void testResumePostgresConnectorNotFound() {
         final var connectorName = "not-found-postgres-connector-resume";
         given()
-                .when().put(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_RESUME_ENDPOINT, 1, connectorName)
+                .when().put(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_RESUME_ENDPOINT, 1, connectorName)
                 .then().log().all()
                 .statusCode(404)
                 .body("error_code", is(404))
@@ -86,7 +86,7 @@ public class LifecycleResourceIT {
         given()
                 .when().log().all()
                 .accept(ContentType.JSON).contentType(ContentType.JSON)
-                .post(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_RESTART_ENDPOINT, 1, connectorName)
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_RESTART_ENDPOINT, 1, connectorName)
                 .then().log().all()
                 .statusCode(204)
                 .body(is(""));
@@ -101,7 +101,7 @@ public class LifecycleResourceIT {
         given()
                 .when()
                 .accept(ContentType.JSON).contentType(ContentType.JSON)
-                .post(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_RESTART_ENDPOINT, 1, connectorName)
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_RESTART_ENDPOINT, 1, connectorName)
                 .then().log().all()
                 .statusCode(404)
                 .body("error_code", is(404))
@@ -121,7 +121,7 @@ public class LifecycleResourceIT {
         given()
                 .when().log().all()
                 .accept(ContentType.JSON).contentType(ContentType.JSON)
-                .post(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_TASK_RESTART_ENDPOINT, 1, connectorName, 0)
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TASK_RESTART_ENDPOINT, 1, connectorName, 0)
                 .then().log().all()
                 .statusCode(204)
                 .body(is(""));
@@ -136,7 +136,7 @@ public class LifecycleResourceIT {
         given()
                 .when()
                 .accept(ContentType.JSON).contentType(ContentType.JSON)
-                .post(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_TASK_RESTART_ENDPOINT, 1, connectorName, 0)
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TASK_RESTART_ENDPOINT, 1, connectorName, 0)
                 .then().log().all()
                 .statusCode(404)
                 .body("error_code", is(404))
@@ -157,7 +157,7 @@ public class LifecycleResourceIT {
         given()
                 .when().log().all()
                 .accept(ContentType.JSON).contentType(ContentType.JSON)
-                .post(LifecycleResource.API_PREFIX + LifecycleResource.CONNECTOR_TASK_RESTART_ENDPOINT, 1, connectorName, invalidTaskNumber)
+                .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TASK_RESTART_ENDPOINT, 1, connectorName, invalidTaskNumber)
                 .then().log().all()
                 .statusCode(404)
                 .body("error_code", is(404))

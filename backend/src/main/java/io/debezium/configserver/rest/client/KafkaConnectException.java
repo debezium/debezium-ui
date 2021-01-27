@@ -1,17 +1,12 @@
 package io.debezium.configserver.rest.client;
 
-import io.debezium.configserver.rest.model.ServerError;
-
 public class KafkaConnectException extends Exception {
 
-    protected final ServerError error;
-
-    public KafkaConnectException(ServerError error) {
-        this.error = error;
+    public KafkaConnectException(String message, Exception e) {
+        super("Error while choosing the Kafka Connect cluster URI: " + e.getMessage(), e);
     }
 
-    public ServerError getServerError() {
-        return error;
+    public KafkaConnectException(String s) {
+        super(s);
     }
-
 }
