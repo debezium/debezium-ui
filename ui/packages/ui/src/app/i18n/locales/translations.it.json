@@ -20,6 +20,7 @@
     "clearFilterConfMsg": "Questa operazione cancellerà tutte le espressioni di filtraggio. \n Sei sicuro di voler procedere?",
     "clearFilters": "Cancella filtri",
     "clearFilterText": "È possibile includere tutti gli {{parent}} e le {{child}} facendo clic su",
+    "columnOrFieldFilter": "Il nome {{fieldName}} non è disponibile nell'anteprima ma l'espressione del filtro {{fieldName}} verrà applicata al connettore creato.",
     "connectorDeletedSuccess": "Connettore eliminato con successo!",
     "connectorDeletionFailed": "Eliminazione del connettore non riuscita!",
     "connectorEmptyStateMsg": "Fare clic su 'Crea un connettore' per creare un nuovo connettore.",

@@ -2,11 +2,9 @@ import { DataCollection, FilterValidationResult } from "@debezium/ui-models";
 import { Services } from "@debezium/ui-services";
 import {
   ActionGroup,
-  Alert,
   Button,
   Divider,
   Form,
-  Spinner,
   Text,
   TextVariants,
   Title,
@@ -71,6 +69,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
     new Map()
   );
+  const [columnOrFieldFilter, setColumnOrFieldFilter] = React.useState<string>('');
   const [childNo, setChildNo] = React.useState<number>(0);
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
@@ -88,10 +87,22 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
     setShowClearDialog(true);
   };
 
+  const isColumnOrFieldFilterApplied = (formVal: Map<string, string>) =>{
+    let includeFilter = '';
+    formVal.forEach((val,key)=>{
+      if(key.includes('column') || key.includes('field')){
+        includeFilter = key.includes('column') ? 'column' : 'field';
+      }
+
+    })
+    setColumnOrFieldFilter(includeFilter);
+  }
+
   const getFilterSchema = (
     saveFilter: boolean,
     filterExpression: Map<string, string> = formData
   ) => {
+    setLoading(true);
     if (apiError) {
       setApiError(false);
       setErrorMsg(new Error());
@@ -118,6 +129,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
           setChildNo(result.matchedCollections.length);
           setTreeData(formatResponseData(result.matchedCollections));
         }
+        isColumnOrFieldFilterApplied(filterExpression);
         setLoading(false);
       })
       .catch((err: React.SetStateAction<Error>) => {
@@ -222,55 +234,16 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         </ActionGroup>
       </Form>
       <Divider />
-      {!apiError &&
-        (loading ? (
-          <Spinner />
-        ) : invalidMsg?.size !== 0 ? (
-          <Alert
-            variant={"danger"}
-            isInline={true}
-            title={t("invalidFilterText", {
-              name: filterConfigurationPageContentObj.fieldArray[1].field,
-            })}
-          />
-        ) : props.filterValues.size !== 0 ? (
-          <Alert
-            variant={childNo !== 0 ? "info" : "warning"}
-            isInline={true}
-            title={
-              childNo !== 0
-                ? `${childNo} ${t("matchingFilterExpMsg", {
-                    name: filterConfigurationPageContentObj.fieldArray[1].field,
-                  })}`
-                : `${t("noMatchingFilterExpMsg", {
-                    name: filterConfigurationPageContentObj.fieldArray[1].field,
-                  })}`
-            }
-          >
-            <p>
-              {t("clearFilterText", {
-                parent: filterConfigurationPageContentObj.fieldArray[0].field,
-                child: filterConfigurationPageContentObj.fieldArray[1].field,
-              }) + " "}
-              <a onClick={clearFilter}>{t("clearFilters")}</a>
-            </p>
-          </Alert>
-        ) : (
-          <Alert
-            variant="info"
-            isInline={true}
-            title={`${childNo} ${t("filterExpressionResultText", {
-              name: filterConfigurationPageContentObj.fieldArray[1].field,
-            })}`}
-          />
-        ))}
-
       <FilterTreeComponent
         treeData={treeData}
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}
+        columnOrFieldFilter={!!columnOrFieldFilter}
         invalidMsg={invalidMsg}
+        childNo={childNo}
+        filterValues={props.filterValues}
+        clearFilter={clearFilter}
         i18nApiErrorTitle={t("apiErrorTitle")}
         i18nApiErrorMsg={t("apiErrorMsg")}
         i18nNoMatchingTables={t("noMatchingTables", {
@@ -283,6 +256,21 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         i18nInvalidFilterExpText={t("invalidFilterExpText", {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
+        i18nInvalidFilterText= {t("invalidFilterText", {
+          name: filterConfigurationPageContentObj.fieldArray[1].field,
+        })}
+        i18nMatchingFilterExpMsg={t("matchingFilterExpMsg", {
+          name: filterConfigurationPageContentObj.fieldArray[1].field,
+        })}
+        i18nClearFilterText={t("clearFilterText", {
+          parent: filterConfigurationPageContentObj.fieldArray[0].field,
+          child: filterConfigurationPageContentObj.fieldArray[1].field,
+        })}
+        i18nClearFilters={t("clearFilters")}
+        i18nFilterExpressionResultText={t("filterExpressionResultText", {
+          name: filterConfigurationPageContentObj.fieldArray[1].field,
+        })}
+        i18nColumnOrFieldFilter={_.capitalize(t("columnOrFieldFilter",{fieldName: columnOrFieldFilter}))}
       />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
