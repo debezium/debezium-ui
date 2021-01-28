@@ -18,7 +18,7 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { CubesIcon, FilterIcon, SortAmountDownIcon, SortAmountUpIcon } from "@patternfly/react-icons";
-import { cellWidth, Table, TableBody, TableHeader } from "@patternfly/react-table";
+import { cellWidth, expandable, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
 import { useTranslation } from 'react-i18next';
 import { PageLoader, ToastAlertComponent } from "src/app/components";
@@ -63,6 +63,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
+  const [isCompact, setIsCompact] = React.useState<boolean>(true);
   
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
@@ -201,6 +202,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     return taskElements;
   };
   
+  
   React.useEffect(() => {
     const timeout = setTimeout(
       removeAlert,
@@ -218,7 +220,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const columns = [
     {
       title: '',
-      columnTransforms: [cellWidth(10)]
+      columnTransforms: [cellWidth(10)],
+      cellFormatters: [expandable]
     }, 
     { 
       title: t('name'), 
@@ -274,8 +277,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     
     // Create table rows
     const rows: any[] = [];
-    for (const conn of sortedConns) {
+    
+    sortedConns.forEach((conn, index) => {
       const row = {
+        isOpen: true,
         cells: [
           {
             title: 
@@ -290,6 +295,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 height={40}
               />
           },
+
           {
             title: <b data-testid={"connector-name"}>{conn.name}</b>,
           },
@@ -303,8 +309,27 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         connName: conn.name,
         connStatus: conn.connectorStatus
       };
+      const child = {
+        parent: index,
+        cells: [{title: (
+          <div>{''}</div>
+        )},{title: (
+          <div>{''}</div>
+        )},{title: (
+          <div>
+            <h2>Overview</h2>
+            <p>Message/sec: 0</p>
+            <p>Max lag in last min: 0</p>
+            <p>Percentiles: 0</p>
+          </div>
+        )},{title: (
+          <div>Tasks</div>
+        )}]
+      };
       rows.push(row);
-    }
+      rows.push(child);
+    });
+    console.log(rows)
     setTableRows(rows);
   };
 
@@ -365,6 +390,12 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const onSortingToggle = (isOpen: boolean) => {
     setIsSortingDropdownOpen(isOpen)
   };
+
+  const onCollapse = (event, rowKey, isOpen) => {
+    console.log(tableRows[rowKey].isOpen)
+    tableRows[rowKey].isOpen = isOpen;
+    setTableRows(tableRows);
+  }
 
   const toolbarItems = (
     <React.Fragment>
@@ -478,6 +509,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 cells={columns} 
                 rows={tableRows}
                 actionResolver={tableActionResolver}
+                onCollapse={onCollapse}
               >
                 <TableHeader />
                 <TableBody />
