@@ -1,6 +1,12 @@
 .connector-name-form{
   padding: 8px 0px;
 }
+.connector-type-label{
+  font-weight: var(--pf-c-form__label-text--FontWeight);
+  font-size: var(--pf-c-form__label--FontSize);
+  margin-top: 3px;
+  margin-right: 10px;
+}
 .properties-step {
   &-advanced-title {
     margin-top: 30px;
