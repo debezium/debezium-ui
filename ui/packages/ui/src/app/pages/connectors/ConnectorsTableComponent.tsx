@@ -362,7 +362,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     updateTableRows(connectors, sortBy)
   };
 
-  const onSortingToggle = (isOpen) => {
+  const onSortingToggle = (isOpen: boolean) => {
     setIsSortingDropdownOpen(isOpen)
   };
 

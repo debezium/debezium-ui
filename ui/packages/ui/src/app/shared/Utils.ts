@@ -158,7 +158,7 @@ export function getBasicPropertyDefinitions(
     category: PropertyCategory.CONNECTOR_NAME,
     description: "A name for the connector which will be created",
     displayName: "Connector name",
-    name: "connector.name",
+    name: PropertyName.CONNECTOR_NAME,
     isMandatory: true,
     type: "STRING"
   } as ConnectorProperty;

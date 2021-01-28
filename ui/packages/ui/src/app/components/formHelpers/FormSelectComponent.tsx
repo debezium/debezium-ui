@@ -37,7 +37,6 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
   } = props;
   
   const [isOpen, setOpen] = React.useState<boolean>(false)
-  const [selected, setSelected] = React.useState<boolean>(false)
   const [field] = useField(props);
 
   const onToggle = (open: boolean) => {
@@ -45,7 +44,6 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
   };
 
   const clearSelection = () => {
-    setSelected(false)
     setOpen(false)
   };  
 
@@ -54,7 +52,6 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
       clearSelection();
     }
     else {
-      setSelected(selection)
       setOpen(false)
       setFieldValue(field.name, selection);
       propertyChange(field.name, selection);
