@@ -91,7 +91,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
     let includeFilter = '';
     formVal.forEach((val,key)=>{
       if(key.includes('column') || key.includes('field')){
-        includeFilter = key.includes('column') ? 'Column' : 'Field';
+        includeFilter = key.includes('column') ? 'column' : 'field';
       }
 
     })
@@ -239,7 +239,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         loading={loading}
         apiError={apiError}
         errorMsg={errorMsg}
-        columnOrFieldFilter={columnOrFieldFilter}
+        columnOrFieldFilter={!!columnOrFieldFilter}
         invalidMsg={invalidMsg}
         childNo={childNo}
         filterValues={props.filterValues}
@@ -270,6 +270,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         i18nFilterExpressionResultText={t("filterExpressionResultText", {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
+        i18nColumnOrFieldFilter={_.capitalize(t("columnOrFieldFilter",{fieldName: columnOrFieldFilter}))}
       />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}

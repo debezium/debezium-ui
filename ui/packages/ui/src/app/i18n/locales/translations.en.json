@@ -20,6 +20,7 @@
     "clearFilterConfMsg": "This operation will clear all filtering expressions. \nAre you sure you want to proceed?",
     "clearFilters": "Clear filters",
     "clearFilterText": "You can include all {{parent}} and {{child}} by clicking",
+    "columnOrFieldFilter": "{{fieldName}}(s) name not available in preview but the {{fieldName}} filter expression will be applied in created connector.",
     "connectorDeletedSuccess": "Connector deleted successfully!",
     "connectorDeletionFailed": "Connector deletion failed!",
     "connectorEmptyStateMsg": "Please click 'Create a connector' to create a new connector.",

@@ -19,7 +19,7 @@ export interface IFilterTreeComponentProps {
   loading: boolean;
   apiError: boolean;
   errorMsg: Error;
-  columnOrFieldFilter: string;
+  columnOrFieldFilter: boolean;
   invalidMsg: Map<string, string> | undefined;
   childNo: number;
   filterValues: Map<string, string>;
@@ -35,6 +35,7 @@ export interface IFilterTreeComponentProps {
   i18nClearFilterText: string;
   i18nClearFilters: string;
   i18nFilterExpressionResultText: string;
+  i18nColumnOrFieldFilter: string;
 }
 export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentProps> = (
   props
@@ -42,7 +43,7 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
   const [activeItems, setActiveItems] = React.useState<any>();
 
   const getColumnOrFieldMsg = () =>{
-    return props.columnOrFieldFilter ? `. ${props.columnOrFieldFilter}(s) name not available in preview but the ${props.columnOrFieldFilter} filter expression will be applied in created connector.` : ''
+    return props.columnOrFieldFilter ? `. ${props.i18nColumnOrFieldFilter}` : ''
   }
 
   const onClick = (evt: any, treeViewItem: any, parentItem: any) => {
