@@ -82,6 +82,7 @@
     "reloadPage": "Ricarica la pagina",
     "removeDefinitionTooltip": "Rimuovi questa riga di definizione",
     "reportIssue": "Segnala il problema",
+    "resolveFieldErrorsMsg": "Risolvi ** gli errori di proprietà, quindi fai clic su Convalida",
     "resolvePropertyErrorsMsg": "Risolvi gli errori di proprietà, quindi fai clic su Convalida",
     "resolvePropertySucessMsg": "Tutta la configurazione richiesta è completa. Se lo desideri, puoi procedere a",
     "resume":"Riprendere",
