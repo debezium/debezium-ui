@@ -3,6 +3,10 @@ import {
   ExpandableSection,
   Grid,
   GridItem,
+  Split,
+  SplitItem,
+  Text,
+  TextContent,
   Title
 } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
@@ -11,9 +15,11 @@ import * as React from "react";
 import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
 import * as Yup from "yup";
 import { FormComponent } from "../../../components/formHelpers";
+import { ConnectorTypeComponent } from './ConnectorTypeComponent';
 import "./PropertiesStep.css";
 
 export interface IPropertiesStepProps {
+  connectorType: string | undefined;
   basicPropertyDefinitions: ConnectorProperty[];
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
@@ -198,8 +204,9 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                           setFieldValue={setFieldValue}
                           helperTextInvalid={errors[propertyDefinition.name]}
                           invalidMsg={props.invalidMsg}
-                          validated={ errors[propertyDefinition.name] &&
-                            touched[propertyDefinition.name] 
+                          validated={
+                            errors[propertyDefinition.name] &&
+                            touched[propertyDefinition.name]
                               ? "error"
                               : "default"
                           }
@@ -208,6 +215,22 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                     );
                   }
                 )}
+                <GridItem key={"connType"} lg={12} sm={12}>
+                  <Split>
+                    <SplitItem>
+                      <TextContent>
+                        <Text className={"connector-type-label"}>
+                          Connector type:
+                        </Text>
+                      </TextContent>
+                    </SplitItem>
+                    <SplitItem>
+                      <ConnectorTypeComponent
+                        connectorType={props.connectorType}
+                      />
+                    </SplitItem>
+                  </Split>
+                </GridItem>
               </Grid>
               <Grid>
                 <GridItem lg={9} sm={12}>
@@ -240,7 +263,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                   errors[propertyDefinition.name]
                                 }
                                 invalidMsg={props.invalidMsg}
-                                validated={ errors[propertyDefinition.name] &&
+                                validated={
+                                  errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name]
                                     ? "error"
                                     : "default"
@@ -285,7 +309,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                     errors[propertyDefinition.name]
                                   }
                                   invalidMsg={props.invalidMsg}
-                                  validated={errors[propertyDefinition.name] &&
+                                  validated={
+                                    errors[propertyDefinition.name] &&
                                     touched[propertyDefinition.name]
                                       ? "error"
                                       : "default"
@@ -329,7 +354,8 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                                     errors[propertyDefinition.name]
                                   }
                                   invalidMsg={props.invalidMsg}
-                                  validated={ errors[propertyDefinition.name] &&
+                                  validated={
+                                    errors[propertyDefinition.name] &&
                                     touched[propertyDefinition.name]
                                       ? "error"
                                       : "default"
