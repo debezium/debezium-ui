@@ -655,7 +655,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 title={
                   <ConnectionPropertiesError
                     connectionPropsMsg={connectionPropsValidMsg}
-                    validationErrorMsg={t("resolvePropertyErrorsMsg")}
+                    i18nFieldValidationErrorMsg={t("resolveFieldErrorsMsg")}
+                    i18nValidationErrorMsg={t("resolvePropertyErrorsMsg")}
                   />
                 }
               />
@@ -764,7 +765,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   title={
                     <ConnectionPropertiesError
                       connectionPropsMsg={connectionPropsValidMsg}
-                      validationErrorMsg={t("resolvePropertyErrorsMsg")}
+                      i18nFieldValidationErrorMsg={t("resolveFieldErrorsMsg")}
+                      i18nValidationErrorMsg={t("resolvePropertyErrorsMsg")}
                     />
                   }
                 />
@@ -805,7 +807,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   title={
                     <ConnectionPropertiesError
                       connectionPropsMsg={connectionPropsValidMsg}
-                      validationErrorMsg={t("resolvePropertyErrorsMsg")}
+                      i18nFieldValidationErrorMsg={t("resolveFieldErrorsMsg")}
+                      i18nValidationErrorMsg={t("resolvePropertyErrorsMsg")}
                     />
                   }
                 />

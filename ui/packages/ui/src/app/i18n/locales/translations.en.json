@@ -82,6 +82,7 @@
     "reloadPage": "Reload page",
     "removeDefinitionTooltip": "Remove this definition row",
     "reportIssue": "Report the issue",
+    "resolveFieldErrorsMsg": "Resolve ** property errors, then click Validate",
     "resolvePropertyErrorsMsg": "Resolve property errors, then click Validate",
     "resolvePropertySucessMsg": "All required configuration is complete. If desired, you can proceed to",
     "resume":"Resume",
