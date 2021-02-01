@@ -117,6 +117,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       .pauseConnector(appLayoutContext.clusterId, connectorToPause, {})
       .then((cConnectors: any) => {
         addAlert("success", t('connectorPausedSuccess'));
+        setConnectorStatus(connectorToPause, "PAUSED");
       })
       .catch((err: React.SetStateAction<Error>) => {
         addAlert("danger",t('connectorPauseFailed'), err?.message);
@@ -136,6 +137,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       .resumeConnector(appLayoutContext.clusterId, connectorToResume, {})
       .then((cConnectors: any) => {
         addAlert("success", t('connectorResumedSuccess'));
+        setConnectorStatus(connectorToPause, "RUNNING");
       })
       .catch((err: React.SetStateAction<Error>) => {
         addAlert("danger",t('connectorResumeFailed'), err?.message);
@@ -155,6 +157,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       .restartConnector(appLayoutContext.clusterId, connectorToRestart, {})
       .then((cConnectors: any) => {
         addAlert("success", t('connectorRestartSuccess'));
+        setConnectorStatus(connectorToPause, "RUNNING");
       })
       .catch((err: React.SetStateAction<Error>) => {
         addAlert("danger",t('connectorRestartFailed'), err?.message);
@@ -201,6 +204,26 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     return taskElements;
   };
   
+  /**
+   * Immediately update the specified connector status in the table
+   * @param connName the connector
+   * @param status the new status
+   */
+  const setConnectorStatus = (connName: string, status: "PAUSED" | "RUNNING" ) => {
+    const updatedRows = [...connectors];
+    let doUpdateTable = false;
+    for (const conn of updatedRows) {
+      if (conn.name === connName && conn.connectorStatus !== status) {
+        conn.connectorStatus = status;
+        doUpdateTable = true;
+        break;
+      }
+    }
+    if (doUpdateTable) {
+      updateTableRows(updatedRows);
+    }
+  }
+
   React.useEffect(() => {
     const timeout = setTimeout(
       removeAlert,
@@ -332,9 +355,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           setConnectorToRestart(rowData.connName);
           showRestartConfirmationDialog();
         },
-        isDisabled: row.connStatus === "FAILED" 
-                    || row.connStatus === "UNASSIGNED"  
-                    || row.connStatus === "DESTROYED" ? false : true 
+        isDisabled: (row.connStatus === "UNASSIGNED" || row.connStatus === "DESTROYED") ? true : false 
       },
       {
         isSeparator: true
