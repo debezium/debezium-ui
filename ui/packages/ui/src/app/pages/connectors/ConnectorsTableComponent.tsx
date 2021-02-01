@@ -293,7 +293,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     let counter = 0;
     sortedConns.forEach((conn, index) => {
       const row = {
-        isOpen: true,
+        isOpen: false,
         cells: [
           {
             title: 
