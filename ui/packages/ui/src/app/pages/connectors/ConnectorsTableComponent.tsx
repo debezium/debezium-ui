@@ -71,12 +71,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
-  const [isCompact, setIsCompact] = React.useState<boolean>(true);
-  
-  const [expandedRows, setExpandedRows] = React.useState<number>(0);
-  const [expandCollapseToggle, setExpandCollapseToggle] = React.useState<string>('expand');
-  
 
+  const [expandedRows, setExpandedRows] = React.useState<number>(0);
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
     const uId = new Date().getTime();
@@ -188,87 +184,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ])
       .then((cConnectors: Connector[]) => {
         setLoading(false);
-        updateTableRows([{
-          "connectorStatus":"RUNNING",
-          "connectorType":"mongodb",
-          "databaseName":"MongoDB",
-          "name":"mongoConnector",
-          "taskStates":{
-              "0":{
-                "errors":[
-                    "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
-                    "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
-                ],
-                "taskStatus":"FAILED"
-              },
-              "1":{
-                "errors":[
-                  "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
-                  "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
-                ],
-                "taskStatus":"STOPPED"
-            },
-            "2":{
-              "errors":[
-                "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
-                "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
-              ],
-              "taskStatus":"STOPPED"
-            },
-            "3":{
-              "errors":[
-                  "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
-                  "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
-              ],
-              "taskStatus":"RUNNING"
-            },
-            "4":{
-              "errors":[
-                  "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
-                  "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
-              ],
-              "taskStatus":"RUNNING"
-            },            
-          }
-        },
-        {
-          "connectorStatus":"RUNNING",
-          "connectorType":"postgres",
-          "databaseName":"PostgreSQL",
-          "name":"MyConnector",
-          "taskStates":{
-              "0":{
-                "taskStatus":"RUNNING"
-              }
-          }
-        },
-        {
-          "connectorStatus":"RUNNING",
-          "connectorType":"mongodb",
-          "databaseName":"MongoDB",
-          "name":"MyConnector11",
-          "taskStates":{
-              "0":{
-                "errors":[
-                    "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
-                    "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611066451, 1), signature: { hash: BinData(0, B771FD764DCD5508BF9E95686A20A2415D47C73A), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"10b5da9a-f24b-439d-b489-48d509f6d7e4\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
-                ],
-                "taskStatus":"FAILED"
-              }
-          }
-        },
-        {
-          "connectorStatus":"RUNNING",
-          "connectorType":"postgres",
-          "databaseName":"PostgreSQL",
-          "name":"pgconnector02",
-          "taskStates":{
-              "0":{
-                "taskStatus":"RUNNING"
-              }
-          }
-        }
-        ]);
+        updateTableRows([...cConnectors]);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
@@ -374,7 +290,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     
     // Create table rows
     const rows: any[] = [];
-    
+    let counter = 0;
     sortedConns.forEach((conn, index) => {
       const row = {
         isOpen: true,
@@ -409,7 +325,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         connStatus: conn.connectorStatus
       };
       const child = {
-        parent: index,
+        parent: counter,
         cells: [{title: (
           <div>{''}</div>
         )},{title: (
@@ -437,6 +353,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       };
       rows.push(row);
       rows.push(child);
+      counter += 2;
     });
     setTableRows(rows);
   };
@@ -615,7 +532,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
               <Table 
                 aria-label="Connector Table" 
                 className="connectors-page_dataTable"
-                cells={columns} 
+                cells={columns}
                 rows={tableRows}
                 actionResolver={tableActionResolver}
                 onCollapse={onCollapse}
