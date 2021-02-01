@@ -1,15 +1,18 @@
-import { Label, Split, SplitItem } from '@patternfly/react-core';
+import { Button, Flex, FlexItem, Label, Popover } from '@patternfly/react-core';
 import * as React from "react";
-import { HelpInfoIcon } from 'src/app/components/formHelpers/HelpInfoIcon';
 import { ConnectorState } from "src/app/shared";
 import "./ConnectorTask.css";
-
 export interface IConnectorTaskProps {
   status: string;
+  connName: string;
   taskId: string;
   errors?: any;
   i18nTask: string;
+  i18nRestart: string;
   i18nTaskStatusDetail: string;
+  i18nTaskErrorTitle: string;
+  setConnectorToRestart: (connName: string) => void;
+  showRestartConfirmationDialog: () => void;
 }
 
 /**
@@ -18,52 +21,75 @@ export interface IConnectorTaskProps {
 export const ConnectorTask: React.FunctionComponent<IConnectorTaskProps> = (
   props
 ) => {
-  let color: "grey" | "green" | "red" | "orange" = "grey";
-  switch (props.status) {
-    case ConnectorState.DESTROYED:
-    case ConnectorState.FAILED:
-      color = "red";
-      break;
-    case ConnectorState.RUNNING:
-      color = "green";
-      break;
-    case ConnectorState.PAUSED:
-      color = "orange";
-      break;
-    case ConnectorState.UNASSIGNED:
-      color = "grey";
-      break;
-  }
 
-  const errors: JSX.Element[] = [];
-  if (props.errors) {
-    props.errors.forEach( (error: string, index) => {
-      errors.push(<div key ={index} className="connector-task-error">{error}</div>)
-    });
-  }
+let color: "grey" | "green" | "red" | "orange" = "grey";
+switch (props.status) {
+  case ConnectorState.DESTROYED:
+  case ConnectorState.FAILED:
+    color = "red";
+    break;
+  case ConnectorState.RUNNING:
+    color = "green";
+    break;
+  case ConnectorState.PAUSED:
+    color = "orange";
+    break;
+  case ConnectorState.UNASSIGNED:
+    color = "grey";
+    break;
+}
+const errors: JSX.Element[] = [];
+if (props.errors) {
+  props.errors.forEach( (error: string, index) => {
+    errors.push(<div key ={index} className="connector-task-error">{error}</div>)
+  });
+}
+const doRestart = (connName) => {
+  props.setConnectorToRestart(connName);
+  props.showRestartConfirmationDialog();
+}
 
-  return (
-    <>
-      <Split>
-        <SplitItem>
-          <Label
-            className="status-indicator"
-            color={color}
-            data-testid={"connector-status-div"}
-          >
-             {props.i18nTask +' '+ props.taskId}: {props.status}
-          </Label>
-        </SplitItem>
-        {errors && errors.length > 0 ? (
-          <SplitItem>
-            <HelpInfoIcon
-              label={props.i18nTaskStatusDetail}
-              description={<div>{errors}</div>}
-            />
-          </SplitItem>
-        ) : null}
-      </Split>
-    </>
+return (
+    <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+      <FlexItem className="taskInfo" flex={{ default: 'flex_1' }}>
+        <Label
+          className="status-indicator"
+          color={color}
+          data-testid={"connector-status-id-div"}
+        >
+          {props.taskId}
+        </Label>
+      </FlexItem>
+      <FlexItem className="taskInfo" flex={{ default: 'flex_2' }}>
+      {errors && errors.length > 0 ? (
+        <Popover
+          aria-label={props.status}
+          headerContent={<div>{props.i18nTaskErrorTitle} {props.status}!</div>}
+          bodyContent={<div>{errors}</div>}
+        >
+        <Label
+          className="status-indicator"
+          color={color}
+          data-testid={"task-status-label"}
+        >
+          {props.status}
+        </Label>
+        </Popover>
+      ) : (
+        <Label
+          className="status-indicator"
+          color={color}
+          data-testid={"task-status-label"}
+        >
+          {props.status}
+        </Label>
+      )}
+      </FlexItem>
+      <FlexItem flex={{ default: 'flex_1' }}>
+      <Button variant="link" onClick={()=>{doRestart(props.connName)}}>
+        {props.i18nRestart}
+      </Button>
+      </FlexItem>
+    </Flex>
   );
 };
-

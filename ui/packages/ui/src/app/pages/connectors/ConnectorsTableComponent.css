@@ -51,6 +51,11 @@
       }
     }
   }
+  .pf-c-label{
+    &.no-bg{
+      background: none;;
+    }
+  }
 }
 
 .pf-c-tooltip{

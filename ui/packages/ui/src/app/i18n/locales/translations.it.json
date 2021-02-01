@@ -101,6 +101,11 @@
     "taskStatusDetail": "Dettagli sullo stato dell'attività",
     "unknownError": "Errore sconosciuto: consulta il tuo amministratore",
     "validate": "Convalidare",
-    "validationSucessMsg": "La convalida ha avuto successo"
+    "validationSucessMsg": "La convalida ha avuto successo",
+    "overview": "Panoramica",
+    "messagePerSec": "Messaggio/sec",
+    "maxLagInLastMin": "Max lag in last min",
+    "percentiles": "Percentili",
+    "taskErrorTitle": "Il compito era"
   }
 }

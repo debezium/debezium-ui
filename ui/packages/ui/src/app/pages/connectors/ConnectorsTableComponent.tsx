@@ -12,6 +12,10 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
+
+
+
+  Label,
   Title,
   Toolbar,
   ToolbarContent,
@@ -26,9 +30,13 @@ import { AppLayoutContext } from 'src/app/Layout/AppLayoutContext';
 import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry } from "src/app/shared";
 import { WithLoader } from "src/app/shared/WithLoader";
 import { ConnectorIcon } from './ConnectorIcon';
+import { ConnectorOverview } from "./ConnectorOverview";
 import "./ConnectorsTableComponent.css";
 import { ConnectorStatus } from './ConnectorStatus';
-import { ConnectorTask } from './ConnectorTask';
+import { ConnectorTask } from "./ConnectorTask";
+import { ConnectorTaskState } from './ConnectorTaskState';
+
+
 type ICreateConnectorCallbackFn = (connectorNames: string[], clusterId: number) => void
 
 interface IConnectorsTableComponentProps {
@@ -65,6 +73,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
   const [isCompact, setIsCompact] = React.useState<boolean>(true);
   
+  const [expandedRows, setExpandedRows] = React.useState<number>(0);
+  const [expandCollapseToggle, setExpandCollapseToggle] = React.useState<string>('expand');
+  
+
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
     const uId = new Date().getTime();
@@ -176,7 +188,87 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ])
       .then((cConnectors: Connector[]) => {
         setLoading(false);
-        updateTableRows([...cConnectors]);
+        updateTableRows([{
+          "connectorStatus":"RUNNING",
+          "connectorType":"mongodb",
+          "databaseName":"MongoDB",
+          "name":"mongoConnector",
+          "taskStates":{
+              "0":{
+                "errors":[
+                    "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
+                    "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
+                ],
+                "taskStatus":"FAILED"
+              },
+              "1":{
+                "errors":[
+                  "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
+                  "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
+                ],
+                "taskStatus":"STOPPED"
+            },
+            "2":{
+              "errors":[
+                "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
+                "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
+              ],
+              "taskStatus":"STOPPED"
+            },
+            "3":{
+              "errors":[
+                  "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
+                  "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
+              ],
+              "taskStatus":"RUNNING"
+            },
+            "4":{
+              "errors":[
+                  "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
+                  "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611065161, 1), signature: { hash: BinData(0, 91C7D3C938CD2D6B091E75219DAF5420F1071858), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"d3140081-35f0-4b96-b692-8a3b9d7ad93d\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
+              ],
+              "taskStatus":"RUNNING"
+            },            
+          }
+        },
+        {
+          "connectorStatus":"RUNNING",
+          "connectorType":"postgres",
+          "databaseName":"PostgreSQL",
+          "name":"MyConnector",
+          "taskStates":{
+              "0":{
+                "taskStatus":"RUNNING"
+              }
+          }
+        },
+        {
+          "connectorStatus":"RUNNING",
+          "connectorType":"mongodb",
+          "databaseName":"MongoDB",
+          "name":"MyConnector11",
+          "taskStates":{
+              "0":{
+                "errors":[
+                    "Caused by: org.apache.kafka.connect.errors.ConnectException: Error while attempting to sync 'rs0.config.system.sessions'",
+                    "Caused by: com.mongodb.MongoQueryException: Query failed with error code 13 and error message 'not authorized on config to execute command { find: \"system.sessions\", $db: \"config\", $clusterTime: { clusterTime: Timestamp(1611066451, 1), signature: { hash: BinData(0, B771FD764DCD5508BF9E95686A20A2415D47C73A), keyId: 6919398416451633153 } }, lsid: { id: UUID(\"10b5da9a-f24b-439d-b489-48d509f6d7e4\") }, $readPreference: { mode: \"primaryPreferred\" } }' on server 15f23089f26c:27017"
+                ],
+                "taskStatus":"FAILED"
+              }
+          }
+        },
+        {
+          "connectorStatus":"RUNNING",
+          "connectorType":"postgres",
+          "databaseName":"PostgreSQL",
+          "name":"pgconnector02",
+          "taskStates":{
+              "0":{
+                "taskStatus":"RUNNING"
+              }
+          }
+        }
+        ]);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
@@ -184,24 +276,29 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       });
   }
   
-  const getTaskStates = (conn: Connector) => {
+  const getTaskStates = (conn: Connector, connName, restartConfirmation) => {
     const taskElements: any = [];
     const statesMap = new Map(Object.entries(conn.taskStates));
+
     statesMap.forEach((taskState: any, id: string) => {
       taskElements.push(
         <ConnectorTask
           key={id}
           status={taskState.taskStatus}
+          connName={conn.name}
           taskId={id}
           errors={taskState.errors}
           i18nTask={t('task')}
+          i18nRestart={t('restart')}
           i18nTaskStatusDetail={t('taskStatusDetail')}
+          i18nTaskErrorTitle={t('taskErrorTitle')}
+          setConnectorToRestart={connName}
+          showRestartConfirmationDialog={restartConfirmation}
         />
       );
     });
     return taskElements;
   };
-  
   
   React.useEffect(() => {
     const timeout = setTimeout(
@@ -303,7 +400,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
             title: <ConnectorStatus currentStatus={conn.connectorStatus} />,
           },
           {
-            title: getTaskStates(conn)
+            
+            title: <ConnectorTaskState connector={conn} 
+            />
           }
         ],
         connName: conn.name,
@@ -316,20 +415,29 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         )},{title: (
           <div>{''}</div>
         )},{title: (
-          <div>
-            <h2>Overview</h2>
-            <p>Message/sec: 0</p>
-            <p>Max lag in last min: 0</p>
-            <p>Percentiles: 0</p>
-          </div>
+          <ConnectorOverview 
+            i18nOverview={t('overview')} 
+            i18nMessagePerSec={t('messagePerSec')}
+            i18nMaxLagInLastMin={t('maxLagInLastMin')}
+            i18nPercentiles={t('percentiles')}
+          />
         )},{title: (
-          <div>Tasks</div>
+          <Flex>
+            <FlexItem style={{width: '100%'}}> 
+              <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+                <FlexItem flex={{ default: 'flex_1' }}><Label className="no-bg"><b data-testid="task-id">Task Id</b></Label></FlexItem>
+                <FlexItem flex={{ default: 'flex_2' }}><Label className="no-bg"><b data-testid="task-status">Status</b></Label></FlexItem>
+                <FlexItem flex={{ default: 'flex_1' }}>{''}</FlexItem>
+              </Flex>
+                {getTaskStates(conn, setConnectorToRestart, showRestartConfirmationDialog)}
+            </FlexItem>
+            
+          </Flex>
         )}]
       };
       rows.push(row);
       rows.push(child);
     });
-    console.log(rows)
     setTableRows(rows);
   };
 
@@ -392,9 +500,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   };
 
   const onCollapse = (event, rowKey, isOpen) => {
-    console.log(tableRows[rowKey].isOpen)
     tableRows[rowKey].isOpen = isOpen;
+    const updatedExpandedRows = isOpen ? expandedRows + 1 : expandedRows - 1;
     setTableRows(tableRows);
+    setExpandedRows(updatedExpandedRows)
   }
 
   const toolbarItems = (
