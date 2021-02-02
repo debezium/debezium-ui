@@ -128,7 +128,7 @@ export const DataOptionsComponent: React.FC<any> = React.forwardRef(
     };
 
     return (
-      <div>
+      <div className={'data-options-component-page'}>
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
