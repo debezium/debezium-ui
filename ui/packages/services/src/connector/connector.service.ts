@@ -135,8 +135,8 @@ export class ConnectorService extends BaseService {
     public pauseConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
         this.logger.info("[ConnectorService] Pause the connector");
 
-        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
-        return this.httpPost(endpoint, body);
+        const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/pause", { clusterId, connectorName });
+        return this.httpPut(endpoint, body);
     }
     
     /**
@@ -145,8 +145,8 @@ export class ConnectorService extends BaseService {
     public resumeConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
         this.logger.info("[ConnectorService] Resume the connector");
 
-        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
-        return this.httpPost(endpoint, body);
+        const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/resume", { clusterId, connectorName });
+        return this.httpPut(endpoint, body);
     }
     
     /**
@@ -155,8 +155,19 @@ export class ConnectorService extends BaseService {
     public restartConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
         this.logger.info("[ConnectorService] Restart the connector");
 
-        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
-        return this.httpPost(endpoint, body);
+        const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/restart", { clusterId, connectorName });
+        return this.httpPut(endpoint, body);
+    }    
+
+    /**
+     * Restart the Connector Task for the supplied clusterId and connector
+     */
+    public restartConnectorTask(clusterId: number, connectorName: string, connectorTaskId: number, body: any): Promise<void> {
+        this.logger.info("[ConnectorService] Restart the connector task");
+
+        const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/task/:connectorTaskId/restart", 
+                                                { clusterId, connectorName, connectorTaskId });
+        return this.httpPut(endpoint, body);
     }    
 
 }
