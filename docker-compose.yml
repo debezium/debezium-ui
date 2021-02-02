@@ -3,12 +3,12 @@ version: '3'
 services:
   dbzui-zookeeper:
     container_name: dbzui-zookeeper
-    image: debezium/zookeeper:1.3
+    image: debezium/zookeeper:1.4
     networks:
       - dbzui-network
   dbzui-kafka:
     container_name: dbzui-kafka
-    image: debezium/kafka:1.3
+    image: debezium/kafka:1.4
     ports:
       - "9092:9092"
     depends_on:
@@ -19,7 +19,7 @@ services:
       - dbzui-network
   dbzui-db-pg:
     container_name: dbzui-db-pg
-    image: debezium/example-postgres:1.3
+    image: debezium/example-postgres:1.4
     ports:
       - "65432:5432"
     environment:
@@ -27,9 +27,19 @@ services:
       - POSTGRES_PASSWORD=postgres
     networks:
       - dbzui-network
+  dbzui-db-mysql:
+    container_name: dbzui-db-mysql
+    image: debezium/example-mysql:1.4
+    ports:
+      - "63306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=debezium
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=mysql
+    networks:
+      - dbzui-network
   dbzui-db-mongo:
     container_name: dbzui-db-mongo
-    #image: debezium/example-mongo:1.4
     image: mongo:3.6
     command: ["mongod", "--replSet", "rs0", "--auth"]
     ports:
@@ -51,7 +61,7 @@ services:
     command: bash -c 'sleep 20 && mongo -u admin -p admin --authenticationDatabase admin dbzui-db-mongo:27017/inventory --eval "rs.initiate();"'
   dbzui-connect:
     container_name: dbzui-connect
-    image: debezium/connect:1.3
+    image: debezium/connect:1.5.0.Alpha1
     ports:
       - "8083:8083"
     depends_on:

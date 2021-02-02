@@ -12,6 +12,7 @@ import org.testcontainers.containers.Container;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 import java.io.IOException;
@@ -26,6 +27,10 @@ public class MongoDbContainer extends MongoDBContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDbContainer.class);
 
     public MongoDbContainer(String imageName) {
+        this(DockerImageName.parse(imageName));
+    }
+
+    public MongoDbContainer(DockerImageName imageName) {
         super(imageName);
         withExposedPorts(27017)
             .withCommand("--replSet", "rs0", "--auth")

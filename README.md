@@ -32,6 +32,7 @@ $ docker-compose pull
 
 Pulling dbzui-zookeeper ... done
 Pulling dbzui-db-mongo  ... done
+Pulling dbzui-db-mysql  ... done
 Pulling debezium-ui_mongo-initializer_1 ... done
 Pulling dbzui-kafka     ... done
 Pulling dbzui-db-pg     ... done
@@ -40,6 +41,7 @@ Pulling dbzui-connect   ... done
 ## start containers
 $ docker-compose up -d
 
+Creating dbzui-db-mysql  ... done
 Creating dbzui-db-pg     ... done
 Creating dbzui-zookeeper ... done
 Creating dbzui-db-mongo  ... done
@@ -56,17 +58,20 @@ Stopping dbzui-zookeeper ... done
 Stopping dbzui-db-mongo  ... done
 Stopping debezium-ui_mongo-initializer_1 ... done
 Stopping dbzui-db-pg     ... done
+Stopping dbzui-db-mysql  ... done
 Removing dbzui-connect   ... done
 Removing dbzui-kafka     ... done
 Removing dbzui-zookeeper ... done
 Removing dbzui-db-mongo  ... done
 Removing debezium-ui_mongo-initializer_1 ... done
 Removing dbzui-db-pg     ... done
+Removing dbzui-db-mysql  ... done
 Removing network debezium-ui_dbzui-network
 ```
 
 Kafka Connect REST API with Debezium will be available on local port **8083**.   
 Postgres will be available on local port **65432**.  
+MySQL will be available on local port **63306**.  
 Mongo DB will be availaible after ~20 seconds on local port **37017** (connect via `mongo -u debezium -p dbz --authenticationDatabase admin localhost:37017/inventory`)
 Kafka will be available on local port **9092**.  
 

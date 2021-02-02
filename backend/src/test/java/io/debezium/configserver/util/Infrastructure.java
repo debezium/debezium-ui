@@ -14,10 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.lifecycle.Startables;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.stream.Stream;
 
@@ -27,62 +29,86 @@ public class Infrastructure {
         POSTGRES, MYSQL, SQLSERVER, MONGODB
     }
 
+    private static final String DEBEZIUM_CONTAINER_VERSION = "1.4";
     private static final String CONNECTOR = "connector.class";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
-    private static final Network network = Network.newNetwork();
+    private static final Network NETWORK = Network.newNetwork();
 
-    private static final KafkaContainer kafkaContainer = new KafkaContainer().withNetwork(network);
+    private static final KafkaContainer KAFKA_CONTAINER =
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"))
+                    .withNetwork(NETWORK);
 
-    private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("debezium/example-postgres:1.3")
-            .withNetwork(network)
-            .withNetworkAliases("postgres");
+    private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
+            new PostgreSQLContainer<>(DockerImageName.parse("debezium/example-postgres:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("postgres"))
+                    .withNetwork(NETWORK)
+                    .withNetworkAliases("postgres");
 
-    private static final MongoDBContainer mongoDbContainer = new MongoDbContainer("mongo:3.6")
-            .withNetwork(network)
-            .withNetworkAliases("mongodb");
+    private static final MySQLContainer<?> MYSQL_CONTAINER =
+            new MySQLContainer<>(DockerImageName.parse("debezium/example-mysql:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("mysql"))
+                    .withNetwork(NETWORK)
+                    .withUsername("mysqluser")
+                    .withPassword("mysqlpw")
+                    .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+                    .withNetworkAliases("mysql");
 
-    private static final DebeziumContainer debeziumContainer = new DebeziumContainer("debezium/connect:nightly")
-            .withNetwork(network)
-            .withKafka(kafkaContainer)
-            .withLogConsumer(new Slf4jLogConsumer(LOGGER))
-            .dependsOn(kafkaContainer);
+    private static final MongoDBContainer MONGODB_CONTAINER =
+            new MongoDbContainer(DockerImageName.parse("mongo:3.6"))
+                    .withNetwork(NETWORK)
+                    .withNetworkAliases("mongodb");
+
+    private static final DebeziumContainer DEBEZIUM_CONTAINER =
+            new DebeziumContainer(DockerImageName.parse("debezium/connect:nightly"))
+                    .withNetwork(NETWORK)
+                    .withKafka(KAFKA_CONTAINER)
+                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+                    .dependsOn(KAFKA_CONTAINER);
+
+    public static Network getNetwork() {
+        return NETWORK;
+    }
 
     public static void startContainers(DATABASE database) {
         final GenericContainer<?> dbContainer;
         switch (database) {
             case POSTGRES:
-                dbContainer = postgresContainer;
+                dbContainer = POSTGRES_CONTAINER;
+                break;
+            case MYSQL:
+                dbContainer = MYSQL_CONTAINER;
                 break;
             case MONGODB:
-                dbContainer = mongoDbContainer;
+                dbContainer = MONGODB_CONTAINER;
                 break;
             default:
                 dbContainer = null;
                 break;
         }
-        Startables.deepStart(Stream.of(kafkaContainer, dbContainer, debeziumContainer)).join();
-    }
-
-    public static DebeziumContainer getDebeziumContainer() {
-        return debeziumContainer;
-    }
-
-    public static MongoDBContainer getMongoDbContainer() {
-        return mongoDbContainer;
-    }
-
-    public static PostgreSQLContainer<?> getPostgresContainer() {
-        return postgresContainer;
+        Startables.deepStart(Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER)).join();
     }
 
     public static KafkaContainer getKafkaContainer() {
-        return kafkaContainer;
+        return KAFKA_CONTAINER;
+    }
+
+    public static DebeziumContainer getDebeziumContainer() {
+        return DEBEZIUM_CONTAINER;
+    }
+
+    public static PostgreSQLContainer<?> getPostgresContainer() {
+        return POSTGRES_CONTAINER;
+    }
+
+    public static MySQLContainer<?> getMySqlContainer() {
+        return MYSQL_CONTAINER;
+    }
+
+    public static MongoDBContainer getMongoDbContainer() {
+        return MONGODB_CONTAINER;
     }
 
     public static ConnectorConfiguration getPostgresConnectorConfiguration(int id, String... options) {
-        final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(postgresContainer)
+        final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(POSTGRES_CONTAINER)
                 .with("database.server.name", "dbserver" + id)
                 .with("slot.name", "debezium_" + id);
 
@@ -94,8 +120,23 @@ public class Infrastructure {
         return config;
     }
 
+    public static ConnectorConfiguration getMySqlConnectorConfiguration(int id, String... options) {
+        final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(MYSQL_CONTAINER)
+                .with("database.server.name", "dbserver" + id)
+                .with("database.history.kafka.bootstrap.servers", "kafka:9092")
+                .with("database.history.kafka.topic", "dbhistory.inventory")
+                .with("server.id", "debezium_" + (5555 + id - 1));
+
+        if (options != null && options.length > 0) {
+            for (int i = 0; i < options.length; i += 2) {
+                config.with(options[i], options[i + 1]);
+            }
+        }
+        return config;
+    }
+
     public static ConnectorConfiguration getMongoDbConnectorConfiguration(int id, String... options) {
-        final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbContainer(mongoDbContainer)
+        final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbContainer(MONGODB_CONTAINER)
                 .with(MongoDbConnectorConfig.USER.name(), "debezium")
                 .with(MongoDbConnectorConfig.PASSWORD.name(), "dbz")
                 .with(MongoDbConnectorConfig.LOGICAL_NAME.name(), "mongo" + id);

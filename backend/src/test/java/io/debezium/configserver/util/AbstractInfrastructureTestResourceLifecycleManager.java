@@ -25,6 +25,7 @@ public abstract class AbstractInfrastructureTestResourceLifecycleManager impleme
 
     @Override
     public void stop() {
+        Infrastructure.getNetwork().close();
     }
 
     // optional
