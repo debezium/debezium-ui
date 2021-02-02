@@ -103,6 +103,15 @@
     "taskStatusDetail": "Task Status Detail",
     "unknownError": "Unknown error - please consult your administrator",
     "validate": "Validate",
-    "validationSucessMsg": "The validation was successful"
+    "validationSucessMsg": "The validation was successful",
+    "overview": "Overview",
+    "messagePerSec": "Message/sec",
+    "maxLagInLastMin": "Max lag in last min",
+    "percentiles": "Percentiles",
+    "taskErrorTitle": "The task was",
+    "connectorTaskRestartSuccess": "Connector task restarted successfully!",
+    "connectorTaskRestartFailed": "Connector task restart failed!",
+    "connectorTaskRestartWarningMsg": "Are you sure want to restart?",
+    "restartConnectorTask": "Restart connector task"
   }
 }
