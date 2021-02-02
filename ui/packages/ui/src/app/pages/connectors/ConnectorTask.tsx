@@ -11,8 +11,8 @@ export interface IConnectorTaskProps {
   i18nRestart: string;
   i18nTaskStatusDetail: string;
   i18nTaskErrorTitle: string;
-  setConnectorToRestart: (connName: string) => void;
-  showRestartConfirmationDialog: () => void;
+  connectorTaskToRestart: (connName: string, taskId: string) => void;
+  showConnectorTaskToRestartDialog: () => void;
 }
 
 /**
@@ -44,9 +44,9 @@ if (props.errors) {
     errors.push(<div key ={index} className="connector-task-error">{error}</div>)
   });
 }
-const doRestart = (connName) => {
-  props.setConnectorToRestart(connName);
-  props.showRestartConfirmationDialog();
+const doConnectorTaskRestart = (connName: string, taskId: string) => {
+  props.connectorTaskToRestart(connName, taskId);
+  props.showConnectorTaskToRestartDialog();
 }
 
 return (
@@ -86,7 +86,7 @@ return (
       )}
       </FlexItem>
       <FlexItem flex={{ default: 'flex_1' }}>
-      <Button variant="link" onClick={()=>{doRestart(props.connName)}}>
+      <Button variant="link" onClick={()=>{doConnectorTaskRestart(props.connName, props.taskId)}}>
         {props.i18nRestart}
       </Button>
       </FlexItem>

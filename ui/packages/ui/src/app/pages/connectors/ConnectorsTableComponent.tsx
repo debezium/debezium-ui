@@ -59,6 +59,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [showPauseDialog, setShowPauseDialog] = React.useState(false);
   const [showResumeDialog, setShowResumeDialog] = React.useState(false);
   const [showRestartDialog, setShowRestartDialog] = React.useState(false);
+  const [showRestartConnectorTaskDialog, setShowRestartConnectorTaskDialog] = React.useState(false);
   
   const [alerts, setAlerts] = React.useState<any[]>([]);
   const [connectorToDelete, setConnectorToDelete] = React.useState('');
@@ -66,7 +67,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [connectorToPause, setConnectorToPause] = React.useState('');
   const [connectorToResume, setConnectorToResume] = React.useState('');
   const [connectorToRestart, setConnectorToRestart] = React.useState('');
-
+  const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<string[]>([]);
+  
   const { t } = useTranslation(['app']);
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
@@ -154,9 +156,19 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const showRestartConfirmationDialog = () => {
     setShowRestartDialog(true);
   };
+
+  const showConnectorTaskToRestartDialog = () => {
+    setShowRestartConnectorTaskDialog(true);
+  };
+
   const doRestartCancel = () => {
     setShowRestartDialog(false);
   }
+
+  const doConnectorTaskRestartCancel = () => {
+    setShowRestartConnectorTaskDialog(false);
+  }
+  
   const doRestart = () => {
     setShowRestartDialog(false);
     const connectorService = Services.getConnectorService();
@@ -167,6 +179,20 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       })
       .catch((err: React.SetStateAction<Error>) => {
         addAlert("danger",t('connectorRestartFailed'), err?.message);
+      });
+  }
+
+  const doConnectorTaskRestart = () => {
+    setShowRestartConnectorTaskDialog(false);
+    const [connectorName, connectorTaskId] = connectorTaskToRestart;
+    const connectorService = Services.getConnectorService();
+    connectorService
+      .restartConnectorTask(appLayoutContext.clusterId, connectorName, connectorTaskId, {})
+      .then((cConnectors: any) => {
+        addAlert("success", t('connectorTaskRestartSuccess'));
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        addAlert("danger",t('connectorTaskRestartFailed'), err?.message);
       });
   }
   
@@ -191,8 +217,11 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         setErrorMsg(err);
       });
   }
+  const taskToRestart = (connName: string, taskId: string) => {
+    setConnectorTaskToRestart([connName, taskId])
+  }
   
-  const getTaskStates = (conn: Connector, connName, restartConfirmation) => {
+  const getTaskStates = (conn: Connector) => {
     const taskElements: any = [];
     const statesMap = new Map(Object.entries(conn.taskStates));
 
@@ -208,8 +237,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           i18nRestart={t('restart')}
           i18nTaskStatusDetail={t('taskStatusDetail')}
           i18nTaskErrorTitle={t('taskErrorTitle')}
-          setConnectorToRestart={connName}
-          showRestartConfirmationDialog={restartConfirmation}
+          connectorTaskToRestart={taskToRestart}
+          showConnectorTaskToRestartDialog={showConnectorTaskToRestartDialog}
         />
       );
     });
@@ -293,7 +322,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     let counter = 0;
     sortedConns.forEach((conn, index) => {
       const row = {
-        isOpen: false,
+        isOpen: expandedRows,
         cells: [
           {
             title: 
@@ -317,8 +346,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           },
           {
             
-            title: <ConnectorTaskState connector={conn} 
-            />
+            title: <ConnectorTaskState connector={conn} />
           }
         ],
         connName: conn.name,
@@ -345,7 +373,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 <FlexItem flex={{ default: 'flex_2' }}><Label className="no-bg"><b data-testid="task-status">Status</b></Label></FlexItem>
                 <FlexItem flex={{ default: 'flex_1' }}>{''}</FlexItem>
               </Flex>
-                {getTaskStates(conn, setConnectorToRestart, showRestartConfirmationDialog)}
+                {getTaskStates(conn)}
             </FlexItem>
             
           </Flex>
@@ -503,7 +531,17 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 onCancel={doRestartCancel}
                 onConfirm={doRestart}
               />   
-                
+              <ConfirmationDialog
+                buttonStyle={ConfirmationButtonStyle.DANGER}
+                i18nCancelButtonText={t('cancel')}
+                i18nConfirmButtonText={t('restart')}
+                i18nConfirmationMessage={t('connectorTaskRestartWarningMsg')}
+                i18nTitle={t('restartConnectorTask')}
+                type={ConfirmationType.DANGER}
+                showDialog={showRestartConnectorTaskDialog}
+                onCancel={doConnectorTaskRestartCancel}
+                onConfirm={doConnectorTaskRestart}
+              />                 
               <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} i18nDetails={t('details')}/>
               <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
                 <FlexItem>

@@ -106,6 +106,10 @@
     "messagePerSec": "Message/sec",
     "maxLagInLastMin": "Max lag in last min",
     "percentiles": "Percentiles",
-    "taskErrorTitle": "The task was"
+    "taskErrorTitle": "The task was",
+    "connectorTaskRestartSuccess": "Connector task restarted successfully!",
+    "connectorTaskRestartFailed": "Connector task restart failed!",
+    "connectorTaskRestartWarningMsg": "Are you sure want to restart?",
+    "restartConnectorTask": "Restart connector task"
   }
 }

@@ -20,8 +20,9 @@ export const ConnectorTaskState: React.FunctionComponent<IConnectorTaskStateProp
 ) => {
 
   let color: "grey" | "green" | "red" | "orange" = "grey";
-  const totalNumberOfTasks = Object.keys(props.connector.taskStates).length;
-  const statesMap = new Map(Object.entries(props.connector.taskStates));
+  const { connector } = props;
+  const totalNumberOfTasks = Object.keys(connector.taskStates).length;
+  const statesMap = new Map(Object.entries(connector.taskStates));
   
   const connectorStatusCount = {};
   statesMap.forEach((taskState: any) => {
