@@ -12,16 +12,13 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
-
-
-
   Label,
   Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem
 } from "@patternfly/react-core";
-import { CubesIcon, FilterIcon, SortAmountDownIcon, SortAmountUpIcon } from "@patternfly/react-icons";
+import { CubesIcon, FilterIcon, SortAmountDownAltIcon, SortAmountDownIcon } from "@patternfly/react-icons";
 import { cellWidth, expandable, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
 import { useTranslation } from 'react-i18next';
@@ -71,9 +68,18 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   
   const { t } = useTranslation(['app']);
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
-  const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
+  const [sortCategory, setSortCategory] = React.useState(
+    localStorage.getItem("connectorsTable-sortCategory") !== null
+      ? localStorage.getItem("connectorsTable-sortCategory")
+      : "Name"
+  );
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
-
+  // const [sortDirection, setSortDirection] = React.useState(
+  //   localStorage.getItem("connectorsTable-sortDirection") !== null
+  //     ? localStorage.getItem("connectorsTable-sortDirection")
+  //     : "ascending"
+  // );
+        
   const [expandedRows, setExpandedRows] = React.useState<number>(0);
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
@@ -280,7 +286,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   React.useEffect(() => {
     const getConnectorsInterval = setInterval(() => getConnectorsList(), 10000)
     return () => clearInterval(getConnectorsInterval);
-  },[currentCategory]);
+  },[sortCategory]);
 
   const columns = [
     {
@@ -308,7 +314,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     { title: t('tasks')}
   ];
   
-  const updateTableRows = (conns: Connector[], sortBy: string = currentCategory) => {
+  const updateTableRows = (conns: Connector[], sortBy: string | null = sortCategory) => {
     let sortedConns: Connector[] = [];
     setConnectors(conns);
     
@@ -456,7 +462,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
 
   const onSortingSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sortBy = e.target.innerText;
-    setCurrentCategory(sortBy)
+    localStorage.setItem('connectorsTable-sortCategory', sortBy);
+    setSortCategory(sortBy)
     setIsSortingDropdownOpen(!isSortingDropdownOpen)
     updateTableRows(connectors, sortBy)
   };
@@ -481,7 +488,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
             position={DropdownPosition.left}
             toggle={
               <DropdownToggle onToggle={onSortingToggle}>
-                <FilterIcon size="sm" /> {currentCategory}
+                <FilterIcon size="sm" /> {sortCategory}
               </DropdownToggle>
             }
             isOpen={isSortingDropdownOpen}
@@ -491,8 +498,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           />
         </ToolbarItem>
         <ToolbarItem>
-          {desRowOrder ? <SortAmountUpIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/> :
-           <SortAmountDownIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/>} 
+          {desRowOrder ? <SortAmountDownIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/> :
+           <SortAmountDownAltIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/>} 
         </ToolbarItem>
       </ToolbarContent>
     </React.Fragment>
