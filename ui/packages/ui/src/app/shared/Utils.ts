@@ -508,16 +508,19 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
         {
           field: 'database',
           valueSample: 'databaseName',
+          preview: true,
           excludeFilter: false
         },
         {
           field: 'collection',
           valueSample: 'databaseName.collectionName',
+          preview: true,
           excludeFilter: false
         },
         {
           field: 'field',
           valueSample: 'databaseName.collectionName.fieldName',
+          preview: false,
           excludeFilter: true
         }]
     }
@@ -527,16 +530,19 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
         {
           field: 'schema',
           valueSample: 'schemaName',
+          preview: true,
           excludeFilter: false
         },
         {
           field: 'table',
           valueSample: 'schemaName.tableName',
+          preview: true,
           excludeFilter: false
         },
         {
           field: 'column',
           valueSample: 'schemaName.tableName.columnName',
+          preview: false,
           excludeFilter: false
         },]
     }

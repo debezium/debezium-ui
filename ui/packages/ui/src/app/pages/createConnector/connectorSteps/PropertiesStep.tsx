@@ -183,7 +183,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
     };
 
     return (
-      <div>
+      <div className={'properties-step-page'}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

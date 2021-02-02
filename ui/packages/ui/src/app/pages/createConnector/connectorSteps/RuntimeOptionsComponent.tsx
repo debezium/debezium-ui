@@ -130,7 +130,7 @@ export const RuntimeOptionsComponent: React.FC<any> = React.forwardRef(
     };
 
     return (
-      <div>
+      <div className={'runtime-options-component-page'}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

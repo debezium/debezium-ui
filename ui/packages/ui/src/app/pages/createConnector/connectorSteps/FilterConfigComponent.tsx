@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { FilterTreeComponent } from "src/app/components";
 import { FilterExcludeFieldComponent } from "src/app/components/FilterExcludeFieldComponent";
 import { FilterInputFieldComponent } from "src/app/components/FilterInputFieldComponent";
+import { NoPreviewFilterField } from "src/app/components/NoPreviewFilterField";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -69,7 +70,9 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
     new Map()
   );
-  const [columnOrFieldFilter, setColumnOrFieldFilter] = React.useState<string>('');
+  const [columnOrFieldFilter, setColumnOrFieldFilter] = React.useState<string>(
+    ""
+  );
   const [childNo, setChildNo] = React.useState<number>(0);
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
@@ -87,16 +90,15 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
     setShowClearDialog(true);
   };
 
-  const isColumnOrFieldFilterApplied = (formVal: Map<string, string>) =>{
-    let includeFilter = '';
-    formVal.forEach((val,key)=>{
-      if(key.includes('column') || key.includes('field')){
-        includeFilter = key.includes('column') ? 'column' : 'field';
+  const isColumnOrFieldFilterApplied = (formVal: Map<string, string>) => {
+    let includeFilter = "";
+    formVal.forEach((val, key) => {
+      if (key.includes("column") || key.includes("field")) {
+        includeFilter = key.includes("column") ? "column" : "field";
       }
-
-    })
+    });
     setColumnOrFieldFilter(includeFilter);
-  }
+  };
 
   const getFilterSchema = (
     saveFilter: boolean,
@@ -143,7 +145,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
   };
 
   const doClear = () => {
-    if(apiError) {
+    if (apiError) {
       setApiError(false);
       setErrorMsg(new Error());
     }
@@ -181,25 +183,9 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         })}
       </Text>
       <Form className="child-selection-step_form">
-        {filterConfigurationPageContentObj.fieldArray.map(
-          (fieldFilter: any) => (
-            fieldFilter.excludeFilter ? (<FilterExcludeFieldComponent
-              key={fieldFilter.field}
-              fieldName={fieldFilter.field}
-              filterValues={props.filterValues}
-              setFormData={setFormData}
-              formData={formData}
-              invalidMsg={invalidMsg}
-              fieldExcludeList={`${fieldFilter.field}.exclude.list`}
-              fieldPlaceholder={fieldFilter.valueSample}
-              i18nFilterExcludeFieldLabel={t("filterExcludeFieldLabel", {
-                field: _.capitalize(fieldFilter.field),
-              })}
-              i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
-                field: `${fieldFilter.field} exclude`,
-                sampleVal: fieldFilter.valueSample
-              })}
-            />) : (<FilterInputFieldComponent
+        {filterConfigurationPageContentObj.fieldArray.map((fieldFilter: any) =>
+          fieldFilter.preview ? (
+            <FilterInputFieldComponent
               key={fieldFilter.field}
               fieldName={fieldFilter.field}
               filterValues={props.filterValues}
@@ -219,9 +205,55 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
               i18nExclude={t("exclude")}
               i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
                 field: fieldFilter.field,
-                sampleVal: fieldFilter.valueSample
+                sampleVal: fieldFilter.valueSample,
               })}
-            />)
+            />
+          ) : (
+            <NoPreviewFilterField fieldName={fieldFilter.field}>
+              {fieldFilter.excludeFilter ? (
+                <FilterExcludeFieldComponent
+                  key={fieldFilter.field}
+                  fieldName={fieldFilter.field}
+                  filterValues={props.filterValues}
+                  setFormData={setFormData}
+                  formData={formData}
+                  invalidMsg={invalidMsg}
+                  fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+                  fieldPlaceholder={fieldFilter.valueSample}
+                  i18nFilterExcludeFieldLabel={t("filterExcludeFieldLabel", {
+                    field: _.capitalize(fieldFilter.field),
+                  })}
+                  i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                    field: `${fieldFilter.field} exclude`,
+                    sampleVal: fieldFilter.valueSample,
+                  })}
+                />
+              ) : (
+                <FilterInputFieldComponent
+                  key={fieldFilter.field}
+                  fieldName={fieldFilter.field}
+                  filterValues={props.filterValues}
+                  setFormData={setFormData}
+                  formData={formData}
+                  invalidMsg={invalidMsg}
+                  fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+                  fieldIncludeList={`${fieldFilter.field}.include.list`}
+                  fieldPlaceholder={fieldFilter.valueSample}
+                  i18nFilterFieldLabel={t("filterFieldLabel", {
+                    field: _.capitalize(fieldFilter.field),
+                  })}
+                  i18nFilterFieldHelperText={t("filterFieldHelperText", {
+                    field: fieldFilter.field,
+                  })}
+                  i18nInclude={t("include")}
+                  i18nExclude={t("exclude")}
+                  i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                    field: fieldFilter.field,
+                    sampleVal: fieldFilter.valueSample,
+                  })}
+                />
+              )}
+            </NoPreviewFilterField>
           )
         )}
         <ActionGroup>
@@ -256,7 +288,7 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         i18nInvalidFilterExpText={t("invalidFilterExpText", {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nInvalidFilterText= {t("invalidFilterText", {
+        i18nInvalidFilterText={t("invalidFilterText", {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
         i18nMatchingFilterExpMsg={t("matchingFilterExpMsg", {
@@ -270,7 +302,9 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
         i18nFilterExpressionResultText={t("filterExpressionResultText", {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nColumnOrFieldFilter={_.capitalize(t("columnOrFieldFilter",{fieldName: columnOrFieldFilter}))}
+        i18nColumnOrFieldFilter={_.capitalize(
+          t("columnOrFieldFilter", { fieldName: columnOrFieldFilter })
+        )}
       />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
