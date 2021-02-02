@@ -3,7 +3,8 @@ import React from "react";
 import "./NoPreviewFilterField.css";
 
 export interface INoPreviewFilterFieldProps {
-  fieldName: string;
+  i18nShowFilter: string;
+  i18nHideFilter: string;
 }
 
 export const NoPreviewFilterField: React.FunctionComponent<INoPreviewFilterFieldProps> = (
@@ -15,11 +16,7 @@ export const NoPreviewFilterField: React.FunctionComponent<INoPreviewFilterField
   };
   return (
     <ExpandableSection
-      toggleText={
-        isExpanded
-          ? `Hide ${props.fieldName} filter`
-          : `Show ${props.fieldName} filter`
-      }
+      toggleText={isExpanded ? props.i18nHideFilter : props.i18nShowFilter}
       onToggle={onToggle}
       isExpanded={isExpanded}
       className={"no-preview-filter-field_expandable"}
