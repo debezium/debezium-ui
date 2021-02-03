@@ -24,6 +24,7 @@ import {
 import { CubesIcon, FilterIcon, SortAmountDownIcon, SortAmountUpIcon } from "@patternfly/react-icons";
 import { cellWidth, expandable, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
+import isEqual from "react-fast-compare";
 import { useTranslation } from 'react-i18next';
 import { PageLoader, ToastAlertComponent } from "src/app/components";
 import { AppLayoutContext } from 'src/app/Layout/AppLayoutContext';
@@ -205,7 +206,19 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     });
     props.createConnectorCallback(connectorNames, props.clusterId);
   }
+  const prevStateRef = React.useRef([] as Connector[]);
+  React.useEffect(() => {
+    prevStateRef.current = connectors;
+  });
+  const prevState = prevStateRef.current;
 
+  React.useEffect(() => {
+    if (!isEqual(prevState, connectors)) {
+      updateTableRows([...connectors]);
+      // tslint:disable-next-line: no-console
+      console.log('<------------state updated-------->')
+    }
+  }, [connectors]);
   const getConnectorsList = () =>{
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.getConnectors, connectorService, [
@@ -213,13 +226,15 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ])
       .then((cConnectors: Connector[]) => {
         setLoading(false);
-        updateTableRows([...cConnectors]);
+        
+        setConnectors(cConnectors);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
         setErrorMsg(err);
       });
   }
+
   const taskToRestart = (connName: string, taskId: string) => {
     setConnectorTaskToRestart([connName, taskId])
   }
@@ -310,7 +325,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   
   const updateTableRows = (conns: Connector[], sortBy: string = currentCategory) => {
     let sortedConns: Connector[] = [];
-    setConnectors(conns);
     
     switch(sortBy) {
       case t('status'):
