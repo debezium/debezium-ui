@@ -24,6 +24,7 @@ import {
 import { CubesIcon, FilterIcon, SortAmountDownIcon, SortAmountUpIcon } from "@patternfly/react-icons";
 import { cellWidth, expandable, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
+import isEqual from "react-fast-compare";
 import { useTranslation } from 'react-i18next';
 import { PageLoader, ToastAlertComponent } from "src/app/components";
 import { AppLayoutContext } from 'src/app/Layout/AppLayoutContext';
@@ -205,7 +206,17 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     });
     props.createConnectorCallback(connectorNames, props.clusterId);
   }
+  const prevStateRef = React.useRef([] as Connector[]);
+  React.useEffect(() => {
+    prevStateRef.current = connectors;
+  });
+  const prevState = prevStateRef.current;
 
+  React.useEffect(() => {
+    if (!isEqual(prevState, connectors)) {
+      updateTableRows([...connectors], desRowOrder);
+    }
+  }, [connectors]);
   const getConnectorsList = () =>{
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.getConnectors, connectorService, [
@@ -213,13 +224,14 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ])
       .then((cConnectors: Connector[]) => {
         setLoading(false);
-        updateTableRows([...cConnectors]);
+        setConnectors(cConnectors);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
         setErrorMsg(err);
       });
   }
+
   const taskToRestart = (connName: string, taskId: string) => {
     setConnectorTaskToRestart([connName, taskId])
   }
@@ -264,7 +276,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       }
     }
     if (doUpdateTable) {
-      updateTableRows(updatedRows);
+      updateTableRows(updatedRows, desRowOrder);
     }
   }
 
@@ -308,9 +320,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     { title: t('tasks')}
   ];
   
-  const updateTableRows = (conns: Connector[], sortBy: string = currentCategory) => {
+  const updateTableRows = (conns: Connector[], isReverse: boolean, sortBy: string = currentCategory) => {
     let sortedConns: Connector[] = [];
-    setConnectors(conns);
     
     switch(sortBy) {
       case t('status'):
@@ -338,6 +349,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         sortedConns = conns.sort((thisConn, thatConn) => {
           return thisConn.name.localeCompare(thatConn.name);
         });
+    }
+    if(isReverse){
+      sortedConns = [...sortedConns].reverse();
     }
     
     // Create table rows
@@ -450,7 +464,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   }
 
   const toggleRowOrder = () =>{
-    setTableRows([...tableRows].reverse());
+    // setTableRows([...tableRows].reverse());
+    updateTableRows(connectors, !desRowOrder);
     setDesRowOrder(!desRowOrder);
   }
 
@@ -458,7 +473,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     const sortBy = e.target.innerText;
     setCurrentCategory(sortBy)
     setIsSortingDropdownOpen(!isSortingDropdownOpen)
-    updateTableRows(connectors, sortBy)
+    updateTableRows(connectors, desRowOrder, sortBy)
   };
 
   const onSortingToggle = (isOpen: boolean) => {
