@@ -214,9 +214,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
 
   React.useEffect(() => {
     if (!isEqual(prevState, connectors)) {
-      updateTableRows([...connectors]);
-      // tslint:disable-next-line: no-console
-      console.log('<------------state updated-------->')
+      updateTableRows([...connectors], desRowOrder);
     }
   }, [connectors]);
   const getConnectorsList = () =>{
@@ -226,7 +224,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ])
       .then((cConnectors: Connector[]) => {
         setLoading(false);
-        
         setConnectors(cConnectors);
       })
       .catch((err: React.SetStateAction<Error>) => {
@@ -279,7 +276,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       }
     }
     if (doUpdateTable) {
-      updateTableRows(updatedRows);
+      updateTableRows(updatedRows, desRowOrder);
     }
   }
 
@@ -323,7 +320,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     { title: t('tasks')}
   ];
   
-  const updateTableRows = (conns: Connector[], sortBy: string = currentCategory) => {
+  const updateTableRows = (conns: Connector[], isReverse: boolean, sortBy: string = currentCategory) => {
     let sortedConns: Connector[] = [];
     
     switch(sortBy) {
@@ -352,6 +349,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         sortedConns = conns.sort((thisConn, thatConn) => {
           return thisConn.name.localeCompare(thatConn.name);
         });
+    }
+    if(isReverse){
+      sortedConns = [...sortedConns].reverse();
     }
     
     // Create table rows
@@ -464,7 +464,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   }
 
   const toggleRowOrder = () =>{
-    setTableRows([...tableRows].reverse());
+    // setTableRows([...tableRows].reverse());
+    updateTableRows(connectors, !desRowOrder);
     setDesRowOrder(!desRowOrder);
   }
 
@@ -472,7 +473,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     const sortBy = e.target.innerText;
     setCurrentCategory(sortBy)
     setIsSortingDropdownOpen(!isSortingDropdownOpen)
-    updateTableRows(connectors, sortBy)
+    updateTableRows(connectors, desRowOrder, sortBy)
   };
 
   const onSortingToggle = (isOpen: boolean) => {
