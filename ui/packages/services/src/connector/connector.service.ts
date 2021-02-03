@@ -156,7 +156,7 @@ export class ConnectorService extends BaseService {
         this.logger.info("[ConnectorService] Restart the connector");
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/restart", { clusterId, connectorName });
-        return this.httpPut(endpoint, body);
+        return this.httpPost(endpoint, body);
     }    
 
     /**
@@ -167,7 +167,7 @@ export class ConnectorService extends BaseService {
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/task/:connectorTaskId/restart", 
                                                 { clusterId, connectorName, connectorTaskId });
-        return this.httpPut(endpoint, body);
+        return this.httpPost(endpoint, body);
     }    
 
 }
