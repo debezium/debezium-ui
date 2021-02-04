@@ -12,16 +12,13 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
-
-
-
   Label,
   Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem
 } from "@patternfly/react-core";
-import { CubesIcon, FilterIcon, SortAmountDownIcon, SortAmountUpIcon } from "@patternfly/react-icons";
+import { CubesIcon, FilterIcon, SortAmountDownAltIcon, SortAmountDownIcon } from "@patternfly/react-icons";
 import { cellWidth, expandable, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import React from "react";
 import isEqual from "react-fast-compare";
@@ -49,6 +46,14 @@ interface IConnectorsTableComponentProps {
 }
 
 export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableComponentProps> = (props: IConnectorsTableComponentProps) => {
+  const enum Action {
+    DELETE = "DELETE",
+    PAUSE = "PAUSE",
+    RESUME = "RESUME",
+    RESTART = "RESTART",
+    RESTART_TASK = "RESTART_TASK",
+    NONE = "NONE"
+  }
   const [connectors, setConnectors] = React.useState<Connector[]>([] as Connector[]);
   const [tableRows, setTableRows] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -56,18 +61,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
   const appLayoutContext = React.useContext(AppLayoutContext);
-  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
-  const [showPauseDialog, setShowPauseDialog] = React.useState(false);
-  const [showResumeDialog, setShowResumeDialog] = React.useState(false);
-  const [showRestartDialog, setShowRestartDialog] = React.useState(false);
-  const [showRestartConnectorTaskDialog, setShowRestartConnectorTaskDialog] = React.useState(false);
+  const [currentAction, setCurrentAction] = React.useState(Action.NONE);
+  const [currentActionConnector, setCurrentActionConnector] = React.useState("");
   
   const [alerts, setAlerts] = React.useState<any[]>([]);
-  const [connectorToDelete, setConnectorToDelete] = React.useState('');
-
-  const [connectorToPause, setConnectorToPause] = React.useState('');
-  const [connectorToResume, setConnectorToResume] = React.useState('');
-  const [connectorToRestart, setConnectorToRestart] = React.useState('');
   const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<string[]>([]);
   
   const { t } = useTranslation(['app']);
@@ -93,113 +90,80 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setAlerts([...alerts.filter((el) => el.key !== key)]);
   };
 
-  const doCancel = () => {
-    setShowDeleteDialog(false);
+  const resetCurrentAction = () => {
+    setCurrentAction(Action.NONE);
+    setCurrentActionConnector("");
   };
 
-  const doDelete = () => {
-    setShowDeleteDialog(false);
+  const setCurrentActionAndName = (action: Action, connName: string) => {
+    setCurrentAction(action);
+    setCurrentActionConnector(connName);
+  };
+
+  const doPerformCurrentAction = () => {
+    const connName = currentActionConnector;
     const connectorService = Services.getConnectorService();
-    connectorService
-      .deleteConnector(appLayoutContext.clusterId, connectorToDelete)
-      .then((cConnectors: any) => {
-        addAlert("success", t('connectorDeletedSuccess'));
-      })
-      .catch((err: React.SetStateAction<Error>) => {
-        addAlert("danger",t('connectorDeletionFailed'), err?.message);
-      });
-  };
-
-  const showConfirmationDialog = () => {
-    setShowDeleteDialog(true);
-  };
-
-  const showPauseConfirmationDialog = () => {
-    setShowPauseDialog(true);
-  };
-  
-  const doPauseCancel = () => {
-    setShowPauseDialog(false);
+    resetCurrentAction() // unset to dismiss dialog
+    switch (currentAction) {
+      case Action.DELETE:
+        connectorService
+        .deleteConnector(appLayoutContext.clusterId, connName)
+        .then((cConnectors: any) => {
+          addAlert("success", t('connectorDeletedSuccess'));
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          addAlert("danger",t('connectorDeletionFailed'), err?.message);
+        });
+        break;
+      case Action.PAUSE:
+        connectorService
+        .pauseConnector(appLayoutContext.clusterId, connName, {})
+        .then((cConnectors: any) => {
+          addAlert("success", t('connectorPausedSuccess'));
+          setConnectorStatus(connName, "PAUSED");
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          addAlert("danger",t('connectorPauseFailed'), err?.message);
+        });    
+        break;
+      case Action.RESUME:
+        connectorService
+        .resumeConnector(appLayoutContext.clusterId, connName, {})
+        .then((cConnectors: any) => {
+          addAlert("success", t('connectorResumedSuccess'));
+          setConnectorStatus(connName, "RUNNING");
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          addAlert("danger",t('connectorResumeFailed'), err?.message);
+        });    
+        break;
+      case Action.RESTART:
+        connectorService
+        .restartConnector(appLayoutContext.clusterId, connName, {})
+        .then((cConnectors: any) => {
+          addAlert("success", t('connectorRestartSuccess'));
+          setConnectorStatus(connName, "RUNNING");
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          addAlert("danger",t('connectorRestartFailed'), err?.message);
+        });
+        break;
+      case Action.RESTART_TASK:
+        const [connectorName, connectorTaskId] = connectorTaskToRestart;
+        connectorService
+        .restartConnectorTask(appLayoutContext.clusterId, connectorName, connectorTaskId, {})
+        .then((cConnectors: any) => {
+          addAlert("success", t('connectorTaskRestartSuccess'));
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          addAlert("danger",t('connectorTaskRestartFailed'), err?.message);
+        });
+        break;
+      default:
+        break;
+    }
   }
 
-  const doPause = () => {
-    setShowPauseDialog(false);
-    const connectorService = Services.getConnectorService();
-    connectorService
-      .pauseConnector(appLayoutContext.clusterId, connectorToPause, {})
-      .then((cConnectors: any) => {
-        addAlert("success", t('connectorPausedSuccess'));
-        setConnectorStatus(connectorToPause, "PAUSED");
-      })
-      .catch((err: React.SetStateAction<Error>) => {
-        addAlert("danger",t('connectorPauseFailed'), err?.message);
-      });    
-  }
-  
-  const showResumeConfirmationDialog = () => {
-    setShowResumeDialog(true);
-  };
-  const doResumeCancel = () => {
-    setShowResumeDialog(false);
-  }
-  const doResume = () => {
-    setShowResumeDialog(false);
-    const connectorService = Services.getConnectorService();
-    connectorService
-      .resumeConnector(appLayoutContext.clusterId, connectorToResume, {})
-      .then((cConnectors: any) => {
-        addAlert("success", t('connectorResumedSuccess'));
-        setConnectorStatus(connectorToPause, "RUNNING");
-      })
-      .catch((err: React.SetStateAction<Error>) => {
-        addAlert("danger",t('connectorResumeFailed'), err?.message);
-      });    
-  }
-
-  const showRestartConfirmationDialog = () => {
-    setShowRestartDialog(true);
-  };
-
-  const showConnectorTaskToRestartDialog = () => {
-    setShowRestartConnectorTaskDialog(true);
-  };
-
-  const doRestartCancel = () => {
-    setShowRestartDialog(false);
-  }
-
-  const doConnectorTaskRestartCancel = () => {
-    setShowRestartConnectorTaskDialog(false);
-  }
-  
-  const doRestart = () => {
-    setShowRestartDialog(false);
-    const connectorService = Services.getConnectorService();
-    connectorService
-      .restartConnector(appLayoutContext.clusterId, connectorToRestart, {})
-      .then((cConnectors: any) => {
-        addAlert("success", t('connectorRestartSuccess'));
-        setConnectorStatus(connectorToPause, "RUNNING");
-      })
-      .catch((err: React.SetStateAction<Error>) => {
-        addAlert("danger",t('connectorRestartFailed'), err?.message);
-      });
-  }
-
-  const doConnectorTaskRestart = () => {
-    setShowRestartConnectorTaskDialog(false);
-    const [connectorName, connectorTaskId] = connectorTaskToRestart;
-    const connectorService = Services.getConnectorService();
-    connectorService
-      .restartConnectorTask(appLayoutContext.clusterId, connectorName, connectorTaskId, {})
-      .then((cConnectors: any) => {
-        addAlert("success", t('connectorTaskRestartSuccess'));
-      })
-      .catch((err: React.SetStateAction<Error>) => {
-        addAlert("danger",t('connectorTaskRestartFailed'), err?.message);
-      });
-  }
-  
   const createConnector = () => {
     const connectorNames = connectors.map( (conn) => {
       return conn.name;
@@ -235,6 +199,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const taskToRestart = (connName: string, taskId: string) => {
     setConnectorTaskToRestart([connName, taskId])
   }
+
+  const showConnectorTaskToRestartDialog = () => {
+    setCurrentAction(Action.RESTART_TASK);
+  };
   
   const getTaskStates = (conn: Connector) => {
     const taskElements: any = [];
@@ -428,24 +396,21 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       {
         title: t('pause'),
         onClick: (event, rowId, rowData, extra) => {
-          setConnectorToPause(rowData.connName);
-          showPauseConfirmationDialog();
+          setCurrentActionAndName(Action.PAUSE, rowData.connName);
         },
         isDisabled: row.connStatus === "RUNNING" ? false : true        
       },
       {
         title: t('resume'),
         onClick: (event, rowId, rowData, extra) => {
-          setConnectorToResume(rowData.connName);
-          showResumeConfirmationDialog();
+          setCurrentActionAndName(Action.RESUME, rowData.connName);
         },
         isDisabled: row.connStatus === "PAUSED" ? false : true 
       },
       {
         title: t('restart'),
         onClick: (event, rowId, rowData, extra) => {
-          setConnectorToRestart(rowData.connName);
-          showRestartConfirmationDialog();
+          setCurrentActionAndName(Action.RESTART, rowData.connName);
         },
         isDisabled: (row.connStatus === "UNASSIGNED" || row.connStatus === "DESTROYED") ? true : false 
       },
@@ -455,8 +420,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       {
         title: t('delete'),
         onClick: (event, rowId, rowData, extra) => {
-          setConnectorToDelete(rowData.connName);
-          showConfirmationDialog();
+          setCurrentActionAndName(Action.DELETE, rowData.connName);
         },
         isDisabled: false
       }
@@ -487,6 +451,58 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setExpandedRows(updatedExpandedRows)
   }
 
+  const confirmationDialog = () => {
+    const shouldShow = (currentAction === Action.NONE) ? false : true;
+    let confirmTitle = "";
+    let confirmButtonText = "";
+    let confirmMessageText = "";
+
+    switch (currentAction) {
+      case Action.DELETE:
+        confirmTitle = t("deleteConnector");
+        confirmButtonText = t("delete");
+        confirmMessageText = t("deleteWarningMsg", {connectorName: currentActionConnector});
+        break;
+      case Action.PAUSE:
+        confirmTitle = t("pauseConnector");
+        confirmButtonText = t("pause");
+        confirmMessageText = t("connectorPauseWarningMsg", {connectorName: currentActionConnector});
+        break;
+      case Action.RESUME:
+        confirmTitle = t("resumeConnector");
+        confirmButtonText = t("resume");
+        confirmMessageText = t("connectorResumeWarningMsg", {connectorName: currentActionConnector});
+        break;
+      case Action.RESTART:
+        confirmTitle = t("restartConnector");
+        confirmButtonText = t("restart");
+        confirmMessageText = t("connectorRestartWarningMsg", {connectorName: currentActionConnector});
+        break;
+      case Action.RESTART_TASK:
+        const [connName, connTaskId] = connectorTaskToRestart;
+        confirmTitle = t("restartConnectorTask");
+        confirmButtonText = t("restart");
+        confirmMessageText = t("connectorTaskRestartWarningMsg", {connectorName: connName, taskId: connTaskId});
+        break;
+      default:
+        break;
+    }
+    return (
+      <ConfirmationDialog
+        buttonStyle={ConfirmationButtonStyle.DANGER}
+        i18nCancelButtonText={t("cancel")}
+        i18nConfirmButtonText={confirmButtonText}
+        i18nConfirmationMessage={confirmMessageText}
+        i18nTitle={confirmTitle}
+        type={ConfirmationType.DANGER}
+        showDialog={shouldShow}
+        onCancel={resetCurrentAction}
+        onConfirm={doPerformCurrentAction}
+      />
+    );
+
+  }
+
   const toolbarItems = (
     <React.Fragment>
       <ToolbarContent>
@@ -506,8 +522,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           />
         </ToolbarItem>
         <ToolbarItem>
-          {desRowOrder ? <SortAmountUpIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/> :
-           <SortAmountDownIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/>} 
+          {desRowOrder ? <SortAmountDownIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/> :
+           <SortAmountDownAltIcon className="connectors-page_toolbarSortIcon" size="sm" onClick={toggleRowOrder}/>} 
         </ToolbarItem>
       </ToolbarContent>
     </React.Fragment>
@@ -523,61 +539,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         <>
           {connectors.length > 0 ? (
             <>
-              <ConfirmationDialog
-                buttonStyle={ConfirmationButtonStyle.DANGER}
-                i18nCancelButtonText={t('cancel')}
-                i18nConfirmButtonText={t('delete')}
-                i18nConfirmationMessage={t('deleteWarningMsg') }
-                i18nTitle={t('deleteConnector')}
-                type={ConfirmationType.DANGER}
-                showDialog={showDeleteDialog}
-                onCancel={doCancel}
-                onConfirm={doDelete}
-              />
-              <ConfirmationDialog
-                buttonStyle={ConfirmationButtonStyle.DANGER}
-                i18nCancelButtonText={t('cancel')}
-                i18nConfirmButtonText={t('pause')}
-                i18nConfirmationMessage={t('connectorPauseWarningMsg')}
-                i18nTitle={t('pauseConnector')}
-                type={ConfirmationType.DANGER}
-                showDialog={showPauseDialog}
-                onCancel={doPauseCancel}
-                onConfirm={doPause}
-              />
-              <ConfirmationDialog
-                buttonStyle={ConfirmationButtonStyle.DANGER}
-                i18nCancelButtonText={t('cancel')}
-                i18nConfirmButtonText={t('resume')}
-                i18nConfirmationMessage={t('connectorResumeWarningMsg')}
-                i18nTitle={t('resumeConnector')}
-                type={ConfirmationType.DANGER}
-                showDialog={showResumeDialog}
-                onCancel={doResumeCancel}
-                onConfirm={doResume}
-              />
-              <ConfirmationDialog
-                buttonStyle={ConfirmationButtonStyle.DANGER}
-                i18nCancelButtonText={t('cancel')}
-                i18nConfirmButtonText={t('restart')}
-                i18nConfirmationMessage={t('connectorRestartWarningMsg')}
-                i18nTitle={t('restartConnector')}
-                type={ConfirmationType.DANGER}
-                showDialog={showRestartDialog}
-                onCancel={doRestartCancel}
-                onConfirm={doRestart}
-              />   
-              <ConfirmationDialog
-                buttonStyle={ConfirmationButtonStyle.DANGER}
-                i18nCancelButtonText={t('cancel')}
-                i18nConfirmButtonText={t('restart')}
-                i18nConfirmationMessage={t('connectorTaskRestartWarningMsg')}
-                i18nTitle={t('restartConnectorTask')}
-                type={ConfirmationType.DANGER}
-                showDialog={showRestartConnectorTaskDialog}
-                onCancel={doConnectorTaskRestartCancel}
-                onConfirm={doConnectorTaskRestart}
-              />                 
+              {confirmationDialog()}
               <ToastAlertComponent alerts={alerts} removeAlert={removeAlert} i18nDetails={t('details')}/>
               <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
                 <FlexItem>
