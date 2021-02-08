@@ -12,6 +12,7 @@ import { ConnectorTypeComponent } from './ConnectorTypeComponent';
 export interface IConnectorNameTypeHeaderProps {
   connectorName?: string;
   connectorType?: string;
+  showIcon: boolean;
 }
 
 export const ConnectorNameTypeHeader: React.FunctionComponent<IConnectorNameTypeHeaderProps> = (
@@ -22,23 +23,16 @@ export const ConnectorNameTypeHeader: React.FunctionComponent<IConnectorNameType
     <Split>
       <SplitItem>
         <TextContent>
-          <Text className={"connector-name-type-header_name_label"}>
-            Connector name:
-          </Text>
-        </TextContent>
-      </SplitItem>
-      <SplitItem>
-        <TextContent>
           <Text component={TextVariants.p}>{props.connectorName}</Text>
         </TextContent>
       </SplitItem>
       <SplitItem>
         <TextContent>
-          <Text className={"connector-name-type-header_type_label"}>Type:</Text>
+          <Text className={"connector-name-type-header_divider"}>|</Text>
         </TextContent>
       </SplitItem>
       <SplitItem>
-        <ConnectorTypeComponent connectorType={props.connectorType} />
+        <ConnectorTypeComponent connectorType={props.connectorType} showIcon={props.showIcon}/>
       </SplitItem>
     </Split>
   );
