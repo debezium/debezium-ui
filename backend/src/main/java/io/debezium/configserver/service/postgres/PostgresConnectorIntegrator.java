@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.service.postgres;
 
 import java.sql.SQLException;
@@ -133,20 +138,21 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
 
         PostgresConnectorConfig config = new PostgresConnectorConfig(Configuration.from(properties));
 
-        PostgresConnection connection = new PostgresConnection(config.jdbcConfig());
-        Set<TableId> tables;
-        try {
-            tables = connection.readTableNames(config.databaseName(), null, null, new String[]{ "TABLE" });
+        try (PostgresConnection connection = new PostgresConnection(config.jdbcConfig())) {
+            Set<TableId> tables;
+            try {
+                tables = connection.readTableNames(config.databaseName(), null, null, new String[]{ "TABLE" });
 
-            List<DataCollection> matchingTables = tables.stream()
-                    .filter(tableId -> config.getTableFilters().dataCollectionFilter().isIncluded(tableId))
-                    .map(tableId -> new DataCollection(tableId.schema(), tableId.table()))
-                    .collect(Collectors.toList());
+                List<DataCollection> matchingTables = tables.stream()
+                        .filter(tableId -> config.getTableFilters().dataCollectionFilter().isIncluded(tableId))
+                        .map(tableId -> new DataCollection(tableId.schema(), tableId.table()))
+                        .collect(Collectors.toList());
 
-            return FilterValidationResult.valid(matchingTables);
-        }
-        catch (SQLException e) {
-            throw new DebeziumException(e);
+                return FilterValidationResult.valid(matchingTables);
+            }
+            catch (SQLException e) {
+                throw new DebeziumException(e);
+            }
         }
     }
 
