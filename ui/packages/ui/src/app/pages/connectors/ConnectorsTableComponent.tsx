@@ -72,7 +72,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
 
-  const [expandedRows, setExpandedRows] = React.useState<number>(0);
+  const [expandedRows, setExpandedRows] = React.useState<number[]>([]);
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
     const uId = new Date().getTime();
@@ -181,6 +181,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       updateTableRows([...connectors], desRowOrder);
     }
   }, [connectors]);
+
   const getConnectorsList = () =>{
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.getConnectors, connectorService, [
@@ -327,7 +328,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     let counter = 0;
     sortedConns.forEach((conn, index) => {
       const row = {
-        isOpen: expandedRows,
+        isOpen: expandedRows.includes(index*2),
         cells: [
           {
             title: 
@@ -428,7 +429,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   }
 
   const toggleRowOrder = () =>{
-    // setTableRows([...tableRows].reverse());
     updateTableRows(connectors, !desRowOrder);
     setDesRowOrder(!desRowOrder);
   }
@@ -446,9 +446,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
 
   const onCollapse = (event, rowKey, isOpen) => {
     tableRows[rowKey].isOpen = isOpen;
-    const updatedExpandedRows = isOpen ? expandedRows + 1 : expandedRows - 1;
+    let updatedExpandedRows = [...expandedRows];
+    updatedExpandedRows = isOpen ? [...updatedExpandedRows, rowKey] : updatedExpandedRows.filter(val => val !== rowKey);
     setTableRows(tableRows);
-    setExpandedRows(updatedExpandedRows)
+    setExpandedRows(updatedExpandedRows);
   }
 
   const confirmationDialog = () => {
