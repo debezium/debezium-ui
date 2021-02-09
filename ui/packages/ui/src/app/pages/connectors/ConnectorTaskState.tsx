@@ -5,11 +5,6 @@ import { ConnectorState } from "src/app/shared";
 import "./ConnectorTask.css";
 export interface IConnectorTaskStateProps {
   connector: Connector;
-  status: any;
-  taskId: string;
-  errors?: any;
-  i18nTaskErrorTitle: string;
-  i18nTask: string;
 }
 
 /**
