@@ -227,6 +227,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                     <SplitItem>
                       <ConnectorTypeComponent
                         connectorType={props.connectorType}
+                        showIcon={false}
                       />
                     </SplitItem>
                   </Split>

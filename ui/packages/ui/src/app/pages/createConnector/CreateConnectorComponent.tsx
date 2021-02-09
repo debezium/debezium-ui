@@ -718,7 +718,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         name: FILTER_CONFIGURATION_STEP,
         component: (
           <>
-            <ConnectorNameTypeHeader connectorName={getConnectorName()} connectorType={selectedConnectorType} />
+            <ConnectorNameTypeHeader 
+              connectorName={getConnectorName()} 
+              connectorType={selectedConnectorType} 
+              showIcon={false}
+            />
             <FilterConfigComponent
               propertyValues={
                 new Map([...basicPropValues, ...advancedPropValues])
@@ -738,7 +742,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         name: DATA_OPTIONS_STEP,
         component: (
           <>
-            <ConnectorNameTypeHeader connectorName={getConnectorName()} connectorType={selectedConnectorType} />
+            <ConnectorNameTypeHeader 
+              connectorName={getConnectorName()} 
+              connectorType={selectedConnectorType} 
+              showIcon={false}
+            />
             <DataOptionsComponent
               propertyDefinitions={getDataOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
@@ -781,7 +789,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         name: RUNTIME_OPTIONS_STEP,
         component: (
           <>
-            <ConnectorNameTypeHeader connectorName={getConnectorName()} connectorType={selectedConnectorType} />
+            <ConnectorNameTypeHeader 
+              connectorName={getConnectorName()} 
+              connectorType={selectedConnectorType} 
+              showIcon={false}
+            />
             <RuntimeOptionsComponent
               propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
@@ -826,7 +838,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     name: REVIEW_STEP,
     component: (
       <>
-        <ConnectorNameTypeHeader connectorName={getConnectorName()} connectorType={selectedConnectorType} />
+        <ConnectorNameTypeHeader 
+          connectorName={getConnectorName()} 
+          connectorType={selectedConnectorType} 
+          showIcon={false}
+        />
         <ReviewStepComponent
           i18nReviewMessage={t("reviewMessage", {
             connectorName: getConnectorName(),

@@ -1,13 +1,4 @@
-.connector-name-type-header_name_label{
-  font-size: var(--pf-global--FontSize--l);
-  font-weight: var(--pf-global--FontWeight--bold);;
+.connector-name-type-header_divider{
+  margin-left: 10px;
   margin-right: 10px;
-  margin-bottom: 5px;
-}
-.connector-name-type-header_type_label{
-  font-size: var(--pf-global--FontSize--l);
-  font-weight: var(--pf-global--FontWeight--bold);;
-  margin-left: 20px;
-  margin-right: 5px;
-  margin-bottom: 5px;
 }

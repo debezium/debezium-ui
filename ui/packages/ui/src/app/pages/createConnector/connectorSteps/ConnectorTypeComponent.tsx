@@ -14,6 +14,7 @@ import "./ConnectorTypeComponent.css";
 
 export interface IConnectorTypeComponentProps {
   connectorType?: string;
+  showIcon: boolean;
 }
 
 export const ConnectorTypeComponent: React.FunctionComponent<IConnectorTypeComponentProps> = (
@@ -35,7 +36,7 @@ export const ConnectorTypeComponent: React.FunctionComponent<IConnectorTypeCompo
 
   return (
     <Split>
-      {props.connectorType ? (
+      {props.showIcon && props.connectorType ? (
         <SplitItem className="connector-type-icon">
           <ConnectorIcon
             connectorType={props.connectorType}
