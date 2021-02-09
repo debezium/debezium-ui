@@ -1,4 +1,5 @@
 import { Button, Flex, FlexItem, Label, Popover } from '@patternfly/react-core';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import * as React from "react";
 import { ConnectorState } from "src/app/shared";
 import "./ConnectorTask.css";
@@ -11,6 +12,7 @@ export interface IConnectorTaskProps {
   i18nRestart: string;
   i18nTaskStatusDetail: string;
   i18nTaskErrorTitle: string;
+  i18nMoreInformation: string;
   connectorTaskToRestart: (connName: string, taskId: string) => void;
   showConnectorTaskToRestartDialog: () => void;
 }
@@ -69,10 +71,11 @@ return (
         >
         <Label
           className="status-indicator"
+          title={props.i18nMoreInformation}
           color={color}
           data-testid={"task-status-label"}
         >
-          {props.status}
+          {props.status} &nbsp; <InfoCircleIcon size="sm"/>
         </Label>
         </Popover>
       ) : (

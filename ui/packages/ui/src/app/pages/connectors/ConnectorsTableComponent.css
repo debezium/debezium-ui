@@ -10,7 +10,31 @@
   }  
   &_dataTable {
     margin-top: var(--pf-global--spacer--sm);
+    tr:nth-child(2){
+      @media screen and (max-width: 768px) {
+        padding: 20px;
+      }
+      td:nth-child(2),
+      td:nth-child(3)
+      {
+        @media screen and (max-width: 768px) {
+          display: none;
+        }
+      }
+      td:nth-child(6)
+      {
+        .pf-c-dropdown{
+          display: none;
+        }
+      }
+      td:nth-child(4){
+        div.pf-l-flex{
+          padding: 8px;
+        }
+      }
+    }
   }  
+
   &_toolbarFlex {
     padding: var(--pf-global--spacer--sm) 0;
     border-bottom: 1px solid var(--pf-global--palette--black-200);
@@ -57,7 +81,6 @@
     }
   }
 }
-
 .pf-c-tooltip{
     .errors{
       text-align: left;

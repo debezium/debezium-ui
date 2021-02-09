@@ -114,6 +114,7 @@
     "taskStatusDetail": "Task Status Detail",
     "unknownError": "Unknown error - please consult your administrator",
     "validate": "Validate",
-    "validationSucessMsg": "The validation was successful"
+    "validationSucessMsg": "The validation was successful",
+    "moreInformation": "Click for more information"
   }
 }

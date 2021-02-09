@@ -220,6 +220,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           i18nRestart={t('restart')}
           i18nTaskStatusDetail={t('taskStatusDetail')}
           i18nTaskErrorTitle={t('taskErrorTitle')}
+          i18nMoreInformation={t('moreInformation')}
           connectorTaskToRestart={taskToRestart}
           showConnectorTaskToRestartDialog={showConnectorTaskToRestartDialog}
         />
