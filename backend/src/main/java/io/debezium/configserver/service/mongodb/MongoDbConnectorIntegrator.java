@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.service.mongodb;
 
 import java.util.Collection;
@@ -127,7 +132,8 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         List<CollectionId> collections;
         try {
             collections = determineDataCollectionsToBeSnapshotted(config, primary(context).collections()).collect(Collectors.toList());
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             throw new DebeziumException(throwable);
         }
 

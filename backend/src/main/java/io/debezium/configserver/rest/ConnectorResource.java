@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.rest;
 
 import java.io.IOException;
@@ -310,7 +315,8 @@ public class ConnectorResource {
         LOGGER.debug("Sending valid connector config: " + kafkaConnectConfig.getConfig());
         try {
             result = kafkaConnectClient.createConnector(kafkaConnectConfig);
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         LOGGER.debug("Kafka Connect response: " + result);
@@ -350,7 +356,8 @@ public class ConnectorResource {
         List<String> activeConnectors;
         try {
             activeConnectors = kafkaConnectClient.listConnectors();
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
 
@@ -381,7 +388,8 @@ public class ConnectorResource {
                                                     )
                                                 ));
                                     return connectorState;
-                                } catch (ProcessingException | IOException e) {
+                                }
+                                catch (ProcessingException | IOException e) {
                                     LOGGER.error(e.getMessage(), e);
                                 }
                                 return null;
@@ -427,7 +435,8 @@ public class ConnectorResource {
         Response kafkaConnectDeleteConnectorResponse;
         try {
             kafkaConnectDeleteConnectorResponse = kafkaConnectClient.deleteConnector(connectorName);
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
 

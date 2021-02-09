@@ -1,13 +1,14 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.rest.client;
 
 import io.debezium.configserver.model.KafkaConnectClusterList;
-import io.debezium.configserver.rest.LifecycleResource;
-import io.debezium.configserver.rest.model.ServerError;
-import io.debezium.configserver.service.StacktraceHelper;
 import io.smallrye.config.SmallRyeConfig;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,7 +21,6 @@ import java.util.NoSuchElementException;
 public class KafkaConnectClientFactory {
 
     public static final String PROPERTY_KAFKA_CONNECT_URI = "kafka.connect.uri";
-    private static final Logger LOGGER = Logger.getLogger(LifecycleResource.class);
 
     private static List<String> kafkaConnectBaseUris;
     private static KafkaConnectClusterList kafkaConnectBaseURIsList;
@@ -29,7 +29,8 @@ public class KafkaConnectClientFactory {
         if (null == kafkaConnectBaseUris) {
             try {
                 kafkaConnectBaseUris = ((SmallRyeConfig) ConfigProvider.getConfig()).getValues(PROPERTY_KAFKA_CONNECT_URI, String.class, ArrayList::new);
-            } catch (NoSuchElementException e) {
+            }
+            catch (NoSuchElementException e) {
                 kafkaConnectBaseUris = Collections.singletonList("http://localhost:8083");
             }
             if (null == kafkaConnectBaseUris || kafkaConnectBaseUris.isEmpty()) {
@@ -45,7 +46,8 @@ public class KafkaConnectClientFactory {
             for (String s : getKafkaConnectBaseUris()) {
                 try {
                     kafkaConnectBaseURIsList.add(new URI(s.trim()));
-                } catch (URISyntaxException e) {
+                }
+                catch (URISyntaxException e) {
                     throw new InvalidClusterException(
                             "Error parsing Kafka Connect cluster URI \"" + s.trim() + "\": " + e.getMessage(),
                             e);
@@ -87,7 +89,8 @@ public class KafkaConnectClientFactory {
             kafkaConnectClient = RestClientBuilder.newBuilder()
                     .baseUri(kafkaConnectURI)
                     .build(KafkaConnectClient.class);
-        } catch (RuntimeException | InvalidClusterException e) {
+        }
+        catch (RuntimeException | InvalidClusterException e) {
             throw new KafkaConnectException(e.getMessage(), e);
         }
         return kafkaConnectClient;

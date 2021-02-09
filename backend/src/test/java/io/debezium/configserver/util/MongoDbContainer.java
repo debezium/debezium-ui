@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.util;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -36,7 +41,8 @@ public class MongoDbContainer extends MongoDBContainer {
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
         try {
             initReplicaSet();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -48,7 +54,8 @@ public class MongoDbContainer extends MongoDBContainer {
             String username = envMap.getOrDefault("MONGO_INITDB_ROOT_USERNAME", "admin");
             String password = envMap.getOrDefault("MONGO_INITDB_ROOT_PASSWORD", "admin");
             return new String[]{"mongo", "-u", username, "-p", password, "--eval", command};
-        } else {
+        }
+        else {
             return new String[]{"mongo", "--eval", command};
         }
     }

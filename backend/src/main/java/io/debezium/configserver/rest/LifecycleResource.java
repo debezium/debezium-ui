@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.rest;
 
 import io.debezium.configserver.model.ConnectionValidationResult;
@@ -69,7 +74,8 @@ public class LifecycleResource {
         Response result;
         try {
             result = kafkaConnectClient.pauseConnector(connectorName);
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
@@ -118,7 +124,8 @@ public class LifecycleResource {
         Response result;
         try {
             result = kafkaConnectClient.resumeConnector(connectorName);
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
@@ -171,7 +178,8 @@ public class LifecycleResource {
         Response result;
         try {
             result = kafkaConnectClient.restartConnector(connectorName);
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
@@ -225,7 +233,8 @@ public class LifecycleResource {
         Response result;
         try {
             result = kafkaConnectClient.restartConnectorTask(connectorName, taskNumber);
-        } catch (ProcessingException | IOException e) {
+        }
+        catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));

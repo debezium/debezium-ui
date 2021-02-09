@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.service;
 
 import java.util.ArrayList;
@@ -23,12 +28,8 @@ import io.debezium.configserver.model.ConnectorType;
 import io.debezium.configserver.model.GenericValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertyValidationResult;
-import io.debezium.connector.postgresql.PostgresConnectorConfig;
-import org.jboss.logging.Logger;
 
 public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
-
-    private static final Logger LOGGER = Logger.getLogger(ConnectorIntegratorBase.class);
 
     protected abstract ConnectorDescriptor getConnectorDescriptor();
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver.model;
 
 import java.util.List;
@@ -26,7 +31,7 @@ public class ConnectorProperty {
         this.displayName = displayName;
         this.description = description;
         this.type = type;
-        this.defaultValue = defaultValue instanceof Class ? ((Class<?>)defaultValue).getName() : defaultValue;
+        this.defaultValue = defaultValue instanceof Class ? ((Class<?>) defaultValue).getName() : defaultValue;
         this.isMandatory = isMandatory;
         this.category = category;
         this.allowedValues = allowedValues;

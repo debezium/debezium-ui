@@ -1,3 +1,8 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
 package io.debezium.configserver;
 
 import io.debezium.configserver.rest.ConnectorURIs;
@@ -33,7 +38,8 @@ public class LifecycleResourceIT {
 
         try {
             Infrastructure.getDebeziumContainer().ensureConnectorState(connectorName, Connector.State.PAUSED);
-        } catch (ConditionTimeoutException e) {
+        }
+        catch (ConditionTimeoutException e) {
             Assertions.fail("Connector did not pause within configured timeout.");
         }
         Assertions.assertEquals(Connector.State.PAUSED, Infrastructure.getDebeziumContainer().getConnectorState(connectorName));
@@ -46,7 +52,8 @@ public class LifecycleResourceIT {
 
         try {
             Infrastructure.getDebeziumContainer().ensureConnectorState(connectorName, Connector.State.RUNNING);
-        } catch (ConditionTimeoutException e) {
+        }
+        catch (ConditionTimeoutException e) {
             Assertions.fail("Connector did not pause within configured timeout.");
         }
         Assertions.assertEquals(Connector.State.RUNNING, Infrastructure.getDebeziumContainer().getConnectorState(connectorName));
