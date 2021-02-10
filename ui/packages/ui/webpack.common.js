@@ -21,7 +21,7 @@ module.exports = {
       'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
     }),
     new webpack.container.ModuleFederationPlugin({
-      name: 'debeziumuipoc',
+      name: 'debeziumui',
       filename: "remoteEntry.js",
       exposes: {
         "./debeziumCreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",

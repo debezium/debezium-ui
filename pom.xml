@@ -5,11 +5,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.debezium.uipoc</groupId>
-  <artifactId>debezium-uipoc-parent</artifactId>
+  <groupId>io.debezium.ui</groupId>
+  <artifactId>debezium-ui-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Debezium UI PoC Build Aggregator</name>
+  <name>Debezium UI Build Aggregator</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

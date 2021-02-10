@@ -6,15 +6,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.debezium.uipoc</groupId>
-    <artifactId>debezium-uipoc-parent</artifactId>
+    <groupId>io.debezium.ui</groupId>
+    <artifactId>debezium-ui-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>debezium-uipoc-frontend</artifactId>
+  <artifactId>debezium-ui-frontend</artifactId>
   <packaging>jar</packaging>
-  <name>Debezium UI PoC Frontend</name>
+  <name>Debezium UI Frontend</name>
 
   <properties>
     <!-- UI Build Tools -->

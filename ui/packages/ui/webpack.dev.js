@@ -15,7 +15,7 @@ module.exports = merge(common, {
   ],
   output: {
     publicPath: (false && isProd && remoteSuffix)
-      ? `http://debeziumuipoc${remoteSuffix}/`
+      ? `http://debeziumui${remoteSuffix}/`
       : `http://localhost:8888/`
   },
   devServer: {

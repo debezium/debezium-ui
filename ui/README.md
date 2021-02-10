@@ -1,6 +1,6 @@
 
 
-# Debezium UI POC
+# Debezium UI
 
 React-based Single Page Application based on Patternfly 4
 

@@ -3,12 +3,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>io.debezium.uipoc</groupId>
-    <artifactId>debezium-uipoc-parent</artifactId>
+    <groupId>io.debezium.ui</groupId>
+    <artifactId>debezium-ui-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>debezium-uipoc-backend</artifactId>
-  <name>Debezium UI PoC Backend</name>
+  <artifactId>debezium-ui-backend</artifactId>
+  <name>Debezium UI Backend</name>
 
   <properties>
     <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
@@ -156,7 +156,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
-                  <artifactId>debezium-uipoc-frontend</artifactId>
+                  <artifactId>debezium-ui-frontend</artifactId>
                   <version>${project.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
