@@ -38,7 +38,7 @@ export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
     const msg = props.errorInfo ? props.errorInfo.componentStack
                   : props.error ? JSON.stringify(props.error) : t('noDetailsAvailable');
     return (
-      <Text component={"pre"} className={"pf-u-text-align-left"}>
+      <Text component={"pre"} className={"pf-u-text-align-left application-error-msg_error_msg"}>
         {msg}
       </Text>
     );
