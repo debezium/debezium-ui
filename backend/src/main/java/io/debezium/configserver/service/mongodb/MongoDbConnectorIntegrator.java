@@ -6,6 +6,7 @@
 package io.debezium.configserver.service.mongodb;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.common.collect.ImmutableMap;
 import io.debezium.DebeziumException;
 import io.debezium.config.CommonConnectorConfig;
 import io.debezium.config.Configuration;
@@ -96,7 +96,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MongoDbConnectorConfig.RETRIABLE_RESTART_WAIT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(MongoDbConnectorConfig.SOURCE_STRUCT_MAKER_VERSION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
 
-        MONGODB_PROPERTIES = ImmutableMap.copyOf(additionalMetadata);
+        MONGODB_PROPERTIES =  Collections.unmodifiableMap(additionalMetadata);
     }
 
     protected ConnectionContext.MongoPrimary primary(MongoDbTaskContext context) throws Throwable {
