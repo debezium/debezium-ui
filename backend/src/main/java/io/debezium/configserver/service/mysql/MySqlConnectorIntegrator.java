@@ -5,7 +5,6 @@
  */
 package io.debezium.configserver.service.mysql;
 
-import com.google.common.collect.ImmutableMap;
 import io.debezium.DebeziumException;
 import io.debezium.config.Configuration;
 import io.debezium.config.Field;
@@ -27,13 +26,14 @@ import org.jboss.logging.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO: This will live in the PG connector module eventually
+// TODO: This will live in the actual connector module eventually
 public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
 
     private static final Logger LOGGER = Logger.getLogger(MySqlConnectorIntegrator.class);
@@ -118,7 +118,7 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MySqlConnectorConfig.POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.SOURCE_STRUCT_MAKER_VERSION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
 
-        MYSQL_PROPERTIES = ImmutableMap.copyOf(additionalMetadata);
+        MYSQL_PROPERTIES = Collections.unmodifiableMap(additionalMetadata);
     }
 
     @Override

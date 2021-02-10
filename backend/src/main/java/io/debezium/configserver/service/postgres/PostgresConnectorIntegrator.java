@@ -6,13 +6,13 @@
 package io.debezium.configserver.service.postgres;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableMap;
 import io.debezium.config.Field;
 import io.debezium.configserver.model.AdditionalPropertyMetadata;
 import io.debezium.configserver.model.ConnectorProperty;
@@ -33,7 +33,7 @@ import io.debezium.connector.postgresql.PostgresConnectorConfig;
 import io.debezium.connector.postgresql.connection.PostgresConnection;
 import io.debezium.relational.TableId;
 
-// TODO: This will live in the PG connector module eventually
+// TODO: This will live in the actual connector module eventually
 public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
 
     private static final Map<String, AdditionalPropertyMetadata> POSTGRES_PROPERTIES;
@@ -126,7 +126,7 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(PostgresConnectorConfig.RETRIABLE_RESTART_WAIT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.SOURCE_STRUCT_MAKER_VERSION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
 
-        POSTGRES_PROPERTIES = ImmutableMap.copyOf(additionalMetadata);
+        POSTGRES_PROPERTIES = Collections.unmodifiableMap(additionalMetadata);
     }
 
     @Override

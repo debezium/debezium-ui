@@ -21,6 +21,8 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Duration;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Infrastructure {
@@ -84,7 +86,12 @@ public class Infrastructure {
                 dbContainer = null;
                 break;
         }
-        Startables.deepStart(Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER)).join();
+
+        Supplier<Stream<GenericContainer<?>>> containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
+        if ("true".equals(System.getenv("CI"))) {
+            containers.get().forEach(container -> container.withStartupTimeout(Duration.ofSeconds(90)));
+        }
+        Startables.deepStart(containers.get()).join();
     }
 
     public static KafkaContainer getKafkaContainer() {
@@ -109,6 +116,7 @@ public class Infrastructure {
 
     public static ConnectorConfiguration getPostgresConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(POSTGRES_CONTAINER)
+                .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
                 .with("database.server.name", "dbserver" + id)
                 .with("slot.name", "debezium_" + id);
 
@@ -122,6 +130,7 @@ public class Infrastructure {
 
     public static ConnectorConfiguration getMySqlConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(MYSQL_CONTAINER)
+                .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
                 .with("database.server.name", "dbserver" + id)
                 .with("database.history.kafka.bootstrap.servers", "kafka:9092")
                 .with("database.history.kafka.topic", "dbhistory.inventory")
@@ -137,6 +146,7 @@ public class Infrastructure {
 
     public static ConnectorConfiguration getMongoDbConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbContainer(MONGODB_CONTAINER)
+                .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
                 .with(MongoDbConnectorConfig.USER.name(), "debezium")
                 .with(MongoDbConnectorConfig.PASSWORD.name(), "dbz")
                 .with(MongoDbConnectorConfig.LOGICAL_NAME.name(), "mongo" + id);
