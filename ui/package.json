@@ -1,6 +1,6 @@
 {
-  "description": "Debezium UI POC",
-  "repository": "https://github.com/debezium/debezium-ui-poc.git",
+  "description": "Debezium UI",
+  "repository": "https://github.com/debezium/debezium-ui.git",
   "license": "Apache-2.0",
   "private": true,
   "workspaces": {
@@ -32,5 +32,5 @@
     "husky": "^4.3.7",
     "lerna": "3.21.0"
   },
-  "name": "debezium-ui-poc"
+  "name": "debezium-ui"
 }

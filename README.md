@@ -20,8 +20,8 @@ This project is under active development, any contributions are very welcome.
 
 ## Prerequisites
 
-Debezium UI needs a properly running Debezium instance version 1.4.0.Beta1 or newer and a running
-Postgres or Mongo DB database instance (depending on what connector you are going to use).
+Debezium UI needs a properly running Debezium instance version 1.4.0.Beta1 or newer and running DB instances, depending
+on what connectors you are going to use (Postgres, Mongo DB, MySQL, etc).
 
 ### DEV Infrastructure with Docker-Compose
 
@@ -90,7 +90,7 @@ whose contents are then exposed by the Quarkus-based backend application.
 
 ### UI Development
 
-The UI code for is located in the _ui_ folder, with README instructions
+The UI code is located in the _ui_ folder, with README instructions
 [here](./ui/README.md) to launch the UI for development.
 
 ### Backend
