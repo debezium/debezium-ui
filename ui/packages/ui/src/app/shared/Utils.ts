@@ -169,7 +169,7 @@ export function getBasicPropertyDefinitions(
 ): ConnectorProperty[] {
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
-    if (propDefn.category === PropertyCategory.BASIC) {
+    if (propDefn?.category === PropertyCategory.BASIC) {
       connProperties.push(propDefn);
     }
   }
@@ -206,9 +206,9 @@ export function getAdvancedPropertyDefinitions(
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
     if (
-      propDefn.category === PropertyCategory.ADVANCED_GENERAL ||
-      propDefn.category === PropertyCategory.ADVANCED_PUBLICATION ||
-      propDefn.category === PropertyCategory.ADVANCED_REPLICATION
+      propDefn?.category === PropertyCategory.ADVANCED_GENERAL ||
+      propDefn?.category === PropertyCategory.ADVANCED_PUBLICATION ||
+      propDefn?.category === PropertyCategory.ADVANCED_REPLICATION
     ) {
       connProperties.push(propDefn);
     }
@@ -242,9 +242,9 @@ export function getDataOptionsPropertyDefinitions(
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
     if (
-      propDefn.category === PropertyCategory.DATA_OPTIONS_GENERAL ||
-      propDefn.category === PropertyCategory.DATA_OPTIONS_ADVANCED ||
-      propDefn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
+      propDefn?.category === PropertyCategory.DATA_OPTIONS_GENERAL ||
+      propDefn?.category === PropertyCategory.DATA_OPTIONS_ADVANCED ||
+      propDefn?.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
     ) {
       connProperties.push(propDefn);
     }
@@ -262,8 +262,8 @@ export function getRuntimeOptionsPropertyDefinitions(
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
     if (
-      propDefn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
-      propDefn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
+      propDefn?.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
+      propDefn?.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
     ) {
       connProperties.push(propDefn);
     }
@@ -305,7 +305,7 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
   // console.log("MinimizePropertyValues: " + JSON.stringify(mapToObject(propertyValues)));
   propertyValues.forEach((value: string, key: string) => {
     // Get the corresponding property definition
-    const propDefn = propertyDefns.find( (prop) => prop.name.replace(/_/g, ".") === key);
+    const propDefn = propertyDefns.find( (prop) => prop?.name.replace(/_/g, ".") === key);
     if (propDefn) {
       // Include mandatory values
       if (propDefn.isMandatory) {

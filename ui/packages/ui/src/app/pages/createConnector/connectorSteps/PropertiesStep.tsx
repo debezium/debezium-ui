@@ -108,7 +108,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
       if (key.isMandatory) {
         basicValidationSchema[key.name] = basicValidationSchema[
           key.name
-        ].required(`${key.displayName} is required`);
+        ]?.required(`${key.displayName} is required`);
       }
     });
 
