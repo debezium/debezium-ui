@@ -358,10 +358,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       const connType = connectorTypes.find((conn) => conn.id === cType);
 
       if(connType?.properties.find(
-        obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+        obj => obj?.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
         )?.name){
           connType.properties.find(
-            obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+            obj => obj?.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
             ).name= "column.mask.hash";
         }
       setSelectedConnectorPropertyDefns(getFormattedProperties(connType!.properties, connType));
