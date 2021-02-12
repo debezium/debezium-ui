@@ -610,6 +610,28 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
           excludeFilter: true
         }]
     }
+  }else if(connectorType==='mysql'){
+    returnObj = {
+      fieldArray: [
+        {
+          field: 'database',
+          valueSample: 'databaseName',
+          preview: true,
+          excludeFilter: false
+        },
+        {
+          field: 'table',
+          valueSample: 'databaseName.tableName',
+          preview: true,
+          excludeFilter: false
+        },
+        {
+          field: 'column',
+          valueSample: 'databaseName.tableName.columnName',
+          preview: false,
+          excludeFilter: false
+        }]
+    }
   }else{
     returnObj = {
       fieldArray: [
@@ -630,7 +652,7 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
           valueSample: 'schemaName.tableName.columnName',
           preview: false,
           excludeFilter: false
-        },]
+        }]
     }
   }
   return returnObj;

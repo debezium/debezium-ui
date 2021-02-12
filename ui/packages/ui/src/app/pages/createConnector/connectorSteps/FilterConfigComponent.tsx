@@ -210,12 +210,12 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
             />
           ) : (
             <NoPreviewFilterField
+              key={fieldFilter.field}
               i18nShowFilter={t("showFilter", { field: fieldFilter.field })}
               i18nHideFilter={t("hideFilter", { field: fieldFilter.field })}
             >
               {fieldFilter.excludeFilter ? (
                 <FilterExcludeFieldComponent
-                  key={fieldFilter.field}
                   fieldName={fieldFilter.field}
                   filterValues={props.filterValues}
                   setFormData={setFormData}
@@ -233,7 +233,6 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
                 />
               ) : (
                 <FilterInputFieldComponent
-                  key={fieldFilter.field}
                   fieldName={fieldFilter.field}
                   filterValues={props.filterValues}
                   setFormData={setFormData}
