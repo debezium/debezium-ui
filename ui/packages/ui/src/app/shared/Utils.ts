@@ -15,6 +15,51 @@ export enum ConnectorTypeId {
   MONGO = "mongodb",
 }
 
+export enum DatabaseFilter {
+  NAME = "database",
+  LABEL = "databaseName"
+}
+
+export enum SchemaFilter {
+  NAME = "schema",
+  LABEL = "schemaName"
+}
+
+export enum TableFilter {
+  NAME = "table",
+  LABEL = "tableName"
+}
+
+export enum CollectionFilter {
+  NAME = "collection",
+  LABEL = "collectionName"
+}
+
+export enum ColumnFilter {
+  NAME = "column",
+  LABEL = "columnName"
+}
+
+export enum FieldFilter {
+  NAME = "field",
+  LABEL = "fieldName"
+}
+
+export enum ConnectorFilterProps {
+  DATABASE_FIELD = "",
+  DATABASE_LABEL = "",
+  SCHEMA_FIELD = "",
+  SCHEMA_LABEL = "",
+  TABLE_FIELD = "",
+  TABLE_LABEL = "",
+  COLLECTION_FIELD = "",
+  COLLECTION_LABEL = "",
+  COLUMN_FIELD = "",
+  COLUMN_LABEL = "",
+  FIELD_FIELD = "",
+  FIELD_LABEL = ""
+}
+
 export enum PropertyName {
   BIGINT_UNSIGNED_HANDLING_MODE = "bigint.unsigned.handling.mode",
   BINARY_HANDLING_MODE = "binary.handling.mode",
@@ -588,46 +633,46 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
  */
 export function getFilterConfigurationPageContent(connectorType: string): any {
   let returnObj;
-  if(connectorType==='mongodb'){
+  if(connectorType===ConnectorTypeId.MONGO){
     returnObj = {
       fieldArray: [
         {
-          field: 'database',
-          valueSample: 'databaseName',
+          field: DatabaseFilter.NAME,
+          valueSample: DatabaseFilter.LABEL,
           preview: true,
           excludeFilter: false
         },
         {
-          field: 'collection',
-          valueSample: 'databaseName.collectionName',
+          field: CollectionFilter.NAME,
+          valueSample: `${DatabaseFilter.LABEL}.${CollectionFilter.LABEL}`,
           preview: true,
           excludeFilter: false
         },
         {
-          field: 'field',
-          valueSample: 'databaseName.collectionName.fieldName',
+          field: FieldFilter.NAME,
+          valueSample: `${DatabaseFilter.LABEL}.${CollectionFilter.LABEL}.${FieldFilter.LABEL}`,
           preview: false,
           excludeFilter: true
         }]
     }
-  }else if(connectorType==='mysql'){
+  }else if(connectorType===ConnectorTypeId.MYSQL){
     returnObj = {
       fieldArray: [
         {
-          field: 'database',
-          valueSample: 'databaseName',
+          field: DatabaseFilter.NAME,
+          valueSample: DatabaseFilter.LABEL,
           preview: true,
           excludeFilter: false
         },
         {
-          field: 'table',
-          valueSample: 'databaseName.tableName',
+          field: TableFilter.NAME,
+          valueSample: `${DatabaseFilter.LABEL}.${TableFilter.LABEL}`,
           preview: true,
           excludeFilter: false
         },
         {
-          field: 'column',
-          valueSample: 'databaseName.tableName.columnName',
+          field: ColumnFilter.NAME,
+          valueSample: `${DatabaseFilter.LABEL}.${TableFilter.LABEL}.${ColumnFilter.LABEL}`,
           preview: false,
           excludeFilter: false
         }]
@@ -636,20 +681,20 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
     returnObj = {
       fieldArray: [
         {
-          field: 'schema',
-          valueSample: 'schemaName',
+          field: SchemaFilter.NAME,
+          valueSample: SchemaFilter.LABEL,
           preview: true,
           excludeFilter: false
         },
         {
-          field: 'table',
-          valueSample: 'schemaName.tableName',
+          field: TableFilter.NAME,
+          valueSample: `${SchemaFilter.LABEL}.${TableFilter.LABEL}`,
           preview: true,
           excludeFilter: false
         },
         {
-          field: 'column',
-          valueSample: 'schemaName.tableName.columnName',
+          field: ColumnFilter.NAME,
+          valueSample: `${SchemaFilter.LABEL}.${TableFilter.LABEL}.${ColumnFilter.LABEL}`,
           preview: false,
           excludeFilter: false
         }]
