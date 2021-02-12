@@ -45,21 +45,6 @@ export enum FieldFilter {
   LABEL = "fieldName"
 }
 
-export enum ConnectorFilterProps {
-  DATABASE_FIELD = "",
-  DATABASE_LABEL = "",
-  SCHEMA_FIELD = "",
-  SCHEMA_LABEL = "",
-  TABLE_FIELD = "",
-  TABLE_LABEL = "",
-  COLLECTION_FIELD = "",
-  COLLECTION_LABEL = "",
-  COLUMN_FIELD = "",
-  COLUMN_LABEL = "",
-  FIELD_FIELD = "",
-  FIELD_LABEL = ""
-}
-
 export enum PropertyName {
   BIGINT_UNSIGNED_HANDLING_MODE = "bigint.unsigned.handling.mode",
   BINARY_HANDLING_MODE = "binary.handling.mode",
