@@ -1,0 +1,171 @@
+import {
+  ConnectorProperty,
+  PropertyValidationResult,
+} from "@debezium/ui-models";
+import { ExpandableSection, Grid, GridItem } from "@patternfly/react-core";
+import { FormikErrors, FormikTouched } from "formik";
+import _ from "lodash";
+import * as React from "react";
+import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
+import * as Yup from "yup";
+import { FormComponent } from "./formHelpers";
+
+export interface IRuntimeOptionsComponentProps {
+  propertyDefinitions: ConnectorProperty[];
+  propertyValues: Map<string, string>;
+  invalidMsg: PropertyValidationResult[];
+  i18nEngineProperties: string;
+  i18nHeartbeatProperties: string;
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => void;
+  errors: FormikErrors<any>;
+  touched: FormikTouched<any>;
+}
+
+export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = React.forwardRef(
+  (props, ref) => {
+    const [engineExpanded, setEngineExpanded] = React.useState<boolean>(true);
+    const [heartbeatExpanded, setHeartbeatExpanded] = React.useState<boolean>(
+      true
+    );
+
+    const basicValidationSchema = {};
+
+    const enginePropertyDefinitions = formatPropertyDefinitions(
+      props.propertyDefinitions.filter(
+        (defn: ConnectorProperty) =>
+          defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
+      )
+    );
+    const heartbeatPropertyDefinitions = formatPropertyDefinitions(
+      props.propertyDefinitions.filter(
+        (defn: ConnectorProperty) =>
+          defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
+      )
+    );
+
+    // Just added String and Password type
+    enginePropertyDefinitions.map((key: any) => {
+      if (key.type === "STRING") {
+        basicValidationSchema[key.name] = Yup.string();
+      } else if (key.type === "PASSWORD") {
+        basicValidationSchema[key.name] = Yup.string();
+      } else if (key.type === "INT") {
+        basicValidationSchema[key.name] = Yup.string();
+      }
+      if (key.isMandatory) {
+        basicValidationSchema[key.name] = basicValidationSchema[
+          key.name
+        ].required(`${key.name} is required`);
+      }
+    });
+
+    const handlePropertyChange = (propName: string, propValue: any) => {
+      // TODO: handling for property change if needed.
+    };
+
+    const onToggleEngine = (isExpanded: boolean) => {
+      setEngineExpanded(isExpanded);
+    };
+
+    const onToggleHeartbeat = (isExpanded: boolean) => {
+      setHeartbeatExpanded(isExpanded);
+    };
+
+    return (
+      <>
+        <Grid>
+          <GridItem lg={9} sm={12}>
+            <ExpandableSection
+              toggleText={
+                engineExpanded
+                  ? props.i18nEngineProperties
+                  : props.i18nEngineProperties
+              }
+              onToggle={onToggleEngine}
+              isExpanded={engineExpanded}
+            >
+              <Grid
+                hasGutter={true}
+                className={"runtime-options-component-expansion-content"}
+              >
+                {enginePropertyDefinitions.map(
+                  (propertyDefinition: ConnectorProperty, index) => {
+                    return (
+                      <GridItem
+                        key={index}
+                        lg={propertyDefinition.gridWidthLg}
+                        sm={propertyDefinition.gridWidthSm}
+                      >
+                        <FormComponent
+                          propertyDefinition={propertyDefinition}
+                          setFieldValue={props.setFieldValue}
+                          helperTextInvalid={
+                            props.errors[propertyDefinition.name]
+                          }
+                          invalidMsg={props.invalidMsg}
+                          validated={
+                            props.errors[propertyDefinition.name] &&
+                            props.touched[propertyDefinition.name]
+                              ? "error"
+                              : "default"
+                          }
+                          propertyChange={handlePropertyChange}
+                        />
+                      </GridItem>
+                    );
+                  }
+                )}
+              </Grid>
+            </ExpandableSection>
+            <ExpandableSection
+              toggleText={
+                heartbeatExpanded
+                  ? props.i18nHeartbeatProperties
+                  : props.i18nHeartbeatProperties
+              }
+              onToggle={onToggleHeartbeat}
+              isExpanded={heartbeatExpanded}
+            >
+              <Grid
+                hasGutter={true}
+                className={"runtime-options-component-expansion-content"}
+              >
+                {heartbeatPropertyDefinitions.map(
+                  (propertyDefinition: ConnectorProperty, index) => {
+                    return (
+                      <GridItem
+                        key={index}
+                        lg={propertyDefinition.gridWidthLg}
+                        sm={propertyDefinition.gridWidthSm}
+                      >
+                        <FormComponent
+                          propertyDefinition={propertyDefinition}
+                          propertyChange={handlePropertyChange}
+                          setFieldValue={props.setFieldValue}
+                          helperTextInvalid={
+                            props.errors[propertyDefinition.name]
+                          }
+                          invalidMsg={props.invalidMsg}
+                          validated={
+                            props.errors[propertyDefinition.name] &&
+                            props.touched[propertyDefinition.name]
+                              ? "error"
+                              : "default"
+                          }
+                        />
+                      </GridItem>
+                    );
+                  }
+                )}
+              </Grid>
+            </ExpandableSection>
+          </GridItem>
+        </Grid>
+      </>
+    );
+  }
+);
