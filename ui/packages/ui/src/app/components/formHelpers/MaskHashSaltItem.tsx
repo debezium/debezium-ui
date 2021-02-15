@@ -75,14 +75,8 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
     <Grid>
       <GridItem span={5}>
         <Flex className={"mask-hash-salt-item-column"}>
-          <FlexItem
-            spacer={{ default: "spacerXs" }}
-            className="mask-hash-salt-item-label"
-          >
-            Columns:
-          </FlexItem>
-          <FlexItem className={"mask-hash-salt-item-column-input"}>
-            <TextInput
+          <FlexItem className={"mask-hash-salt-item-label mask-hash-salt-item-column-input"}>
+            <span>Columns:</span> <TextInput
               data-testid={`${props.rowId}columns`}
               id={`${props.rowId}columns`}
               type={"text"}
@@ -99,10 +93,7 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
             spacer={{ default: "spacerXs" }}
             className="mask-hash-salt-item-label"
           >
-            Hash:
-          </FlexItem>
-          <FlexItem spacer={{ default: "spacerXs" }}>
-            <Select
+            <span>Hash:</span> <Select
               variant={SelectVariant.single}
               aria-label="Select Input"
               onToggle={onToggle}
@@ -127,10 +118,7 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
             spacer={{ default: "spacerXs" }}
             className="mask-hash-salt-item-label"
           >
-            Salt:
-          </FlexItem>
-          <FlexItem spacer={{ default: "spacerXs" }}>
-            <TextInput
+            <span>Salt:</span> <TextInput
               data-testid={`${props.rowId}salt`}
               id={`${props.rowId}salt`}
               type={"text"}
