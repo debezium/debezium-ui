@@ -52,9 +52,8 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
     <Grid>
       <GridItem span={8}>
         <Flex className={"mask-or-truncate-item-column"}>
-          <FlexItem spacer={{ default: "spacerXs" }}>Columns:</FlexItem>
-          <FlexItem className={"mask-or-truncate-item-column-input"}>
-            <TextInput
+          <FlexItem className={"mask-hash-salt-item-label mask-or-truncate-item-column-input"}>
+          <span>Columns:</span> <TextInput
               id={`${props.rowId}columns`}
               type={"text"}
               onChange={handleColumnsChange}
@@ -66,9 +65,8 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
       </GridItem>
       <GridItem span={3}>
         <Flex>
-          <FlexItem spacer={{ default: "spacerXs" }}>n:</FlexItem>
-          <FlexItem>
-            <TextInput
+          <FlexItem className={"mask-hash-salt-item-label"}>
+          <span>n:</span> <TextInput
               id={`${props.rowId}n`}
               min={"1"}
               type={"number"}

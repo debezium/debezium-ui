@@ -31,6 +31,12 @@
       }
       &__nav-item {
         margin-bottom: 30px;
+        ol{
+          padding: 0 10px;
+          li{
+            margin-bottom: 20px;
+          }
+        }
         .pf-m-disabled {
           &:before {
             background-color: var(--pf-global--disabled-color--300);
