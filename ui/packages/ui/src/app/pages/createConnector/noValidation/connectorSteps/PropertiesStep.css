@@ -1,17 +1,19 @@
-.c-data-options {
-  &__spacer {
-    margin: 20px 0;
-  }
+.connector-name-form {
+  padding: 8px 0px;
 }
-
-.data-options-component {
+.connector-type-label {
+  font-weight: var(--pf-c-form__label-text--FontWeight);
+  font-size: var(--pf-c-form__label--FontSize);
+  margin-right: 10px;
+}
+.properties-step {
+  &-advanced-title {
+    margin-top: 30px;
+  }
   &-grouping {
     margin-top: 30px;
     margin-bottom: 10px;
     margin-left: 30px;
-  }
-  &-mapping-title {
-    margin-top: 30px;
   }
   &-expansion-content {
     @media screen and (min-width: 768px) {
@@ -19,7 +21,7 @@
     }
   }
 }
-.data-options-component-page {
+.properties-step-page {
   .pf-c-expandable-section {
     padding-bottom: 30px;
     &__toggle {
@@ -32,11 +34,6 @@
         font-weight: var(--pf-global--FontWeight--bold);
         color: var(--pf-global--Color--100);
       }
-    }
-  }
-  .pf-c-switch, .pf-c-switch__label {
-    @media screen and (max-width: 768px) {
-      display: inline;
     }
   }
 }

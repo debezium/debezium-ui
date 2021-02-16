@@ -7,10 +7,10 @@ import {
   PageSectionVariants,
   TextContent,
   Title,
-  TitleSizes
+  TitleSizes,
 } from "@patternfly/react-core";
 import React from "react";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 import CreateConnectorComponent from "./CreateConnectorComponent";
 import "./CreateConnectorComponent.css";
@@ -21,7 +21,6 @@ interface ILocationState {
 }
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
-
   const { t } = useTranslation(["app"]);
   const history = useHistory();
 
@@ -37,6 +36,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const clusterID = location.state?.value;
   const connectorNames = location.state?.connectorNames;
+  const noValidation = location.state?.noValidation;
 
   return (
     <>
@@ -46,7 +46,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>{t("createConnector")}</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>
+            {t("createConnector")}
+          </BreadcrumbItem>
         </Breadcrumb>
         <Level hasGutter={true}>
           <LevelItem>
@@ -59,7 +61,21 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         </Level>
       </PageSection>
       <div className="app-page-section-border-bottom">
-        <CreateConnectorComponent onCancelCallback={onCancel} onSuccessCallback={onSuccess} clusterId={""+clusterID} connectorNames={connectorNames} />
+        {noValidation ? (
+          <CreateConnectorNoValidation
+            onCancelCallback={onCancel}
+            onSuccessCallback={onSuccess}
+            clusterId={clusterID}
+            connectorNames={connectorNames}
+          />
+        ) : (
+          <CreateConnectorComponent
+            onCancelCallback={onCancel}
+            onSuccessCallback={onSuccess}
+            clusterId={clusterID}
+            connectorNames={connectorNames}
+          />
+        )}
       </div>
     </>
   );

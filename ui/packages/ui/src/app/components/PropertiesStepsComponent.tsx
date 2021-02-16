@@ -1,4 +1,4 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import { ConnectorProperty, PropertyValidationResult } from "@debezium/ui-models";
 import {
   ExpandableSection,
   Grid,
@@ -22,6 +22,7 @@ export interface IPropertiesStepProps {
   basicPropertyValues: Map<string, string>;
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
+  invalidMsg: PropertyValidationResult[];
   i18nAdvancedPropertiesText: string;
   i18nAdvancedPublicationPropertiesText: string;
   i18nAdvancedReplicationPropertiesText: string;
