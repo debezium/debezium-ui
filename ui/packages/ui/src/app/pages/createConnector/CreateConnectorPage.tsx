@@ -36,7 +36,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const clusterID = location.state?.value;
   const connectorNames = location.state?.connectorNames;
-  const noValidation = location.state?.noValidation;
+  const doValidation = location.state?.doValidation;
 
   return (
     <>
@@ -61,15 +61,15 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         </Level>
       </PageSection>
       <div className="app-page-section-border-bottom">
-        {noValidation ? (
-          <CreateConnectorNoValidation
+        {doValidation ? (
+          <CreateConnectorComponent
             onCancelCallback={onCancel}
             onSuccessCallback={onSuccess}
             clusterId={clusterID}
             connectorNames={connectorNames}
           />
         ) : (
-          <CreateConnectorComponent
+          <CreateConnectorNoValidation
             onCancelCallback={onCancel}
             onSuccessCallback={onSuccess}
             clusterId={clusterID}

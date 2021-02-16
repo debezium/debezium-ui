@@ -46,8 +46,8 @@ interface IConnectorsTableComponentProps {
   i18nApiErrorTitle?: string;
   i18nApiErrorMsg?: string;
   createConnectorCallback: ICreateConnectorCallbackFn;
-  noValidation: boolean;
-  setNoValidation: () => void;
+  doValidation: boolean;
+  setDoValidation: () => void;
 }
 
 export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableComponentProps> = (
@@ -86,7 +86,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [expandedRows, setExpandedRows] = React.useState<number[]>([]);
 
   const handleChange = (isCheckedVal: boolean) => {
-    props.setNoValidation();
+    props.setDoValidation();
   };
 
   const addAlert = (type: string, heading: string, msg?: string) => {
@@ -647,12 +647,12 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                   >
                     {t("createAConnector")}
                   </Button>
-                  <sub>{' '} with {' '}</sub>
+                  <sub> with </sub>
                   <Switch
                     id="simple-switch"
-                    label="No validation"
-                    labelOff="Validation"
-                    isChecked={props.noValidation}
+                    label="Validation"
+                    labelOff="No validation"
+                    isChecked={props.doValidation}
                     onChange={handleChange}
                   />
                 </FlexItem>
@@ -675,7 +675,16 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
               <Title headingLevel="h4" size="lg">
                 {t("noConnectors")}
               </Title>
-              <EmptyStateBody>{t("connectorEmptyStateMsg")}</EmptyStateBody>
+              <EmptyStateBody>
+                {t("connectorEmptyStateMsg")} with{" "}
+                <Switch
+                  id="simple-switch"
+                  label="Validation"
+                  labelOff="No validation"
+                  isChecked={props.doValidation}
+                  onChange={handleChange}
+                />
+              </EmptyStateBody>
               <Button
                 onClick={createConnector}
                 variant="primary"
