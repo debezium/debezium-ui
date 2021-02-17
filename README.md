@@ -11,8 +11,11 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 
 # Debezium UI
 
-Debezium is an open source distributed platform for change data capture (CDC)
+Debezium is an open source distributed platform for change data capture (CDC).
+
 This repository contains a web-based UI for Debezium, allowing to configure Debezium connectors in an intuitive way, control their lifecycle, and more.
+The Debezium UI is a standalone web application, which connects to Kafka Connect via its REST API.
+
 This project is under active development, any contributions are very welcome.
 
 ## Prerequisites
@@ -75,6 +78,7 @@ Mongo DB will be availaible after ~20 seconds on local port **37017** (connect v
 Kafka will be available on local port **9092**.  
 
 ## Build
+
 The entire application (UI and backend) can be built via Maven:
 
 ```
@@ -86,7 +90,7 @@ whose contents are then exposed by the Quarkus-based backend application.
 
 ### UI Development
 
-The UI code for the PoC is located in the _ui_ folder, with README instructions
+The UI code for is located in the _ui_ folder, with README instructions
 [here](./ui/README.md) to launch the UI for development.
 
 ### Backend
