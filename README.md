@@ -9,12 +9,11 @@
 Copyright Debezium Authors.
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-# Debezium UI PoC
+# Debezium UI
 
-Debezium is an open source project that provides a low latency data streaming platform for change
-data capture (CDC).
-
-This repository contains a proof-of-concept for a potential future web-based UI for Debezium.
+Debezium is an open source distributed platform for change data capture (CDC)
+This repository contains a web-based UI for Debezium, allowing to configure Debezium connectors in an intuitive way, control their lifecycle, and more.
+This project is under active development, any contributions are very welcome.
 
 ## Prerequisites
 
