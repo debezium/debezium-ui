@@ -6,6 +6,7 @@ const { dependencies } = require("./package.json");
 
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || '/';
+const COMMIT_HASH = require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
 
 module.exports = {
   entry: {
@@ -19,6 +20,9 @@ module.exports = {
     // This makes it possible for us to safely use env vars on our code
     new webpack.DefinePlugin({
       'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
+    }),
+    new webpack.DefinePlugin({
+      'process.env.COMMIT_HASH': JSON.stringify(COMMIT_HASH),
     }),
     new webpack.container.ModuleFederationPlugin({
       name: 'debeziumui',
