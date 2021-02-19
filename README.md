@@ -51,6 +51,16 @@ Creating debezium-ui_mongo-initializer_1 ... done
 Creating dbzui-kafka     ... done
 Creating dbzui-connect   ... done
 
+```
+
+Debezium UI will be available on [http://localhost:8080](http://localhost:8080)      
+Kafka Connect REST API with Debezium will be available on local port **8083**.   
+Postgres will be available on local port **65432**.  
+MySQL will be available on local port **63306**.  
+Mongo DB will be availaible after ~20 seconds on local port **37017** (connect via `mongo -u debezium -p dbz --authenticationDatabase admin localhost:37017/inventory`)
+Kafka will be available on local port **9092**.  
+
+```
 ## later stop containers:
 $ docker-compose down
 
@@ -69,13 +79,8 @@ Removing debezium-ui_mongo-initializer_1 ... done
 Removing dbzui-db-pg     ... done
 Removing dbzui-db-mysql  ... done
 Removing network debezium-ui_dbzui-network
-```
 
-Kafka Connect REST API with Debezium will be available on local port **8083**.   
-Postgres will be available on local port **65432**.  
-MySQL will be available on local port **63306**.  
-Mongo DB will be availaible after ~20 seconds on local port **37017** (connect via `mongo -u debezium -p dbz --authenticationDatabase admin localhost:37017/inventory`)
-Kafka will be available on local port **9092**.  
+```
 
 ## Build
 
