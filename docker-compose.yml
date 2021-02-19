@@ -34,7 +34,7 @@ services:
       - "63306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=debezium
-      - MYSQL_USER=mysql
+      - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysql
     networks:
       - dbzui-network
