@@ -21,7 +21,7 @@ const AppLayout: React.FC = ({ children }) => {
 	);
 	const handleClusterIdChange = (id: number) => {
 		setClusterId(id);
-	}
+	};
 	return (
 
 		<AppLayoutContext.Provider value={{ showBreadcrumb, clusterId }}>
