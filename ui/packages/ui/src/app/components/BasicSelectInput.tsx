@@ -5,16 +5,13 @@ import {
   SelectVariant
 } from '@patternfly/react-core';
 import * as React from 'react';
-import { ISelectOptions } from '.';
 import "./BasicSelectInput.css";
 
 export interface IBasicSelectInputProps {
     label: string,
-    name: string;
     fieldId: string,
-    isRequired: boolean,
-    options: ISelectOptions[],
-    propertyChange: (name: string, selection: any) => void;
+    options: string[],
+    propertyChange: (name: string, selection?: any) => void;
 }
 
 export const BasicSelectInput = (props: IBasicSelectInputProps) => {
@@ -37,7 +34,7 @@ export const BasicSelectInput = (props: IBasicSelectInputProps) => {
     setOpen(false)
   };  
 
-  const onSelect = (e, selection: boolean, isPlaceholder: boolean) => {
+  const onSelect = (e: any, selection: any, isPlaceholder: any) => {
     if (isPlaceholder) {
       clearSelection();
     }
@@ -63,7 +60,7 @@ export const BasicSelectInput = (props: IBasicSelectInputProps) => {
         selections={selected}
         isOpen={isOpen}
       >
-        {options.map((option, index) => (
+        {options.map((option:any, index) => (
           <SelectOption
             key={index}
             value={option}

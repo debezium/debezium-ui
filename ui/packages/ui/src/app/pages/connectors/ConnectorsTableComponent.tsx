@@ -19,14 +19,14 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { CubesIcon, FilterIcon, SortAmountDownAltIcon, SortAmountDownIcon } from "@patternfly/react-icons";
-import { cellWidth, expandable, Table, TableBody, TableHeader } from "@patternfly/react-table";
-import React from "react";
+import { cellWidth, expandable, IAction, IExtraData, IRowData, Table, TableBody, TableHeader } from "@patternfly/react-table";
+import React, { SyntheticEvent } from "react";
 import isEqual from "react-fast-compare";
 import { useTranslation } from 'react-i18next';
-import { PageLoader, ToastAlertComponent } from "src/app/components";
-import { AppLayoutContext } from 'src/app/Layout/AppLayoutContext';
-import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry } from "src/app/shared";
-import { WithLoader } from "src/app/shared/WithLoader";
+import { PageLoader, ToastAlertComponent } from "../../components";
+import { AppLayoutContext } from '../../Layout/AppLayoutContext';
+import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry } from "../../shared";
+import { WithLoader } from "../../shared/WithLoader";
 import { ConnectorIcon } from './ConnectorIcon';
 import { ConnectorOverview } from "./ConnectorOverview";
 import "./ConnectorsTableComponent.css";
@@ -65,7 +65,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [currentActionConnector, setCurrentActionConnector] = React.useState("");
   
   const [alerts, setAlerts] = React.useState<any[]>([]);
-  const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<string[]>([]);
+  const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<any[]>([]);
   
   const { t } = useTranslation(['app']);
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
@@ -111,7 +111,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         .then((cConnectors: any) => {
           addAlert("success", t('connectorDeletedSuccess'));
         })
-        .catch((err: React.SetStateAction<Error>) => {
+        .catch((err) => {
           addAlert("danger",t('connectorDeletionFailed'), err?.message);
         });
         break;
@@ -122,7 +122,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           addAlert("success", t('connectorPausedSuccess'));
           setConnectorStatus(connName, "PAUSED");
         })
-        .catch((err: React.SetStateAction<Error>) => {
+        .catch((err) => {
           addAlert("danger",t('connectorPauseFailed'), err?.message);
         });    
         break;
@@ -133,7 +133,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           addAlert("success", t('connectorResumedSuccess'));
           setConnectorStatus(connName, "RUNNING");
         })
-        .catch((err: React.SetStateAction<Error>) => {
+        .catch((err) => {
           addAlert("danger",t('connectorResumeFailed'), err?.message);
         });    
         break;
@@ -144,7 +144,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
           addAlert("success", t('connectorRestartSuccess'));
           setConnectorStatus(connName, "RUNNING");
         })
-        .catch((err: React.SetStateAction<Error>) => {
+        .catch((err) => {
           addAlert("danger",t('connectorRestartFailed'), err?.message);
         });
         break;
@@ -155,7 +155,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
         .then((cConnectors: any) => {
           addAlert("success", t('connectorTaskRestartSuccess'));
         })
-        .catch((err: React.SetStateAction<Error>) => {
+        .catch((err) => {
           addAlert("danger",t('connectorTaskRestartFailed'), err?.message);
         });
         break;
@@ -393,25 +393,26 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setTableRows(rows);
   };
 
-  const tableActionResolver = (row) => {
-    return [      
+  const tableActionResolver = (row: IRowData, extraData: IExtraData) => {
+    let returnVal = [] as IAction[];
+    returnVal =  [      
       {
         title: t('pause'),
-        onClick: (event, rowId, rowData, extra) => {
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.PAUSE, rowData.connName);
         },
         isDisabled: row.connStatus === "RUNNING" ? false : true        
       },
       {
         title: t('resume'),
-        onClick: (event, rowId, rowData, extra) => {
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.RESUME, rowData.connName);
         },
         isDisabled: row.connStatus === "PAUSED" ? false : true 
       },
       {
         title: t('restart'),
-        onClick: (event, rowId, rowData, extra) => {
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.RESTART, rowData.connName);
         },
         isDisabled: (row.connStatus === "UNASSIGNED" || row.connStatus === "DESTROYED") ? true : false 
@@ -421,12 +422,13 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
       },
       {
         title: t('delete'),
-        onClick: (event, rowId, rowData, extra) => {
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.DELETE, rowData.connName);
         },
         isDisabled: false
       }
     ];
+    return returnVal;
   }
 
   const toggleRowOrder = () =>{
@@ -434,8 +436,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setDesRowOrder(!desRowOrder);
   }
 
-  const onSortingSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sortBy = e.target.innerText;
+  const onSortingSelect = (event?: SyntheticEvent<HTMLDivElement, Event> | undefined) => {
+    const eventTarget = event?.target as HTMLElement;
+    const sortBy = eventTarget.innerText;
     setCurrentCategory(sortBy)
     setIsSortingDropdownOpen(!isSortingDropdownOpen)
     updateTableRows(connectors, desRowOrder, sortBy)
@@ -445,7 +448,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     setIsSortingDropdownOpen(isOpen)
   };
 
-  const onCollapse = (event, rowKey, isOpen) => {
+  const onCollapse = (event: any, rowKey: number, isOpen: any) => {
     tableRows[rowKey].isOpen = isOpen;
     let updatedExpandedRows = [...expandedRows];
     updatedExpandedRows = isOpen ? [...updatedExpandedRows, rowKey] : updatedExpandedRows.filter(val => val !== rowKey);

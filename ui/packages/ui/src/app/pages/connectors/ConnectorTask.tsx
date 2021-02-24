@@ -1,7 +1,7 @@
 import { Button, Flex, FlexItem, Label, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import * as React from "react";
-import { ConnectorState } from "src/app/shared";
+import { ConnectorState } from "../../shared";
 import "./ConnectorTask.css";
 export interface IConnectorTaskProps {
   status: string;
@@ -42,7 +42,7 @@ switch (props.status) {
 }
 const errors: JSX.Element[] = [];
 if (props.errors) {
-  props.errors.forEach( (error: string, index) => {
+  props.errors.forEach( (error: string, index: any) => {
     errors.push(<div key ={index} className="connector-task-error">{error}</div>)
   });
 }

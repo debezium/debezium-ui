@@ -225,10 +225,10 @@ export function getBasicPropertyDefinitions(
 
 export function formatPropertyDefinitions (
   propertyValues: ConnectorProperty[]
-){
-  return propertyValues.map((key: { name: string }) => {
-    key.name = key.name.replace(/\./g, "_");
-    return key;
+): ConnectorProperty[] {
+  return propertyValues.map((value: ConnectorProperty) => {
+    value.name = value.name.replace(/\./g, "_");
+    return value;
   });
 };
 
@@ -688,8 +688,8 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
   return returnObj;
 }
 
-export function mapToObject(inputMap: Map<string, string>) {
-  const obj = {};
+export function mapToObject(inputMap: Map<string, string>): {key: string, value: any} {
+  const obj = {} as {key: string, value: any};
   inputMap.forEach((value, key) => {
     obj[key] = value;
   });

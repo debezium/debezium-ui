@@ -12,9 +12,9 @@ import {
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
 import * as Yup from "yup";
 import { FormComponent } from "../../../components/formHelpers";
+import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "../../../shared";
 import { ConnectorTypeComponent } from './ConnectorTypeComponent';
 import "./PropertiesStep.css";
 

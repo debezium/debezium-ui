@@ -8,7 +8,7 @@ import {
 import React from "react";
 import {
   ConnectorTypeId,
-} from "src/app/shared";
+} from "../../../shared";
 import { ConnectorIcon } from '../../connectors/ConnectorIcon';
 import "./ConnectorTypeComponent.css";
 
