@@ -3,9 +3,9 @@ import { ExpandableSection, Grid, GridItem } from "@patternfly/react-core";
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
 import * as Yup from "yup";
 import { FormComponent } from "../../../components/formHelpers";
+import { formatPropertyDefinitions, PropertyCategory } from "../../../shared";
 import "./RuntimeOptionsComponent.css";
 
 export interface IRuntimeOptionsComponentProps {

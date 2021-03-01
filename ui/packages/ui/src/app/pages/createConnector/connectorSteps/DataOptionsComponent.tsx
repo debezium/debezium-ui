@@ -8,8 +8,8 @@ import {
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
 import { FormComponent } from "../../../components/formHelpers";
+import { formatPropertyDefinitions, PropertyCategory } from "../../../shared";
 import "./DataOptionsComponent.css";
 
 export interface IDataOptionsComponentProps {

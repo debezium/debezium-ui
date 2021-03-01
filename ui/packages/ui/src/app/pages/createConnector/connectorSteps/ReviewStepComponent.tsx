@@ -1,6 +1,6 @@
 import { Text, TextVariants, Title } from "@patternfly/react-core";
 import * as React from "react";
-import { mapToObject, maskPropertyValues } from 'src/app/shared';
+import { mapToObject, maskPropertyValues } from '../../../shared';
 
 export interface IReviewStepComponentProps {
   i18nReviewTitle: string;

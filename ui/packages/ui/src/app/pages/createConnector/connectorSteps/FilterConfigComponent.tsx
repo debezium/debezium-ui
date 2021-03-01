@@ -12,17 +12,17 @@ import {
 import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
-import { FilterTreeComponent } from "src/app/components";
-import { FilterExcludeFieldComponent } from "src/app/components/FilterExcludeFieldComponent";
-import { FilterInputFieldComponent } from "src/app/components/FilterInputFieldComponent";
-import { NoPreviewFilterField } from "src/app/components/NoPreviewFilterField";
+import { FilterTreeComponent } from "../../../components";
+import { FilterExcludeFieldComponent } from "../../../components/FilterExcludeFieldComponent";
+import { FilterInputFieldComponent } from "../../../components/FilterInputFieldComponent";
+import { NoPreviewFilterField } from "../../../components/NoPreviewFilterField";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   fetch_retry,
   getFilterConfigurationPageContent,
   mapToObject,
-} from "src/app/shared";
+} from "../../../shared";
 import "./FilterConfigComponent.css";
 
 export interface IFilterConfigComponentProps {

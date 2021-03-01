@@ -21,8 +21,13 @@ export interface IFormSelectComponentProps {
     fieldId: string,
     helperTextInvalid: string,
     isRequired: boolean,
-    options: ISelectOptions[],
+    options: string[],
     propertyChange: (name: string, selection: any) => void;
+    setFieldValue: (
+      field: string,
+      value: any,
+      shouldValidate?: boolean | undefined
+    ) => void;
 }
 
 export const FormSelectComponent = (props: IFormSelectComponentProps) => {
@@ -47,7 +52,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     setOpen(false)
   };  
 
-  const onSelect = (e, selection: boolean, isPlaceholder: boolean) => {
+  const onSelect = (e:any, selection: any, isPlaceholder: any) => {
     if (isPlaceholder) {
       clearSelection();
     }
@@ -58,7 +63,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     }
   };
 
-  const selectOptions = options.map((value) => {
+  const selectOptions = options.map((value: any) => {
     return {'value': value.charAt(0).toUpperCase() + value.slice(1)}
   })
   
@@ -81,7 +86,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
         selections={field.value}
         isOpen={isOpen}
       >
-        {selectOptions.map((option, index) => (
+        {selectOptions.map((option:any, index) => (
           <SelectOption
             key={index}
             value={option.value}

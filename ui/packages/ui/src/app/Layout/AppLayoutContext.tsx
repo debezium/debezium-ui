@@ -2,7 +2,6 @@ import * as React from 'react';
 
 export interface IAppLayoutContext {
   showBreadcrumb: (breadcrumb: any) => void;
-  handleClusterChange: (value: string, event: any) => void;
   clusterId: number;
 }
 

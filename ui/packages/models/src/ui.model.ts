@@ -86,8 +86,8 @@ export interface ConnectorProperty {
     defaultValue?: any;
     description: string;
     displayName: string;
-    gridWidthLg?: number;
-    gridWidthSm?: number;
+    gridWidthLg?: 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
+    gridWidthSm?: 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
     name: string;
     isMandatory: boolean;
     type: 'BOOLEAN' | 

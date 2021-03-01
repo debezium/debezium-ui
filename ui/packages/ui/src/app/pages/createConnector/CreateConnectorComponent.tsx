@@ -24,8 +24,8 @@ import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Prompt } from "react-router-dom";
-import { ToastAlertComponent } from "src/app/components";
-import { ConnectionPropertiesError } from "src/app/components/ConnectionPropertiesError";
+import { ToastAlertComponent } from "../../components";
+import { ConnectionPropertiesError } from "../../components/ConnectionPropertiesError";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -41,7 +41,7 @@ import {
   minimizePropertyValues,
   PropertyCategory,
   PropertyName,
-} from "src/app/shared";
+} from "../../shared";
 import {
   ConnectorTypeStepComponent,
   DataOptionsComponent,
@@ -76,6 +76,10 @@ function getSortedConnectorTypes(connectorTypes: ConnectorType[]) {
 type IOnSuccessCallbackFn = () => void;
 
 type IOnCancelCallbackFn = () => void;
+
+export interface IValidationRef {
+  validate: () => {};
+};
 
 export interface ICreateConnectorComponentProps {
   onSuccessCallback: IOnSuccessCallbackFn;
@@ -176,9 +180,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     boolean
   >(false);
 
-  const connectionPropsRef = React.useRef();
-  const dataOptionRef = React.useRef();
-  const runtimeOptionRef = React.useRef();
+  const connectionPropsRef = React.useRef() as React.MutableRefObject<IValidationRef>;
+  const dataOptionRef = React.useRef() as React.MutableRefObject<IValidationRef>;;
+  const runtimeOptionRef = React.useRef() as React.MutableRefObject<IValidationRef>;;
 
   const addAlert = (msg?: string) => {
     const alertsCopy = [...alerts];
@@ -326,7 +330,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const validateStep = (stepName: ReactNode, onNext: () => void) => {
     let childRef;
     let isValid;
-    let setStep: Dispatch<SetStateAction<number>>;
+    // tslint:disable-next-line: no-empty
+    let setStep: Dispatch<SetStateAction<number>> = ()=>{};
     switch (stepName) {
       case PROPERTIES_STEP:
         childRef = connectionPropsRef;
@@ -355,13 +360,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const onConnectorTypeChanged = (cType: string | undefined): void => {
     setSelectedConnectorType(cType);
     if (cType) {
-      const connType = connectorTypes.find((conn) => conn.id === cType);
+      const connType: any = connectorTypes.find((conn) => conn.id === cType) ;
 
       if(connType?.properties.find(
-        obj => obj?.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+        (        obj: { name: string; }) => obj?.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
         )?.name){
           connType.properties.find(
-            obj => obj?.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+            (            obj: { name: string; }) => obj?.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
             ).name= "column.mask.hash";
         }
       setSelectedConnectorPropertyDefns(getFormattedProperties(connType!.properties, connType));
@@ -583,11 +588,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     // tslint:disable-next-line: no-unused-expression
     connectorTypes[0]?.id && setSelectedConnectorType(connectorTypes[0].id);
 
-    if(connectorTypes[0]?.properties.find(
-      obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+    const connType: any = connectorTypes[0] ;
+
+    if(connType?.properties.find(
+      (      obj: { name: string; }) => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
       )?.name){
-        connectorTypes[0].properties.find(
-          obj => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+        connType.properties.find(
+          (          obj: { name: string; }) => obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
           ).name= "column.mask.hash";
       }
       

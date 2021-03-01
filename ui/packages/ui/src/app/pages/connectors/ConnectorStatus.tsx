@@ -1,7 +1,7 @@
 import { Label } from "@patternfly/react-core";
 import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { ConnectorState } from "src/app/shared";
+import { ConnectorState } from "../../shared";
   export interface IConnectorStatusProps {
     currentStatus: string;
   }
