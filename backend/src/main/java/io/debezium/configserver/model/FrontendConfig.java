@@ -5,23 +5,83 @@
  */
 package io.debezium.configserver.model;
 
+import io.debezium.config.EnumeratedValue;
+import io.debezium.configserver.rest.FrontendConfigResource;
+
+import javax.json.bind.annotation.JsonbProperty;
+
 public class FrontendConfig {
 
-    public FrontendConfig(String baseURI, UIMode mode) {
-        this("rest", baseURI, mode);
-    }
+    public static final String UI_MODE_DEV = "dev";
+    public static final String UI_MODE_PROD = "prod";
 
-    public FrontendConfig(String artifactType, String baseURI, UIMode mode) {
-        this.artifacts = new FrontendConfigArtifacts(artifactType, baseURI);
-        this.mode = mode;
-    }
+    public static final String DEPLOYMENT_MODE_DEFAULT = "default";
+    public static final String DEPLOYMENT_MODE_DISABLE_VALIDATION = "validation.disabled";
 
-    public enum UIMode {
-        dev,
-        prod
-    }
+    @JsonbProperty("mode")
+    public final String uiMode;
 
-    public final UIMode mode;
+    @JsonbProperty(FrontendConfigResource.PROPERTY_DEPLOYMENT_MODE)
+    public final String deploymentMode;
+
     public final FrontendConfigArtifacts artifacts;
+
+    public enum UIMode implements EnumeratedValue {
+        DEV(UI_MODE_DEV),
+        PROD(UI_MODE_PROD);
+
+        private final String value;
+
+        UIMode(String value) {
+            this.value = value.toLowerCase();
+        }
+
+        public static UIMode getModeForValue(String value) {
+            return UIMode.valueOf(value.toUpperCase());
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum DeploymentMode implements EnumeratedValue {
+        DEFAULT(DEPLOYMENT_MODE_DEFAULT),
+        VALIDATION_DISABLED(DEPLOYMENT_MODE_DISABLE_VALIDATION);
+
+        private final String value;
+
+        DeploymentMode(String value) {
+            this.value = value.toLowerCase();
+        }
+
+        public static DeploymentMode getModeForValue(String value) {
+            switch (value.toLowerCase()) {
+                case DEPLOYMENT_MODE_DEFAULT:
+                    return DeploymentMode.DEFAULT;
+                case DEPLOYMENT_MODE_DISABLE_VALIDATION:
+                    return DeploymentMode.VALIDATION_DISABLED;
+                default:
+                    throw new RuntimeException("Invalid deployment mode selected: \"" + value
+                            + "\". Choose one of: " + DEPLOYMENT_MODE_DEFAULT + ", " + DEPLOYMENT_MODE_DISABLE_VALIDATION);
+            }
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public FrontendConfig(String baseURI, UIMode uiMode, DeploymentMode deploymentMode) {
+        this("rest", baseURI, uiMode, deploymentMode);
+    }
+
+    public FrontendConfig(String artifactType, String baseURI, UIMode uiMode, DeploymentMode deploymentMode) {
+        this.artifacts = new FrontendConfigArtifacts(artifactType, baseURI);
+        this.uiMode = uiMode.getValue();
+        this.deploymentMode = deploymentMode.getValue();
+    }
 
 }
