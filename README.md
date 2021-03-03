@@ -93,11 +93,6 @@ mvn clean install
 The UI part is an SPA application based on the React framework. It is packaged as JAR,
 whose contents are then exposed by the Quarkus-based backend application.
 
-### UI Development
-
-The UI code is located in the _ui_ folder, with README instructions
-[here](./ui/README.md) to launch the UI for development.
-
 ### Backend
 
 The UI backend is a Quarkus application located under _backend_.
@@ -108,6 +103,19 @@ mvn -pl backend compile quarkus:dev
 ```
 
 Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
+
+**NOTE:**
+Launching the backend via the mvn command above will utilize the existing frontend UI jar.  
+The UI will be available at: [http://localhost:8080/](http://localhost:8080/).  
+If you have local frontend changes which need to be included, you can rebuild just the frontend first like so: 
+
+```
+mvn -pl ui install
+```
+
+### UI Development
+
+The UI frontend code is located under the _ui_ folder.  See the [UI README](./ui/README.md) for more information about UI development.
 
 ## Contributing
 
