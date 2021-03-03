@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 import CreateConnectorComponent from "./CreateConnectorComponent";
 import "./CreateConnectorComponent.css";
+import CreateConnectorNoValidation from "./noValidation/CreateConnectorNoValidation";
 interface ILocationState {
     value: number;
     connectorNames: string[];
@@ -36,7 +37,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const clusterID = location.state?.value;
   const connectorNames = location.state?.connectorNames;
-  const doValidation = location.state?.doValidation;
+  const doValidation = 'yes';
 
   return (
     <>
@@ -65,14 +66,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           <CreateConnectorComponent
             onCancelCallback={onCancel}
             onSuccessCallback={onSuccess}
-            clusterId={clusterID}
+            clusterId={''+clusterID}
             connectorNames={connectorNames}
           />
         ) : (
           <CreateConnectorNoValidation
             onCancelCallback={onCancel}
             onSuccessCallback={onSuccess}
-            clusterId={clusterID}
+            clusterId={""+clusterID}
             connectorNames={connectorNames}
           />
         )}
