@@ -13,7 +13,6 @@ import {
   Flex,
   FlexItem,
   Label,
-  Switch,
   Title,
   Toolbar,
   ToolbarContent,
@@ -46,8 +45,6 @@ interface IConnectorsTableComponentProps {
   i18nApiErrorTitle?: string;
   i18nApiErrorMsg?: string;
   createConnectorCallback: ICreateConnectorCallbackFn;
-  doValidation: boolean;
-  setDoValidation: () => void;
 }
 
 export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableComponentProps> = (
@@ -84,10 +81,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);
 
   const [expandedRows, setExpandedRows] = React.useState<number[]>([]);
-
-  const handleChange = (isCheckedVal: boolean) => {
-    props.setDoValidation();
-  };
 
   const addAlert = (type: string, heading: string, msg?: string) => {
     const alertsCopy = [...alerts];
@@ -647,14 +640,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                   >
                     {t("createAConnector")}
                   </Button>
-                  <sub> with </sub>
-                  <Switch
-                    id="simple-switch"
-                    label="Validation"
-                    labelOff="No validation"
-                    isChecked={props.doValidation}
-                    onChange={handleChange}
-                  />
                 </FlexItem>
               </Flex>
               <Table
@@ -676,14 +661,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
                 {t("noConnectors")}
               </Title>
               <EmptyStateBody>
-                {t("connectorEmptyStateMsg")} with{" "}
-                <Switch
-                  id="simple-switch"
-                  label="Validation"
-                  labelOff="No validation"
-                  isChecked={props.doValidation}
-                  onChange={handleChange}
-                />
+                {t("connectorEmptyStateMsg")} 
               </EmptyStateBody>
               <Button
                 onClick={createConnector}

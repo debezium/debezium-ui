@@ -1,3 +1,4 @@
+import { Services } from "@debezium/ui-services";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,9 +17,8 @@ import CreateConnectorComponent from "./CreateConnectorComponent";
 import "./CreateConnectorComponent.css";
 import CreateConnectorNoValidation from "./noValidation/CreateConnectorNoValidation";
 interface ILocationState {
-    value: number;
-    connectorNames: string[];
-
+  value: number;
+  connectorNames: string[];
 }
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
@@ -35,9 +35,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const location = useLocation<ILocationState>();
 
+  const ConfigService = Services.getConfigService();
+  const createConnectorMode = ConfigService.deploymentMode();
+
   const clusterID = location.state?.value;
   const connectorNames = location.state?.connectorNames;
-  const doValidation = 'yes';
 
   return (
     <>
@@ -62,18 +64,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         </Level>
       </PageSection>
       <div className="app-page-section-border-bottom">
-        {doValidation ? (
-          <CreateConnectorComponent
-            onCancelCallback={onCancel}
-            onSuccessCallback={onSuccess}
-            clusterId={''+clusterID}
-            connectorNames={connectorNames}
-          />
-        ) : (
+        {createConnectorMode === "validation.disabled" ? (
           <CreateConnectorNoValidation
             onCancelCallback={onCancel}
             onSuccessCallback={onSuccess}
-            clusterId={""+clusterID}
+            clusterId={"" + clusterID}
+            connectorNames={connectorNames}
+          />
+        ) : (
+          <CreateConnectorComponent
+            onCancelCallback={onCancel}
+            onSuccessCallback={onSuccess}
+            clusterId={"" + clusterID}
             connectorNames={connectorNames}
           />
         )}

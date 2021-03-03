@@ -29,6 +29,7 @@ export class ConfigService implements Service {
             type: "rest",
             url: "http://localhost:8080/api/"
         },
+        "deployment.mode": "",
         features: {
             readOnly: false
         },
@@ -65,6 +66,10 @@ export class ConfigService implements Service {
             return null;
         }
         return this.config.artifacts.url;
+    }
+
+    public deploymentMode(): string {
+        return this.config['deployment.mode'];
     }
 
     public uiUrl(): string {

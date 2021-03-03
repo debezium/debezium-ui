@@ -31,6 +31,7 @@ export interface UiConfig {
 
 export interface ConfigType {
     mode: string;
+    "deployment.mode": "";
     artifacts: ArtifactsConfig;
     features?: FeaturesConfig;
     ui: UiConfig;
