@@ -3,8 +3,8 @@ import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
 import { PropertiesStepsComponent } from "src/app/components/PropertiesStepsComponent";
+import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
 import * as Yup from "yup";
-import { formatPropertyDefinitions, PropertyCategory } from "../../../shared";
 import "./PropertiesStep.css";
 
 export interface IPropertiesStepProps {
@@ -18,8 +18,7 @@ export interface IPropertiesStepProps {
   i18nAdvancedPublicationPropertiesText: string;
   i18nAdvancedReplicationPropertiesText: string;
   i18nBasicPropertiesText: string;
-  setConnectionPropsValid: () => void;
-  setConnectionStepsValid: () => void;
+  // setConnectionStepsValid: () => void;
   onValidateProperties: (
     basicPropertyValues: Map<string, string>,
     advancePropertyValues: Map<string, string>
@@ -28,27 +27,22 @@ export interface IPropertiesStepProps {
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
   (props, ref) => {
-    const { dirty, submitForm, validateForm } = useFormikContext();
+    const { isValid, dirty, submitForm, validateForm } = useFormikContext();
 
     React.useImperativeHandle(ref, () => ({
       validate() {
         validateForm();
         submitForm();
+        return isValid;
       },
     }));
-    React.useEffect(() => {
-      if (dirty) {
-        props.setConnectionPropsValid(!dirty);
-        props.setConnectionStepsValid(0);
-      }
-    }, [props.setConnectionPropsValid, props.setConnectionStepsValid, dirty]);
     return null;
   }
 );
 
 export const PropertiesStep: React.FC<any> = React.forwardRef(
   (props, ref) => {
-  
+
     const basicValidationSchema = {};
     
     const namePropertyDefinitions = formatPropertyDefinitions(
@@ -100,7 +94,6 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
 
     const validationSchema = Yup.object().shape({ ...basicValidationSchema });
 
-   
     const getInitialValues = (combined: any) => {
       const combinedValue: any = {};
       const userValues: Map<string, string> = new Map([
@@ -175,8 +168,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                 />
               <FormSubmit
                 ref={ref}
-                setConnectionPropsValid={props.setConnectionPropsValid}
-                setConnectionStepsValid={props.setConnectionStepsValid}
+                // setConnectionStepsValid={props.setConnectionStepsValid}
               />
             </Form>
           )}

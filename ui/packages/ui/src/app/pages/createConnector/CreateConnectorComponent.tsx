@@ -44,11 +44,11 @@ import {
 } from "../../shared";
 import {
   ConnectorTypeStepComponent,
-  DataOptionsComponent,
+  DataOptionsStep,
   FilterConfigComponent,
   PropertiesStep,
   ReviewStepComponent,
-  RuntimeOptionsComponent,
+  RuntimeOptionsStep,
 } from "./connectorSteps";
 import { ConnectorNameTypeHeader } from './connectorSteps/ConnectorNameTypeHeader';
 import "./CreateConnectorComponent.css";
@@ -754,7 +754,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               connectorType={selectedConnectorType} 
               showIcon={false}
             />
-            <DataOptionsComponent
+            <DataOptionsStep
               propertyDefinitions={getDataOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
               )}
@@ -801,7 +801,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               connectorType={selectedConnectorType} 
               showIcon={false}
             />
-            <RuntimeOptionsComponent
+            <RuntimeOptionsStep
               propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
                 selectedConnectorPropertyDefns
               )}

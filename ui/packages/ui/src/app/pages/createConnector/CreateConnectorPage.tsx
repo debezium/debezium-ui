@@ -1,3 +1,4 @@
+import { Services } from "@debezium/ui-services";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,21 +8,20 @@ import {
   PageSectionVariants,
   TextContent,
   Title,
-  TitleSizes
+  TitleSizes,
 } from "@patternfly/react-core";
 import React from "react";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 import CreateConnectorComponent from "./CreateConnectorComponent";
 import "./CreateConnectorComponent.css";
+import CreateConnectorNoValidation from "./noValidation/CreateConnectorNoValidation";
 interface ILocationState {
-    value: number;
-    connectorNames: string[];
-
+  value: number;
+  connectorNames: string[];
 }
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
-
   const { t } = useTranslation(["app"]);
   const history = useHistory();
 
@@ -35,6 +35,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
 
   const location = useLocation<ILocationState>();
 
+  const ConfigService = Services.getConfigService();
+  const createConnectorMode = ConfigService.deploymentMode();
+
   const clusterID = location.state?.value;
   const connectorNames = location.state?.connectorNames;
 
@@ -46,7 +49,9 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>{t("createConnector")}</BreadcrumbItem>
+          <BreadcrumbItem isActive={true}>
+            {t("createConnector")}
+          </BreadcrumbItem>
         </Breadcrumb>
         <Level hasGutter={true}>
           <LevelItem>
@@ -59,7 +64,21 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         </Level>
       </PageSection>
       <div className="app-page-section-border-bottom">
-        <CreateConnectorComponent onCancelCallback={onCancel} onSuccessCallback={onSuccess} clusterId={""+clusterID} connectorNames={connectorNames} />
+        {createConnectorMode === "validation.disabled" ? (
+          <CreateConnectorNoValidation
+            onCancelCallback={onCancel}
+            onSuccessCallback={onSuccess}
+            clusterId={"" + clusterID}
+            connectorNames={connectorNames}
+          />
+        ) : (
+          <CreateConnectorComponent
+            onCancelCallback={onCancel}
+            onSuccessCallback={onSuccess}
+            clusterId={"" + clusterID}
+            connectorNames={connectorNames}
+          />
+        )}
       </div>
     </>
   );

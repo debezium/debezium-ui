@@ -6,3 +6,6 @@ export * from './PageLoader';
 export * from './PageNotFound';
 export * from './formHelpers';
 export * from './ToastAlertComponent';
+export * from './DataOptionsComponent';
+export * from './PropertiesStepsComponent';
+export * from './RuntimeOptionsComponent';
