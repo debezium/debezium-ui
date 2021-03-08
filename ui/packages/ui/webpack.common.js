@@ -25,11 +25,13 @@ module.exports = {
       'process.env.COMMIT_HASH': JSON.stringify(COMMIT_HASH),
     }),
     new webpack.container.ModuleFederationPlugin({
-      name: 'debeziumui',
+      name: 'debezium-ui',
       filename: "remoteEntry.js",
+      library: { type: 'var', name: 'debezium-ui'},
       exposes: {
-        "./debeziumCreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
-        "./debeziumTable": "./src/app/pages/connectors/ConnectorsTableComponent",
+        "./CreateConnectorNoValidation": "./src/app/pages/createConnector/noValidation/CreateConnectorNoValidation",
+        "./CreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
+        "./Table": "./src/app/pages/connectors/ConnectorsTableComponent",
       },
       shared: {
         ...dependencies,
