@@ -6,7 +6,7 @@ const { dependencies } = require("./package.json");
 
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || '/';
-const COMMIT_HASH = require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
+const COMMIT_HASH = process.env.COMMIT_HASH || require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
 
 module.exports = {
   entry: {

@@ -20,20 +20,20 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <!-- Plug-in versions -->
-    <frontend.maven.plugin.version>1.10.0</frontend.maven.plugin.version>
+    <frontend.maven.plugin.version>1.11.2</frontend.maven.plugin.version>
     <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
     <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
-    <quarkus.plugin.version>1.11.1.Final</quarkus.plugin.version>
+    <quarkus.plugin.version>1.12.1.Final</quarkus.plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.11.1.Final</quarkus.platform.version>
-    <testcontainers.version>1.15.1</testcontainers.version>
-    <debezium.base.version>1.5.0.Alpha1</debezium.base.version>
-    <okhttp.version>4.8.1</okhttp.version>
-    <okio.version>2.8.0</okio.version>
+    <quarkus.platform.version>1.12.1.Final</quarkus.platform.version>
+    <testcontainers.version>1.15.2</testcontainers.version>
+    <debezium.base.version>1.5.0.Beta1</debezium.base.version>
+    <okhttp.version>4.9.1</okhttp.version>
+    <okio.version>2.10.0</okio.version>
     <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
     <version.checkstyle>8.32</version.checkstyle>
   </properties>

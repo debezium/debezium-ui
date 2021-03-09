@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DEBEZIUM_VERSION: "v1.5.0.Alpha1"
+      DEBEZIUM_VERSION: "v1.5.0.Beta1"
     steps:
       - name: Checkout Debezium main repository
         uses: actions/checkout@v2

@@ -17,9 +17,8 @@
   <name>Debezium UI Frontend</name>
 
   <properties>
-    <!-- UI Build Tools -->
-    <node.version>10.20.1</node.version>
-    <yarn.version>1.22.5</yarn.version>
+    <node.version>14.16.0</node.version>
+    <yarn.version>1.22.10</yarn.version>
   </properties>
 
   <build>
@@ -38,17 +37,13 @@
         <configuration>
           <filesets>
             <fileset>
-              <directory>packages/models</directory>
+              <directory>.</directory>
               <includes>
-                <include>packages/models/dist/**</include>
-                <include>packages/models/node_modules/**</include>
-                <include>packages/ui/dist/**</include>
-                <include>packages/ui/node_modules/**</include>
-                <include>packages/services/dist/**</include>
-                <include>packages/services/node_modules/**</include>
-                <include>node/**</include>
-                <include>node_modules/**</include>
+                <include>**/dist/</include>
               </includes>
+              <excludes>
+                <exclude>**/node_modules/</exclude>
+              </excludes>
             </fileset>
           </filesets>
         </configuration>
@@ -79,7 +74,6 @@
             </goals>
             <configuration>
               <arguments>install</arguments>
-              <npmRegistryURL>${npmRegistryURL2}</npmRegistryURL>
             </configuration>
           </execution>
           <!-- Build the app -->

@@ -3,7 +3,7 @@
   "port": 8888,
   "version": "0.0.1",
   "description": "Debezium UI",
-  "main": "index.js",
+  "main": "index.tsx",
   "repository": "https://github.com/debezium/debezium-ui.git",
   "license": "Apache-2.0",
   "private": true,

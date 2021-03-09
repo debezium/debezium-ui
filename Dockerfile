@@ -1,18 +1,22 @@
-### Just temporary Dockerfile to fix testing issues on the UI frontend
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1 AS builder
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 AS builder
 
 ARG JAVA_PACKAGE=java-11-openjdk-headless
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_HOME="/usr/lib/jvm/jre-11"
 
-RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven \
+RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
     && microdnf update \
     && microdnf clean all \
     && mkdir -p /javabuild/backend \
+    && mkdir -p /javabuild/ui \
     && chown -R 1001 /javabuild \
     && chmod -R "g+rwX" /javabuild \
     && chown -R 1001:root /javabuild \
+    && mkdir -p /.cache/yarn \
+    && chown -R 1001 /.cache/yarn \
+    && chmod -R "g+rwX" /.cache/yarn \
+    && chown -R 1001:root /.cache/yarn \
     && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/lib/security/java.security
 
 USER 1001
@@ -23,13 +27,13 @@ COPY ui/pom.xml /javabuild/ui/pom.xml
 
 WORKDIR /javabuild
 
-RUN mvn -am dependency:go-offline
+RUN mvn -am clean dependency:go-offline
 
 COPY . /javabuild/
 
-RUN mvn -am clean package -Dquarkus.package.type=fast-jar
+RUN mvn -am package -Dquarkus.package.type=fast-jar
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
 ARG JAVA_PACKAGE=java-11-openjdk-headless
 ARG RUN_JAVA_VERSION=1.3.8
