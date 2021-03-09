@@ -163,6 +163,7 @@
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources</outputDirectory>
+              <excludes>META-INF/**</excludes>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>

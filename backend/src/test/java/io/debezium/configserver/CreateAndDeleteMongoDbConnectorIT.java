@@ -18,7 +18,7 @@ import org.testcontainers.containers.MongoDBContainer;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestProfile(MongoDbInfrastructureTestProfile.class)

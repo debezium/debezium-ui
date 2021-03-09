@@ -31,8 +31,7 @@ public class Infrastructure {
         POSTGRES, MYSQL, SQLSERVER, MONGODB
     }
 
-    private static final String DEBEZIUM_CONTAINER_VERSION = "1.4";
-    private static final String CONNECTOR = "connector.class";
+    private static final String DEBEZIUM_CONTAINER_VERSION = "1.5";
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
@@ -60,7 +59,7 @@ public class Infrastructure {
                     .withNetworkAliases("mongodb");
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
-            new DebeziumContainer(DockerImageName.parse("debezium/connect:nightly"))
+            new DebeziumContainer(DockerImageName.parse("debezium/connect:" + DEBEZIUM_CONTAINER_VERSION))
                     .withNetwork(NETWORK)
                     .withKafka(KAFKA_CONTAINER)
                     .withLogConsumer(new Slf4jLogConsumer(LOGGER))

@@ -432,16 +432,18 @@ public class ConnectorResource {
         URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
         KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
-        Response kafkaConnectDeleteConnectorResponse;
+        Response deleteResponse;
         try {
-            kafkaConnectDeleteConnectorResponse = kafkaConnectClient.deleteConnector(connectorName);
+            Response originalKafkaConnectResponse = kafkaConnectClient.deleteConnector(connectorName);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Kafka Connect response: " + originalKafkaConnectResponse.readEntity(String.class));
+            }
+            deleteResponse = Response.fromResponse(originalKafkaConnectResponse).type(MediaType.APPLICATION_JSON).build();
+            originalKafkaConnectResponse.close();
         }
         catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-
-        LOGGER.debug("Kafka Connect response: " + kafkaConnectDeleteConnectorResponse.readEntity(String.class));
-
-        return Response.fromResponse(kafkaConnectDeleteConnectorResponse).type(MediaType.APPLICATION_JSON).build();
+        return deleteResponse;
     }
 }

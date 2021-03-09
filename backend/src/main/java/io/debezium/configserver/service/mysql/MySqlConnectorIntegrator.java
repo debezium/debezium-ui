@@ -78,7 +78,6 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT, enumArrayToList(MySqlConnectorConfig.SnapshotMode.values())));
         additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_LOCKING_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT, enumArrayToList(MySqlConnectorConfig.SnapshotLockingMode.values())));
         additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_NEW_TABLES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT, enumArrayToList(MySqlConnectorConfig.SnapshotNewTables.values())));
-        additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_EVENTS_AS_INSERTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT));
         additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_FETCH_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT));
         additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_DELAY_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT));
         additionalMetadata.put(MySqlConnectorConfig.SNAPSHOT_SELECT_STATEMENT_OVERRIDES_BY_TABLE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_SNAPSHOT));

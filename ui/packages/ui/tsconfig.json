@@ -26,7 +26,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@pf4-assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
-    },
+    }
   },
   "include": [
     "**/*.ts",
