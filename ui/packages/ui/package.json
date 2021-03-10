@@ -40,7 +40,6 @@
     "jest": "^24.1.0",
     "keycloak-js": "9.0.0",
     "mini-css-extract-plugin": "^1.0.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
     "postcss-css-variables": "^0.17.0",
     "postcss-loader": "^3.0.0",
     "postcss-nested": "^4.2.3",
@@ -65,7 +64,8 @@
     "webpack-bundle-analyzer": "^3.9.0",
     "webpack-cli": "^4.0.0",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.2.0"
+    "webpack-merge": "^5.2.0",
+    "css-minimizer-webpack-plugin": "^1.2.0"
   },
   "dependencies": {
     "@debezium/ui-models": "^1.0.0",
@@ -73,7 +73,6 @@
     "@patternfly/react-core": "^4.75.2",
     "@patternfly/react-icons": "^4.7.16",
     "@patternfly/react-table": "^4.19.24",
-    "css-minimizer-webpack-plugin": "^1.2.0",
     "formik": "^2.1.5",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.0.1",
