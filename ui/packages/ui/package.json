@@ -73,6 +73,7 @@
     "@patternfly/react-core": "^4.75.2",
     "@patternfly/react-icons": "^4.7.16",
     "@patternfly/react-table": "^4.19.24",
+    "css-minimizer-webpack-plugin": "^1.2.0",
     "formik": "^2.1.5",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.0.1",
