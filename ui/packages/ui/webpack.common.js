@@ -3,10 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 const { dependencies } = require("./package.json");
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const gitRevisionPlugin = new GitRevisionPlugin({commithashCommand: 'rev-parse --short HEAD'});
 
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || '/';
-const COMMIT_HASH = process.env.COMMIT_HASH || require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
+const COMMIT_HASH = process.env.COMMIT_HASH || gitRevisionPlugin.commithash();
 
 module.exports = {
   entry: {
@@ -20,8 +22,6 @@ module.exports = {
     // This makes it possible for us to safely use env vars on our code
     new webpack.DefinePlugin({
       'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
-    }),
-    new webpack.DefinePlugin({
       'process.env.COMMIT_HASH': JSON.stringify(COMMIT_HASH),
     }),
     new webpack.container.ModuleFederationPlugin({
