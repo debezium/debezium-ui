@@ -15,13 +15,32 @@
  * limitations under the License.
  */
 
-import { ConnectionValidationResult, Connector, FilterValidationResult, PropertiesValidationResult } from "@debezium/ui-models";
+import { ConnectionValidationResult, Connector, ConnectorType, FilterValidationResult, PropertiesValidationResult } from "@debezium/ui-models";
 import { BaseService } from "../baseService";
 
 /**
  * The connector service.  Used to fetch connectors and other connector operations.
  */
 export class ConnectorService extends BaseService {
+
+    /**
+     * Get the details of connector for supplied connection type
+     * Example usage:
+     * 
+     * const connectorService = Services.getConnectorService();
+     * connectorService.getConnectorInfo('postgres')
+     *  .then((cDetails: ConnectorType) => {
+     *      alert(cDetails);
+     *  })
+     * .catch((err: Error) => {
+     *      alert(err);
+     *  });
+     */
+    public getConnectorInfo(connectorTypeId: string): Promise<ConnectorType> {
+        this.logger.info("[ConnectorService] Getting the details of Connector:", connectorTypeId);
+        const endpoint: string = this.endpoint("/connector-types/:connectorTypeId", { connectorTypeId });
+        return this.httpGet<ConnectorType>(endpoint);
+    }
 
     /**
      * Validate the connection properties for the supplied connection type
