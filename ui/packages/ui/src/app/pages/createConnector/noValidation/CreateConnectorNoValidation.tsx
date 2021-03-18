@@ -240,28 +240,33 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
 
   const onFinish = () => {
     // Cluster ID and connector name for the create
-    const clusterID = props.clusterId;
-    const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
+    
+    // TODO: Commenting it for time being as required to remove all the backend call from UI  in no-validation mode
 
-    const finalProperties = getFinalProperties(finishStepId);
+    // const clusterID = props.clusterId;
+    // const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
 
-    const connectorService = Services.getConnectorService();
-    fetch_retry(connectorService.createConnector, connectorService, [
-      clusterID,
-      selectedConnectorType,
-      {
-        name: connectorName,
-        config: mapToObject(finalProperties),
-      },
-    ])
-      .then(() => {
-        // On success, redirect to connectors page
-        props.onSuccessCallback();
-      })
-      .catch((err: Error) => {
-        setConnectorCreateFailed(true);
-        addAlert(err?.message);
-      });
+    // const finalProperties = getFinalProperties(finishStepId);
+
+    // const connectorService = Services.getConnectorService();
+
+    // fetch_retry(connectorService.createConnector, connectorService, [
+    //   clusterID,
+    //   selectedConnectorType,
+    //   {
+    //     name: connectorName,
+    //     config: mapToObject(finalProperties),
+    //   },
+    // ])
+    //   .then(() => {
+    //     // On success, redirect to connectors page
+    //     props.onSuccessCallback();
+    //   })
+    //   .catch((err: Error) => {
+    //     setConnectorCreateFailed(true);
+    //     addAlert(err?.message);
+    //   });
+      props.onSuccessCallback();
   };
 
   const doCancelConfirmed = () => {
