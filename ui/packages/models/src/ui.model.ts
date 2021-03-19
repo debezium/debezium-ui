@@ -118,6 +118,7 @@ export interface ConnectorType {
     displayName: string;
     version: string;
     enabled: boolean;
+    // TODO: Need to be removed as when backend updates.
     properties: ConnectorProperty[];
 }
 

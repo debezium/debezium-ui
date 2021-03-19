@@ -124,7 +124,6 @@ export const FilterConfigComponent: React.FunctionComponent<IFilterConfigCompone
           setTreeData([]);
           setChildNo(result.matchedCollections.length);
         } else {
-          // tslint:disable-next-line: no-unused-expression
           saveFilter && props.updateFilterValues(filterExpression);
           props.setIsValidFilter(true);
           setInvalidMsg(new Map());

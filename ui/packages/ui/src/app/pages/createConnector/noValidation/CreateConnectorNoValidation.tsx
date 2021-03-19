@@ -240,28 +240,33 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
 
   const onFinish = () => {
     // Cluster ID and connector name for the create
-    const clusterID = props.clusterId;
-    const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
+    
+    // TODO: Commenting it for time being as required to remove all the backend call from UI  in no-validation mode
 
-    const finalProperties = getFinalProperties(finishStepId);
+    // const clusterID = props.clusterId;
+    // const connectorName = basicPropValues.get(PropertyName.CONNECTOR_NAME);
 
-    const connectorService = Services.getConnectorService();
-    fetch_retry(connectorService.createConnector, connectorService, [
-      clusterID,
-      selectedConnectorType,
-      {
-        name: connectorName,
-        config: mapToObject(finalProperties),
-      },
-    ])
-      .then(() => {
-        // On success, redirect to connectors page
-        props.onSuccessCallback();
-      })
-      .catch((err: Error) => {
-        setConnectorCreateFailed(true);
-        addAlert(err?.message);
-      });
+    // const finalProperties = getFinalProperties(finishStepId);
+
+    // const connectorService = Services.getConnectorService();
+
+    // fetch_retry(connectorService.createConnector, connectorService, [
+    //   clusterID,
+    //   selectedConnectorType,
+    //   {
+    //     name: connectorName,
+    //     config: mapToObject(finalProperties),
+    //   },
+    // ])
+    //   .then(() => {
+    //     // On success, redirect to connectors page
+    //     props.onSuccessCallback();
+    //   })
+    //   .catch((err: Error) => {
+    //     setConnectorCreateFailed(true);
+    //     addAlert(err?.message);
+    //   });
+      props.onSuccessCallback();
   };
 
   const doCancelConfirmed = () => {
@@ -280,7 +285,6 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
 
   const goToNext = (id: any, onNext: () => void) => {
     setConnectorCreateFailed(false);
-    // tslint:disable-next-line: no-unused-expression
     id === 5 && setFinishStepId(RUNTIME_OPTIONS_STEP_ID);
     setStepIdReached(stepIdReached < id ? id : stepIdReached);
     validateStep(id, onNext);
@@ -322,20 +326,31 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
   const onConnectorTypeChanged = (cType: string | undefined): void => {
     setSelectedConnectorType(cType);
     if (cType) {
-      const connType = connectorTypes.find((conn) => conn.id === cType);
+      const connectorService = Services.getConnectorService();
+      fetch_retry(connectorService.getConnectorInfo, connectorService, [cType])
+        .then((cDetails: ConnectorType) => {
+          setLoading(false);
 
-      if (
-        connType?.properties.find(
-          (obj) => obj?.name === "column.mask.hash.([^.]+).with.salt.(.+)"
-        )?.name
-      ) {
-        connType.properties.find(
-          (obj) => obj?.name === "column.mask.hash.([^.]+).with.salt.(.+)"
-        ).name = "column.mask.hash";
-      }
-      setSelectedConnectorPropertyDefns(
-        getFormattedProperties(connType!.properties, connType)
-      );
+          // TODO: Find the solution to this issue.
+          if (
+            cDetails?.properties.find(
+              (obj: { name: string }) =>
+                obj?.name === "column.mask.hash.([^.]+).with.salt.(.+)"
+            )?.name
+          ) {
+            cDetails.properties.find(
+              (obj: { name: string }) =>
+                obj?.name === "column.mask.hash.([^.]+).with.salt.(.+)"
+            ).name = "column.mask.hash";
+          }
+          setSelectedConnectorPropertyDefns(
+            getFormattedProperties(cDetails.properties, cDetails)
+          );
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          setApiError(true);
+          setErrorMsg(err);
+        });
       initPropertyValues();
     }
     setConnectionPropsValidMsg([]);
@@ -416,28 +431,36 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
 
   // Init the selected connector type to first 'enabled' connectortype
   React.useEffect(() => {
-    // tslint:disable-next-line: no-unused-expression
-    connectorTypes[0]?.id && setSelectedConnectorType(connectorTypes[0].id);
+    if (connectorTypes.length !== 0) {
+      connectorTypes[0]?.id && setSelectedConnectorType(connectorTypes[0].id);
 
-    if (
-      connectorTypes[0]?.properties.find(
-        (obj) => obj.name === "column.mask.hash.([^.]+).with.salt.(.+)"
-      )?.name
-    ) {
-      connectorTypes[0].properties.find(
-        (obj) => obj.name === "column.mask.hash.([^.]+).with.salt.(.+)"
-      ).name = "column.mask.hash";
+      const connectorService = Services.getConnectorService();
+      fetch_retry(connectorService.getConnectorInfo, connectorService, [
+        connectorTypes[0]?.id,
+      ])
+        .then((cDetails: ConnectorType) => {
+          setLoading(false);
+          // TODO: Find the solution to this issue.
+          if (
+            cDetails?.properties.find(
+              (obj: { name: string }) =>
+                obj.name === "column.mask.hash.([^.]+).with.salt.(.+)"
+            )?.name
+          ) {
+            cDetails.properties.find(
+              (obj: { name: string }) =>
+                obj.name === "column.mask.hash.([^.]+).with.salt.(.+)"
+            ).name = "column.mask.hash";
+          }
+          setSelectedConnectorPropertyDefns(
+            getFormattedProperties(cDetails.properties, cDetails)
+          );
+        })
+        .catch((err: React.SetStateAction<Error>) => {
+          setApiError(true);
+          setErrorMsg(err);
+        });
     }
-
-    // tslint:disable-next-line: no-unused-expression
-    connectorTypes[0]?.properties &&
-      setSelectedConnectorPropertyDefns(
-        getFormattedProperties(
-          connectorTypes[0]!.properties,
-          connectorTypes[0]!
-        )
-      );
-
     // Init the connector property values
     initPropertyValues();
   }, [connectorTypes]);
