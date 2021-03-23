@@ -23,6 +23,7 @@ import org.apache.kafka.connect.source.SourceConnector;
 import io.debezium.config.Configuration;
 import io.debezium.config.Field;
 import io.debezium.configserver.model.ConnectionValidationResult;
+import io.debezium.configserver.model.ConnectorDefinition;
 import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.model.ConnectorType;
 import io.debezium.configserver.model.GenericValidationResult;
@@ -51,7 +52,21 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
     }
 
     @Override
-    public ConnectorType getDescriptor() {
+    public ConnectorDefinition getConnectorDefinition() {
+        ConnectorDescriptor descriptor = getConnectorDescriptor();
+        SourceConnector instance = getConnector();
+
+        return new ConnectorDefinition(
+            descriptor.id,
+            instance.getClass().getName(),
+            descriptor.name,
+            instance.version(),
+            descriptor.enabled
+        );
+    }
+
+    @Override
+    public ConnectorType getConnectorType() {
         ConnectorDescriptor descriptor = getConnectorDescriptor();
         SourceConnector instance = getConnector();
 

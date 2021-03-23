@@ -10,13 +10,16 @@ import java.util.Map;
 import io.debezium.config.Field;
 import io.debezium.configserver.model.AdditionalPropertyMetadata;
 import io.debezium.configserver.model.ConnectionValidationResult;
+import io.debezium.configserver.model.ConnectorDefinition;
 import io.debezium.configserver.model.ConnectorType;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 
 public interface ConnectorIntegrator {
 
-    ConnectorType getDescriptor();
+    ConnectorType getConnectorType();
+
+    ConnectorDefinition getConnectorDefinition();
 
     Map<String, AdditionalPropertyMetadata> allPropertiesWithAdditionalMetadata();
 
