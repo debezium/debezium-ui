@@ -109,7 +109,7 @@ export interface ConnectorProperty {
 }
 
 /**
- * Model which represents a connectory type
+ * Model which represents a connector type
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorType {
@@ -118,8 +118,7 @@ export interface ConnectorType {
     displayName: string;
     version: string;
     enabled: boolean;
-    // TODO: Need to be removed as when backend updates.
-    properties: ConnectorProperty[];
+    properties?: ConnectorProperty[];
 }
 
 /**

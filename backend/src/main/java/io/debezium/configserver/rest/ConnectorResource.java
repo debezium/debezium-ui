@@ -42,6 +42,7 @@ import javax.ws.rs.core.Response.Status;
 import io.debezium.DebeziumException;
 import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorType;
+import io.debezium.configserver.model.ConnectorDefinition;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.rest.client.KafkaConnectClient;
@@ -60,7 +61,7 @@ public class ConnectorResource {
         Map<String, ConnectorIntegrator> integrators = new HashMap<>();
 
         ServiceLoader.load(ConnectorIntegrator.class)
-                .forEach(integrator -> integrators.put(integrator.getDescriptor().id, integrator));
+                .forEach(integrator -> integrators.put(integrator.getConnectorType().id, integrator));
 
         this.integrators = Collections.unmodifiableMap(integrators);
     }
@@ -88,10 +89,10 @@ public class ConnectorResource {
     @Path(ConnectorURIs.CONNECTOR_TYPES_ENDPOINT)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ConnectorType> getConnectorTypes() {
+    public List<ConnectorDefinition> getConnectorTypes() {
         return integrators.values()
                 .stream()
-                .map(ConnectorIntegrator::getDescriptor)
+                .map(ConnectorIntegrator::getConnectorDefinition)
                 .collect(Collectors.toList());
     }
 
@@ -126,7 +127,7 @@ public class ConnectorResource {
                     .build();
         }
 
-        return Response.ok(integrator.getDescriptor()).build();
+        return Response.ok(integrator.getConnectorType()).build();
     }
 
     private Map<String, String> convertPropertiesToStrings(Map<String, ?> properties) {
@@ -309,7 +310,7 @@ public class ConnectorResource {
         URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
         KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
-        kafkaConnectConfig.getConfig().put("connector.class", integrator.getDescriptor().className);
+        kafkaConnectConfig.getConfig().put("connector.class", integrator.getConnectorType().className);
 
         String result;
         LOGGER.debug("Sending valid connector config: " + kafkaConnectConfig.getConfig());
