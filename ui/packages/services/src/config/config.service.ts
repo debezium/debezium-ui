@@ -16,88 +16,96 @@
  */
 
 import { Service } from "../baseService";
-import { ConfigType, FeaturesConfig } from './config.type';
-import _ from 'lodash'
+import { ConfigType, FeaturesConfig } from "./config.type";
+import _ from "lodash";
 
 /**
  * A simple configuration service.  Reads information from a global "DebeziumUiConfig" variable
  * that is typically included via JSONP.
  */
 export class ConfigService implements Service {
-    private config: ConfigType = {
+  private config: ConfigType = {
+    artifacts: {
+      type: "rest",
+      url: "http://localhost:8080/api/",
+    },
+    "deployment.mode": "",
+    features: {
+      readOnly: false,
+    },
+    mode: "dev",
+    ui: {
+      contextPath: null,
+      url: "http://localhost:8888/",
+    },
+  };
+
+  constructor() {
+    const w: any = window;
+
+    if (w.UI_CONFIG.mode === "prod") {
+      this.config = _.extend({}, this.config, w.UI_CONFIG, {
         artifacts: {
-            type: "rest",
-            url: "http://localhost:8080/api/"
+          type: "rest",
+          url: this.getBaseURI(w.location.href),
         },
-        "deployment.mode": "",
-        features: {
-            readOnly: false
-        },
-        mode: "dev",
-        ui: {
-            contextPath: null,
-            url: "http://localhost:8888/"
-        }
-    };
-
-    constructor() {
-        const w: any = window;
-
-        if (w.UI_CONFIG) {
-            this.config = _.extend({}, this.config, w.UI_CONFIG);
-            console.info("[ConfigService] Applied UI_CONFIG:");
-            console.info(w.UI_CONFIG);
-        }
+      });
+      console.info("[ConfigService] Applied UI_CONFIG:");
+      console.info(w.UI_CONFIG);
     }
+  }
 
-    public init(): void {
-        // Nothing to init (done in c'tor)
+  public init(): void {
+    // Nothing to init (done in c'tor)
+  }
+
+  public artifactsType(): string {
+    if (!this.config.artifacts) {
+      return null;
     }
+    return this.config.artifacts.type;
+  }
 
-    public artifactsType(): string {
-        if (!this.config.artifacts) {
-            return null;
-        }
-        return this.config.artifacts.type;
+  public artifactsUrl(): string {
+    if (!this.config.artifacts) {
+      return null;
     }
+    return this.config.artifacts.url;
+  }
 
-    public artifactsUrl(): string {
-        if (!this.config.artifacts) {
-            return null;
-        }
-        return this.config.artifacts.url;
+  public deploymentMode(): string {
+    return this.config["deployment.mode"];
+  }
+
+  public uiUrl(): string {
+    if (!this.config.ui || !this.config.ui.url) {
+      return "";
     }
+    return this.config.ui.url;
+  }
 
-    public deploymentMode(): string {
-        return this.config['deployment.mode'];
+  public uiContextPath(): string | undefined {
+    if (!this.config.ui || !this.config.ui.contextPath) {
+      return undefined;
     }
+    return this.config.ui.contextPath;
+  }
 
-    public uiUrl(): string {
-        if (!this.config.ui || !this.config.ui.url) {
-            return "";
-        }
-        return this.config.ui.url;
+  public features(): FeaturesConfig {
+    if (!this.config.features) {
+      return {};
     }
+    return this.config.features;
+  }
 
-    public uiContextPath(): string|undefined {
-        if (!this.config.ui || !this.config.ui.contextPath) {
-            return undefined;
-        }
-        return this.config.ui.contextPath;
+  public featureReadOnly(): boolean {
+    if (!this.config.features || !this.config.features.readOnly) {
+      return false;
     }
+    return this.config.features.readOnly;
+  }
 
-    public features(): FeaturesConfig {
-        if (!this.config.features) {
-            return {};
-        }
-        return this.config.features;
-    }
-
-    public featureReadOnly(): boolean {
-        if (!this.config.features || !this.config.features.readOnly) {
-            return false;
-        }
-        return this.config.features.readOnly;
-    }
-
+  private getBaseURI(path: string): string {
+    return path.split("#app")[0] + "api";
+  }
 }
