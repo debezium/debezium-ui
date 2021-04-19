@@ -21,7 +21,10 @@
     "clean": "lerna run clean",
     "prebuild": "yarn lint",
     "build": "lerna run build",
-    "start": "lerna run start --scope=@debezium/ui"
+    "start": "lerna run start --scope=@debezium/ui",
+    "cypress:open": "cypress open",
+    "cypress": "cypress run --headless --browser chrome",
+    "unit:test": "lerna run test"
   },
   "husky": {
     "hooks": {
@@ -29,6 +32,8 @@
     }
   },
   "devDependencies": {
+    "cypress": "^7.1.0",
+    "git-revision-webpack-plugin": "^3.0.6",
     "husky": "^4.3.7",
     "lerna": "3.21.0"
   },

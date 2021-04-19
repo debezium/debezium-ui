@@ -1,0 +1,81 @@
+name: E2E test
+on: [push]
+jobs:
+  dbzui-container:
+    name: Cypress
+    runs-on: ubuntu-latest
+
+    services:
+      dbzui-zookeeper:
+        image: debezium/zookeeper:1.5
+
+      dbzui-kafka:
+        image: debezium/kafka:1.5
+        ports:
+          - 9092:9092
+        env: 
+          ZOOKEEPER_CONNECT: dbzui-zookeeper:2181
+
+      dbzui-postgres:
+        image: debezium/example-postgres:1.5
+        ports:
+          - 65432:5432
+        env: 
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+      
+      dbzui-connect:
+        image: debezium/connect:1.5
+        ports:
+          - 8083:8083
+        env:
+          BOOTSTRAP_SERVERS: dbzui-kafka:9092
+          GROUP_ID: 1
+          CONFIG_STORAGE_TOPIC: my_connect_configs
+          OFFSET_STORAGE_TOPIC: my_connect_offsets
+          STATUS_STORAGE_TOPIC: my_connect_statuses   
+
+    steps:
+      - name: Checkout Debezium UI
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: dbzui-${{ runner.os }}-maven-${{ hashFiles('pom.xml', '**/pom.xml') }}
+          restore-keys: |
+            dbzui-${{ runner.os }}-maven-
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache local Yarn repository
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: dbzui-${{ runner.os }}-yarn-${{ hashFiles('ui/yarn.lock') }}
+          restore-keys: |
+            dbzui-${{ runner.os }}-yarn-
+
+      - name: Build backend container
+        run: docker build --file ./Dockerfile --tag dbzui-backend:${GITHUB_SHA} --build-arg CYPRESS_CACHE_FOLDER=/javabuild/.cache/Cypress/ .
+      
+      - name: Run backend container
+        run: docker run --name dbzui-backend-kafka -d -p 8080:8080 --network=$(docker network ls -f name=^github_network_ --format "{{.Name}}") -e KAFKA_CONNECT_URI=http://dbzui-connect:8083 dbzui-backend:${GITHUB_SHA}
+
+      - name: Install deps and build (with cache)
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: ./ui
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: ./ui
