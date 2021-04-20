@@ -2,3 +2,5 @@
 **/dist/
 node/
 target/
+cypress/screenshots/
+**/coverage/
