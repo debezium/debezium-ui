@@ -3,3 +3,4 @@ node_modules/
 dist/
 node/
 cypress/screenshots/
+/ui/packages/ui/coverage/
