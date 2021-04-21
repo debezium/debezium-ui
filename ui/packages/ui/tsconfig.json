@@ -3,10 +3,11 @@
     "baseUrl": ".",
     "rootDir": ".",
     "outDir": "dist",
+    "sourceMap": true,
     "module": "esnext",
     "target": "es5",
     "lib": ["es6", "dom"],
-    "sourceMap": true,
+    "importHelpers": true,
     "jsx": "react",
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
@@ -14,7 +15,6 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "importHelpers": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
@@ -22,7 +22,6 @@
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
     "resolveJsonModule": true,
     "paths": {
       "@pf4-assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
@@ -32,5 +31,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "cypress"]
 }

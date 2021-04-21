@@ -1,0 +1,6 @@
+{
+  "extends": "../packages/ui/tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress"]
+  }
+}

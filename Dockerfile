@@ -1,5 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 AS builder
 
+ARG CYPRESS_CACHE_FOLDER=/.cache/Cypress
 ARG JAVA_PACKAGE=java-11-openjdk-headless
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
@@ -21,17 +22,17 @@ RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
 
 USER 1001
 
-COPY pom.xml /javabuild/
-COPY backend/pom.xml /javabuild/backend/pom.xml
-COPY ui/pom.xml /javabuild/ui/pom.xml
+COPY --chown=1001:root pom.xml /javabuild/
+COPY --chown=1001:root backend/pom.xml /javabuild/backend/pom.xml
+COPY --chown=1001:root ui/pom.xml /javabuild/ui/pom.xml
 
 WORKDIR /javabuild
 
-RUN mvn -am clean dependency:go-offline
+RUN mvn -am clean dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
-COPY . /javabuild/
+COPY --chown=1001:root . /javabuild/
 
-RUN mvn -am package -Dquarkus.package.type=fast-jar
+RUN mvn -am package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 

@@ -5,17 +5,19 @@ on:
     branches:
       - master
     paths:
-      - 'backend/**'
       - 'pom.xml'
+      - 'backend/**'
+      - '.github/workflows/backend-testing.yml'
   pull_request:
     branches:
       - master
     paths:
-      - 'backend/**'
       - 'pom.xml'
+      - 'backend/**'
+      - '.github/workflows/backend-testing.yml'
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     env:
       DEBEZIUM_VERSION: "v1.5.0.Beta1"
@@ -53,5 +55,5 @@ jobs:
             dbzui-${{ runner.os }}-yarn-
       - name: Build debezium-checkstyle
         run: mvn clean install -f debezium/pom.xml -pl support/checkstyle -DskipTests -DskipITs
-      - name: Test Debezium UI
+      - name: Test Debezium UI Backend
         run: mvn clean install -f dbzui -B -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
