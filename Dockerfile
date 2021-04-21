@@ -28,11 +28,11 @@ COPY --chown=1001:root ui/pom.xml /javabuild/ui/pom.xml
 
 WORKDIR /javabuild
 
-RUN mvn -am clean dependency:go-offline
+RUN mvn -am clean dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 COPY --chown=1001:root . /javabuild/
 
-RUN mvn -am package -Dquarkus.package.type=fast-jar
+RUN mvn -am package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 

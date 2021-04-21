@@ -1,30 +1,42 @@
-name: Unit Test
-on: [push]
+name: Test Debezium UI Frontend
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'ui/**'
+      - '.github/workflows/frontend-testing.yml'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'ui/**'
+      - '.github/workflows/frontend-testing.yml'
+
 jobs:
   test:
-    name: Build and test on Node ${{ matrix.node }} and ${{ matrix.os }}
-
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node: ['12.x', '14.x']
         os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
     defaults:
       run:
         working-directory: ./ui
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-
-      - name: Use Node ${{ matrix.node }}
+      - name: Use Node.js version ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
         with:
           working-directory: ./ui
-
-      - name: Test
+      - name: Test Debezium UI Frontend
         run: yarn run unit:test
