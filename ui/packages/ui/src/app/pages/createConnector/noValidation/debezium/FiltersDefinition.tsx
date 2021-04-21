@@ -48,7 +48,7 @@ React.useEffect(() => {
 
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <Title headingLevel="h2">Filter Definition</Title>
      {/* TODO: The properties to display are determined from the supplied configuration */}
      <Formik

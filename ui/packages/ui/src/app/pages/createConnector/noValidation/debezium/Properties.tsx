@@ -1,19 +1,47 @@
-import { Title } from '@patternfly/react-core';
-import { Form, Formik } from 'formik';
-import React from 'react';
-import { FormInputComponent } from './Helper/FormInputComponent';
+import { ConnectorProperty } from "@debezium/ui-models";
+import {
+  ExpandableSection,
+  Grid,
+  GridItem,
+  Title,
+} from "@patternfly/react-core";
+import { Form, Formik } from "formik";
+import _ from "lodash";
+import React from "react";
+import { getAdvancedPropertyDefinitions, getBasicPropertyDefinitions } from "src/app/shared";
+import { FormInputComponent } from "./Helper/FormInputComponent";
 export interface IPropertiesProps {
   configuration: Map<string, unknown>;
+  propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
-export const Properties: React.FC<IPropertiesProps> = props => {
-  // TODO: initialize from the supplied list of fields/properties to be displayed on this step. passed via host in [connector prop].
-  const [initialValues, setInitialValues] = React.useState({
-    userName: '',
-    userRole: '',
-    userPassword: '',
+const getInitialObject = (propertyList: ConnectorProperty[]) => {
+  const returnObj = {};
+  propertyList.forEach((property) => {
+    returnObj[property.name.replace(/[.]/g, "_")] = "";
   });
+  return returnObj;
+};
+
+const checkIfRequired = (
+  propertyList: ConnectorProperty[],
+  property: string
+): boolean => {
+  const matchProp = _.find(
+    propertyList,
+    (obj) => obj.name === property.replace(/[_]/g, ".")
+  );
+  return matchProp ? matchProp.isMandatory : false;
+};
+export const Properties: React.FC<IPropertiesProps> = (props) => {
+  // TODO: initialize from the supplied list of fields/properties to be displayed on this step. passed via host in [connector prop].
+  const [initialValues, setInitialValues] = React.useState(
+    getInitialObject(props.propertyDefinitions)
+  );
+  const [basicExpanded, setBasicExpanded] = React.useState<boolean>(true);
+  const [advancedExpanded, setAdvancedExpanded] = React.useState<boolean>(false);
+
 
   const validateForm = (values: any) => {
     const formValues = new Map(Object.entries(values));
@@ -36,13 +64,25 @@ export const Properties: React.FC<IPropertiesProps> = props => {
     let isValid = true;
     if (formData && formData.size !== 0) {
       formData.forEach((value: unknown, key: string) => {
-        if (!value && initialValues.hasOwnProperty(key)) {
+          if (
+          !value &&
+          initialValues.hasOwnProperty(key) &&
+          checkIfRequired(props.propertyDefinitions, key)
+        ) {
           isValid = false;
         }
       });
     }
     return isValid;
   };
+
+  const onToggleBasic = (isExpanded: boolean) => {
+    setBasicExpanded(isExpanded);
+  };
+
+  const onToggleAdvanced = (isExpanded: boolean) => {
+    setAdvancedExpanded(isExpanded);
+  }
 
   React.useEffect(() => {
     if (props.configuration && props.configuration.size !== 0) {
@@ -51,7 +91,7 @@ export const Properties: React.FC<IPropertiesProps> = props => {
       Object.keys(initialValues).forEach((key: string) => {
         if (props.configuration.get(key)) {
           initialValuesCopy[key] = props.configuration.get(key);
-        } else {
+        } else if(checkIfRequired(props.propertyDefinitions, key)){
           isValid = false;
         }
       });
@@ -61,7 +101,7 @@ export const Properties: React.FC<IPropertiesProps> = props => {
   }, []);
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <Title headingLevel="h2">Properties</Title>
       {/* TODO: The properties to display are determined from the supplied configuration */}
       <Formik
@@ -75,39 +115,82 @@ export const Properties: React.FC<IPropertiesProps> = props => {
       >
         {({}) => (
           <Form className="pf-c-form">
-            <FormInputComponent
-              isRequired={true}
-              label={'userName'}
-              fieldId={'userName'}
-              name={'userName'}
-              type={'text'}
-              helperTextInvalid={'ipsomloren'}
-              infoTitle={''}
-              infoText={'ipsum loren extra'}
-              validated={'default'}
-            />
-            <FormInputComponent
-              isRequired={true}
-              label={'userRole'}
-              fieldId={'userRole'}
-              name={'userRole'}
-              type={'text'}
-              helperTextInvalid={'ipsomloren'}
-              infoTitle={''}
-              infoText={'ipsum loren extra'}
-              validated={'default'}
-            />
-            <FormInputComponent
-              isRequired={true}
-              label={'userPassword'}
-              fieldId={'userPassword'}
-              name={'userPassword'}
-              type={'text'}
-              helperTextInvalid={'ipsomloren'}
-              infoTitle={''}
-              infoText={'ipsum loren extra'}
-              validated={'default'}
-            />
+            <Grid>
+              <GridItem lg={9} sm={12}>
+                <ExpandableSection
+                  toggleText={
+                    basicExpanded ? "Basic properties" : "Basic properties"
+                  }
+                  onToggle={onToggleBasic}
+                  isExpanded={basicExpanded}
+                >
+                  <Grid
+                    hasGutter={true}
+                    className={"properties-step-expansion-content"}
+                  >
+                    
+                    {getBasicPropertyDefinitions(props.propertyDefinitions).map(
+                      (propertyDefinition: ConnectorProperty, index: any) => {
+                        return (
+                          <FormInputComponent
+                            key={index}
+                            isRequired={propertyDefinition.isMandatory}
+                            label={propertyDefinition.displayName}
+                            fieldId={propertyDefinition.name.replace(
+                              /[.]/g,
+                              "_"
+                            )}
+                            name={propertyDefinition.name.replace(/[.]/g, "_")}
+                            type={"text"}
+                            helperTextInvalid={"ipsomloren"}
+                            infoTitle={propertyDefinition.displayName}
+                            infoText={propertyDefinition.description}
+                            validated={"default"}
+                          />
+                        );
+                      }
+                    )}
+                    
+                  </Grid>
+                </ExpandableSection>
+              </GridItem>
+              <GridItem lg={9} sm={12}>
+                <ExpandableSection
+                  toggleText={
+                    basicExpanded ? "Advance properties" : "Advance properties"
+                  }
+                  onToggle={onToggleAdvanced}
+                  isExpanded={advancedExpanded}
+                >
+                  <Grid
+                    hasGutter={true}
+                    className={"properties-step-expansion-content"}
+                  >
+                    {getAdvancedPropertyDefinitions(props.propertyDefinitions).map(
+                      (propertyDefinition: ConnectorProperty, index: any) => {
+                        return (
+                          <FormInputComponent
+                            key={index}
+                            isRequired={propertyDefinition.isMandatory}
+                            label={propertyDefinition.displayName}
+                            fieldId={propertyDefinition.name.replace(
+                              /[.]/g,
+                              "_"
+                            )}
+                            name={propertyDefinition.name.replace(/[.]/g, "_")}
+                            type={"text"}
+                            helperTextInvalid={"ipsomloren"}
+                            infoTitle={propertyDefinition.displayName}
+                            infoText={propertyDefinition.description}
+                            validated={"default"}
+                          />
+                        );
+                      }
+                    )}
+                  </Grid>
+                </ExpandableSection>
+              </GridItem>
+            </Grid>
           </Form>
         )}
       </Formik>
