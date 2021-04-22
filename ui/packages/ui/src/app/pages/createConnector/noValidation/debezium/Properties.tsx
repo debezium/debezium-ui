@@ -34,6 +34,20 @@ const checkIfRequired = (
   );
   return matchProp ? matchProp.isMandatory : false;
 };
+
+const setValidation = (values: any, propertyList: ConnectorProperty[]) =>{
+  
+  const errors = {};
+
+  propertyList.forEach((property) =>{
+    if (property.isMandatory && !values[property.name.replace(/[.]/g, "_")]){
+      errors[property.name.replace(/[.]/g, "_")] = 'Required';
+    }
+  })
+  return errors;
+}
+
+
 export const Properties: React.FC<IPropertiesProps> = (props) => {
   // TODO: initialize from the supplied list of fields/properties to be displayed on this step. passed via host in [connector prop].
   const [initialValues, setInitialValues] = React.useState(
@@ -53,11 +67,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       ...Array.from(formValues.entries()),
     ]);
     props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
-    // const errors: { userName?: string } = {};
-    // if (!values.userName) {
-    //   errors.userName = 'Required';
-    // }
-    // return errors;
+  
+  return setValidation(values, props.propertyDefinitions);
   };
 
   const isFormValid = (formData: Map<string, unknown>): boolean => {
@@ -113,7 +124,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
           //
         }}
       >
-        {({}) => (
+        {({errors, touched}) => (
           <Form className="pf-c-form">
             <Grid>
               <GridItem lg={9} sm={12}>
@@ -142,10 +153,10 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                             )}
                             name={propertyDefinition.name.replace(/[.]/g, "_")}
                             type={"text"}
-                            helperTextInvalid={"ipsomloren"}
+                            helperTextInvalid={"ipsomlorem"}
                             infoTitle={propertyDefinition.displayName}
                             infoText={propertyDefinition.description}
-                            validated={"default"}
+                            validated={errors[propertyDefinition.name.replace(/[.]/g, "_")] && touched[propertyDefinition.name.replace(/[.]/g, "_")] && errors[propertyDefinition.name.replace(/[.]/g, "_")] ? 'error' : 'default'}
                           />
                         );
                       }
@@ -179,7 +190,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                             )}
                             name={propertyDefinition.name.replace(/[.]/g, "_")}
                             type={"text"}
-                            helperTextInvalid={"ipsomloren"}
+                            helperTextInvalid={"ipsomlorem"}
                             infoTitle={propertyDefinition.displayName}
                             infoText={propertyDefinition.description}
                             validated={"default"}

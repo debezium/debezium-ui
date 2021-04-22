@@ -25,11 +25,14 @@ const validateForm = (values: any) => {
     ...Array.from(formValues.entries()),
   ]);
   props.onChange(updatedConfiguration, true);
-  // const errors: { userName?: string } = {};
-  // if (!values.userName) {
-  //   errors.userName = 'Required';
-  // }
-  // return errors;
+  const errors: { schemaFilter?: string, tableFilter?: string } = {};
+  if (!values.schemaFilter) {
+    errors.schemaFilter = 'Required';
+  }
+  if (!values.tableFilter) {
+    errors.tableFilter = 'Required';
+  }
+  return errors;
 };
 
 React.useEffect(() => {
@@ -60,7 +63,7 @@ React.useEffect(() => {
           //
         }}
       >
-        {({}) => (
+        {({errors, touched}) => (
           <Form className="pf-c-form">
             <FormInputComponent
               isRequired={true}
@@ -71,7 +74,7 @@ React.useEffect(() => {
               helperTextInvalid={'ipsomloren'}
               infoTitle={''}
               infoText={'ipsum loren extra'}
-              validated={'default'}
+              validated={errors.schemaFilter && touched.schemaFilter && errors.schemaFilter ? 'error' : 'default'}
             />
             <FormInputComponent
               isRequired={true}
@@ -82,7 +85,7 @@ React.useEffect(() => {
               helperTextInvalid={'ipsomloren'}
               infoTitle={''}
               infoText={'ipsum loren extra'}
-              validated={'default'}
+              validated={errors.tableFilter && touched.tableFilter && errors.tableFilter ? 'error' : 'default'}
             />
           </Form>
         )}
