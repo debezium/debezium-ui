@@ -26,26 +26,15 @@ module.exports = {
     }),
     new webpack.container.ModuleFederationPlugin({
       name: 'debezium_ui',
-      filename: "remoteEntry.js",
+      filename: "dbz-connector-configurator.remoteEntry.js",
       library: { type: 'var', name: 'debezium_ui'},
       exposes: {
         "./CreateConnectorNoValidation": "./src/app/pages/createConnector/noValidation/CreateConnectorNoValidation",
         "./CreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
         "./Table": "./src/app/pages/connectors/ConnectorsTableComponent",
+        "./config": "./src/app/pages/createConnector/noValidation/debezium/config",
       },
-      shared: {
-        ...dependencies,
-        react: {
-          eager: true,
-          singleton: true,
-          requiredVersion: dependencies.react,
-        },
-        "react-dom": {
-          eager: true,
-          singleton: true,
-          requiredVersion: dependencies["react-dom"],
-        }
-      },
+      shared: ["react", "react-dom"],
     }),
   ],
   module: {
