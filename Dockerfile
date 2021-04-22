@@ -1,6 +1,5 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 AS builder
 
-ARG CYPRESS_CACHE_FOLDER=/.cache/Cypress
 ARG JAVA_PACKAGE=java-11-openjdk-headless
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
@@ -14,10 +13,10 @@ RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
     && chown -R 1001 /javabuild \
     && chmod -R "g+rwX" /javabuild \
     && chown -R 1001:root /javabuild \
-    && mkdir -p /.cache/yarn \
-    && chown -R 1001 /.cache/yarn \
-    && chmod -R "g+rwX" /.cache/yarn \
-    && chown -R 1001:root /.cache/yarn \
+    && mkdir -p /.cache \
+    && chown -R 1001 /.cache \
+    && chmod -R "g+rwX" /.cache \
+    && chown -R 1001:root /.cache \
     && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/lib/security/java.security
 
 USER 1001
