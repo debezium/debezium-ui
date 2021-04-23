@@ -34,7 +34,16 @@ module.exports = {
         "./Table": "./src/app/pages/connectors/ConnectorsTableComponent",
         "./config": "./src/app/pages/createConnector/noValidation/debezium/config",
       },
-      shared: ["react", "react-dom"],
+      shared: [
+        {
+          react: {
+            singleton: true,
+          },
+          "react-dom": {
+            singleton: true,
+          },
+        },
+      ],
     }),
   ],
   module: {
