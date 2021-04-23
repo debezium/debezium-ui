@@ -7,6 +7,8 @@ import PostgresData from "../../../../../../assets/mockResponce/PostgresConnecto
 import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
+  getDataOptionsPropertyDefinitions,
+  getRuntimeOptionsPropertyDefinitions,
   getFormattedProperties,
 } from "src/app/shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
@@ -109,6 +111,10 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               ...getBasicPropertyDefinitions(connectorProperties),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
+            i18nAdvancedPropertiesText={"Advanced Properties"}
+            i18nAdvancedPublicationPropertiesText={"Publication"}
+            i18nAdvancedReplicationPropertiesText={"Replication"}
+            i18nBasicPropertiesText={"Basic Properties"}
           />
         );
       case FILTER_CONFIGURATION_STEP_ID:
@@ -127,6 +133,10 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
             }
+            propertyDefinitions={getDataOptionsPropertyDefinitions(connectorProperties)}
+            i18nAdvancedMappingPropertiesText={"Advanced mapping properties"}
+            i18nMappingPropertiesText={"Mapping properties"}
+            i18nSnapshotPropertiesText={"Snapshot properties"}
           />
         );
       case RUNTIME_OPTIONS_STEP_ID:
@@ -136,6 +146,9 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
             }
+            propertyDefinitions={getRuntimeOptionsPropertyDefinitions(connectorProperties)}
+            i18nEngineProperties={"Engine properties"}
+            i18nHeartbeatProperties={"Heartbeat properties"}
           />
         );
       default:

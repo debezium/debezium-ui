@@ -1,7 +1,7 @@
 import { Title } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
-import { FormInputComponent } from './Helper/FormInputComponent';
+import { FormInputComponent } from 'src/app/components/formHelpers';
 
 export interface IFilterDefinitionProps {
   configuration: Map<string,unknown>;
@@ -71,7 +71,7 @@ React.useEffect(() => {
               fieldId={'schemaFilter'}
               name={'schemaFilter'}
               type={'text'}
-              helperTextInvalid={'ipsomloren'}
+              helperTextInvalid={'ipsomlorem'}
               infoTitle={''}
               infoText={'ipsum loren extra'}
               validated={errors.schemaFilter && touched.schemaFilter && errors.schemaFilter ? 'error' : 'default'}
@@ -82,7 +82,7 @@ React.useEffect(() => {
               fieldId={'tableFilter'}
               name={'tableFilter'}
               type={'text'}
-              helperTextInvalid={'ipsomloren'}
+              helperTextInvalid={'ipsomlorem'}
               infoTitle={''}
               infoText={'ipsum loren extra'}
               validated={errors.tableFilter && touched.tableFilter && errors.tableFilter ? 'error' : 'default'}
