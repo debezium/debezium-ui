@@ -3,16 +3,19 @@ import {
   ExpandableSection,
   Grid,
   GridItem,
-  Title,
 } from "@patternfly/react-core";
 import { Form, Formik } from "formik";
 import _ from "lodash";
 import React from "react";
+import { FormInputComponent } from "src/app/components/formHelpers";
 import { getAdvancedPropertyDefinitions, getBasicPropertyDefinitions } from "src/app/shared";
-import { FormInputComponent } from "./Helper/FormInputComponent";
 export interface IPropertiesProps {
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
+  i18nAdvancedPropertiesText: string;
+  i18nAdvancedPublicationPropertiesText: string;
+  i18nAdvancedReplicationPropertiesText: string;
+  i18nBasicPropertiesText: string;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
@@ -49,7 +52,6 @@ const setValidation = (values: any, propertyList: ConnectorProperty[]) =>{
 
 
 export const Properties: React.FC<IPropertiesProps> = (props) => {
-  // TODO: initialize from the supplied list of fields/properties to be displayed on this step. passed via host in [connector prop].
   const [initialValues, setInitialValues] = React.useState(
     getInitialObject(props.propertyDefinitions)
   );
@@ -113,8 +115,6 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Title headingLevel="h2">Properties</Title>
-      {/* TODO: The properties to display are determined from the supplied configuration */}
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
@@ -130,7 +130,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
               <GridItem lg={9} sm={12}>
                 <ExpandableSection
                   toggleText={
-                    basicExpanded ? "Basic properties" : "Basic properties"
+                    basicExpanded ? props.i18nBasicPropertiesText : props.i18nBasicPropertiesText
                   }
                   onToggle={onToggleBasic}
                   isExpanded={basicExpanded}
@@ -168,7 +168,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
               <GridItem lg={9} sm={12}>
                 <ExpandableSection
                   toggleText={
-                    basicExpanded ? "Advance properties" : "Advance properties"
+                    advancedExpanded ? props.i18nAdvancedPropertiesText : props.i18nAdvancedPropertiesText
                   }
                   onToggle={onToggleAdvanced}
                   isExpanded={advancedExpanded}
