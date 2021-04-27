@@ -12,6 +12,7 @@ import {
   getFormattedProperties,
 } from "src/app/shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
+import { useTranslation } from "react-i18next";
 
 /**
  * Represents a connector type supported by the API
@@ -89,6 +90,8 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
 export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   props
 ) => {
+  const { t } = useTranslation(["app"]);
+
   const PROPERTIES_STEP_ID = 0;
   const FILTER_CONFIGURATION_STEP_ID = 1;
   const DATA_OPTIONS_STEP_ID = 2;
@@ -111,10 +114,10 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               ...getBasicPropertyDefinitions(connectorProperties),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
-            i18nAdvancedPropertiesText={"Advanced Properties"}
-            i18nAdvancedPublicationPropertiesText={"Publication"}
-            i18nAdvancedReplicationPropertiesText={"Replication"}
-            i18nBasicPropertiesText={"Basic Properties"}
+            i18nAdvancedPropertiesText={t("advancedPropertiesText")}
+            i18nAdvancedPublicationPropertiesText={t("advancedPublicationPropertiesText")}
+            i18nAdvancedReplicationPropertiesText={t("advancedReplicationPropertiesText")}
+            i18nBasicPropertiesText={t("basicPropertiesText")}
           />
         );
       case FILTER_CONFIGURATION_STEP_ID:
@@ -134,9 +137,9 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               props.onChange(conf, status)
             }
             propertyDefinitions={getDataOptionsPropertyDefinitions(connectorProperties)}
-            i18nAdvancedMappingPropertiesText={"Advanced mapping properties"}
-            i18nMappingPropertiesText={"Mapping properties"}
-            i18nSnapshotPropertiesText={"Snapshot properties"}
+            i18nAdvancedMappingPropertiesText={t("advancedMappingPropertiesText")}
+            i18nMappingPropertiesText={t("mappingPropertiesText")}
+            i18nSnapshotPropertiesText={t("snapshotPropertiesText")}
           />
         );
       case RUNTIME_OPTIONS_STEP_ID:
@@ -147,8 +150,8 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               props.onChange(conf, status)
             }
             propertyDefinitions={getRuntimeOptionsPropertyDefinitions(connectorProperties)}
-            i18nEngineProperties={"Engine properties"}
-            i18nHeartbeatProperties={"Heartbeat properties"}
+            i18nEngineProperties={t("engineProperties")}
+            i18nHeartbeatProperties={t("engineProperties")}
           />
         );
       default:
