@@ -55,12 +55,12 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   if (props.propertyDefinition.allowedValues) {
     return (
       <FormSelectComponent
-        fieldId={props.propertyDefinition.name}
         helperTextInvalid={props.helperTextInvalid}
+        fieldId={props.propertyDefinition.name}
+        name={props.propertyDefinition.name}
         isRequired={props.propertyDefinition.isMandatory}
         description={props.propertyDefinition.description}
         label={props.propertyDefinition.displayName}
-        name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
         options={props.propertyDefinition.allowedValues}
@@ -74,8 +74,9 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           typeof props.propertyDefinition.defaultValue !== "undefined" &&
           props.propertyDefinition.defaultValue === true
         }
-        label={props.propertyDefinition.displayName}
+        fieldId={props.propertyDefinition.name}
         name={props.propertyDefinition.name}
+        label={props.propertyDefinition.displayName}
         description={props.propertyDefinition.description}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
@@ -89,8 +90,9 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           typeof props.propertyDefinition.defaultValue !== "undefined" &&
           props.propertyDefinition.defaultValue === true
         }
-        label={props.propertyDefinition.displayName}
+        fieldId={props.propertyDefinition.name}
         name={props.propertyDefinition.name}
+        label={props.propertyDefinition.displayName}
         description={props.propertyDefinition.description}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
@@ -103,6 +105,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         description={props.propertyDefinition.description}
         isRequired={props.propertyDefinition.isMandatory}
         fieldId={props.propertyDefinition.name}
+        name={props.propertyDefinition.name}
         helperTextInvalid={
           getInvalidFilterMsg(
             props.propertyDefinition.name,
@@ -110,7 +113,6 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           ) || props.helperTextInvalid
         }
         label={props.propertyDefinition.displayName}
-        name={props.propertyDefinition.name}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
         validated={getValidate()}
@@ -123,6 +125,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         description={props.propertyDefinition.description}
         isRequired={props.propertyDefinition.isMandatory}
         fieldId={props.propertyDefinition.name}
+        name={props.propertyDefinition.name}
         helperTextInvalid={
           getInvalidFilterMsg(
             props.propertyDefinition.name,
@@ -130,7 +133,6 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           ) || props.helperTextInvalid
         }
         label={props.propertyDefinition.displayName}
-        name={props.propertyDefinition.name}
         i18nAddDefinitionText={t("addDefinition")}
         i18nAddDefinitionTooltip={t("addDefinitionTooltip")}
         i18nRemoveDefinitionTooltip={t("removeDefinitionTooltip")}
@@ -146,6 +148,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         description={props.propertyDefinition.description}
         isRequired={props.propertyDefinition.isMandatory}
         fieldId={props.propertyDefinition.name}
+        name={props.propertyDefinition.name}
         helperTextInvalid={
           getInvalidFilterMsg(
             props.propertyDefinition.name,
@@ -153,7 +156,6 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           ) || props.helperTextInvalid
         }
         label={props.propertyDefinition.displayName}
-        name={props.propertyDefinition.name}
         i18nAddDefinitionText={t("addDefinition")}
         i18nAddDefinitionTooltip={t("addDefinitionTooltip")}
         i18nRemoveDefinitionTooltip={t("removeDefinitionTooltip")}
@@ -168,9 +170,9 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
     return (
       <FormInputComponent
         isRequired={props.propertyDefinition.isMandatory}
-        label={props.propertyDefinition.displayName}
         fieldId={props.propertyDefinition.name}
         name={props.propertyDefinition.name}
+        label={props.propertyDefinition.displayName}
         type={props.propertyDefinition.type}
         helperTextInvalid={
           getInvalidFilterMsg(

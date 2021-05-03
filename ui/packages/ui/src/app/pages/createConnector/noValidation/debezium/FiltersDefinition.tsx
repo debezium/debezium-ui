@@ -1,9 +1,12 @@
-import { Title } from '@patternfly/react-core';
+import { Title, Text, TextVariants } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import { FormInputComponent } from 'src/app/components/formHelpers';
+import { ConnectorNameTypeHeader } from '../../connectorSteps';
 
 export interface IFilterDefinitionProps {
+  connectorName: string;
+  selectedConnector: string;
   configuration: Map<string,unknown>;
   onChange: (configuration: Map<string,unknown>, isValid: boolean) => void;
 }
@@ -52,9 +55,20 @@ React.useEffect(() => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Title headingLevel="h2">Filter Definition</Title>
-     {/* TODO: The properties to display are determined from the supplied configuration */}
-     <Formik
+      <ConnectorNameTypeHeader
+              connectorName={props.connectorName}
+              connectorType={'postgres'}
+              showIcon={false}
+            />
+     <Title headingLevel="h2" size="3xl">
+        Filter definition
+      </Title>
+      <Text component={TextVariants.h2}>
+      Select tables for change capture by entering comma-separated lists of regular expressions for schemas and tables.
+
+      </Text>
+     {/* TODO:  */}
+     {/* <Formik
         validateOnChange={true}
         enableReinitialize={true}
         initialValues={initialValues}
@@ -89,7 +103,7 @@ React.useEffect(() => {
             />
           </Form>
         )}
-      </Formik>
+      </Formik> */}
     </div>
   );
 };
