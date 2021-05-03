@@ -1,6 +1,5 @@
 import * as React from "react";
 import { DataOptions } from "./DataOptions";
-import { FilterDefinition } from "./FiltersDefinition";
 import { Properties } from "./Properties";
 import { RuntimeOptions } from "./RuntimeOptions";
 import PostgresData from "../../../../../../assets/mockResponce/PostgresConnector.json";
@@ -13,6 +12,7 @@ import {
 } from "src/app/shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { useTranslation } from "react-i18next";
+import { FilterConfigNoValidationStep } from "../connectorSteps";
 
 /**
  * Represents a connector type supported by the API
@@ -104,6 +104,20 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
     ConnectorProperty[]
   >(getPropertiesData(PostgresData));
 
+  const [filterValues, setFilterValues] = React.useState<Map<string, unknown>>(
+    new Map<string, unknown>()
+  );
+  const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
+
+  // Update the filter values
+  const handleFilterUpdate = (filterValue: Map<string, string>) => {
+    setFilterValues(new Map(filterValue));
+  };
+
+  React.useEffect(()=>{
+    props.activeStep === 1 && props.onChange(props.configuration, isValidFilter)
+  },[isValidFilter, props.activeStep])
+
   function chooseStep(stepId: number) {
     switch (stepId) {
       case PROPERTIES_STEP_ID:
@@ -130,16 +144,18 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
         );
       case FILTER_CONFIGURATION_STEP_ID:
         return (
-          <FilterDefinition
-            connectorName={
-              (props.configuration?.get("connector_name") as string) || ""
-            }
-            selectedConnector={props.connector.name}
-            configuration={props.configuration}
-            onChange={(conf: Map<string, unknown>, status: boolean) =>
-              props.onChange(conf, status)
-            }
-          />
+          <div
+            style={{ padding: "20px" }}
+          >
+            {/* TODO: save the filter value to configurator */}
+            <FilterConfigNoValidationStep
+              filterValues={filterValues}
+              updateFilterValues={handleFilterUpdate}
+              connectorType={""}
+              setIsValidFilter={setIsValidFilter}
+              selectedConnectorType={""}
+            />
+          </div>
         );
       case DATA_OPTIONS_STEP_ID:
         return (
