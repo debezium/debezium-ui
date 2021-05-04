@@ -9,6 +9,7 @@ import {
   getDataOptionsPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
   getFormattedProperties,
+  getFilterConfigurationPageContent,
 } from "src/app/shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { useTranslation } from "react-i18next";
@@ -87,6 +88,20 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   return getFormattedProperties(connectorData.properties, connectorData);
 };
 
+const getFilterInitialValues = (connectorData: Map<string,unknown>, selectedConnector: string): Map<string,string> =>{
+  const returnVal = new Map<string,string>();
+  if(connectorData && connectorData.size !==0){
+    const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
+      selectedConnector || ""
+    );
+    filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
+      connectorData.get(`${fieldObj.field}.include.list`) && returnVal.set(`${fieldObj.field}.include.list`,connectorData.get(`${fieldObj.field}.include.list`) as string);
+      connectorData.get(`${fieldObj.field}.exclude.list`) && returnVal.set(`${fieldObj.field}.exclude.list`,connectorData.get(`${fieldObj.field}.exclude.list`) as string);
+    })
+  }  
+  return returnVal;
+}
+
 export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   props
 ) => {
@@ -97,21 +112,38 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   const DATA_OPTIONS_STEP_ID = 2;
   const RUNTIME_OPTIONS_STEP_ID = 3;
 
-  // tslint:disable-next-line: no-console
-  console.log("Configuration data", props.configuration);
-
   const [connectorProperties, setConnectorProperties] = React.useState<
     ConnectorProperty[]
   >(getPropertiesData(PostgresData));
 
-  const [filterValues, setFilterValues] = React.useState<Map<string, unknown>>(
-    new Map<string, unknown>()
+  const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
+    getFilterInitialValues(props.configuration,'')
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
+  const clearFilterFields = (configObj: Map<string,unknown>): Map<string,unknown> =>{
+    const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
+      props.connector.name || ""
+    );
+    filterConfigurationPageContentObj.fieldArray.forEach((fieldObj:any)=>{
+      configObj.delete(`${fieldObj.field}.include.list`) || configObj.delete(`${fieldObj.field}.exclude.list`)
+    })
+    return configObj;
+  }
+
   // Update the filter values
   const handleFilterUpdate = (filterValue: Map<string, string>) => {
-    setFilterValues(new Map(filterValue));
+    const filterVal = new Map(filterValue)
+    setFilterValues(filterVal);
+    const configCopy = props.configuration
+      ? new Map<string, unknown>(props.configuration)
+      : new Map<string, unknown>();
+    const configVal = clearFilterFields(configCopy);
+    const updatedConfiguration = new Map([
+      ...Array.from(configVal.entries()),
+      ...Array.from(filterVal.entries()),
+    ]);
+    props.onChange(updatedConfiguration, true)
   };
 
   React.useEffect(()=>{

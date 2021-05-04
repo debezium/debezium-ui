@@ -21,7 +21,7 @@ import {
 import "./FilterConfigNoValidationStep.css";
 
 export interface IFilterConfigNoValidationStepProps {
-  filterValues: Map<string, unknown>;
+  filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
@@ -33,7 +33,7 @@ export const FilterConfigNoValidationStep: React.FunctionComponent<IFilterConfig
 ) => {
   const { t } = useTranslation(["app"]);
   const [formData, setFormData] = React.useState<Map<string, string>>(
-    new Map()
+    new Map(props.filterValues)
   );
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
     new Map()
@@ -56,15 +56,14 @@ export const FilterConfigNoValidationStep: React.FunctionComponent<IFilterConfig
   const doClear = () => {
     props.setIsValidFilter(true);
     setFormData(new Map());
+    props.updateFilterValues(new Map());
     setShowClearDialog(false);
   };
 
   React.useEffect(() => {
-    if (formData.size === 0) {
-      props.setIsValidFilter(true);
-    } else {
-      props.setIsValidFilter(false);
-    }
+    _.isEqual(props.filterValues, formData)
+      ? props.setIsValidFilter(true)
+      : props.setIsValidFilter(false);
   }, [formData]);
 
   const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
