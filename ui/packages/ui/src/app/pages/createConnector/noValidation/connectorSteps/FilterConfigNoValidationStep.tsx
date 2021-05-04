@@ -21,8 +21,7 @@ import {
 import "./FilterConfigNoValidationStep.css";
 
 export interface IFilterConfigNoValidationStepProps {
-  propertyValues: Map<string, string>;
-  filterValues: Map<string, string>;
+  filterValues: Map<string, unknown>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;

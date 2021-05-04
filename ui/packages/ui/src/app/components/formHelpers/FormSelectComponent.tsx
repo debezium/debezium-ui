@@ -75,7 +75,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
       }
       helperTextInvalid={helperTextInvalid}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
-      fieldId={fieldId}
+      fieldId={field.name}
       name={fieldId}
     >
       <Select

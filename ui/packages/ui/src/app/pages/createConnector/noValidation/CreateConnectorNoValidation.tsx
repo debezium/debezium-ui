@@ -528,9 +528,6 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
               showIcon={false}
             />
             <FilterConfigNoValidationStep
-              propertyValues={
-                new Map([...basicPropValues, ...advancedPropValues])
-              }
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
               connectorType={selectedConnectorType || ""}
