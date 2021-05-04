@@ -18,7 +18,7 @@ import React from "react";
 
 export interface IFilterInputFieldComponentProps {
   fieldName: string;
-  filterValues: Map<string, string>;
+  filterValues: Map<string, unknown>;
   setFormData: (formData: Map<string, string>) => void;
   formData: Map<string, string>;
   invalidMsg: Map<string, string>;
@@ -46,11 +46,11 @@ const getInvalidFilterMsg = (
 };
 
 const getFieldExpression = (
-  data: Map<string, string>,
+  data: Map<string, unknown>,
   fieldExclude: string,
   fieldInclude: string
 ): string => {
-  return data.get(fieldExclude) || data.get(fieldInclude) || "";
+  return data.get(fieldExclude) as string || data.get(fieldInclude) as string || "";
 };
 
 export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFieldComponentProps> = (
