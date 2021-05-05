@@ -76,8 +76,11 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
       ...Array.from(configCopy.entries()),
       ...Array.from(formValues.entries()),
     ]);
-  
-    props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
+    const finalConfiguration = new Map();
+    updatedConfiguration.forEach((value: any, key:any) => {
+      finalConfiguration.set(key.replace(/_/g, "."), value)
+    })
+    props.onChange(finalConfiguration, isFormValid(finalConfiguration));
     // const errors: { userName?: string } = {};
     // if (!values.userName) {
     //   errors.userName = 'Required';

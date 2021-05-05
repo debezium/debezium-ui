@@ -99,7 +99,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   );
 
   const validateForm = (values: any) => {
-    const formEntries = Object.entries(values).reduce((a,[k,v])=>(initialValues[k]===v||(a[k]=v),a),{});
+    const formEntries = Object.entries(values).reduce((a, [k, v])=>(initialValues[k] === v || (a[k]=v), a),{});
     const formValues = new Map(Object.entries(formEntries));
 
     const configCopy = props.configuration
@@ -110,8 +110,11 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       ...Array.from(configCopy.entries()),
       ...Array.from(formValues.entries()),
     ]);
-
-    props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
+    const finalConfiguration = new Map();
+    updatedConfiguration.forEach((value: any, key:any) => {
+      finalConfiguration.set(key.replace(/_/g, "."), value)
+    })
+    props.onChange(finalConfiguration, isFormValid(finalConfiguration));
     return setValidation(values, props.propertyDefinitions);
   };
 
