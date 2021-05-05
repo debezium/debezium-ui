@@ -7,7 +7,7 @@ import {
   SplitItem,
   Text,
   TextContent,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { Form, Formik } from "formik";
 import _ from "lodash";
@@ -15,10 +15,12 @@ import React from "react";
 import { FormComponent } from "src/app/components/formHelpers";
 import {
   formatPropertyDefinitions,
-  PropertyCategory,
+  PropertyCategory
 } from "src/app/shared";
 import { ConnectorTypeComponent } from "../../connectorSteps";
 import "./Properties.css";
+
+
 export interface IPropertiesProps {
   selectedConnector: string;
   configuration: Map<string, unknown>;
@@ -97,16 +99,19 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   );
 
   const validateForm = (values: any) => {
-    const formValues = new Map(Object.entries(values));
+    const formEntries = Object.entries(values).reduce((a,[k,v])=>(initialValues[k]===v||(a[k]=v),a),{});
+    const formValues = new Map(Object.entries(formEntries));
+
     const configCopy = props.configuration
       ? new Map<string, unknown>(props.configuration)
       : new Map<string, unknown>();
+
     const updatedConfiguration = new Map([
       ...Array.from(configCopy.entries()),
       ...Array.from(formValues.entries()),
     ]);
-    props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
 
+    props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
     return setValidation(values, props.propertyDefinitions);
   };
 
@@ -133,7 +138,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   const onToggleAdvanced = (isExpanded: boolean) => {
     setAdvancedExpanded(isExpanded);
   };
-
+  
   const handlePropertyChange = (propName: string, propValue: any) => {
     // TODO: handling for property change if needed.
   };
@@ -153,7 +158,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       isValid && props.onChange(props.configuration, true);
     }
   }, []);
-
+  
   return (
     <div style={{ padding: "20px" }} className={"properties-step-page"}>
       <Formik

@@ -1,6 +1,6 @@
 import {
   ConnectorProperty,
-  PropertyValidationResult,
+  PropertyValidationResult
 } from "@debezium/ui-models";
 import * as React from "react";
 import { useTranslation } from "react-i18next";

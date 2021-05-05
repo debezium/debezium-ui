@@ -3,7 +3,7 @@ import {
   ExpandableSection,
   Form,
   Grid,
-  GridItem,
+  GridItem
 } from "@patternfly/react-core";
 import { Formik } from "formik";
 import _ from "lodash";
@@ -67,7 +67,8 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
   );
 
   const validateForm = (values: any) => {
-    const formValues = new Map(Object.entries(values));
+    const formEntries = Object.entries(values).reduce((a,[k,v])=>(initialValues[k]===v||(a[k]=v),a),{});
+    const formValues = new Map(Object.entries(formEntries));
     const configCopy = props.configuration
       ? new Map<string, unknown>(props.configuration)
       : new Map<string, unknown>();
@@ -75,6 +76,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
       ...Array.from(configCopy.entries()),
       ...Array.from(formValues.entries()),
     ]);
+  
     props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
     // const errors: { userName?: string } = {};
     // if (!values.userName) {
