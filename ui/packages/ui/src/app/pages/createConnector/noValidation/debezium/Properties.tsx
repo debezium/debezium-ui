@@ -7,7 +7,7 @@ import {
   SplitItem,
   Text,
   TextContent,
-  Title,
+  Title
 } from "@patternfly/react-core";
 import { Form, Formik } from "formik";
 import _ from "lodash";
@@ -15,10 +15,12 @@ import React from "react";
 import { FormComponent } from "src/app/components/formHelpers";
 import {
   formatPropertyDefinitions,
-  PropertyCategory,
+  PropertyCategory
 } from "src/app/shared";
 import { ConnectorTypeComponent } from "../../connectorSteps";
 import "./Properties.css";
+
+
 export interface IPropertiesProps {
   selectedConnector: string;
   configuration: Map<string, unknown>;
@@ -97,16 +99,22 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   );
 
   const validateForm = (values: any) => {
-    const formValues = new Map(Object.entries(values));
+    const formEntries = Object.entries(values).reduce((a, [k, v])=>(initialValues[k] === v || (a[k]=v), a),{});
+    const formValues = new Map(Object.entries(formEntries));
+
     const configCopy = props.configuration
       ? new Map<string, unknown>(props.configuration)
       : new Map<string, unknown>();
+
     const updatedConfiguration = new Map([
       ...Array.from(configCopy.entries()),
       ...Array.from(formValues.entries()),
     ]);
-    props.onChange(updatedConfiguration, isFormValid(updatedConfiguration));
-
+    const finalConfiguration = new Map();
+    updatedConfiguration.forEach((value: any, key:any) => {
+      finalConfiguration.set(key.replace(/_/g, "."), value)
+    })
+    props.onChange(finalConfiguration, isFormValid(finalConfiguration));
     return setValidation(values, props.propertyDefinitions);
   };
 
@@ -133,24 +141,29 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   const onToggleAdvanced = (isExpanded: boolean) => {
     setAdvancedExpanded(isExpanded);
   };
-
+  
   const handlePropertyChange = (propName: string, propValue: any) => {
     // TODO: handling for property change if needed.
   };
 
   React.useEffect(() => {
     const initialValuesCopy = JSON.parse(JSON.stringify(initialValues));
+    
     if (props.configuration && props.configuration.size !== 0) {
       let isValid = true;
+      const updatedConfiguration = new Map();
+      props.configuration.forEach((value: any, key: any) => {
+        updatedConfiguration.set(key.replace(/[.]/g, "_"), value)
+      })
       Object.keys(initialValues).forEach((key: string) => {
-        if (props.configuration.get(key)) {
-          initialValuesCopy[key] = props.configuration.get(key);
+        if (updatedConfiguration.get(key)) {
+          initialValuesCopy[key] = updatedConfiguration.get(key);
         } else if (checkIfRequired(props.propertyDefinitions, key)) {
           isValid = false;
         }
       });
       setInitialValues(initialValuesCopy);
-      isValid && props.onChange(props.configuration, true);
+      isValid && props.onChange(updatedConfiguration, true);
     }
   }, []);
 
