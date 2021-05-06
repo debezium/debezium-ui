@@ -152,20 +152,20 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
           {({ errors, touched, setFieldValue }) => (
             <Form className="pf-c-form">
               <PropertiesStepsComponent
-              connectorType={props.connectorType}
-              basicPropertyDefinitions={props.basicPropertyDefinitions}
-              basicPropertyValues={props.basicPropertyValues}
-              advancedPropertyDefinitions={props.advancedPropertyDefinitions}
-              advancedPropertyValues={props.advancedPropertyValues}
-              invalidMsg={props.invalidMsg}
-              i18nAdvancedPropertiesText={props.i18nAdvancedPropertiesText}
-              i18nAdvancedPublicationPropertiesText={props.i18nAdvancedPublicationPropertiesText}
-              i18nAdvancedReplicationPropertiesText={props.i18nAdvancedReplicationPropertiesText}
-              i18nBasicPropertiesText={props.i18nBasicPropertiesText}
-              setFieldValue={setFieldValue}
-              errors={errors}
-              touched={touched}
-                />
+                connectorType={props.connectorType}
+                basicPropertyDefinitions={props.basicPropertyDefinitions}
+                basicPropertyValues={props.basicPropertyValues}
+                advancedPropertyDefinitions={props.advancedPropertyDefinitions}
+                advancedPropertyValues={props.advancedPropertyValues}
+                invalidMsg={props.invalidMsg}
+                i18nAdvancedPropertiesText={props.i18nAdvancedPropertiesText}
+                i18nAdvancedPublicationPropertiesText={props.i18nAdvancedPublicationPropertiesText}
+                i18nAdvancedReplicationPropertiesText={props.i18nAdvancedReplicationPropertiesText}
+                i18nBasicPropertiesText={props.i18nBasicPropertiesText}
+                setFieldValue={setFieldValue}
+                errors={errors}
+                touched={touched}
+              />
               <FormSubmit
                 ref={ref}
                 // setConnectionStepsValid={props.setConnectionStepsValid}
