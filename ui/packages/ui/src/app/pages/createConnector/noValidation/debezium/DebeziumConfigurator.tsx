@@ -2,7 +2,8 @@ import * as React from "react";
 import { DataOptions } from "./DataOptions";
 import { Properties } from "./Properties";
 import { RuntimeOptions } from "./RuntimeOptions";
-import PostgresData from "../../../../../../assets/mockResponce/PostgresConnector.json";
+// import PostgresData from "../../../../../../assets/mockResponse/PostgresConnectorDebezium.json";
+import PostgresData from "../../../../../../assets/mockResponse/PostgresConnectorCos.json";
 import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
@@ -10,6 +11,7 @@ import {
   getRuntimeOptionsPropertyDefinitions,
   getFormattedProperties,
   getFilterConfigurationPageContent,
+  ConnectorTypeId,
 } from "src/app/shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { useTranslation } from "react-i18next";
@@ -73,20 +75,92 @@ export interface IDebeziumConfiguratorProps {
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
-const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
-  if (
-    connectorData?.properties.find(
-      (obj: { name: string }) =>
-        obj.name === "column.mask.hash.([^.]+).with.salt.(.+)"
-    )?.name
-  ) {
-    connectorData.properties.find(
-      (obj: { name: string }) =>
-        obj.name === "column.mask.hash.([^.]+).with.salt.(.+)"
-    ).name = "column.mask.hash";
+const getType = (type: string, format: string) => {
+  if (type === 'string') {
+    if (!format) {
+      return "STRING";
+    } else if (format === 'password') {
+      return "PASSWORD";
+    } else if (format === 'class') {
+      return "CLASS";
+    } else if (format.indexOf('list') !== -1) {
+      return "LIST";
+    } else {
+      return "STRING";
+    }
+  } else if (type === 'boolean') {
+    return "BOOLEAN";
+  } else if (type === 'integer') {
+    if (!format) {
+      return "INT";
+    } else if (format === 'int32') {
+      return "INT";
+    } else if (format === 'int64') {
+      return "LONG";
+    } else {
+      return "INT";
+    }
   }
-  return getFormattedProperties(connectorData.properties, connectorData);
-};
+  return "STRING";
+}
+
+const getMandatory = (nullable: any) => {
+  if (nullable === undefined || nullable === true) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
+  const connProperties: ConnectorProperty[] = [];
+
+  // -------------------------------
+  // PostgresConnectorDebezium.json
+  // -------------------------------
+  // const schemas = PostgresData.components.schemas;
+  // // Key is schema name
+  // const keys = Object.keys(schemas);
+  // const schemaName = keys[0];
+  // // Schema object
+  // const schema = schemas[schemaName];
+  // const schemaProperties = schema.properties;
+
+  // -------------------------------
+  // PostgresConnectorCos.json
+  // -------------------------------
+  const schemaProperties = PostgresData.json_schema.properties;
+
+  for(const propKey of Object.keys(schemaProperties)) {
+    const prop = schemaProperties[propKey];
+    // tslint:disable: no-string-literal
+    const name =
+      prop["x-name"] === "column.mask.hash.([^.]+).with.salt.(.+)"
+        ? "column.mask.hash"
+        : prop["x-name"];
+    const nullable = prop["nullable"];
+    const type = prop["type"];
+    const format = prop["format"];
+    const connProp = {
+      category: prop["x-category"],
+      description: prop["description"],
+      displayName: prop["title"],
+      name,
+      isMandatory: getMandatory(nullable),
+      type: getType(type,format)
+    } as ConnectorProperty;
+
+    if (prop["default"]) {
+      connProp.defaultValue = prop["default"];
+    }
+    if (prop["enum"]) {
+      connProp.allowedValues = prop["enum"];
+    }
+    // tslint:enable: no-string-literal
+    connProperties.push(connProp);
+  }
+  return getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES);
+}
 
 const getFilterInitialValues = (connectorData: Map<string,unknown>, selectedConnector: string): Map<string,string> =>{
   const returnVal = new Map<string,string>();

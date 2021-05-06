@@ -344,7 +344,7 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
             ).name = "column.mask.hash";
           }
           setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails)
+            getFormattedProperties(cDetails.properties, cDetails.id)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
@@ -453,7 +453,7 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
             ).name = "column.mask.hash";
           }
           setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails)
+            getFormattedProperties(cDetails.properties, cDetails.id)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
