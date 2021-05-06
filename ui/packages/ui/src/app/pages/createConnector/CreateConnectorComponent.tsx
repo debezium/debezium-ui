@@ -383,7 +383,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ).name = "column.mask.hash";
           }
           setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails)
+            getFormattedProperties(cDetails.properties, cDetails.id)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
@@ -627,7 +627,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ).name = "column.mask.hash";
           }
           setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails)
+            getFormattedProperties(cDetails.properties, cDetails.id)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
