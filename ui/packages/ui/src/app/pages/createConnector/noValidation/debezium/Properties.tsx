@@ -148,20 +148,25 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
 
   React.useEffect(() => {
     const initialValuesCopy = JSON.parse(JSON.stringify(initialValues));
+    
     if (props.configuration && props.configuration.size !== 0) {
       let isValid = true;
+      const updatedConfiguration = new Map();
+      props.configuration.forEach((value: any, key: any) => {
+        updatedConfiguration.set(key.replace(/[.]/g, "_"), value)
+      })
       Object.keys(initialValues).forEach((key: string) => {
-        if (props.configuration.get(key)) {
-          initialValuesCopy[key] = props.configuration.get(key);
+        if (updatedConfiguration.get(key)) {
+          initialValuesCopy[key] = updatedConfiguration.get(key);
         } else if (checkIfRequired(props.propertyDefinitions, key)) {
           isValid = false;
         }
       });
       setInitialValues(initialValuesCopy);
-      isValid && props.onChange(props.configuration, true);
+      isValid && props.onChange(updatedConfiguration, true);
     }
   }, []);
-  
+
   return (
     <div style={{ padding: "20px" }} className={"properties-step-page"}>
       <Formik
