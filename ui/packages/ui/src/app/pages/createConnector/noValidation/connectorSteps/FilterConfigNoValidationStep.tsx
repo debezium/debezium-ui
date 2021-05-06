@@ -31,7 +31,7 @@ export interface IFilterConfigNoValidationStepProps {
 export const FilterConfigNoValidationStep: React.FunctionComponent<IFilterConfigNoValidationStepProps> = (
   props
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
   const [formData, setFormData] = React.useState<Map<string, string>>(
     new Map(props.filterValues)
   );

@@ -75,7 +75,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [alerts, setAlerts] = React.useState<any[]>([]);
   const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<any[]>([]);
   
-  const { t } = useTranslation(['app']);
+  const { t } = useTranslation();
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);

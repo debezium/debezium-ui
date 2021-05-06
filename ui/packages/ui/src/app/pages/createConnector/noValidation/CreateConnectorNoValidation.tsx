@@ -84,7 +84,7 @@ export interface ICreateConnectorNoValidationProps {
 export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnectorNoValidationProps> = (
   props: ICreateConnectorNoValidationProps
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const createConnectorUnknownErrorMsg = t("unknownError");
   const CONNECTOR_TYPE_STEP = (

@@ -12,8 +12,10 @@ import {
   getFilterConfigurationPageContent,
 } from "src/app/shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
-import { useTranslation } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import { FilterConfigNoValidationStep } from "../connectorSteps";
+import i18n from "../../../../../i18n/i18n";
+import { BrowserRouter } from "react-router-dom";
 
 /**
  * Represents a connector type supported by the API
@@ -88,24 +90,35 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   return getFormattedProperties(connectorData.properties, connectorData);
 };
 
-const getFilterInitialValues = (connectorData: Map<string,unknown>, selectedConnector: string): Map<string,string> =>{
-  const returnVal = new Map<string,string>();
-  if(connectorData && connectorData.size !==0){
+const getFilterInitialValues = (
+  connectorData: Map<string, unknown>,
+  selectedConnector: string
+): Map<string, string> => {
+  const returnVal = new Map<string, string>();
+  if (connectorData && connectorData.size !== 0) {
     const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
       selectedConnector || ""
     );
     filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
-      connectorData.get(`${fieldObj.field}.include.list`) && returnVal.set(`${fieldObj.field}.include.list`,connectorData.get(`${fieldObj.field}.include.list`) as string);
-      connectorData.get(`${fieldObj.field}.exclude.list`) && returnVal.set(`${fieldObj.field}.exclude.list`,connectorData.get(`${fieldObj.field}.exclude.list`) as string);
-    })
-  }  
+      connectorData.get(`${fieldObj.field}.include.list`) &&
+        returnVal.set(
+          `${fieldObj.field}.include.list`,
+          connectorData.get(`${fieldObj.field}.include.list`) as string
+        );
+      connectorData.get(`${fieldObj.field}.exclude.list`) &&
+        returnVal.set(
+          `${fieldObj.field}.exclude.list`,
+          connectorData.get(`${fieldObj.field}.exclude.list`) as string
+        );
+    });
+  }
   return returnVal;
-}
+};
 
 export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   props
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const PROPERTIES_STEP_ID = 0;
   const FILTER_CONFIGURATION_STEP_ID = 1;
@@ -117,23 +130,26 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   >(getPropertiesData(PostgresData));
 
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
-    getFilterInitialValues(props.configuration,'')
+    getFilterInitialValues(props.configuration, "")
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
-  const clearFilterFields = (configObj: Map<string,unknown>): Map<string,unknown> =>{
+  const clearFilterFields = (
+    configObj: Map<string, unknown>
+  ): Map<string, unknown> => {
     const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
       props.connector.name || ""
     );
-    filterConfigurationPageContentObj.fieldArray.forEach((fieldObj:any)=>{
-      configObj.delete(`${fieldObj.field}.include.list`) || configObj.delete(`${fieldObj.field}.exclude.list`)
-    })
+    filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
+      configObj.delete(`${fieldObj.field}.include.list`) ||
+        configObj.delete(`${fieldObj.field}.exclude.list`);
+    });
     return configObj;
-  }
+  };
 
   // Update the filter values
   const handleFilterUpdate = (filterValue: Map<string, string>) => {
-    const filterVal = new Map(filterValue)
+    const filterVal = new Map(filterValue);
     setFilterValues(filterVal);
     const configCopy = props.configuration
       ? new Map<string, unknown>(props.configuration)
@@ -143,12 +159,13 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       ...Array.from(configVal.entries()),
       ...Array.from(filterVal.entries()),
     ]);
-    props.onChange(updatedConfiguration, true)
+    props.onChange(updatedConfiguration, true);
   };
 
-  React.useEffect(()=>{
-    props.activeStep === 1 && props.onChange(props.configuration, isValidFilter)
-  },[isValidFilter, props.activeStep])
+  React.useEffect(() => {
+    props.activeStep === 1 &&
+      props.onChange(props.configuration, isValidFilter);
+  }, [isValidFilter, props.activeStep]);
 
   function chooseStep(stepId: number) {
     switch (stepId) {
@@ -176,9 +193,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
         );
       case FILTER_CONFIGURATION_STEP_ID:
         return (
-          <div
-            style={{ padding: "20px" }}
-          >
+          <div style={{ padding: "20px" }}>
             {/* TODO: save the filter value to configurator */}
             <FilterConfigNoValidationStep
               filterValues={filterValues}

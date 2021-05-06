@@ -91,7 +91,7 @@ export interface ICreateConnectorComponentProps {
 export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorComponentProps> = (
   props: ICreateConnectorComponentProps
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const validationSuccessNextMsg = t("resolvePropertySucessMsg");
   const createConnectorUnknownErrorMsg = t("unknownError");

@@ -41,7 +41,7 @@ const getInvalidFilterMsg = (
 export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   props
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const getValidate = () => {
     return props.validated === "default"

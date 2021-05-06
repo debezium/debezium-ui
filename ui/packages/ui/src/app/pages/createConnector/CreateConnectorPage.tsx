@@ -22,7 +22,7 @@ interface ILocationState {
 }
 
 export const CreateConnectorPage: React.FunctionComponent = () => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
   const history = useHistory();
 
   const onSuccess = () => {

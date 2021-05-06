@@ -15,7 +15,7 @@ const AppLayout: React.FC = ({ children }) => {
 	const showBreadcrumb = (b: any) => setHasBreadcrumb(b);
 
 	const PageSkipToContent = (
-		<SkipToContent href="#main-content-page-layout-default-nav">
+		<SkipToContent href="#main-content-page-layout-default-nav" style={{display:'none'}}>
 			Skip to Content
 		</SkipToContent>
 	);
