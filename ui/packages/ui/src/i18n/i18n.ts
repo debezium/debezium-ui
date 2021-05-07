@@ -20,7 +20,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: `/locales/{{lng}}/{{ns}}.json`,
+      loadPath: `${__webpack_public_path__}locales/{{lng}}/{{ns}}.json`,
     },
     fallbackLng: 'en',
     load: 'all',

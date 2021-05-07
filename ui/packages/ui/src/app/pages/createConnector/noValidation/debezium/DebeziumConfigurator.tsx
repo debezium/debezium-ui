@@ -248,5 +248,14 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
     }
   }
 
-  return chooseStep(props.activeStep);
+  // return chooseStep(props.activeStep);
+  return (
+    <BrowserRouter>
+      <I18nextProvider i18n={i18n}>
+        {chooseStep(props.activeStep)}
+      </I18nextProvider>
+    </BrowserRouter>
+  )
 };
+
+export default DebeziumConfigurator;
