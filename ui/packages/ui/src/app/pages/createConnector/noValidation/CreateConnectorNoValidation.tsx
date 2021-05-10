@@ -32,7 +32,6 @@ import {
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
   isRuntimeOptions,
-  mapToObject,
   minimizePropertyValues,
   PropertyCategory,
   PropertyName,
@@ -532,7 +531,6 @@ export const CreateConnectorNoValidation: React.FunctionComponent<ICreateConnect
               updateFilterValues={handleFilterUpdate}
               connectorType={selectedConnectorType || ""}
               setIsValidFilter={setIsValidFilter}
-              selectedConnectorType={selectedConnectorType || ""}
             />
           </>
         ),

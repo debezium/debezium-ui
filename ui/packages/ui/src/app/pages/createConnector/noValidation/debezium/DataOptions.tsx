@@ -16,7 +16,7 @@ import "./DataOption.css";
 
 export interface IDataOptionsProps {
   connectorName: string;
-  selectedConnector: string;
+  connectorType: string;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   i18nAdvancedMappingPropertiesText: string;
@@ -144,7 +144,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
     <div style={{ padding: "20px" }} className={"data-options-component-page"}>
       <ConnectorNameTypeHeader
         connectorName={props.connectorName}
-        connectorType={"postgres"}
+        connectorType={props.connectorType}
         showIcon={false}
       />
       <Formik
@@ -186,7 +186,6 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
-                                helperTextInvalid={"ipsomlorem"}
                                 invalidMsg={[]}
                                 validated={"default"}
                               />
@@ -220,7 +219,6 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
-                                helperTextInvalid={"ipsomlorem"}
                                 invalidMsg={[]}
                                 validated={"default"}
                               />
@@ -250,7 +248,6 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
-                                helperTextInvalid={"ipsomlorem"}
                                 invalidMsg={[]}
                                 validated={"default"}
                               />
