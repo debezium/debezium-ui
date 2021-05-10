@@ -90,15 +90,16 @@ export const FormDurationComponent: React.FunctionComponent<IFormDurationCompone
 ) => {
 
   const [field] = useField(props);
-  const initialDurationUnits = getInitialDurationUnits(field.value);
-  const [durationUnits, setDurationUnits] = React.useState(
-    initialDurationUnits
-  );
+  const [durationUnits, setDurationUnits] = React.useState<string>();
   const [isOpen, setIsOpen] = React.useState(false);
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
+  React.useEffect(()=> {
+    const initialDurationUnits = getInitialDurationUnits(field.value);
+    setDurationUnits(initialDurationUnits);
+  })
   const onSelect = (e: any, selectedDurationUnits: any) => {
     setIsOpen(false);
 
@@ -161,7 +162,7 @@ export const FormDurationComponent: React.FunctionComponent<IFormDurationCompone
               data-testid={id}
               id={id}
               type={"number"}
-              defaultValue={`${calculateDuration(durationUnits, field.value)}`}
+              value={`${calculateDuration(durationUnits, field.value)}`}
               validated={props.validated}
               onChange={handleTextInputChange}
               onBlur={handleTextInputBlur}
