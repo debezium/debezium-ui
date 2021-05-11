@@ -35,10 +35,7 @@ module.exports = {
       filename: "dbz-connector-configurator.remoteEntry.js",
       library: { type: 'var', name: 'debezium_ui'},
       exposes: {
-        "./CreateConnectorNoValidation": "./src/app/pages/createConnector/noValidation/CreateConnectorNoValidation",
-        "./CreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
-        "./Table": "./src/app/pages/connectors/ConnectorsTableComponent",
-        "./config": "./src/app/pages/createConnector/noValidation/debezium/config",
+        "./config": "./src/app/pages/createConnector/federatedModule/config",
       },
       shared: [
         {

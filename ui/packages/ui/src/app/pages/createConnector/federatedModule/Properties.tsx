@@ -17,7 +17,7 @@ import {
   formatPropertyDefinitions,
   PropertyCategory
 } from "src/app/shared";
-import { ConnectorTypeComponent } from "../../connectorSteps";
+import { ConnectorTypeComponent } from "../connectorSteps";
 import "./Properties.css";
 
 

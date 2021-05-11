@@ -10,24 +10,26 @@ import {
 import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
-import { FilterExcludeFieldComponent } from "src/app/components/FilterExcludeFieldComponent";
-import { FilterInputFieldComponent } from "src/app/components/FilterInputFieldComponent";
-import { NoPreviewFilterField } from "src/app/components/NoPreviewFilterField";
+import {
+  FilterExcludeFieldComponent,
+  FilterInputFieldComponent,
+  NoPreviewFilterField,
+} from "../../../components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   getFilterConfigurationPageContent,
-} from "src/app/shared";
-import "./FilterConfigNoValidationStep.css";
+} from "../../../shared";
+import "./FilterConfig.css";
 
-export interface IFilterConfigNoValidationStepProps {
+export interface IFilterConfigProps {
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
 }
 
-export const FilterConfigNoValidationStep: React.FunctionComponent<IFilterConfigNoValidationStepProps> = (
+export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   props
 ) => {
   const { t } = useTranslation();
