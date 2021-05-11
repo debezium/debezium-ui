@@ -8,7 +8,7 @@ import "./ConnectorsTableComponent.css";
 export const ConnectorsPage: React.FunctionComponent = (props) => {
   const history = useHistory();
 
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const createConnector = (connectorNames: string[], clusterId: number) => {
     history.push({

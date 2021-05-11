@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
 
 
 export const PageNotFound: React.FC = () => {
-    const { t } = useTranslation(["app"]);
+    const { t } = useTranslation();
     const history = useHistory();
 
     const onHomeClick = () =>{

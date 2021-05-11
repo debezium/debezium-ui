@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 const { dependencies } = require("./package.json");
@@ -23,6 +24,11 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env.COMMIT_HASH': JSON.stringify(COMMIT_HASH),
+    }),
+    new CopyPlugin({
+      patterns: [
+        {from: './src/locales', to: 'locales'},
+      ]
     }),
     new webpack.container.ModuleFederationPlugin({
       name: 'debezium_ui',
@@ -136,6 +142,22 @@ module.exports = {
             options: {
               limit: 5000,
               outputPath: 'images',
+              name: '[name].[ext]',
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(json)$/i,
+        include: [
+          path.resolve(__dirname, 'src/locales'),
+        ],
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 5000,
+              outputPath: 'locales',
               name: '[name].[ext]',
             }
           }
