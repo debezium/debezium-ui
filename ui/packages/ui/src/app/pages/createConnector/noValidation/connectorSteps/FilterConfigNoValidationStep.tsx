@@ -25,7 +25,6 @@ export interface IFilterConfigNoValidationStepProps {
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
-  selectedConnectorType: string;
 }
 
 export const FilterConfigNoValidationStep: React.FunctionComponent<IFilterConfigNoValidationStepProps> = (
@@ -67,7 +66,7 @@ export const FilterConfigNoValidationStep: React.FunctionComponent<IFilterConfig
   }, [formData]);
 
   const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
-    props.selectedConnectorType || ""
+    props.connectorType || ""
   );
 
   return (

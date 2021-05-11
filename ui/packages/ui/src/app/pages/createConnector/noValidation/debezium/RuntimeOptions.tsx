@@ -15,7 +15,7 @@ import "./RuntimeOptions.css";
 
 export interface IRuntimeOptionsProps {
   connectorName: string;
-  selectedConnector: string;
+  connectorType: string;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   i18nEngineProperties: string;
@@ -144,7 +144,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
     >
       <ConnectorNameTypeHeader
         connectorName={props.connectorName}
-        connectorType={"postgres"}
+        connectorType={props.connectorType}
         showIcon={false}
       />
       <Formik
@@ -184,7 +184,6 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
-                                helperTextInvalid={"ipsomlorem"}
                                 invalidMsg={[]}
                                 validated={"default"}
                               />
@@ -218,7 +217,6 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
-                                helperTextInvalid={"ipsomlorem"}
                                 invalidMsg={[]}
                                 validated={"default"}
                               />
