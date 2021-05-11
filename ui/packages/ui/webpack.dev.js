@@ -30,7 +30,12 @@ module.exports = merge(common, {
     inline: true,
     historyApiFallback: true,
     hot: true,
-    overlay: true
+    overlay: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+    }
   },
   module: {
     rules: [

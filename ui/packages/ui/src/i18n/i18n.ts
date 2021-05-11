@@ -19,6 +19,8 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
+    // Commenting it as we have fallbackLng for case of language detected as en-GB or en-US
+    // supportedLngs: ['en','it'],      
     backend: {
       loadPath: `${__webpack_public_path__}locales/{{lng}}/{{ns}}.json`,
     },
