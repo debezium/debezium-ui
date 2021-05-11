@@ -114,7 +114,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
     updatedConfiguration.forEach((value: any, key:any) => {
       finalConfiguration.set(key.replace(/_/g, "."), value)
     })
-    props.onChange(finalConfiguration, isFormValid(finalConfiguration));
+    props.onChange(finalConfiguration, isFormValid(new Map(Object.entries(values))));
     return setValidation(values, props.propertyDefinitions);
   };
 
