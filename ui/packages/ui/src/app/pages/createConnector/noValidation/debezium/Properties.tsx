@@ -22,7 +22,7 @@ import "./Properties.css";
 
 
 export interface IPropertiesProps {
-  selectedConnector: string;
+  connectorType: string;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   i18nAdvancedPropertiesText: string;
@@ -56,7 +56,7 @@ const setValidation = (values: any, propertyList: ConnectorProperty[]) => {
 
   propertyList.forEach((property) => {
     if (property.isMandatory && !values[property.name.replace(/[.]/g, "_")]) {
-      errors[property.name.replace(/[.]/g, "_")] = "Required";
+      errors[property.name.replace(/[.]/g, "_")] = `${property.displayName} is required`;
     }
   });
   return errors;
@@ -190,7 +190,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                           propertyDefinition={propertyDefinition}
                           propertyChange={handlePropertyChange}
                           setFieldValue={setFieldValue}
-                          helperTextInvalid={"ipsomlorem"}
+                          helperTextInvalid={errors[propertyDefinition.name]}
                           invalidMsg={[]}
                           validated={
                             errors[
@@ -218,8 +218,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                     </SplitItem>
                     <SplitItem>
                       <ConnectorTypeComponent
-                        // connectorType={props.selectedConnector} PostgreSQL
-                        connectorType={"postgres"}
+                        connectorType={props.connectorType}
                         showIcon={false}
                       />
                     </SplitItem>
@@ -255,7 +254,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
                                   setFieldValue={setFieldValue}
-                                  helperTextInvalid={"ipsomlorem"}
+                                  helperTextInvalid={errors[propertyDefinition.name]}
                                   invalidMsg={[]}
                                   validated={
                                     errors[
@@ -307,7 +306,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
                                     setFieldValue={setFieldValue}
-                                    helperTextInvalid={"ipsomlorem"}
+                                    helperTextInvalid={errors[propertyDefinition.name]}
                                     invalidMsg={[]}
                                     validated={
                                       errors[
@@ -358,7 +357,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
                                     setFieldValue={setFieldValue}
-                                    helperTextInvalid={"ipsomlorem"}
+                                    helperTextInvalid={errors[propertyDefinition.name]}
                                     invalidMsg={[]}
                                     validated={
                                       errors[
@@ -413,7 +412,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                         propertyDefinition={propertyDefinition}
                                         propertyChange={handlePropertyChange}
                                         setFieldValue={setFieldValue}
-                                        helperTextInvalid={"ipsomlorem"}
+                                        helperTextInvalid={errors[propertyDefinition.name]}
                                         invalidMsg={[]}
                                         validated={
                                           errors[

@@ -2,7 +2,7 @@
 import { DebeziumConfigurator } from './DebeziumConfigurator';
 
 const config = {
-  steps: ["Properties step", "Filter step", "Data option", "Runtime option"],
+  steps: ["Properties", "Filter definition", "Data options", "Runtime options"],
   Configurator: DebeziumConfigurator
 };
 
