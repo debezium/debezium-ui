@@ -92,11 +92,6 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
       finalConfiguration.set(key.replace(/_/g, "."), value)
     })
     props.onChange(finalConfiguration, isFormValid(new Map(Object.entries(values))));
-    // const errors: { userName?: string } = {};
-    // if (!values.userName) {
-    //   errors.userName = 'Required';
-    // }
-    // return errors;
   };
 
   const isFormValid = (formData: Map<string, unknown>): boolean => {
