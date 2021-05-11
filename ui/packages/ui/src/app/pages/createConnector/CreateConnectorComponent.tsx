@@ -91,7 +91,7 @@ export interface ICreateConnectorComponentProps {
 export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorComponentProps> = (
   props: ICreateConnectorComponentProps
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const validationSuccessNextMsg = t("resolvePropertySucessMsg");
   const createConnectorUnknownErrorMsg = t("unknownError");
@@ -225,7 +225,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   }, [alerts]);
 
   const getConnectorName = () => {
-    return basicPropValues.get(PropertyName.CONNECTOR_NAME);
+    return basicPropValues.get(PropertyName.CONNECTOR_NAME) || '';
   };
 
   const getFinalProperties = (stepId: number) => {

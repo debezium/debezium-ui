@@ -62,7 +62,7 @@ const formatResponseData = (data: DataCollection[]) => {
 export const FilterConfigComponent: React.FunctionComponent<IFilterConfigComponentProps> = (
   props
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
   const [formData, setFormData] = React.useState<Map<string, string>>(
     new Map()
   );

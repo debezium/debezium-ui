@@ -24,7 +24,8 @@
     "start": "lerna run start --scope=@debezium/ui",
     "cypress:open": "cypress open",
     "cypress": "cypress run --headless --browser chrome",
-    "unit:test": "lerna run test"
+    "unit:test": "lerna run test",
+    "i18n": "lerna run i18n --scope=@debezium/ui"
   },
   "husky": {
     "hooks": {
