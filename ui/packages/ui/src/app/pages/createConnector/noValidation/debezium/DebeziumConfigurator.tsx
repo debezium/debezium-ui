@@ -313,7 +313,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               connectorProperties
             )}
             i18nEngineProperties={t("engineProperties")}
-            i18nHeartbeatProperties={t("engineProperties")}
+            i18nHeartbeatProperties={t("heartbeatProperties")}
           />
         );
       default:
