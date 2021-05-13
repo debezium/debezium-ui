@@ -1,9 +1,10 @@
 import * as React from "react";
 import { DataOptions } from "./DataOptions";
+import { FilterConfig } from "./FilterConfig";
 import { Properties } from "./Properties";
 import { RuntimeOptions } from "./RuntimeOptions";
-// import PostgresData from "../../../../../../assets/mockResponse/PostgresConnectorDebezium.json";
-import PostgresData from "../../../../../../assets/mockResponse/PostgresConnectorCos.json";
+// import PostgresData from "../../../../../assets/mockResponse/PostgresConnectorDebezium.json";
+import PostgresData from "../../../../../assets/mockResponse/PostgresConnectorCos.json";
 import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
@@ -12,11 +13,10 @@ import {
   getFormattedProperties,
   getFilterConfigurationPageContent,
   ConnectorTypeId,
-} from "src/app/shared/Utils";
+} from "../../../shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { I18nextProvider, useTranslation } from "react-i18next";
-import { FilterConfigNoValidationStep } from "../connectorSteps";
-import i18n from "../../../../../i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 import { BrowserRouter } from "react-router-dom";
 
 /**
@@ -269,7 +269,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
         return (
           <div style={{ padding: "20px" }}>
             {/* TODO: save the filter value to configurator */}
-            <FilterConfigNoValidationStep
+            <FilterConfig
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
               connectorType={PostgresData.json_schema["x-connector-id"]}
