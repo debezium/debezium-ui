@@ -3,7 +3,6 @@ import { DataOptions } from "./DataOptions";
 import { FilterConfig } from "./FilterConfig";
 import { Properties } from "./Properties";
 import { RuntimeOptions } from "./RuntimeOptions";
-import PostgresData from "../../../../../assets/mockResponse/PostgresConnectorCos.json";
 import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
@@ -122,9 +121,9 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   const connProperties: ConnectorProperty[] = [];
 
   // -------------------------------
-  // PostgresConnectorDebezium.json
+  // connectorData
   // -------------------------------
-  // const schemas = PostgresData.components.schemas;
+  // const schemas = connectorData.components.schemas;
   // // Key is schema name
   // const keys = Object.keys(schemas);
   // const schemaName = keys[0];
@@ -132,10 +131,7 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   // const schema = schemas[schemaName];
   // const schemaProperties = schema.properties;
 
-  // -------------------------------
-  // PostgresConnectorCos.json
-  // -------------------------------
-  const schemaProperties = PostgresData.json_schema.properties;
+  const schemaProperties = connectorData.json_schema.properties;
 
   for(const propKey of Object.keys(schemaProperties)) {
     const prop = schemaProperties[propKey];
@@ -209,7 +205,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
 
   const [connectorProperties, setConnectorProperties] = React.useState<
     ConnectorProperty[]
-  >(getPropertiesData(PostgresData));
+  >(getPropertiesData(props.connector));
 
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
     getFilterInitialValues(props.configuration, "")
@@ -255,7 +251,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case PROPERTIES_STEP_ID:
         return (
           <Properties
-            connectorType={PostgresData.json_schema["x-connector-id"]}
+            connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"]:''}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -280,7 +276,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             <FilterConfig
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
-              connectorType={PostgresData.json_schema["x-connector-id"]}
+              connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"] : ""}
               setIsValidFilter={setIsValidFilter}
             />
           </div>
@@ -291,7 +287,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             connectorName={
               (props.configuration?.get("connector_name") as string) || ""
             }
-            connectorType={PostgresData.json_schema["x-connector-id"]}
+            connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"] : ""}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -312,7 +308,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             connectorName={
               (props.configuration?.get("connector_name") as string) || ""
             }
-            connectorType={PostgresData.json_schema["x-connector-id"]}
+            connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"] : ""}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
