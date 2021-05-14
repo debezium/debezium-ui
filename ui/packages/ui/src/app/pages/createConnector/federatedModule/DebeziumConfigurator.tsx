@@ -3,7 +3,6 @@ import { DataOptions } from "./DataOptions";
 import { FilterConfig } from "./FilterConfig";
 import { Properties } from "./Properties";
 import { RuntimeOptions } from "./RuntimeOptions";
-// import PostgresData from "../../../../../assets/mockResponse/PostgresConnectorDebezium.json";
 import PostgresData from "../../../../../assets/mockResponse/PostgresConnectorCos.json";
 import {
   getAdvancedPropertyDefinitions,
@@ -114,6 +113,11 @@ const getMandatory = (nullable: any) => {
   }
 }
 
+/**
+ * Format the Connector properties passed via connector prop 
+ * @param connectorData 
+ * @returns ConnectorProperty[]
+ */
 const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   const connProperties: ConnectorProperty[] = [];
 
@@ -163,7 +167,11 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   }
   return getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES);
 }
-
+/**
+ * Get the filter properties passed via connector prop 
+ * @param connectorData 
+ * @param selectedConnector 
+ */
 const getFilterInitialValues = (
   connectorData: Map<string, unknown>,
   selectedConnector: string
@@ -236,6 +244,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
     props.onChange(updatedConfiguration, true);
   };
 
+  // Enable the filter step next button initially
   React.useEffect(() => {
     props.activeStep === 1 &&
       props.onChange(props.configuration, isValidFilter);
@@ -268,7 +277,6 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case FILTER_CONFIGURATION_STEP_ID:
         return (
           <div style={{ padding: "20px" }}>
-            {/* TODO: save the filter value to configurator */}
             <FilterConfig
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
@@ -321,7 +329,6 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
     }
   }
 
-  // return chooseStep(props.activeStep);
   return (
     <BrowserRouter>
       <I18nextProvider i18n={i18n}>

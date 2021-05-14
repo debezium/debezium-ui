@@ -38,6 +38,7 @@ i18n
     },
 
     interpolation: {
+      defaultVariables: {connectorName: ""},
       escapeValue: false, // not needed for react as it escapes by default
     }
   });

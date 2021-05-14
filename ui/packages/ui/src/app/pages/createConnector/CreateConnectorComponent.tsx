@@ -43,14 +43,14 @@ import {
   PropertyName,
 } from "../../shared";
 import {
-  ConnectorTypeStepComponent,
+  ConnectorTypeStep,
   DataOptionsStep,
-  FilterConfigComponent,
+  FilterConfigStep,
   PropertiesStep,
-  ReviewStepComponent,
+  ReviewStep,
   RuntimeOptionsStep,
 } from "./connectorSteps";
-import { ConnectorNameTypeHeader } from "./connectorSteps/ConnectorNameTypeHeader";
+import { ConnectorNameTypeHeader } from "../../components/connectorStepHelpers/ConnectorNameTypeHeader";
 import "./CreateConnectorComponent.css";
 
 /**
@@ -225,7 +225,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   }, [alerts]);
 
   const getConnectorName = () => {
-    return basicPropValues.get(PropertyName.CONNECTOR_NAME) || '';
+    return basicPropValues.get(PropertyName.CONNECTOR_NAME);
   };
 
   const getFinalProperties = (stepId: number) => {
@@ -644,7 +644,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     id: 1,
     name: CONNECTOR_TYPE_STEP,
     component: (
-      <ConnectorTypeStepComponent
+      <ConnectorTypeStep
         connectorTypesList={connectorTypes}
         i18nApiErrorTitle={t("apiErrorTitle")}
         i18nApiErrorMsg={t("apiErrorMsg")}
@@ -763,7 +763,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               connectorType={selectedConnectorType}
               showIcon={false}
             />
-            <FilterConfigComponent
+            <FilterConfigStep
               propertyValues={
                 new Map([...basicPropValues, ...advancedPropValues])
               }
@@ -883,7 +883,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           connectorType={selectedConnectorType}
           showIcon={false}
         />
-        <ReviewStepComponent
+        <ReviewStep
           i18nReviewMessage={t("reviewMessage", {
             connectorName: getConnectorName(),
           })}

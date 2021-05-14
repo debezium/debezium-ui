@@ -12,12 +12,12 @@ import {
 import { Form, Formik } from "formik";
 import _ from "lodash";
 import React from "react";
+import { ConnectorTypeComponent } from "src/app/components";
 import { FormComponent } from "src/app/components/formHelpers";
 import {
   formatPropertyDefinitions,
   PropertyCategory
 } from "src/app/shared";
-import { ConnectorTypeComponent } from "../connectorSteps";
 import "./Properties.css";
 
 
@@ -70,7 +70,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   const [advancedExpanded, setAdvancedExpanded] = React.useState<boolean>(
     false
   );
-
+  
+  // TODO: Optimize
   const propertyDefinitionsCopy = _.cloneDeep(props.propertyDefinitions);
   const namePropertyDefinitions = formatPropertyDefinitions(
     propertyDefinitionsCopy.filter(

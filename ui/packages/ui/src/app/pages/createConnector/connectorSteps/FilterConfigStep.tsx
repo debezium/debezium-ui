@@ -13,9 +13,9 @@ import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { FilterTreeComponent } from "../../../components";
-import { FilterExcludeFieldComponent } from "../../../components/FilterExcludeFieldComponent";
-import { FilterInputFieldComponent } from "../../../components/FilterInputFieldComponent";
-import { NoPreviewFilterField } from "../../../components/NoPreviewFilterField";
+import { FilterExcludeFieldComponent } from "../../../components/connectorStepHelpers/FilterExcludeFieldComponent";
+import { FilterInputFieldComponent } from "../../../components/connectorStepHelpers/FilterInputFieldComponent";
+import { NoPreviewFilterField } from "../../../components/connectorStepHelpers/NoPreviewFilterField";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -23,9 +23,9 @@ import {
   getFilterConfigurationPageContent,
   mapToObject,
 } from "../../../shared";
-import "./FilterConfigComponent.css";
+import "./FilterConfigStep.css";
 
-export interface IFilterConfigComponentProps {
+export interface IFilterConfigStepProps {
   propertyValues: Map<string, string>;
   filterValues: Map<string, string>;
   connectorType: string;
@@ -59,7 +59,7 @@ const formatResponseData = (data: DataCollection[]) => {
   }, []);
 };
 
-export const FilterConfigComponent: React.FunctionComponent<IFilterConfigComponentProps> = (
+export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> = (
   props
 ) => {
   const { t } = useTranslation();

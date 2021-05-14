@@ -8,8 +8,8 @@ import {
 import React from "react";
 import {
   ConnectorTypeId,
-} from "../../../shared";
-import { ConnectorIcon } from '../../connectors/ConnectorIcon';
+} from "../shared";
+import { ConnectorIcon } from "./ConnectorIcon";
 import "./ConnectorTypeComponent.css";
 
 export interface IConnectorTypeComponentProps {
