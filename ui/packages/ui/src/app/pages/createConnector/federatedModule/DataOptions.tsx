@@ -11,7 +11,7 @@ import _ from "lodash";
 import React from "react";
 import { ConnectorNameTypeHeader } from "src/app/components/connectorStepHelpers";
 import { FormComponent } from "../../../components/formHelpers";
-import { formatPropertyDefinitions, PropertyCategory } from "../../../shared";
+import { PropertyCategory } from "../../../shared";
 import "./DataOption.css";
 
 export interface IDataOptionsProps {
@@ -28,7 +28,7 @@ export interface IDataOptionsProps {
 const getInitialObject = (propertyList: ConnectorProperty[]) => {
   const returnObj = {};
   propertyList.forEach((property) => {
-    returnObj[property.name.replace(/[.]/g, "_")] = property.defaultValue || "";
+    returnObj[property.name] = property.defaultValue || "";
   });
   return returnObj;
 };
@@ -39,9 +39,36 @@ const checkIfRequired = (
 ): boolean => {
   const matchProp = _.find(
     propertyList,
-    (obj) => obj.name === property.replace(/[_]/g, ".")
+    (obj) => obj.name === property
   );
   return matchProp ? matchProp.isMandatory : false;
+};
+
+const getMappingGeneralProperty = (
+  propertyList: ConnectorProperty[]
+): ConnectorProperty[] => {
+  const propertyDefinitionsCopy = _.cloneDeep(propertyList);
+  return propertyDefinitionsCopy.filter(
+    (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
+  );
+};
+
+const getMappingAdvanceProperty = (
+  propertyList: ConnectorProperty[]
+): ConnectorProperty[] => {
+  const propertyDefinitionsCopy = _.cloneDeep(propertyList);
+  return propertyDefinitionsCopy.filter(
+    (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
+  );
+};
+
+const getSnapshotProperty = (
+  propertyList: ConnectorProperty[]
+): ConnectorProperty[] => {
+  const propertyDefinitionsCopy = _.cloneDeep(propertyList);
+  return propertyDefinitionsCopy.filter(
+    (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
+  );
 };
 
 export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
@@ -51,23 +78,9 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   const [mappingExpanded, setMappingExpanded] = React.useState<boolean>(false);
   const [snapshotExpanded, setSnapshotExpanded] = React.useState<boolean>(true);
 
-  const propertyDefinitionsCopy = _.cloneDeep(props.propertyDefinitions);
-
-  const mappingGeneralPropertyDefinitions = formatPropertyDefinitions(
-    propertyDefinitionsCopy.filter(
-      (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
-    )
-  );
-  const mappingAdvancedPropertyDefinitions = formatPropertyDefinitions(
-    propertyDefinitionsCopy.filter(
-      (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED
-    )
-  );
-  const snapshotPropertyDefinitions = formatPropertyDefinitions(
-    propertyDefinitionsCopy.filter(
-      (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_SNAPSHOT
-    )
-  );
+  const [mappingGeneralPropertyDefinitions] = React.useState<ConnectorProperty[]>(getMappingGeneralProperty(props.propertyDefinitions));
+  const [mappingAdvancedPropertyDefinitions] = React.useState<ConnectorProperty[]>(getMappingAdvanceProperty(props.propertyDefinitions));
+  const [snapshotPropertyDefinitions] = React.useState<ConnectorProperty[]>(getSnapshotProperty(props.propertyDefinitions));
 
   const onToggleMapping = (isExpanded: boolean) => {
     setMappingExpanded(isExpanded);
@@ -111,7 +124,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   };
 
   const handlePropertyChange = (propName: string, propValue: any) => {
-    // TODO: handling for property change if needed.
+    // handling for property change if needed.
   };
 
   React.useEffect(() => {
@@ -121,11 +134,11 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
       let isValid = true;
       const updatedConfiguration = new Map();
       props.configuration.forEach((value: any, key: any) => {
-        updatedConfiguration.set(key.replace(/[.]/g, "_"), value)
+        updatedConfiguration.set(key, value)
       })
       Object.keys(initialValues).forEach((key: string) => {
-        if (updatedConfiguration.get(key)) {
-          initialValuesCopy[key] = updatedConfiguration.get(key);
+        if (updatedConfiguration.get(key.replace(/[_]/g, "."))) {
+          initialValuesCopy[key] = updatedConfiguration.get(key.replace(/[_]/g, "."));
         } else if (checkIfRequired(props.propertyDefinitions, key)) {
           isValid = false;
         }

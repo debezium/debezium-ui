@@ -11,6 +11,7 @@ import {
   getFormattedProperties,
   getFilterConfigurationPageContent,
   ConnectorTypeId,
+  formatPropertyDefinitions,
 } from "../../../shared/Utils";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { I18nextProvider, useTranslation } from "react-i18next";
@@ -161,7 +162,8 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
     // tslint:enable: no-string-literal
     connProperties.push(connProp);
   }
-  return getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES);
+  return formatPropertyDefinitions(getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES));
+  
 }
 /**
  * Get the filter properties passed via connector prop 
@@ -212,6 +214,9 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
+  // tslint:disable-next-line: no-console
+  console.log(formatPropertyDefinitions(getPropertiesData(props.connector)));
+
   const clearFilterFields = (
     configObj: Map<string, unknown>
   ): Map<string, unknown> => {
@@ -257,7 +262,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               props.onChange(conf, status)
             }
             propertyDefinitions={[
-              ...getBasicPropertyDefinitions(connectorProperties),
+              ...formatPropertyDefinitions(getBasicPropertyDefinitions(connectorProperties)),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
             i18nAdvancedPropertiesText={t("advancedPropertiesText")}
