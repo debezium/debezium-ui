@@ -114,5 +114,6 @@
   "validate": "Validate",
   "next": "Next",
   "back": "Back",
-  "createConnector": "Create connector"
+  "createConnector": "Create connector",
+  "tryAgain": "Try Again"
 }

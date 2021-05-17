@@ -77,33 +77,33 @@ export interface IDebeziumConfiguratorProps {
 }
 
 const getType = (type: string, format: string) => {
-  if (type === 'string') {
+  if (type === "string") {
     if (!format) {
       return "STRING";
-    } else if (format === 'password') {
+    } else if (format === "password") {
       return "PASSWORD";
-    } else if (format === 'class') {
+    } else if (format === "class") {
       return "CLASS";
-    } else if (format.indexOf('list') !== -1) {
+    } else if (format.indexOf("list") !== -1) {
       return "LIST";
     } else {
       return "STRING";
     }
-  } else if (type === 'boolean') {
+  } else if (type === "boolean") {
     return "BOOLEAN";
-  } else if (type === 'integer') {
+  } else if (type === "integer") {
     if (!format) {
       return "INT";
-    } else if (format === 'int32') {
+    } else if (format === "int32") {
       return "INT";
-    } else if (format === 'int64') {
+    } else if (format === "int64") {
       return "LONG";
     } else {
       return "INT";
     }
   }
   return "STRING";
-}
+};
 
 const getMandatory = (nullable: any) => {
   if (nullable === undefined || nullable === true) {
@@ -111,11 +111,11 @@ const getMandatory = (nullable: any) => {
   } else {
     return true;
   }
-}
+};
 
 /**
- * Format the Connector properties passed via connector prop 
- * @param connectorData 
+ * Format the Connector properties passed via connector prop
+ * @param connectorData
  * @returns ConnectorProperty[]
  */
 const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
@@ -134,7 +134,7 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
 
   const schemaProperties = connectorData.json_schema.properties;
 
-  for(const propKey of Object.keys(schemaProperties)) {
+  for (const propKey of Object.keys(schemaProperties)) {
     const prop = schemaProperties[propKey];
     // tslint:disable: no-string-literal
     const name =
@@ -150,7 +150,7 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
       displayName: prop["title"],
       name,
       isMandatory: getMandatory(nullable),
-      type: getType(type,format)
+      type: getType(type, format),
     } as ConnectorProperty;
 
     if (prop["default"]) {
@@ -162,13 +162,14 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
     // tslint:enable: no-string-literal
     connProperties.push(connProp);
   }
-  return formatPropertyDefinitions(getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES));
-  
-}
+  return formatPropertyDefinitions(
+    getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
+  );
+};
 /**
- * Get the filter properties passed via connector prop 
- * @param connectorData 
- * @param selectedConnector 
+ * Get the filter properties passed via connector prop
+ * @param connectorData
+ * @param selectedConnector
  */
 const getFilterInitialValues = (
   connectorData: Map<string, unknown>,
@@ -214,9 +215,6 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
-  // tslint:disable-next-line: no-console
-  console.log(formatPropertyDefinitions(getPropertiesData(props.connector)));
-
   const clearFilterFields = (
     configObj: Map<string, unknown>
   ): Map<string, unknown> => {
@@ -256,13 +254,19 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case PROPERTIES_STEP_ID:
         return (
           <Properties
-            connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"]:''}
+            connectorType={
+              props.connector?.json_schema
+                ? props.connector?.json_schema["x-connector-id"]
+                : ""
+            }
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
             }
             propertyDefinitions={[
-              ...formatPropertyDefinitions(getBasicPropertyDefinitions(connectorProperties)),
+              ...formatPropertyDefinitions(
+                getBasicPropertyDefinitions(connectorProperties)
+              ),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
             i18nAdvancedPropertiesText={t("advancedPropertiesText")}
@@ -281,7 +285,11 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             <FilterConfig
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
-              connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"] : ""}
+              connectorType={
+                props.connector?.json_schema
+                  ? props.connector?.json_schema["x-connector-id"]
+                  : ""
+              }
               setIsValidFilter={setIsValidFilter}
             />
           </div>
@@ -292,7 +300,11 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             connectorName={
               (props.configuration?.get("connector_name") as string) || ""
             }
-            connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"] : ""}
+            connectorType={
+              props.connector?.json_schema
+                ? props.connector?.json_schema["x-connector-id"]
+                : ""
+            }
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -313,7 +325,11 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             connectorName={
               (props.configuration?.get("connector_name") as string) || ""
             }
-            connectorType={props.connector?.json_schema ? props.connector?.json_schema["x-connector-id"] : ""}
+            connectorType={
+              props.connector?.json_schema
+                ? props.connector?.json_schema["x-connector-id"]
+                : ""
+            }
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -336,7 +352,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
         {chooseStep(props.activeStep)}
       </I18nextProvider>
     </BrowserRouter>
-  )
+  );
 };
 
 export default DebeziumConfigurator;
