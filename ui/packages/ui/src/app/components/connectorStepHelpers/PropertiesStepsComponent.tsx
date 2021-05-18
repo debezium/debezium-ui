@@ -13,8 +13,8 @@ import { FormikErrors, FormikTouched } from "formik";
 import _ from "lodash";
 import * as React from "react";
 import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
-import { ConnectorTypeComponent } from '../pages/createConnector/connectorSteps/ConnectorTypeComponent';
-import { FormComponent } from "./formHelpers";
+import { ConnectorTypeComponent } from "..";
+import { FormComponent } from "../formHelpers";
 
 export interface IPropertiesStepProps {
   connectorType: string | undefined;

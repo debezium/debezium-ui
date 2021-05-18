@@ -2,13 +2,13 @@ import { Text, TextVariants, Title } from "@patternfly/react-core";
 import * as React from "react";
 import { mapToObject, maskPropertyValues } from '../../../shared';
 
-export interface IReviewStepComponentProps {
+export interface IReviewStepProps {
   i18nReviewTitle: string;
   i18nReviewMessage: string;
   propertyValues: Map<string, string>;
 }
 
-export const ReviewStepComponent: React.FC<IReviewStepComponentProps> = (
+export const ReviewStep: React.FC<IReviewStepProps> = (
   props
 ) => {
   return (

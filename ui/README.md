@@ -2,7 +2,8 @@
 
 # Debezium UI
 
-React-based Single Page Application based on Patternfly 4
+This monorepo uses Lerna and Yarn Workspaces. 
+React-based Single Page Application code based on Patternfly 4 in present inside [ui](./packages/ui) folder.
 
 ## Requirements
 * node (version 10.13.0 or higher) and npm version 6.x.x.  
@@ -15,9 +16,10 @@ can install yarn globally by typing:
 npm install yarn -g
 ```
 
-## Development Scripts
+## Development workflow
 
-Install development/build dependencies
+This will install all dependencies in each project, build them, and symlink them via Lerna
+
 ```sh
 yarn install
 ```
@@ -31,6 +33,19 @@ Start the development server
 ```sh
 yarn start
 ```
+
+## Internationalization
+This project uses [react-i18next](https://react.i18next.com/) for internationalization. Check out the existing examples in the code or the documentation for more information on how to use it.
+
+You should run
+```sh
+yarn run i18n
+```
+after you internationalize strings in order to generate the required files.
+
+Namespaces other than 'public' must be added to [i18n.ts](./packages/ui/src/i18n/i18n.ts) on line 31.
+
+If you want to add an additional language, you need to add locale to line 51 in [i18next-parser.config.js](./packages/ui/i18next-parser.config.js) (managed by the parser).
 
 ## Testing the project
 Testing is also just a command away:

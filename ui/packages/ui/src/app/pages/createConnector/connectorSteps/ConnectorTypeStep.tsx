@@ -11,15 +11,14 @@ import {
 } from "@patternfly/react-core";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 import React from "react";
-import { PageLoader } from "../../../components";
+import { PageLoader, ConnectorIcon } from "../../../components";
 import { ApiError } from "../../../shared";
 import { getConnectorTypeDescription } from "../../../shared/Utils";
 import { WithLoader } from "../../../shared/WithLoader";
-import { ConnectorIcon } from "../../connectors/ConnectorIcon";
-import "./ConnectorTypeStepComponent.css";
+import "./ConnectorTypeStep.css";
 
 
-export interface IConnectorTypeStepComponentProps {
+export interface IConnectorTypeStepProps {
   selectedConnectorType?: string;
   onSelectionChange: (connectorType: string | undefined) => void;
   connectorTypesList: ConnectorType[];
@@ -30,7 +29,7 @@ export interface IConnectorTypeStepComponentProps {
   errorMsg: Error;
 }
 
-export const ConnectorTypeStepComponent: React.FunctionComponent<IConnectorTypeStepComponentProps> = (
+export const ConnectorTypeStep: React.FunctionComponent<IConnectorTypeStepProps> = (
   props
 ) => {
   const onCardSelection = (event: { currentTarget: { id: string } }) => {
