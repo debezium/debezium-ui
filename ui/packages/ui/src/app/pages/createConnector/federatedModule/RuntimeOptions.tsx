@@ -8,9 +8,9 @@ import {
 import { Formik } from "formik";
 import _ from "lodash";
 import React from "react";
+import { ConnectorNameTypeHeader } from "src/app/components/connectorStepHelpers";
 import { FormComponent } from "../../../components/formHelpers";
-import { formatPropertyDefinitions, PropertyCategory } from "../../../shared";
-import { ConnectorNameTypeHeader } from "../connectorSteps";
+import { PropertyCategory } from "../../../shared";
 import "./RuntimeOptions.css";
 
 export interface IRuntimeOptionsProps {
@@ -26,7 +26,7 @@ export interface IRuntimeOptionsProps {
 const getInitialObject = (propertyList: ConnectorProperty[]) => {
   const returnObj = {};
   propertyList.forEach((property) => {
-    returnObj[property.name.replace(/[.]/g, "_")] = property.defaultValue || "";
+    returnObj[property.name] = property.defaultValue || "";
   });
   return returnObj;
 };
@@ -37,9 +37,27 @@ const checkIfRequired = (
 ): boolean => {
   const matchProp = _.find(
     propertyList,
-    (obj) => obj.name === property.replace(/[_]/g, ".")
+    (obj) => obj.name === property
   );
   return matchProp ? matchProp.isMandatory : false;
+};
+
+const getEngineProperty = (
+  propertyList: ConnectorProperty[]
+): ConnectorProperty[] => {
+  const propertyDefinitionsCopy = _.cloneDeep(propertyList);
+  return propertyDefinitionsCopy.filter(
+    (defn: any) => defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
+  );
+};
+
+const getHeartbeatProperty = (
+  propertyList: ConnectorProperty[]
+): ConnectorProperty[] => {
+  const propertyDefinitionsCopy = _.cloneDeep(propertyList);
+  return propertyDefinitionsCopy.filter(
+    (defn: any) => defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
+  );
 };
 
 export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
@@ -51,20 +69,8 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
     true
   );
 
-  const propertyDefinitionsCopy = _.cloneDeep(props.propertyDefinitions);
-
-  const enginePropertyDefinitions = formatPropertyDefinitions(
-    propertyDefinitionsCopy.filter(
-      (defn: ConnectorProperty) =>
-        defn.category === PropertyCategory.RUNTIME_OPTIONS_ENGINE
-    )
-  );
-  const heartbeatPropertyDefinitions = formatPropertyDefinitions(
-    propertyDefinitionsCopy.filter(
-      (defn: ConnectorProperty) =>
-        defn.category === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
-    )
-  );
+  const [enginePropertyDefinitions] = React.useState<ConnectorProperty[]>(getEngineProperty(props.propertyDefinitions));
+  const [heartbeatPropertyDefinitions] = React.useState<ConnectorProperty[]>(getHeartbeatProperty(props.propertyDefinitions));
 
   const validateForm = (values: any) => {
     const formEntries = Object.entries(values).reduce((a,[k,v])=>(initialValues[k]===v||(a[k]=v),a),{});
@@ -108,7 +114,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
   };
 
   const handlePropertyChange = (propName: string, propValue: any) => {
-    // TODO: handling for property change if needed.
+    // handling for property change if needed.
   };
 
   React.useEffect(() => {
@@ -118,11 +124,11 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
       let isValid = true;
       const updatedConfiguration = new Map();
       props.configuration.forEach((value: any, key: any) => {
-        updatedConfiguration.set(key.replace(/[.]/g, "_"), value)
+        updatedConfiguration.set(key, value)
       })
       Object.keys(initialValues).forEach((key: string) => {
-        if (updatedConfiguration.get(key)) {
-          initialValuesCopy[key] = updatedConfiguration.get(key);
+        if (updatedConfiguration.get(key.replace(/[_]/g, "."))) {
+          initialValuesCopy[key] = updatedConfiguration.get(key.replace(/[_]/g, "."));
         } else if (checkIfRequired(props.propertyDefinitions, key)) {
           isValid = false;
         }

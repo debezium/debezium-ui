@@ -114,5 +114,6 @@
   "validate": "Convalidare",
   "next": "Il prossimo",
   "back": "Indietro",
-  "createConnector": "Crea connettore"
+  "createConnector": "Crea connettore",
+  "tryAgain": "Riprova"
 }

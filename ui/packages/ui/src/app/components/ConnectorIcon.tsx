@@ -1,10 +1,9 @@
 import * as React from 'react';
-
-import MongoIcon from '../../../../assets/images/mongodb-128x128.png'
-import MySqlIcon from '../../../../assets/images/mysql-170x115.png'
-import PostgresIcon from '../../../../assets/images/PostgreSQL-120x120.png'
-import SqlServerIcon from '../../../../assets/images/sql-server-144x144.png'
-import { ConnectorTypeId } from '../../shared';
+import MongoIcon from '../../../assets/images/mongodb-128x128.png';
+import MySqlIcon from '../../../assets/images/mysql-170x115.png';
+import PostgresIcon from '../../../assets/images/PostgreSQL-120x120.png';
+import SqlServerIcon from '../../../assets/images/sql-server-144x144.png';
+import { ConnectorTypeId } from '../shared';
 
 export interface IConnectorIconProps {
   connectorType: string;

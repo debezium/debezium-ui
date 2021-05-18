@@ -14,7 +14,7 @@ import {
   FilterExcludeFieldComponent,
   FilterInputFieldComponent,
   NoPreviewFilterField,
-} from "../../../components";
+} from "../../../components/connectorStepHelpers";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,

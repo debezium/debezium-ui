@@ -6,8 +6,8 @@ import {
   TextVariants,
 } from "@patternfly/react-core";
 import React from "react";
+import { ConnectorTypeComponent } from "..";
 import "./ConnectorNameTypeHeader.css";
-import { ConnectorTypeComponent } from './ConnectorTypeComponent';
 
 export interface IConnectorNameTypeHeaderProps {
   connectorName?: string;

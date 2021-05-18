@@ -2,7 +2,7 @@ import { ConnectorProperty, PropertyValidationResult } from "@debezium/ui-models
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { PropertiesStepsComponent } from "src/app/components/PropertiesStepsComponent";
+import { PropertiesStepsComponent } from "src/app/components";
 import * as Yup from "yup";
 import { formatPropertyDefinitions, PropertyCategory } from "../../../shared";
 import "./PropertiesStep.css";

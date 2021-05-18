@@ -23,11 +23,10 @@ import { cellWidth, expandable, IAction, IExtraData, IRowData, Table, TableBody,
 import React, { SyntheticEvent } from "react";
 import isEqual from "react-fast-compare";
 import { useTranslation } from 'react-i18next';
-import { PageLoader, ToastAlertComponent } from "../../components";
+import { PageLoader, ToastAlertComponent, ConnectorIcon } from "../../components";
 import { AppLayoutContext } from '../../Layout/AppLayoutContext';
 import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry } from "../../shared";
 import { WithLoader } from "../../shared/WithLoader";
-import { ConnectorIcon } from './ConnectorIcon';
 import { ConnectorOverview } from "./ConnectorOverview";
 import "./ConnectorsTableComponent.css";
 import { ConnectorStatus } from "./ConnectorStatus";
