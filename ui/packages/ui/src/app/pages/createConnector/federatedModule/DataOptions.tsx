@@ -58,7 +58,7 @@ const getMappingAdvanceProperty = (
 ): ConnectorProperty[] => {
   const propertyDefinitionsCopy = _.cloneDeep(propertyList);
   return propertyDefinitionsCopy.filter(
-    (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_GENERAL
+    (defn: any) => defn.category === PropertyCategory.DATA_OPTIONS_ADVANCED
   );
 };
 
