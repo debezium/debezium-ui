@@ -12,7 +12,7 @@ import {
 import { FormikErrors, FormikTouched } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "src/app/shared";
+import { formatPropertyDefinitions, PropertyCategory, PropertyName } from "shared";
 import { ConnectorTypeComponent } from "..";
 import { FormComponent } from "../formHelpers";
 

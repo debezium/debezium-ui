@@ -11,7 +11,7 @@ import {
 import { FormikErrors, FormikTouched } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
+import { formatPropertyDefinitions, PropertyCategory } from "shared";
 import { FormComponent } from "../formHelpers";
 
 export interface IDataOptionsComponentProps {

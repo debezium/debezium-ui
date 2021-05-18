@@ -12,17 +12,17 @@ import {
 import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
-import { FilterTreeComponent } from "../../../components";
-import { FilterExcludeFieldComponent } from "../../../components/connectorStepHelpers/FilterExcludeFieldComponent";
-import { FilterInputFieldComponent } from "../../../components/connectorStepHelpers/FilterInputFieldComponent";
-import { NoPreviewFilterField } from "../../../components/connectorStepHelpers/NoPreviewFilterField";
+import { FilterTreeComponent } from "components";
+import { FilterExcludeFieldComponent } from "components/connectorStepHelpers/FilterExcludeFieldComponent";
+import { FilterInputFieldComponent } from "components/connectorStepHelpers/FilterInputFieldComponent";
+import { NoPreviewFilterField } from "components/connectorStepHelpers/NoPreviewFilterField";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   fetch_retry,
   getFilterConfigurationPageContent,
   mapToObject,
-} from "../../../shared";
+} from "shared";
 import "./FilterConfigStep.css";
 
 export interface IFilterConfigStepProps {

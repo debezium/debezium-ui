@@ -9,9 +9,9 @@ import {
 import { Formik } from "formik";
 import _ from "lodash";
 import React from "react";
-import { ConnectorNameTypeHeader } from "src/app/components/connectorStepHelpers";
-import { FormComponent } from "../../../components/formHelpers";
-import { PropertyCategory } from "../../../shared";
+import { ConnectorNameTypeHeader } from "components/connectorStepHelpers";
+import { FormComponent } from "components/formHelpers";
+import { PropertyCategory } from "shared";
 import "./DataOption.css";
 
 export interface IDataOptionsProps {

@@ -170,6 +170,11 @@ module.exports = {
     publicPath: ASSET_PATH
   },
   resolve: {
+    alias: {
+      shared: path.resolve(__dirname, "src/app/shared"),
+      components: path.resolve(__dirname, "src/app/components"),
+      assets: path.resolve(__dirname, "assets")
+    },
     extensions: ['.ts', '.tsx', '.js'],
     plugins: [
       new TsconfigPathsPlugin({

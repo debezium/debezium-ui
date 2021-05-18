@@ -1,6 +1,6 @@
 import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
 import * as React from "react";
-import AppHeader from "./appHeader";
+import AppHeader from "./AppHeader";
 import { AppLayoutContext } from "./AppLayoutContext";
 import "./layout.css";
 

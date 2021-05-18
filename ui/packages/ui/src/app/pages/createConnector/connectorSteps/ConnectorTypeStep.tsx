@@ -11,10 +11,10 @@ import {
 } from "@patternfly/react-core";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 import React from "react";
-import { PageLoader, ConnectorIcon } from "../../../components";
-import { ApiError } from "../../../shared";
-import { getConnectorTypeDescription } from "../../../shared/Utils";
-import { WithLoader } from "../../../shared/WithLoader";
+import { PageLoader, ConnectorIcon } from "components";
+import { ApiError } from "shared";
+import { getConnectorTypeDescription } from "shared/Utils";
+import { WithLoader } from "shared/WithLoader";
 import "./ConnectorTypeStep.css";
 
 

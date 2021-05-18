@@ -10,8 +10,8 @@ import {
 import { CubesIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
 import React from "react";
 import { PageLoader } from "..";
-import { ApiError } from "../../shared";
-import { WithLoader } from "../../shared/WithLoader";
+import { ApiError } from "shared";
+import { WithLoader } from "shared/WithLoader";
 import "./FilterTreeComponent.css";
 
 export interface IFilterTreeComponentProps {

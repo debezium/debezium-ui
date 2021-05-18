@@ -12,9 +12,9 @@ import {
 import { Form, Formik } from "formik";
 import _ from "lodash";
 import React from "react";
-import { ConnectorTypeComponent } from "src/app/components";
-import { FormComponent } from "src/app/components/formHelpers";
-import { PropertyCategory } from "src/app/shared";
+import { ConnectorTypeComponent } from "components";
+import { FormComponent } from "components/formHelpers";
+import { PropertyCategory } from "shared";
 import "./Properties.css";
 
 export interface IPropertiesProps {
