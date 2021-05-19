@@ -12,8 +12,7 @@ import {
 import { Form, Formik } from "formik";
 import _ from "lodash";
 import React from "react";
-import { ConnectorTypeComponent } from "components";
-import { FormComponent } from "components/formHelpers";
+import { ConnectorTypeComponent, FormComponent } from "components";
 import { PropertyCategory } from "shared";
 import "./Properties.css";
 

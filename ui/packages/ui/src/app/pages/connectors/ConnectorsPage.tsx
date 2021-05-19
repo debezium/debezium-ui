@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { AppLayoutContext } from "../../Layout/AppLayoutContext";
+import { AppLayoutContext } from "layout";
 import ConnectorsTableComponent from "./ConnectorsTableComponent";
 import "./ConnectorsTableComponent.css";
 

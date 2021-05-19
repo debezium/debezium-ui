@@ -11,13 +11,13 @@ import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { useHistory } from "react-router-dom";
 import BrandLogo from 'assets/images/debezium_logo_300px.png';
-import { KafkaConnectCluster } from 'components';
+import { KafkaConnectCluster } from "components";
 
 export interface IAppHeader {
 	handleClusterChange: (clusterId: number) => void;
 }
 
-const AppHeader: React.FC<IAppHeader> = (props) => {
+export const AppHeader: React.FC<IAppHeader> = (props) => {
 	const history = useHistory();
 
 	const homeClick = () => {
@@ -54,5 +54,3 @@ const AppHeader: React.FC<IAppHeader> = (props) => {
 		<PageHeader logo={<Brand onClick={homeClick} className="brandLogo" src={BrandLogo} alt="Debezium" />} headerTools={headerTools} />
 	);
 }
-
-export default AppHeader;

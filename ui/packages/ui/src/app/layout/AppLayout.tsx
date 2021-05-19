@@ -1,10 +1,9 @@
 import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
 import * as React from "react";
-import AppHeader from "./AppHeader";
-import { AppLayoutContext } from "./AppLayoutContext";
+import {AppHeader, AppLayoutContext} from "layout";
 import "./layout.css";
 
-const AppLayout: React.FC = ({ children }) => {
+export const AppLayout: React.FC = ({ children }) => {
   const [breadcrumb, setHasBreadcrumb] = React.useState(null);
   const [clusterId, setClusterId] = React.useState<number>(1);
   const showBreadcrumb = (b: any) => setHasBreadcrumb(b);
@@ -26,5 +25,3 @@ const AppLayout: React.FC = ({ children }) => {
     </AppLayoutContext.Provider>
   );
 };
-
-export default AppLayout;

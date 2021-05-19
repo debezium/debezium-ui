@@ -1,9 +1,8 @@
 import { Services } from "@debezium/ui-services";
 import { Form } from '@patternfly/react-core';
 import * as React from 'react';
-import { BasicSelectInput } from 'components';
+import { BasicSelectInput } from "components";
 import { fetch_retry } from "shared";
-
 export interface IKafkaConnectCluster {
   handleChange: (clusterId: number) => void;
 }

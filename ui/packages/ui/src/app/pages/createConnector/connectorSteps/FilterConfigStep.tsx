@@ -12,10 +12,8 @@ import {
 import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
-import { FilterTreeComponent } from "components";
-import { FilterExcludeFieldComponent } from "components/connectorStepHelpers/FilterExcludeFieldComponent";
-import { FilterInputFieldComponent } from "components/connectorStepHelpers/FilterInputFieldComponent";
-import { NoPreviewFilterField } from "components/connectorStepHelpers/NoPreviewFilterField";
+import { FilterTreeComponent, FilterExcludeFieldComponent, FilterInputFieldComponent, NoPreviewFilterField } from "components";
+
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
