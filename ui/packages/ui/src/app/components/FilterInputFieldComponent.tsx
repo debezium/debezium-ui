@@ -101,14 +101,10 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
     const formDataCopy = new Map<string, string>(props.formData);
     if (fieldSelected === FIELD_EXCLUDE) {
       formDataCopy.delete(props.fieldIncludeList);
-      filterField
-        ? formDataCopy.set(props.fieldExcludeList, filterField)
-        : formDataCopy.delete(props.fieldExcludeList);
+      formDataCopy.set(props.fieldExcludeList, filterField);
     } else {
       formDataCopy.delete(props.fieldExcludeList);
-      filterField
-        ? formDataCopy.set(props.fieldIncludeList, filterField)
-        : formDataCopy.delete(props.fieldIncludeList);
+      formDataCopy.set(props.fieldIncludeList, filterField);
     }
     props.setFormData(formDataCopy);
   }, [fieldSelected, filterField]);

@@ -70,10 +70,7 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<IFilterExclude
   React.useEffect(() => {
     const formDataCopy = new Map<string, string>(props.formData);
 
-    filterField
-      ? formDataCopy.set(props.fieldExcludeList, filterField)
-      : formDataCopy.delete(props.fieldExcludeList);
-
+    formDataCopy.set(props.fieldExcludeList, filterField);
     props.setFormData(formDataCopy);
   }, [filterField]);
 
