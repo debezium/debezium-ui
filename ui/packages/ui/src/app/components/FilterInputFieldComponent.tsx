@@ -101,10 +101,17 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
     const formDataCopy = new Map<string, string>(props.formData);
     if (fieldSelected === FIELD_EXCLUDE) {
       formDataCopy.delete(props.fieldIncludeList);
-      formDataCopy.set(props.fieldExcludeList, filterField);
+      if(filterField){
+        formDataCopy.set(props.fieldExcludeList, filterField);
+      }else {
+        formDataCopy.delete(props.fieldExcludeList);
+        setFieldSelected(FIELD_INCLUDE);
+      }
     } else {
       formDataCopy.delete(props.fieldExcludeList);
-      formDataCopy.set(props.fieldIncludeList, filterField);
+      filterField
+      ? formDataCopy.set(props.fieldIncludeList, filterField)
+      : formDataCopy.delete(props.fieldIncludeList);
     }
     props.setFormData(formDataCopy);
   }, [fieldSelected, filterField]);
@@ -186,17 +193,19 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
           <ToggleGroup aria-label="Include Exclude field toggle group">
             <ToggleGroupItem
               buttonId={FIELD_INCLUDE}
-              isSelected={fieldSelected === FIELD_INCLUDE}
+              isSelected={!!filterField && fieldSelected === FIELD_INCLUDE}
               onChange={handleParentToggle}
               onClick={(e) => e.preventDefault()}
               text={props.i18nInclude}
+              isDisabled={!filterField}
             />
             <ToggleGroupItem
               buttonId={FIELD_EXCLUDE}
-              isSelected={fieldSelected === FIELD_EXCLUDE}
+              isSelected={!!filterField && fieldSelected === FIELD_EXCLUDE}
               onChange={handleParentToggle}
               onClick={(e) => e.preventDefault()}
               text={props.i18nExclude}
+              isDisabled={!filterField}
             />
           </ToggleGroup>
         </FlexItem>
