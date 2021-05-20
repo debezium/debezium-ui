@@ -2,15 +2,16 @@ import React from "react";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { BrowserRouter as Router } from "react-router-dom";
 import "./app.css";
-import i18n from "../i18n/i18n";
-import AppLayout from "./Layout/AppLayout";
+import i18n from "i18n";
+import {AppLayout} from "layout";
+
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   RenderRoutes,
   ROUTES,
   WithErrorBoundary,
-} from "./shared";
+} from "shared";
 
 const App: React.FC = () => {
   const [confirm, setConfirm] = React.useState(false);

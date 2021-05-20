@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppLayoutContext } from './AppLayoutContext';
+import { AppLayoutContext } from "layout";
 
 export const AppBreadcrumb: React.FunctionComponent = ({ children }) => {
   const appLayoutContext = React.useContext(AppLayoutContext);

@@ -6,7 +6,7 @@ import { ExpandableSection, Grid, GridItem } from "@patternfly/react-core";
 import { FormikErrors, FormikTouched } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
+import { formatPropertyDefinitions, PropertyCategory } from "shared";
 import * as Yup from "yup";
 import { FormComponent } from "../formHelpers";
 

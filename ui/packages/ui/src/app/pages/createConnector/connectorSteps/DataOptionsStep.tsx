@@ -5,8 +5,8 @@ import {
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { DataOptionsComponent } from "src/app/components";
-import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
+import { DataOptionsComponent } from "components";
+import { formatPropertyDefinitions, PropertyCategory } from "shared";
 import "./DataOptionsStep.css";
 
 export interface IDataOptionsStepProps {
