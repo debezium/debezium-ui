@@ -24,8 +24,7 @@ import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Prompt } from "react-router-dom";
-import { ToastAlertComponent } from "../../components";
-import { ConnectionPropertiesError } from "../../components/ConnectionPropertiesError";
+import { ToastAlertComponent, ConnectionPropertiesError, ConnectorNameTypeHeader } from "components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -41,7 +40,7 @@ import {
   minimizePropertyValues,
   PropertyCategory,
   PropertyName,
-} from "../../shared";
+} from "shared";
 import {
   ConnectorTypeStep,
   DataOptionsStep,
@@ -50,7 +49,6 @@ import {
   ReviewStep,
   RuntimeOptionsStep,
 } from "./connectorSteps";
-import { ConnectorNameTypeHeader } from "../../components/connectorStepHelpers/ConnectorNameTypeHeader";
 import "./CreateConnectorComponent.css";
 
 /**

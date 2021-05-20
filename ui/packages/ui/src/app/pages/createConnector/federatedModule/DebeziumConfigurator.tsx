@@ -12,10 +12,10 @@ import {
   getFilterConfigurationPageContent,
   ConnectorTypeId,
   formatPropertyDefinitions,
-} from "../../../shared/Utils";
+} from "shared";
 import { ConnectorProperty } from "@debezium/ui-models";
 import { I18nextProvider, useTranslation } from "react-i18next";
-import i18n from "../../../../i18n/i18n";
+import i18n from "i18n";
 import { BrowserRouter } from "react-router-dom";
 
 /**

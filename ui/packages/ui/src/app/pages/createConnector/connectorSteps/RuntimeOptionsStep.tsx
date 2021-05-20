@@ -5,8 +5,8 @@ import {
 import { Form, Formik, useFormikContext } from "formik";
 import _ from "lodash";
 import * as React from "react";
-import { RuntimeOptionsComponent } from "src/app/components";
-import { formatPropertyDefinitions, PropertyCategory } from "src/app/shared";
+import { RuntimeOptionsComponent } from "components";
+import { formatPropertyDefinitions, PropertyCategory } from "shared";
 import * as Yup from "yup";
 import "./RuntimeOptionsStep.css";
 

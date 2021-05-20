@@ -14,12 +14,12 @@ import {
   FilterExcludeFieldComponent,
   FilterInputFieldComponent,
   NoPreviewFilterField,
-} from "../../../components/connectorStepHelpers";
+} from "components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   getFilterConfigurationPageContent,
-} from "../../../shared";
+} from "shared";
 import "./FilterConfig.css";
 
 export interface IFilterConfigProps {

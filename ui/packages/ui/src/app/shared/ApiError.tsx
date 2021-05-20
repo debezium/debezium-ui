@@ -1,6 +1,6 @@
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import * as React from "react";
-import { ApplicationErrorPage } from "../components";
+import { ApplicationErrorPage } from "components";
 
 export interface IApiErrorProps {
   error: Error | string;
