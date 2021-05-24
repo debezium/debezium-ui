@@ -24,7 +24,12 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "paths": {
-      "@pf4-assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
+      "@pf4-assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"],
+      "shared": ["src/app/shared"],
+      "components": ["src/app/components"],
+      "assets": ["assets"],
+      "i18n": ["src/i18n"],
+      "layout":["src/app/layout"]
     }
   },
   "include": [

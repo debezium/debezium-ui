@@ -6,6 +6,7 @@ import { HelpInfoIcon } from './HelpInfoIcon';
 export interface IFormSwitchComponentProps {
   label: string;
   description: string;
+  fieldId: string;
   name: string;
   isChecked: boolean
   propertyChange: (name: string, selection: any) => void;

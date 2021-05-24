@@ -1,7 +1,7 @@
 const path = require('path');
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || "8888";
@@ -11,7 +11,11 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "eval-source-map",
   plugins: [
-    new CopyWebpackPlugin([{from: '../../config/config.js'}])
+    new CopyPlugin({
+      patterns: [
+        { from: "../../config/config.js", to: "config.js" },
+      ],
+    }),
   ],
   output: {
     publicPath: (false && isProd && remoteSuffix)
@@ -26,7 +30,12 @@ module.exports = merge(common, {
     inline: true,
     historyApiFallback: true,
     hot: true,
-    overlay: true
+    overlay: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+    }
   },
   module: {
     rules: [

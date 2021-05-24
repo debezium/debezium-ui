@@ -397,10 +397,10 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
  * @param propertyDefns the array of property definitions
  * @returns the array of altered property definitions
  */
-export function getFormattedProperties (propertyDefns: ConnectorProperty[], connectorType: ConnectorType): ConnectorProperty[] {
+export function getFormattedProperties (propertyDefns: ConnectorProperty[], connectorTypeId: string): ConnectorProperty[] {
   const formattedPropertyDefns: ConnectorProperty[] = [...propertyDefns];
 
-  if (connectorType.id === ConnectorTypeId.POSTGRES) {
+  if (connectorTypeId === ConnectorTypeId.POSTGRES) {
     for (const propDefn of formattedPropertyDefns) {
       propDefn.gridWidthSm = 12;
       const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
@@ -475,7 +475,7 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
           break;
       }
     }
-  } else if (connectorType.id === ConnectorTypeId.MONGO) {
+  } else if (connectorTypeId === ConnectorTypeId.MONGO) {
     for (const propDefn of formattedPropertyDefns) {
       propDefn.gridWidthSm = 12;
       const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
@@ -532,7 +532,7 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
           break;
       }
     }
-  } else if (connectorType.id === ConnectorTypeId.MYSQL) {
+  } else if (connectorTypeId === ConnectorTypeId.MYSQL) {
     for (const propDefn of formattedPropertyDefns) {
       if (propDefn) {
         propDefn.gridWidthSm = 12;

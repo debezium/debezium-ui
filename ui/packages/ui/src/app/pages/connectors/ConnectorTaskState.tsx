@@ -1,7 +1,7 @@
 import { Connector } from "@debezium/ui-models";
 import { Flex, FlexItem, Label } from '@patternfly/react-core';
 import * as React from "react";
-import { ConnectorState } from "../../shared";
+import { ConnectorState } from "shared";
 import "./ConnectorTask.css";
 export interface IConnectorTaskStateProps {
   connector: Connector;

@@ -2,23 +2,24 @@ import React from "react";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { BrowserRouter as Router } from "react-router-dom";
 import "./app.css";
-import i18n from "./i18n";
-import AppLayout from "./Layout/AppLayout";
+import i18n from "i18n";
+import {AppLayout} from "layout";
+
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   RenderRoutes,
   ROUTES,
   WithErrorBoundary,
-} from "./shared";
+} from "shared";
 
 const App: React.FC = () => {
   const [confirm, setConfirm] = React.useState(false);
   const [confirmCallback, setConfirmCallback] = React.useState(null);
   const getConfirmation = (message: any, callback: any) => {
-    if(message === 'Code navigation'){
+    if (message === "Code navigation") {
       callback(true);
-    }else{
+    } else {
       setConfirmCallback(() => callback);
       setConfirm(true);
     }
@@ -27,15 +28,21 @@ const App: React.FC = () => {
     <Router basename="/#app" getUserConfirmation={getConfirmation}>
       <I18nextProvider i18n={i18n}>
         <AppLayout>
-          <WithErrorBoundary>
-            <RenderRoutes routes={ROUTES} />
-            {confirm && (
-              <UserConfirm
-                confirmCallback={confirmCallback}
-                setConfirm={setConfirm}
-              />
-            )}
-          </WithErrorBoundary>
+          <React.Suspense
+            fallback={
+              null
+            }
+          >
+            <WithErrorBoundary>
+              <RenderRoutes routes={ROUTES} />
+              {confirm && (
+                <UserConfirm
+                  confirmCallback={confirmCallback}
+                  setConfirm={setConfirm}
+                />
+              )}
+            </WithErrorBoundary>
+          </React.Suspense>
         </AppLayout>
       </I18nextProvider>
     </Router>
@@ -44,8 +51,8 @@ const App: React.FC = () => {
 export default App;
 
 const UserConfirm = (props: any) => {
-  const { t } = useTranslation(["app"]);
-  
+  const { t } = useTranslation();
+
   function allowTransition() {
     props.setConfirm(false);
     props.confirmCallback(true);
