@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 const { dependencies } = require("./package.json");
@@ -24,28 +25,30 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.COMMIT_HASH': JSON.stringify(COMMIT_HASH),
     }),
+    new CopyPlugin({
+      patterns: [
+        {from: './src/locales', to: 'locales'},
+      ]
+    }),
     new webpack.container.ModuleFederationPlugin({
       name: 'debezium_ui',
-      filename: "remoteEntry.js",
+      filename: "dbz-connector-configurator.remoteEntry.js",
       library: { type: 'var', name: 'debezium_ui'},
       exposes: {
-        "./CreateConnectorNoValidation": "./src/app/pages/createConnector/noValidation/CreateConnectorNoValidation",
-        "./CreateConnector": "./src/app/pages/createConnector/CreateConnectorComponent",
-        "./Table": "./src/app/pages/connectors/ConnectorsTableComponent",
+        "./config": "./src/app/pages/createConnector/federatedModule/config",
       },
-      shared: {
-        ...dependencies,
-        react: {
-          eager: true,
-          singleton: true,
-          requiredVersion: dependencies.react,
+      shared: [
+        {
+          react: {
+            singleton: true,
+            requiredVersion: dependencies.react,
+          },
+          "react-dom": {
+            singleton: true,
+            requiredVersion: dependencies["react-dom"],
+          },
         },
-        "react-dom": {
-          eager: true,
-          singleton: true,
-          requiredVersion: dependencies["react-dom"],
-        }
-      },
+      ],
     }),
   ],
   module: {
@@ -142,6 +145,22 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.(json)$/i,
+        include: [
+          path.resolve(__dirname, 'src/locales'),
+        ],
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 5000,
+              outputPath: 'locales',
+              name: '[name].[ext]',
+            }
+          }
+        ]
       }
     ]
   },
@@ -151,6 +170,13 @@ module.exports = {
     publicPath: ASSET_PATH
   },
   resolve: {
+    alias: {
+      shared: path.resolve(__dirname, "src/app/shared"),
+      components: path.resolve(__dirname, "src/app/components"),
+      assets: path.resolve(__dirname, "assets"),
+      i18n: path.resolve(__dirname, "src/i18n"),
+      layout: path.resolve(__dirname, "src/app/layout"),
+    },
     extensions: ['.ts', '.tsx', '.js'],
     plugins: [
       new TsconfigPathsPlugin({

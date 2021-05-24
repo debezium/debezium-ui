@@ -6,6 +6,7 @@ import { HelpInfoIcon } from './HelpInfoIcon';
 
 export interface IFormCheckboxComponentProps {
   label: string;
+  fieldId: string;
   name: string;
   description: string;
   isChecked: boolean

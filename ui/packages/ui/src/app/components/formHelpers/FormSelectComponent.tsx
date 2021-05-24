@@ -64,7 +64,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
   };
 
   const selectOptions = options.map((value: any) => {
-    return {'value': value.charAt(0).toUpperCase() + value.slice(1)}
+    return {'value': value}
   })
   
   return (
@@ -75,7 +75,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
       }
       helperTextInvalid={helperTextInvalid}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
-      fieldId={fieldId}
+      fieldId={field.name}
       name={fieldId}
     >
       <Select

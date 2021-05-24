@@ -1,56 +1,85 @@
-import { ErrorCircleOIcon } from '@patternfly/react-icons';
-import * as React from 'react';
-import {ApplicationErrorPage} from '../components';
+import {
+  PageSection,
+  PageSectionVariants,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  Title,
+  EmptyStateBody,
+  Button,
+  EmptyStateSecondaryActions,
+} from "@patternfly/react-core";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
+import React from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { useTranslation } from "react-i18next";
+import "./WithErrorBoundary.css";
 
-export interface IWithErrorBoundaryState {
-  error?: Error;
-  errorInfo?: React.ErrorInfo;
-  errorComponent?: React.ReactElement<{
-    error: Error;
-    errorInfo: React.ErrorInfo;
-  }>;
-}
+const ErrorFallback: React.FunctionComponent<{error: Error, resetErrorBoundary: any}> = ({
+  error, resetErrorBoundary
+}) => {
+  const { t } = useTranslation();
 
-export class WithErrorBoundary extends React.Component<
-  any,
-  IWithErrorBoundaryState
-> {
-  public state: IWithErrorBoundaryState = {};
+  const [showErrorInfo, setShowErrorInfo] = React.useState(false);
 
-  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    this.setState({
-      error,
-      errorInfo,
-    });
+  const openJiraIssue = (url: string) => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+    if (newWindow){
+      newWindow.opener = null
+    }
   }
 
-  public componentWillReceiveProps(
-    nextProps: Readonly<any>,
-    nextContext: any
-  ): void {
-    this.setState({
-      error: undefined,
-      errorInfo: undefined,
-    });
-  }
+  return (
+    <React.Fragment>
+      <PageSection className="ps_error" variant={PageSectionVariants.light}>
+        <div className="application-error-page">
+          <EmptyState variant={EmptyStateVariant.large}>
+            <EmptyStateIcon icon={ExclamationTriangleIcon} />
+            <Title headingLevel="h5" size="lg">
+              {t("applicationErrorTitle")}
+            </Title>
+            <EmptyStateBody>{t("applicationErrorMsg")}</EmptyStateBody>
+            <Button variant="primary" onClick={resetErrorBoundary}>
+              {t("tryAgain")}
+            </Button>
+            <EmptyStateSecondaryActions>
+              <Button
+                variant="link"
+                data-testid="error-btn-artifacts"
+                // isDisabled={true}
+                onClick={() => openJiraIssue('https://issues.redhat.com/browse/DBZ')}
+              >
+                {t("reportIssue")}
+              </Button>
+              <Button
+                variant="link"
+                data-testid="error-btn-details"
+                // tslint:disable-next-line: jsx-no-lambda
+                onClick={() => setShowErrorInfo(!showErrorInfo)}
+              >
+                {showErrorInfo ? t("hideDetails") : t("showDetails")}
+              </Button>
+            </EmptyStateSecondaryActions>
+          </EmptyState>
+          <div className="separator">&nbsp;</div>
+          {showErrorInfo ? (
+            <div
+              className="application-error-page_details pf-c-empty-state pf-m-lg"
+              id="ace-wrapper"
+            >
+              <pre>{error.message}</pre>
+            </div>
+          ) : (
+            <div />
+          )}
+        </div>
+      </PageSection>
+    </React.Fragment>
+  );
+};
 
-  public render() {
-    return this.state.error && this.state.errorInfo ? (
-      this.props.errorComponent ? (
-        React.createElement(this.props.errorComponent, {
-          error: this.state.error,
-          errorInfo: this.state.errorInfo,
-        })
-      ) : (
-
-            <ApplicationErrorPage
-              icon={ErrorCircleOIcon}
-              error={this.state.error}
-              errorInfo={this.state.errorInfo}
-            />
-      )
-    ) : (
-      this.props.children
-    );
-  }
-}
+export const WithErrorBoundary: React.FunctionComponent = ({ children }) => (
+  <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[Date.now()]}>
+    {children}
+  </ErrorBoundary>
+);

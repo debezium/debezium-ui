@@ -5,3 +5,4 @@ export * from './ConfirmationDialog';
 export * from './routes';
 export * from './useRouteData';
 export * from './RenderRoutes';
+export * from './WithLoader'

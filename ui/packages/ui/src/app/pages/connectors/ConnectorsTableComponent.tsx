@@ -23,11 +23,9 @@ import { cellWidth, expandable, IAction, IExtraData, IRowData, Table, TableBody,
 import React, { SyntheticEvent } from "react";
 import isEqual from "react-fast-compare";
 import { useTranslation } from 'react-i18next';
-import { PageLoader, ToastAlertComponent } from "../../components";
-import { AppLayoutContext } from '../../Layout/AppLayoutContext';
-import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry } from "../../shared";
-import { WithLoader } from "../../shared/WithLoader";
-import { ConnectorIcon } from './ConnectorIcon';
+import { PageLoader, ToastAlertComponent, ConnectorIcon } from "components";
+import { AppLayoutContext } from "layout";
+import { ApiError, ConfirmationButtonStyle, ConfirmationDialog, ConfirmationType, ConnectorTypeId, fetch_retry, WithLoader } from "shared";
 import { ConnectorOverview } from "./ConnectorOverview";
 import "./ConnectorsTableComponent.css";
 import { ConnectorStatus } from "./ConnectorStatus";
@@ -75,7 +73,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   const [alerts, setAlerts] = React.useState<any[]>([]);
   const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<any[]>([]);
   
-  const { t } = useTranslation(['app']);
+  const { t } = useTranslation();
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] = React.useState(false)
   const [currentCategory, setCurrentCategory] = React.useState<string>('Name');
   const [desRowOrder, setDesRowOrder] = React.useState<boolean>(false);

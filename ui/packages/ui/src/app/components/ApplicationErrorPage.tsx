@@ -27,7 +27,7 @@ export interface IApplicationErrorPageProps {
 export const ApplicationErrorPage: React.FC<IApplicationErrorPageProps> = (
   props
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
   
   const [showErrorInfo, setShowErrorInfo] = useState(false);
   const reloadPage = (): void => {

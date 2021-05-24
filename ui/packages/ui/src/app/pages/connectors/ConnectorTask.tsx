@@ -1,7 +1,7 @@
 import { Button, Flex, FlexItem, Label, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import * as React from "react";
-import { ConnectorState } from "../../shared";
+import { ConnectorState } from "shared";
 import "./ConnectorTask.css";
 export interface IConnectorTaskProps {
   status: string;

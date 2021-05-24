@@ -24,8 +24,7 @@ import _ from "lodash";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { Prompt } from "react-router-dom";
-import { ToastAlertComponent } from "../../components";
-import { ConnectionPropertiesError } from "../../components/ConnectionPropertiesError";
+import { ToastAlertComponent, ConnectionPropertiesError, ConnectorNameTypeHeader } from "components";
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
@@ -41,16 +40,15 @@ import {
   minimizePropertyValues,
   PropertyCategory,
   PropertyName,
-} from "../../shared";
+} from "shared";
 import {
-  ConnectorTypeStepComponent,
+  ConnectorTypeStep,
   DataOptionsStep,
-  FilterConfigComponent,
+  FilterConfigStep,
   PropertiesStep,
-  ReviewStepComponent,
+  ReviewStep,
   RuntimeOptionsStep,
 } from "./connectorSteps";
-import { ConnectorNameTypeHeader } from "./connectorSteps/ConnectorNameTypeHeader";
 import "./CreateConnectorComponent.css";
 
 /**
@@ -91,7 +89,7 @@ export interface ICreateConnectorComponentProps {
 export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorComponentProps> = (
   props: ICreateConnectorComponentProps
 ) => {
-  const { t } = useTranslation(["app"]);
+  const { t } = useTranslation();
 
   const validationSuccessNextMsg = t("resolvePropertySucessMsg");
   const createConnectorUnknownErrorMsg = t("unknownError");
@@ -383,7 +381,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ).name = "column.mask.hash";
           }
           setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails)
+            getFormattedProperties(cDetails.properties, cDetails.id)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
@@ -627,7 +625,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ).name = "column.mask.hash";
           }
           setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails)
+            getFormattedProperties(cDetails.properties, cDetails.id)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
@@ -644,7 +642,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     id: 1,
     name: CONNECTOR_TYPE_STEP,
     component: (
-      <ConnectorTypeStepComponent
+      <ConnectorTypeStep
         connectorTypesList={connectorTypes}
         i18nApiErrorTitle={t("apiErrorTitle")}
         i18nApiErrorMsg={t("apiErrorMsg")}
@@ -763,7 +761,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               connectorType={selectedConnectorType}
               showIcon={false}
             />
-            <FilterConfigComponent
+            <FilterConfigStep
               propertyValues={
                 new Map([...basicPropValues, ...advancedPropValues])
               }
@@ -883,7 +881,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           connectorType={selectedConnectorType}
           showIcon={false}
         />
-        <ReviewStepComponent
+        <ReviewStep
           i18nReviewMessage={t("reviewMessage", {
             connectorName: getConnectorName(),
           })}
