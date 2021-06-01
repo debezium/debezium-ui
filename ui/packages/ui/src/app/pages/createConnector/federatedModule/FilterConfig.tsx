@@ -36,7 +36,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   const [formData, setFormData] = React.useState<Map<string, string>>(
     new Map(props.filterValues)
   );
-  const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
+  const [invalidMsg] = React.useState<Map<string, string>>(
     new Map()
   );
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
