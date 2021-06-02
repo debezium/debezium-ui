@@ -196,7 +196,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
     ])
       .then((cConnectors: Connector[]) => {
         setLoading(false);
-        setConnectors(cConnectors);
+        setConnectors(cConnectors.filter(c => c !== null));
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);
