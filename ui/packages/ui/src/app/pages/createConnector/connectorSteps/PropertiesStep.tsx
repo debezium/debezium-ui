@@ -14,6 +14,7 @@ export interface IPropertiesStepProps {
   advancedPropertyDefinitions: ConnectorProperty[];
   advancedPropertyValues: Map<string, string>;
   invalidMsg: PropertyValidationResult[];
+  i18nIsRequiredText: string;
   i18nAdvancedPropertiesText: string;
   i18nAdvancedPublicationPropertiesText: string;
   i18nAdvancedReplicationPropertiesText: string;
@@ -94,7 +95,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
       if (key.isMandatory) {
         basicValidationSchema[key.name] = basicValidationSchema[
           key.name
-        ]?.required(`${key.displayName} is required`);
+        ]?.required(`${key.displayName} ${props.i18nIsRequiredText}`);
       }
     });
 

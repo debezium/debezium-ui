@@ -97,6 +97,7 @@
   "advancedPropertiesText": "Proprietà avanzate",
   "advancedPublicationPropertiesText": "Pubblicazione",
   "advancedReplicationPropertiesText": "Replica",
+  "isRequired": "è obbligatorio.",
   "basicPropertiesText": "Proprietà di base",
   "resolveFieldErrorsMsg": "Risolvi ** gli errori di proprietà, quindi fai clic su Convalida",
   "resolvePropertyErrorsMsg": "Risolvi gli errori di proprietà, quindi fai clic su Convalida",

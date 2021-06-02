@@ -20,6 +20,7 @@ export interface IPropertiesProps {
   connectorType: string;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
+  i18nIsRequiredText: string;
   i18nAdvancedPropertiesText: string;
   i18nAdvancedPublicationPropertiesText: string;
   i18nAdvancedReplicationPropertiesText: string;
@@ -43,12 +44,12 @@ const checkIfRequired = (
   return matchProp ? matchProp.isMandatory : false;
 };
 
-const setValidation = (values: any, propertyList: ConnectorProperty[]) => {
+const setValidation = (values: any, propertyList: ConnectorProperty[], requiredTest: string) => {
   const errors = {};
 
   propertyList.forEach((property) => {
     if (property.isMandatory && !values[property.name]) {
-      errors[property.name] = `${property.displayName} is required`;
+      errors[property.name] = `${property.displayName} ${requiredTest}`;
     }
   });
   return errors;
@@ -145,7 +146,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       finalConfiguration,
       isFormValid(new Map(Object.entries(values)))
     );
-    return setValidation(values, props.propertyDefinitions);
+    return setValidation(values, props.propertyDefinitions, props.i18nIsRequiredText);
   };
 
   const isFormValid = (formData: Map<string, unknown>): boolean => {
