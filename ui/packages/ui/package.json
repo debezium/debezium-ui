@@ -91,7 +91,7 @@
     "react-i18next": "^11.4.0",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
-    "tslib": "^2.0.1",
+    "tslib": "^2.2.0",
     "use-react-router": "^1.0.7",
     "yup": "^0.29.3"
   }

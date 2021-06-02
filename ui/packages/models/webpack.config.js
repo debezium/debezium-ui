@@ -1,10 +1,10 @@
 const path = require('path');
 
 module.exports = {
+  devtool: 'source-map',
   entry: {
     'index': './src/index.ts'
   },
-  devtool: 'source-map',
   module: {
     rules: [
       {

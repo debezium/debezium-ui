@@ -18,7 +18,7 @@
 
 import {LoggerService} from "./logger";
 import {ConfigService} from "./config";
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import {ContentTypes} from "@debezium/ui-models";
 
 /**
