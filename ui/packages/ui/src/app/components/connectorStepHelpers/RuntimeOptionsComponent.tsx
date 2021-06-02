@@ -14,6 +14,7 @@ export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
   invalidMsg: PropertyValidationResult[];
+  i18nIsRequiredText: string;
   i18nEngineProperties: string;
   i18nHeartbeatProperties: string;
   setFieldValue: (
@@ -59,7 +60,7 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
       if (key.isMandatory) {
         basicValidationSchema[key.name] = basicValidationSchema[
           key.name
-        ].required(`${key.name} is required`);
+        ].required(`${key.name} ${props.i18nIsRequiredText}`);
       }
     });
 

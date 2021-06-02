@@ -14,6 +14,7 @@ export interface IRuntimeOptionsStepProps {
   propertyDefinitions: ConnectorProperty[];
   propertyValues: Map<string, string>;
   invalidMsg: PropertyValidationResult[];
+  i18nIsRequiredText: string;
   i18nEngineProperties: string;
   i18nHeartbeatProperties: string;
   setRuntimeOptionsValid: () => void;
@@ -72,7 +73,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
       if (key.isMandatory) {
         basicValidationSchema[key.name] = basicValidationSchema[
           key.name
-        ].required(`${key.name} is required`);
+        ].required(`${key.name} ${props.i18nIsRequiredText}`);
       }
     });
 
@@ -138,6 +139,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
                 propertyValues={props.propertyValues}
                 i18nEngineProperties={props.i18nEngineProperties}
                 i18nHeartbeatProperties={props.i18nHeartbeatProperties}
+                i18nIsRequiredText={props.i18nIsRequiredText}
                 invalidMsg={props.invalidMsg}
                 setFieldValue={setFieldValue}
                 errors={errors}

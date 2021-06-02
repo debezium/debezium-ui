@@ -670,6 +670,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             selectedConnectorPropertyDefns
           )}
           advancedPropertyValues={advancedPropValues}
+          i18nIsRequiredText={t("isRequired")}
           i18nAdvancedPropertiesText={t("advancedPropertiesText")}
           i18nAdvancedPublicationPropertiesText={t(
             "advancedPublicationPropertiesText"
@@ -837,6 +838,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                 selectedConnectorPropertyDefns
               )}
               propertyValues={runtimeOptionsPropValues}
+              i18nIsRequiredText={t("isRequired")}
               i18nEngineProperties={t("engineProperties")}
               i18nHeartbeatProperties={t("heartbeatProperties")}
               onValidateProperties={handleValidateOptionProperties}

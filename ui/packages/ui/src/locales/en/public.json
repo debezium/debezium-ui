@@ -97,6 +97,7 @@
   "advancedPropertiesText": "Advanced Properties",
   "advancedPublicationPropertiesText": "Publication",
   "advancedReplicationPropertiesText": "Replication",
+  "isRequired": "is required.",
   "basicPropertiesText": "Basic Properties",
   "resolveFieldErrorsMsg": "Resolve ** property errors, then click Validate",
   "resolvePropertyErrorsMsg": "Resolve property errors, then click Validate",

@@ -269,6 +269,9 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               ),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
+            i18nIsRequiredText={t(
+              "isRequired"
+            )}
             i18nAdvancedPropertiesText={t("advancedPropertiesText")}
             i18nAdvancedPublicationPropertiesText={t(
               "advancedPublicationPropertiesText"
