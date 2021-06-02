@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
     "outDir": "dist/js",
-    "lib": ["es6", "dom"]
+    "lib": ["es6", "dom"],
+    "strictNullChecks": false
   },
   "exclude": ["node_modules", "dist"]
 }

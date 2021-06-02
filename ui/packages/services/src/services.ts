@@ -20,13 +20,6 @@ import {GlobalsService} from "./globals";
 import {LoggerService} from "./logger";
 import {Service} from "./baseService";
 
-interface AllServices {
-    connector: ConnectorService;
-    config: ConfigService;
-    globals: GlobalsService;
-    logger: LoggerService;
-}
-
 /**
  * Class that provides access to all of the services in the application.
  */

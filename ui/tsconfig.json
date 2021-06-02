@@ -2,6 +2,9 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "include": ["package"],
-  "exclude": ["node_modules", "cypress"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": ["node_modules", "cypress", "dist"]
 }
