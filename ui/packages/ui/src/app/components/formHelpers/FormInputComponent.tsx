@@ -31,7 +31,7 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
   };
 
   const minValue = (propType: string) => {
-    let result = null;
+    let result : number | null | undefined = null;
     switch (propType) {
       case "NON-NEG-INT":
       case "NON-NEG-LONG":
