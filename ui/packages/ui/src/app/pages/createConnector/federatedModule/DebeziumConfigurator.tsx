@@ -76,7 +76,26 @@ export interface IDebeziumConfiguratorProps {
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
-const getType = (type: string, format: string) => {
+const getType = (prop: any) => {
+  // tslint:disable: no-string-literal
+  let type = prop["type"];
+  let format = prop["format"];
+
+  // handle passwords, which have 'oneOf' attributes
+  const oneOf = prop["oneOf"];
+  if(oneOf && oneOf !== null) {
+    for(const oneOfElem of oneOf) {
+      const oneOfType = oneOfElem["type"];
+      const oneOfFormat = oneOfElem["format"];
+      if(oneOfFormat && oneOfFormat === "password") {
+        type = oneOfType;
+        format = oneOfFormat;
+        break;
+      }
+    }
+  }
+  // tslint:enable: no-string-literal
+  
   if (type === "string") {
     if (!format) {
       return "STRING";
@@ -142,16 +161,15 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
         ? "column.mask.hash"
         : prop["x-name"];
     const nullable = prop["nullable"];
-    const type = prop["type"];
-    const format = prop["format"];
     const connProp = {
       category: prop["x-category"],
       description: prop["description"],
       displayName: prop["title"],
       name,
       isMandatory: getMandatory(nullable),
-      type: getType(type, format),
     } as ConnectorProperty;
+
+    connProp.type = getType(prop);
 
     if (prop["default"]) {
       connProp.defaultValue = prop["default"];
@@ -166,6 +184,7 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
     getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
   );
 };
+
 /**
  * Get the filter properties passed via connector prop
  * @param connectorData
