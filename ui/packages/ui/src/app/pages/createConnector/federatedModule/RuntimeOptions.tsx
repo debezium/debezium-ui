@@ -8,7 +8,7 @@ import {
 import { Formik } from "formik";
 import _ from "lodash";
 import React from "react";
-import { ConnectorNameTypeHeader, FormComponent } from "components";
+import { FormComponent } from "components";
 import { PropertyCategory } from "shared";
 import "./RuntimeOptions.css";
 
@@ -142,11 +142,6 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
       style={{ padding: "20px" }}
       className={"runtime-options-component-page"}
     >
-      <ConnectorNameTypeHeader
-        connectorName={props.connectorName}
-        connectorType={props.connectorType}
-        showIcon={false}
-      />
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
