@@ -199,7 +199,8 @@ export function getConnectorTypeDescription(connType: ConnectorType): string {
  * @param propertyDefns the array of all ConnectorProperty objects
  */
 export function getBasicPropertyDefinitions(
-  propertyDefns: ConnectorProperty[]
+  propertyDefns: ConnectorProperty[],
+  isMCS?: boolean
 ): ConnectorProperty[] {
   const connProperties: ConnectorProperty[] = [];
   for (const propDefn of propertyDefns) {
@@ -218,7 +219,7 @@ export function getBasicPropertyDefinitions(
     gridWidthLg: 4,
     gridWidthSm: 12
   } as ConnectorProperty;
-  connProperties.push(connNameProperty);
+  !isMCS && connProperties.push(connNameProperty);
 
   return connProperties;
 }

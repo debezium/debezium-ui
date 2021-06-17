@@ -283,9 +283,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               props.onChange(conf, status)
             }
             propertyDefinitions={[
-              ...formatPropertyDefinitions(
-                getBasicPropertyDefinitions(connectorProperties)
-              ),
+              ...getBasicPropertyDefinitions(connectorProperties, true),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
             i18nIsRequiredText={t(

@@ -9,7 +9,7 @@ import {
 import { Formik } from "formik";
 import _ from "lodash";
 import React from "react";
-import { ConnectorNameTypeHeader, FormComponent } from "components";
+import { FormComponent } from "components";
 import { PropertyCategory } from "shared";
 import "./DataOption.css";
 
@@ -149,11 +149,6 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
 
   return (
     <div style={{ padding: "20px" }} className={"data-options-component-page"}>
-      <ConnectorNameTypeHeader
-        connectorName={props.connectorName}
-        connectorType={props.connectorType}
-        showIcon={false}
-      />
       <Formik
         validateOnChange={true}
         enableReinitialize={true}

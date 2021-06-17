@@ -3,16 +3,12 @@ import {
   ExpandableSection,
   Grid,
   GridItem,
-  Split,
-  SplitItem,
-  Text,
-  TextContent,
   Title,
 } from "@patternfly/react-core";
 import { Form, Formik } from "formik";
 import _ from "lodash";
 import React from "react";
-import { ConnectorTypeComponent, FormComponent } from "components";
+import { FormComponent } from "components";
 import { PropertyCategory } from "shared";
 import "./Properties.css";
 
@@ -53,15 +49,6 @@ const setValidation = (values: any, propertyList: ConnectorProperty[], requiredT
     }
   });
   return errors;
-};
-
-const getNameProperty = (
-  propertyList: ConnectorProperty[]
-): ConnectorProperty[] => {
-  const propertyDefinitionsCopy = _.cloneDeep(propertyList);
-  return propertyDefinitionsCopy.filter(
-    (defn: any) => defn.category === PropertyCategory.CONNECTOR_NAME
-  );
 };
 
 const getBasicProperty = (
@@ -107,9 +94,6 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
     false
   );
 
-  const [namePropertyDefinitions] = React.useState<ConnectorProperty[]>(
-    getNameProperty(props.propertyDefinitions)
-  );
   const [basicPropertyDefinitions] = React.useState<ConnectorProperty[]>(
     getBasicProperty(props.propertyDefinitions)
   );
@@ -214,47 +198,6 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
         {({ errors, touched, setFieldValue }) => (
           <Form className="pf-c-form">
             <>
-              <Grid hasGutter={true} className="connector-name-form">
-                {namePropertyDefinitions.map(
-                  (propertyDefinition: ConnectorProperty, index: any) => {
-                    return (
-                      <GridItem key={index} lg={4} sm={12}>
-                        <FormComponent
-                          propertyDefinition={propertyDefinition}
-                          propertyChange={handlePropertyChange}
-                          setFieldValue={setFieldValue}
-                          helperTextInvalid={errors[propertyDefinition.name]}
-                          invalidMsg={[]}
-                          validated={
-                            errors[propertyDefinition.name] &&
-                            touched[propertyDefinition.name] &&
-                            errors[propertyDefinition.name]
-                              ? "error"
-                              : "default"
-                          }
-                        />
-                      </GridItem>
-                    );
-                  }
-                )}
-                <GridItem key={"connType"} lg={12} sm={12}>
-                  <Split>
-                    <SplitItem>
-                      <TextContent>
-                        <Text className={"connector-type-label"}>
-                          Connector type:
-                        </Text>
-                      </TextContent>
-                    </SplitItem>
-                    <SplitItem>
-                      <ConnectorTypeComponent
-                        connectorType={props.connectorType}
-                        showIcon={false}
-                      />
-                    </SplitItem>
-                  </Split>
-                </GridItem>
-              </Grid>
               <Grid>
                 <GridItem lg={9} sm={12}>
                   <ExpandableSection
