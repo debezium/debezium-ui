@@ -13,8 +13,6 @@ import { PropertyCategory } from "shared";
 import "./RuntimeOptions.css";
 
 export interface IRuntimeOptionsProps {
-  connectorName: string;
-  connectorType: string;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   i18nEngineProperties: string;

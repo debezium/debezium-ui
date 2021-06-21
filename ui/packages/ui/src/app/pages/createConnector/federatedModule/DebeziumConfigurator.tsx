@@ -317,14 +317,6 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case DATA_OPTIONS_STEP_ID:
         return (
           <DataOptions
-            connectorName={
-              (props.configuration?.get("connector_name") as string) || ""
-            }
-            connectorType={
-              props.connector?.json_schema
-                ? props.connector?.json_schema["x-connector-id"]
-                : ""
-            }
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -342,14 +334,6 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case RUNTIME_OPTIONS_STEP_ID:
         return (
           <RuntimeOptions
-            connectorName={
-              (props.configuration?.get("connector_name") as string) || ""
-            }
-            connectorType={
-              props.connector?.json_schema
-                ? props.connector?.json_schema["x-connector-id"]
-                : ""
-            }
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
