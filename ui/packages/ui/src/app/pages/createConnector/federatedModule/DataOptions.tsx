@@ -14,8 +14,6 @@ import { PropertyCategory } from "shared";
 import "./DataOption.css";
 
 export interface IDataOptionsProps {
-  connectorName: string;
-  connectorType: string;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   i18nAdvancedMappingPropertiesText: string;
