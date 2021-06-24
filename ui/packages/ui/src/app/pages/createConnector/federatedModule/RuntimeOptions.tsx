@@ -117,22 +117,22 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
   React.useEffect(() => {
     const initialValuesCopy = JSON.parse(JSON.stringify(initialValues));
     
-    if (props.configuration && props.configuration.size !== 0) {
       let isValid = true;
       const updatedConfiguration = new Map();
-      props.configuration.forEach((value: any, key: any) => {
-        updatedConfiguration.set(key, value)
-      })
+      if (props.configuration && props.configuration.size !== 0) {
+        props.configuration.forEach((value: any, key: any) => {
+          updatedConfiguration.set(key, value)
+        })
+      }
       Object.keys(initialValues).forEach((key: string) => {
         if (updatedConfiguration.get(key.replace(/[_]/g, "."))) {
           initialValuesCopy[key] = updatedConfiguration.get(key.replace(/[_]/g, "."));
         } else if (checkIfRequired(props.propertyDefinitions, key)) {
-          isValid = false;
+          initialValues[key] ? updatedConfiguration.set( key.replace(/[_]/g, "."), initialValues[key]) : isValid = false;
         }
       });
       setInitialValues(initialValuesCopy);
-      isValid && props.onChange(updatedConfiguration, true);
-    }
+      props.onChange(updatedConfiguration, isValid);
   }, []);
 
   return (
