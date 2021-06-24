@@ -1,0 +1,39 @@
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 AS builder
+
+ARG JAVA_PACKAGE=java-11-openjdk-headless
+
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
+ENV JAVA_HOME="/usr/lib/jvm/jre-11"
+
+RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
+    && microdnf update \
+    && microdnf clean all \
+    && mkdir -p /javabuild/ui \
+    && chown -R 1001 /javabuild \
+    && chmod -R "g+rwX" /javabuild \
+    && chown -R 1001:root /javabuild \
+    && mkdir -p /.cache \
+    && chown -R 1001 /.cache \
+    && chmod -R "g+rwX" /.cache \
+    && chown -R 1001:root /.cache \
+    && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/lib/security/java.security
+
+USER 1001
+
+COPY --chown=1001:root pom.xml /javabuild/
+COPY --chown=1001:root ui/pom.xml /javabuild/ui/pom.xml
+
+WORKDIR /javabuild
+
+RUN mvn -am -f ui clean dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+
+COPY --chown=1001:root ui/ /javabuild/ui/
+
+RUN mvn -am -f ui package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+
+FROM nginx:1
+
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
+
+COPY --from=builder --chown=nginx /javabuild/ui/target/classes/ /usr/share/nginx/html/
+COPY --chown=nginx deployment/dbzui-config.sh /docker-entrypoint.d/dbzui-config.sh
