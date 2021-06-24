@@ -19,7 +19,7 @@ spec:
           image: image-registry.openshift-image-registry.svc:5000/debezium-ui-demo/debezium-ui
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
           env:
             - name: DEBEZIUM_BASE_URI
@@ -34,9 +34,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - name: 80-tcp
+    - name: debezium-ui-port
       port: 80
-      targetPort: 80
+      targetPort: 8080
       protocol: TCP
   selector:
     app: debezium-ui
@@ -49,7 +49,7 @@ metadata:
   name: debezium-ui
 spec:
   port:
-    targetPort: 80-tcp
+    targetPort: debezium-ui-port
   to:
     kind: Service
     name: debezium-ui
