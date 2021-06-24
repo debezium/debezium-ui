@@ -39,4 +39,4 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
 COPY --from=builder --chown=root:root /javabuild/ui/target/classes/ /usr/share/nginx/html/
 COPY --chown=root:root deployment/dbzui-config.sh /docker-entrypoint.d/dbzui-config.sh
-COPY --chown=nginx:nginx ui/config/config.js /usr/share/nginx/html/config.js
+COPY --chown=nginx:root ui/config/config.js /usr/share/nginx/html/config.js
