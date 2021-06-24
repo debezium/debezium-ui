@@ -33,7 +33,7 @@ COPY --chown=1001:root .git/ /javabuild/.git/
 
 RUN mvn -am -pl ui package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
-FROM nginx:1
+FROM nginxinc/nginx-unprivileged:1
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 

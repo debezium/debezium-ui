@@ -15,9 +15,9 @@ spec:
         app: debezium-ui
     spec:
       containers:
-        - image: image-registry.openshift-image-registry.svc:5000/debezium-ui-demo/debezium-ui
+        - name: debezium-ui
+          image: image-registry.openshift-image-registry.svc:5000/debezium-ui-demo/debezium-ui
           imagePullPolicy: Always
-          name: debezium-ui
           ports:
             - containerPort: 80
               protocol: TCP
