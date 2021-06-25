@@ -14,7 +14,7 @@ module.exports = merge(common, {
   },
   output: {
     filename: '[name].bundle.[contenthash].js',
-    publicPath: `http://localhost:8888/`,
+    publicPath: `https://dbz-ui.apps.kammellol.rhmw-integrations.net/`,
   },
   plugins: [
     new MiniCssExtractPlugin({
