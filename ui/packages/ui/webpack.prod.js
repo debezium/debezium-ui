@@ -13,7 +13,8 @@ module.exports = merge(common, {
     ]
   },
   output: {
-    filename: '[name].bundle.[contenthash].js'
+    filename: '[name].bundle.[contenthash].js',
+    publicPath: `http://localhost:8888/`,
   },
   plugins: [
     new MiniCssExtractPlugin({
