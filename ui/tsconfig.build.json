@@ -16,7 +16,7 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true
   }
 } 
