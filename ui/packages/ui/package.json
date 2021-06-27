@@ -1,5 +1,6 @@
 {
   "name": "@debezium/ui",
+  "federatedModuleName": "dbz",
   "port": 8888,
   "version": "0.0.1",
   "description": "Debezium UI",
@@ -78,6 +79,7 @@
     "@patternfly/react-core": "^4.75.2",
     "@patternfly/react-icons": "^4.7.16",
     "@patternfly/react-table": "^4.19.24",
+    "@redhat-cloud-services/frontend-components-config": "^4.2.4",
     "formik": "^2.1.5",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.0.1",
