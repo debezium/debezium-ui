@@ -12,6 +12,5 @@
       "i18n": ["src/i18n"],
       "layout":["src/app/layout"]
     }
-    
   }
 }

@@ -1,23 +1,21 @@
-import React from "react";
-import { I18nextProvider, useTranslation } from "react-i18next";
-import { BrowserRouter as Router } from "react-router-dom";
-import "./app.css";
-import i18n from "i18n";
-import {AppLayout} from "layout";
+import React from 'react';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+// import '@patternfly/patternfly/patternfly.min.css';
+// import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
+// import '@patternfly/patternfly/utilities/Sizing/sizing.css';
+// import '@patternfly/patternfly/utilities/Spacing/spacing.css';
+import { BrowserRouter as Router } from 'react-router-dom';
+import './app.css';
+import i18n from 'i18n';
+import { AppLayout } from 'layout';
 
-import {
-  ConfirmationButtonStyle,
-  ConfirmationDialog,
-  RenderRoutes,
-  ROUTES,
-  WithErrorBoundary,
-} from "shared";
+import { ConfirmationButtonStyle, ConfirmationDialog, RenderRoutes, ROUTES, WithErrorBoundary } from 'shared';
 
 const App: React.FC = () => {
   const [confirm, setConfirm] = React.useState(false);
   const [confirmCallback, setConfirmCallback] = React.useState(null);
   const getConfirmation = (message: any, callback: any) => {
-    if (message === "Code navigation") {
+    if (message === 'Code navigation') {
       callback(true);
     } else {
       setConfirmCallback(() => callback);
@@ -28,19 +26,10 @@ const App: React.FC = () => {
     <Router basename="/#app" getUserConfirmation={getConfirmation}>
       <I18nextProvider i18n={i18n}>
         <AppLayout>
-          <React.Suspense
-            fallback={
-              null
-            }
-          >
+          <React.Suspense fallback={null}>
             <WithErrorBoundary>
               <RenderRoutes routes={ROUTES} />
-              {confirm && (
-                <UserConfirm
-                  confirmCallback={confirmCallback}
-                  setConfirm={setConfirm}
-                />
-              )}
+              {confirm && <UserConfirm confirmCallback={confirmCallback} setConfirm={setConfirm} />}
             </WithErrorBoundary>
           </React.Suspense>
         </AppLayout>
@@ -66,10 +55,10 @@ const UserConfirm = (props: any) => {
   return (
     <ConfirmationDialog
       buttonStyle={ConfirmationButtonStyle.NORMAL}
-      i18nCancelButtonText={t("stay")}
-      i18nConfirmButtonText={t("leave")}
-      i18nConfirmationMessage={t("cancelWarningMsg")}
-      i18nTitle={t("exitWizard")}
+      i18nCancelButtonText={t('stay')}
+      i18nConfirmButtonText={t('leave')}
+      i18nConfirmationMessage={t('cancelWarningMsg')}
+      i18nTitle={t('exitWizard')}
       showDialog={true}
       onCancel={blockTransition}
       onConfirm={allowTransition}
