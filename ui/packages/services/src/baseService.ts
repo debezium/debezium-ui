@@ -34,17 +34,17 @@ export interface Service {
  */
 export abstract class BaseService implements Service {
 
-    protected logger: LoggerService = null;
-    protected config: ConfigService = null;
+    protected logger: LoggerService;
+    protected config: ConfigService;
 
     private apiBaseHref: string;
 
     public init(): void {
-        this.apiBaseHref = this.config.artifactsUrl();
+        this.apiBaseHref = this.config?.artifactsUrl() || '';
         if (this.apiBaseHref.endsWith("/")) {
             this.apiBaseHref = this.apiBaseHref.substring(0, this.apiBaseHref.length - 1);
         }
-        this.logger.debug("[BaseService] Base HREF of REST API: ", this.apiBaseHref);
+        this.logger?.debug("[BaseService] Base HREF of REST API: ", this.apiBaseHref);
     }
 
     /**
@@ -78,7 +78,7 @@ export abstract class BaseService implements Service {
                 }
             }
         }
-        this.logger.info("[BaseService] Using REST endpoint: ", rval);
+        this.logger?.info("[BaseService] Using REST endpoint: ", rval);
         return rval;
     }
 
@@ -96,7 +96,7 @@ export abstract class BaseService implements Service {
      * a Promise to the HTTP response data.
      */
     protected httpGet<T>(url: string, options?: AxiosRequestConfig, successCallback?: (value: any) => T): Promise<T> {
-        this.logger.info("[BaseService] Making a GET request to: ", url);
+        this.logger?.info("[BaseService] Making a GET request to: ", url);
 
         if (!options) {
             options = this.options({ "Accept": ContentTypes.APPLICATION_JSON });
@@ -124,7 +124,7 @@ export abstract class BaseService implements Service {
      * @param options
      */
     protected httpPost<I>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: () => void): Promise<void> {
-        this.logger.info("[BaseService] Making a POST request to: ", url);
+        this.logger?.info("[BaseService] Making a POST request to: ", url);
 
         if (!options) {
             options = this.options({ "Content-Type": ContentTypes.APPLICATION_JSON });
@@ -151,7 +151,7 @@ export abstract class BaseService implements Service {
      * @param options
      */
     protected httpPostWithReturn<I, O>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: (data: any) => O): Promise<O> {
-        this.logger.info("[BaseService] Making a POST request to: ", url);
+        this.logger?.info("[BaseService] Making a POST request to: ", url);
 
         if (!options) {
             options = this.options({ "Accept": ContentTypes.APPLICATION_JSON, "Content-Type": ContentTypes.APPLICATION_JSON });
@@ -179,7 +179,7 @@ export abstract class BaseService implements Service {
      * @param options
      */
     protected httpPut<I>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: () => void): Promise<void> {
-        this.logger.info("[BaseService] Making a PUT request to: ", url);
+        this.logger?.info("[BaseService] Making a PUT request to: ", url);
 
         if (!options) {
             options = this.options({ "Content-Type": ContentTypes.APPLICATION_JSON });
@@ -206,7 +206,7 @@ export abstract class BaseService implements Service {
      * @param options
      */
     protected httpPutWithReturn<I, O>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: (data: O) => O): Promise<O> {
-        this.logger.info("[BaseService] Making a PUT request to: ", url);
+        this.logger?.info("[BaseService] Making a PUT request to: ", url);
 
         if (!options) {
             options = this.options({ "Accept": ContentTypes.APPLICATION_JSON, "Content-Type": ContentTypes.APPLICATION_JSON });
@@ -231,8 +231,8 @@ export abstract class BaseService implements Service {
      * @param url
      * @param options
      */
-    protected httpDelete<T>(url: string, options?: AxiosRequestConfig, successCallback?: () => T): Promise<T> {
-        this.logger.info("[BaseService] Making a DELETE request to: ", url);
+    protected httpDelete<T>(url: string, options?: AxiosRequestConfig, successCallback?: () => T): Promise<T | null> {
+        this.logger?.info("[BaseService] Making a DELETE request to: ", url);
 
         if (!options) {
             options = {};

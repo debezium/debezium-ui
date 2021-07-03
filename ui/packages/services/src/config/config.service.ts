@@ -35,7 +35,7 @@ export class ConfigService implements Service {
         },
         mode: "dev",
         ui: {
-            contextPath: null,
+            contextPath: '',
             url: "http://localhost:8888/"
         }
     };
@@ -54,14 +54,14 @@ export class ConfigService implements Service {
         // Nothing to init (done in c'tor)
     }
 
-    public artifactsType(): string {
+    public artifactsType(): string | null {
         if (!this.config.artifacts) {
             return null;
         }
         return this.config.artifacts.type;
     }
 
-    public artifactsUrl(): string {
+    public artifactsUrl(): string | null {
         if (!this.config.artifacts) {
             return null;
         }

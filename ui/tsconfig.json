@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": false,
+    "allowJs": true,
     "baseUrl": ".",    
     "paths": {
       "@debezium/ui": ["packages/ui/src"],

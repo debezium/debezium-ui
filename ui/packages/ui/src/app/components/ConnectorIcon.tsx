@@ -30,7 +30,7 @@ export const ConnectorIcon: React.FunctionComponent<IConnectorIconProps> = (
 
   return (
     <img
-      src={connIcon}
+      src={connIcon || ''}
       alt={props.alt}
       width={props.width}
       height={props.height}
