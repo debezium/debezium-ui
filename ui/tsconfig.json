@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "baseUrl": "."
+    "allowJs": false,
+    "baseUrl": ".",    
+    "paths": {
+      "@debezium/ui": ["packages/ui/src"],
+      "@debezium/ui-models": ["packages/models/src"],
+      "@debezium/ui-services": ["packages/services/src"],
+    }
   },
   "include": [
     "**/*.ts",
