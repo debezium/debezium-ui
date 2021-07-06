@@ -37,7 +37,7 @@ export class ConnectorService extends BaseService {
      *  });
      */
     public getConnectorInfo(connectorTypeId: string): Promise<ConnectorType> {
-        this.logger.info("[ConnectorService] Getting the details of Connector:", connectorTypeId);
+        this.logger?.info("[ConnectorService] Getting the details of Connector:", connectorTypeId);
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId", { connectorTypeId });
         return this.httpGet<ConnectorType>(endpoint);
     }
@@ -58,7 +58,7 @@ export class ConnectorService extends BaseService {
      *  });
      */
     public validateConnection(connectorTypeId: string, body: any): Promise<ConnectionValidationResult> {
-        this.logger.info("[ConnectorService] Validating connection:", connectorTypeId);
+        this.logger?.info("[ConnectorService] Validating connection:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/connection", { connectorTypeId });
         return this.httpPostWithReturn(endpoint, body);
@@ -80,7 +80,7 @@ export class ConnectorService extends BaseService {
      *  });
      */
     public validateFilters(connectorTypeId: string, body: any): Promise<FilterValidationResult> {
-        this.logger.info("[ConnectorService] Validating filters:", connectorTypeId);
+        this.logger?.info("[ConnectorService] Validating filters:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/filters", { connectorTypeId });
         return this.httpPostWithReturn(endpoint, body);
@@ -102,7 +102,7 @@ export class ConnectorService extends BaseService {
      *  });
      */
     public validateProperties(connectorTypeId: string, body: any): Promise<PropertiesValidationResult> {
-        this.logger.info("[ConnectorService] Validating properties:", connectorTypeId);
+        this.logger?.info("[ConnectorService] Validating properties:", connectorTypeId);
 
         const endpoint: string = this.endpoint("/connector-types/:connectorTypeId/validation/properties", { connectorTypeId });
         return this.httpPostWithReturn(endpoint, body);
@@ -122,7 +122,7 @@ export class ConnectorService extends BaseService {
      *  });
      */
     public createConnector(clusterId: number, connectorTypeId: string, body: any): Promise<void> {
-        this.logger.info("[ConnectorService] Creating a connector:");
+        this.logger?.info("[ConnectorService] Creating a connector:");
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorTypeId", { clusterId, connectorTypeId });
         return this.httpPostWithReturn(endpoint, body);
@@ -132,7 +132,7 @@ export class ConnectorService extends BaseService {
      * Get the available connectors for the supplied clusterId
      */
     public getConnectors(clusterId: number): Promise<Connector[]> {
-        this.logger.info("[ConnectorService] Getting the list of connectors.");
+        this.logger?.info("[ConnectorService] Getting the list of connectors.");
 
         const endpoint: string = this.endpoint("/connectors/:clusterId", { clusterId });
         return this.httpGet<Connector[]>(endpoint);
@@ -142,7 +142,7 @@ export class ConnectorService extends BaseService {
      * Delete the Connector for the supplied clusterId
      */
     public deleteConnector(clusterId: number, connectorName: string): Promise<Connector[]> {
-        this.logger.info("[ConnectorService] Delete the connector");
+        this.logger?.info("[ConnectorService] Delete the connector");
 
         const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName", { clusterId, connectorName });
         return this.httpDelete<any>(endpoint);
@@ -152,7 +152,7 @@ export class ConnectorService extends BaseService {
      * Pause the Connector for the supplied clusterId
      */
     public pauseConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
-        this.logger.info("[ConnectorService] Pause the connector");
+        this.logger?.info("[ConnectorService] Pause the connector");
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/pause", { clusterId, connectorName });
         return this.httpPut(endpoint, body);
@@ -162,7 +162,7 @@ export class ConnectorService extends BaseService {
      * Resume the Connector for the supplied clusterId
      */
     public resumeConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
-        this.logger.info("[ConnectorService] Resume the connector");
+        this.logger?.info("[ConnectorService] Resume the connector");
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/resume", { clusterId, connectorName });
         return this.httpPut(endpoint, body);
@@ -172,7 +172,7 @@ export class ConnectorService extends BaseService {
      * Restart the Connector for the supplied clusterId
      */
     public restartConnector(clusterId: number, connectorName: string, body: any): Promise<void> {
-        this.logger.info("[ConnectorService] Restart the connector");
+        this.logger?.info("[ConnectorService] Restart the connector");
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/restart", { clusterId, connectorName });
         return this.httpPost(endpoint, body);
@@ -182,7 +182,7 @@ export class ConnectorService extends BaseService {
      * Restart the Connector Task for the supplied clusterId and connector
      */
     public restartConnectorTask(clusterId: number, connectorName: string, connectorTaskId: number, body: any): Promise<void> {
-        this.logger.info("[ConnectorService] Restart the connector task");
+        this.logger?.info("[ConnectorService] Restart the connector task");
 
         const endpoint: string = this.endpoint("/connector/:clusterId/:connectorName/task/:connectorTaskId/restart", 
                                                 { clusterId, connectorName, connectorTaskId });

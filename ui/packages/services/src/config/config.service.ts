@@ -43,11 +43,17 @@ export class ConfigService implements Service {
     constructor() {
         const w: any = window;
 
-        if (w.UI_CONFIG) {
-            this.config = _.extend({}, this.config, w.UI_CONFIG);
+        if (w.UI_CONFIG?.mode === "prod") {
+            this.config = _.extend({}, this.config, w.UI_CONFIG, {
+              artifacts: {
+                type: "rest",
+                // url: this.getBaseURI(w.location.href),
+                url: `${__webpack_public_path__}/api`,
+              },
+            });
             console.info("[ConfigService] Applied UI_CONFIG:");
             console.info(w.UI_CONFIG);
-        }
+          }
     }
 
     public init(): void {
@@ -65,6 +71,7 @@ export class ConfigService implements Service {
         if (!this.config.artifacts) {
             return null;
         }
+        console.info("[api URL] :", this.config.artifacts.url);
         return this.config.artifacts.url;
     }
 
@@ -99,5 +106,9 @@ export class ConfigService implements Service {
         }
         return this.config.features.readOnly;
     }
+
+    // private getBaseURI(path: string): string {
+    //     return path.split("#app")[0] + "api";
+    // }
 
 }

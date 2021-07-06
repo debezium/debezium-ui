@@ -19,9 +19,7 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist/umd'),
-    libraryTarget: 'umd',
-    library: 'debezium-ui-services',
-    umdNamedDefine: true
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "auto",
   }
 };

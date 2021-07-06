@@ -34,8 +34,8 @@ export interface Service {
  */
 export abstract class BaseService implements Service {
 
-    protected logger: LoggerService;
-    protected config: ConfigService;
+    protected logger: LoggerService | null = null;
+    protected config: ConfigService | null = null;
 
     private apiBaseHref: string;
 
@@ -60,6 +60,7 @@ export abstract class BaseService implements Service {
                 path = path.replace(":" + key, value);
             });
         }
+        console.log('[Base]', this.apiBaseHref);
         let rval: string = this.apiBaseHref + path;
         if (queryParams) {
             let first: boolean = true;

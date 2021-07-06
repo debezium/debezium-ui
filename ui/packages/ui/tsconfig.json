@@ -12,5 +12,7 @@
       "i18n": ["src/i18n"],
       "layout":["src/app/layout"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": ["src","../../types"]
 }
