@@ -32,8 +32,8 @@ module.exports = {
     "^i18n(.*)$": "<rootDir>/src/i18n$1",
     "^layout(.*)$": "<rootDir>/src/app/layout$1",
     // "^@debezium/ui-services(.*)$": "<rootDir>/__mocks__/fileMock.js"
-    "^@debezium/ui-services(.*)$": "<rootDir>/../services/src$1",
-    "^@debezium/ui-models(.*)$": "<rootDir>/../models/src$1"
+    "^@debezium/ui-services/(.*)$": "<rootDir>/../services/src/$1",
+    "^@debezium/ui-models/(.*)$": "<rootDir>/../models/src/$1"
   },
 
   // A preset that is used as a base for Jest's configuration

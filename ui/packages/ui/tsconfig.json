@@ -10,7 +10,9 @@
       "components": ["src/app/components"],
       "assets": ["assets"],
       "i18n": ["src/i18n"],
-      "layout":["src/app/layout"]
+      "layout":["src/app/layout"],
+      "@debezium/ui-services": ["../services/src"],
+      "@debezium/ui-models": ["../models/src"]
     }
   },
   "exclude": ["node_modules", "dist"],

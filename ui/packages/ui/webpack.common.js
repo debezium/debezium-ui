@@ -150,6 +150,8 @@ module.exports = (env, argv) => {
         assets: path.resolve(__dirname, "assets"),
         i18n: path.resolve(__dirname, "src/i18n"),
         layout: path.resolve(__dirname, "src/app/layout"),
+        "@debezium/ui-services": "../services/src",
+        "@debezium/ui-models": "../models/src"
       },
       extensions: [".ts", ".tsx", ".js", ".jsx"],
       plugins: [
