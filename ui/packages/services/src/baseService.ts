@@ -60,7 +60,6 @@ export abstract class BaseService implements Service {
                 path = path.replace(":" + key, value);
             });
         }
-        console.log('[Base]', this.apiBaseHref);
         let rval: string = this.apiBaseHref + path;
         if (queryParams) {
             let first: boolean = true;
