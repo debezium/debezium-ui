@@ -74,7 +74,7 @@ module.exports = (env, argv) => {
               loader: 'url-loader',
               options: {
                 limit: 5000,
-                name: isProduction ? '[contenthash:8].[ext]' : '[name].[ext]',
+                name: isProduction ? '[name].[contenthash:8].[ext]' : '[name].[ext]',
               }
             }
           ]
