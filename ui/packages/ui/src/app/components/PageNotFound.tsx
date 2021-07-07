@@ -32,7 +32,7 @@ export const PageNotFound: React.FC = () => {
             <EmptyStateBody>
                 {t('pageNotFoundMsg')}
             </EmptyStateBody>
-            <Button variant="primary" data-testid="error-btn-artifacts" onClick={onHomeClick}>{t('takeBackToHome')}</Button>
+            <Button variant="primary" data-testid="btn-not-found-home" onClick={onHomeClick}>{t('takeBackToHome')}</Button>
         </EmptyState>
     </PageSection>)
 };
