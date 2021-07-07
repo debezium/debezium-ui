@@ -25,13 +25,13 @@ import {BaseService} from "../baseService";
 export class GlobalsService extends BaseService {
 
     public getConnectorTypes(): Promise<ConnectorType[]> {
-        this.logger.info("[GlobalsService] Getting the list of connector types.");
+        this.logger?.info("[GlobalsService] Getting the list of connector types.");
         const endpoint: string = this.endpoint("/connector-types");
         return this.httpGet<ConnectorType[]>(endpoint);
     }
 
     public getConnectCluster(): Promise<string[]> {
-        this.logger.info("[GlobalsService] Getting the list of connector cluster.");
+        this.logger?.info("[GlobalsService] Getting the list of connector cluster.");
         const endpoint: string = this.endpoint("/connect-clusters");
         return this.httpGet<string[]>(endpoint);
     }

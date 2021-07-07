@@ -17,6 +17,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "skipLibCheck": true,
+    "allowJs": true,
     "allowSyntheticDefaultImports": true
   }
 } 

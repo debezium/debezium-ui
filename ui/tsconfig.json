@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "baseUrl": "."
+    "allowJs": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "baseUrl": ".",    
+    "paths": {
+      "@debezium/ui": ["packages/ui/src"],
+      "@debezium/ui-models": ["packages/models/src"],
+      "@debezium/ui-services": ["packages/services/src"],
+    }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
+  "include": ["packages", "types"],
   "exclude": ["node_modules", "cypress", "dist"]
 }

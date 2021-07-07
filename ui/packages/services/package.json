@@ -17,15 +17,5 @@
     "@debezium/ui-models": "1.0.0",
     "yaml": "^1.10.0",
     "axios":  "0.21.1"
-  },
-  "devDependencies": {
-    "rimraf": "^2.6.2",
-    "ts-loader": "^6.0.4",
-    "typescript": "^3.5.3",
-    "webpack": "^5.0.0",
-    "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.2.0"
   }
 }

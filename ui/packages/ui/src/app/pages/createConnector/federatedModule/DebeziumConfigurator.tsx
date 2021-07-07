@@ -225,7 +225,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   const DATA_OPTIONS_STEP_ID = 2;
   const RUNTIME_OPTIONS_STEP_ID = 3;
 
-  const [connectorProperties, setConnectorProperties] = React.useState<
+  const [connectorProperties] = React.useState<
     ConnectorProperty[]
   >(getPropertiesData(props.connector));
 

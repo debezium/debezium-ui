@@ -365,7 +365,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     if (cType) {
       const connectorService = Services.getConnectorService();
       fetch_retry(connectorService.getConnectorInfo, connectorService, [cType])
-        .then((cDetails: ConnectorType) => {
+        .then((cDetails: any) => {
           setLoading(false);
 
           // TODO: Find the solution to this issue.
@@ -610,7 +610,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       fetch_retry(connectorService.getConnectorInfo, connectorService, [
         connectorTypes[0]?.id,
       ])
-        .then((cDetails: ConnectorType) => {
+        .then((cDetails: any) => {
           setLoading(false);
           // TODO: Find the solution to this issue.
           if (

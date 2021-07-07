@@ -1,4 +1,4 @@
-import { PropertyValidationResult } from '@debezium/ui-models/dist/js/ui.model';
+import { PropertyValidationResult } from '@debezium/ui-models';
 import React from 'react';
 
 export interface IConnectionPropertiesErrorProps{
