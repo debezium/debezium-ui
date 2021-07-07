@@ -5,11 +5,6 @@
       &-control {
         .pf-l-flex > div {
           flex-grow: 1;
-          .pf-c-toggle-group{
-            .pf-m-selected{
-              color: var(--pf-global--Color--light-100) !important;
-            }
-          }
         }
       }
     }

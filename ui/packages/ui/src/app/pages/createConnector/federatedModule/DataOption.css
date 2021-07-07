@@ -20,6 +20,7 @@
     }
   }
   .data-options-component-page {
+    padding: 20px;
     .pf-c-expandable-section {
       padding-bottom: 30px;
       &__toggle {

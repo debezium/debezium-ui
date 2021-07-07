@@ -72,7 +72,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   );
 
   return (
-    <>
+    <div className="filter-config-page pf-c-card">
       <Title headingLevel="h2" size="3xl">
         {t("filterConfiguration")}
       </Title>
@@ -178,6 +178,6 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
         onCancel={doCancel}
         onConfirm={doClear}
       />
-    </>
+    </div>
   );
 };
