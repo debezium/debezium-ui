@@ -136,10 +136,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
   }, []);
 
   return (
-    <div
-      style={{ padding: "20px" }}
-      className={"runtime-options-component-page"}
-    >
+    <div className={'runtime-options-component-page pf-c-card'}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
@@ -155,67 +152,45 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
               <Grid>
                 <GridItem lg={9} sm={12}>
                   <ExpandableSection
-                    toggleText={
-                      engineExpanded ? props.i18nEngineProperties : props.i18nEngineProperties
-                    }
+                    toggleText={engineExpanded ? props.i18nEngineProperties : props.i18nEngineProperties}
                     onToggle={onToggleEngine}
                     isExpanded={engineExpanded}
                   >
-                    <Grid
-                      hasGutter={true}
-                      className={"runtime-options-component-expansion-content"}
-                    >
-                      {enginePropertyDefinitions
-                        .map((propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem
-                              key={index}
-                              lg={propertyDefinition.gridWidthLg}
-                              sm={propertyDefinition.gridWidthSm}
-                            >
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                propertyChange={handlePropertyChange}
-                                setFieldValue={setFieldValue}
-                                invalidMsg={[]}
-                                validated={"default"}
-                              />
-                            </GridItem>
-                          );
-                        })}
+                    <Grid hasGutter={true} className={'runtime-options-component-expansion-content'}>
+                      {enginePropertyDefinitions.map((propertyDefinition: ConnectorProperty, index) => {
+                        return (
+                          <GridItem key={index} lg={propertyDefinition.gridWidthLg} sm={propertyDefinition.gridWidthSm}>
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              propertyChange={handlePropertyChange}
+                              setFieldValue={setFieldValue}
+                              invalidMsg={[]}
+                              validated={'default'}
+                            />
+                          </GridItem>
+                        );
+                      })}
                     </Grid>
                   </ExpandableSection>
                   <ExpandableSection
-                    toggleText={
-                      heartbeatExpanded
-                        ? props.i18nHeartbeatProperties
-                        : props.i18nHeartbeatProperties
-                    }
+                    toggleText={heartbeatExpanded ? props.i18nHeartbeatProperties : props.i18nHeartbeatProperties}
                     onToggle={onToggleHeartbeat}
                     isExpanded={heartbeatExpanded}
                   >
-                    <Grid
-                      hasGutter={true}
-                      className={"runtime-options-component-expansion-content"}
-                    >
-                      {heartbeatPropertyDefinitions
-                        .map((propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem
-                              key={index}
-                              lg={propertyDefinition.gridWidthLg}
-                              sm={propertyDefinition.gridWidthSm}
-                            >
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                propertyChange={handlePropertyChange}
-                                setFieldValue={setFieldValue}
-                                invalidMsg={[]}
-                                validated={"default"}
-                              />
-                            </GridItem>
-                          );
-                        })}
+                    <Grid hasGutter={true} className={'runtime-options-component-expansion-content'}>
+                      {heartbeatPropertyDefinitions.map((propertyDefinition: ConnectorProperty, index) => {
+                        return (
+                          <GridItem key={index} lg={propertyDefinition.gridWidthLg} sm={propertyDefinition.gridWidthSm}>
+                            <FormComponent
+                              propertyDefinition={propertyDefinition}
+                              propertyChange={handlePropertyChange}
+                              setFieldValue={setFieldValue}
+                              invalidMsg={[]}
+                              validated={'default'}
+                            />
+                          </GridItem>
+                        );
+                      })}
                     </Grid>
                   </ExpandableSection>
                 </GridItem>

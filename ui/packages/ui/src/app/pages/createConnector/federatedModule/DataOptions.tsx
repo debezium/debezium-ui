@@ -146,7 +146,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }} className={"data-options-component-page"}>
+    <div className={"data-options-component-page pf-c-card"}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
