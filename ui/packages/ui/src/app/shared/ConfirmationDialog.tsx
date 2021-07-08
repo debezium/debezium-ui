@@ -125,6 +125,7 @@ export const ConfirmationDialog: React.FunctionComponent<IConfirmationDialogProp
   return (
     <Modal
       title={i18nTitle}
+      data-testid="confirmation-dialog"
       aria-label={`${i18nTitle} confirmation`}
       titleIconVariant={type}
       isOpen={showDialog}
