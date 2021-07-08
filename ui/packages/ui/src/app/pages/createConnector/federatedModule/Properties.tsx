@@ -185,7 +185,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }} className={"properties-step-page"}>
+    <div className={"properties-step-page pf-c-card"}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}

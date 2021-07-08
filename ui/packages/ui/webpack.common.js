@@ -16,8 +16,8 @@ const COMMIT_HASH =
     .toString()
     .trim();
 
-module.exports = (env, argv) => {
-  const isProduction = argv && argv.mode === "production";
+module.exports = (argv) => {
+  const isProduction = argv || argv.mode === "production";
   return {
     entry: {
       app: "./src/index.tsx",

@@ -7,7 +7,7 @@ const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || port;
 
 
-module.exports = merge(common, {
+module.exports = merge(common("development"), {
   mode: "development",
   devtool: "eval-source-map",
   plugins: [

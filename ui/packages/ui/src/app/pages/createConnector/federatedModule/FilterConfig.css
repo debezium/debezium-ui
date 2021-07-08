@@ -7,7 +7,7 @@
           flex-grow: 1;
           .pf-c-toggle-group{
             .pf-m-selected{
-              color: var(--pf-global--Color--light-100) !important;
+              color: var(--pf-global--active-color--100) !important;
             }
           }
         }
@@ -26,4 +26,7 @@
     margin-right: 10px;
     }
   }
+}
+.filter-config-page{
+  padding: 20px;
 }
