@@ -9,13 +9,6 @@ const { dependencies, federatedModuleName } = require("./package.json");
 
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
-const COMMIT_HASH =
-  process.env.COMMIT_HASH ||
-  require("child_process")
-    .execSync("git rev-parse --short HEAD")
-    .toString()
-    .trim();
-
 module.exports = (argv) => {
   const isProduction = argv || argv.mode === "production";
   return {
@@ -103,9 +96,6 @@ module.exports = (argv) => {
       // This makes it possible for us to safely use env vars on our code
       new webpack.DefinePlugin({
         "process.env.ASSET_PATH": JSON.stringify(ASSET_PATH),
-      }),
-      new webpack.DefinePlugin({
-        "process.env.COMMIT_HASH": JSON.stringify(COMMIT_HASH),
       }),
       new CopyPlugin({
         patterns: [{ from: "./src/locales", to: "locales" }],
