@@ -37,7 +37,7 @@ type ICreateConnectorCallbackFn = (
   clusterId: number
 ) => void;
 
-interface IConnectorsTableComponentProps {
+export interface IConnectorsTableComponentProps {
   clusterId: number;
   title: string;
   i18nApiErrorTitle?: string;
