@@ -37,7 +37,7 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
   const [field] = useField(props);
 
   const getItemRows = () => {
-    return (field.value).split("#$");
+    return (field.value)?.split("#$");
   }
 
   const handleMaskHashSaltItemChanged = (rowId: number, maskHashSaltValue: string) => {
@@ -133,7 +133,7 @@ export const FormMaskHashSaltComponent: React.FunctionComponent<IFormMaskHashSal
     >
       <InputGroup>
         <Stack hasGutter={true} className={"form-mask-hash-salt-component"}>
-          {getItemRows().map((row: string, idx: number) => (
+          {getItemRows()?.map((row: string, idx: number) => (
             <StackItem key={idx}>
               <MaskHashSaltItem
                 rowId={idx}

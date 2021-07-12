@@ -37,7 +37,7 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
   const [field] = useField(props);
 
   const getItemRows = () => {
-    return (field.value).split("@^");
+    return (field.value)?.split("@^");
   }
 
   const handleMaskTruncateItemChanged = (rowId: number, maskTruncateValue: string) => {
@@ -99,7 +99,7 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
     >
       <InputGroup>
         <Stack hasGutter={true} className={"form-mask-or-truncate-component"}>
-          {getItemRows().map((row: string, idx: number) => (
+          {getItemRows()?.map((row: string, idx: number) => (
             <StackItem key={idx}>
               <MaskOrTruncateItem
                 rowId={idx}
