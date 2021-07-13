@@ -43,8 +43,13 @@ export class ConfigService implements Service {
     constructor() {
         const w: any = window;
 
-        if (w.UI_CONFIG) {
-            this.config = _.extend({}, this.config, w.UI_CONFIG);
+        if (w.UI_CONFIG?.mode === "prod") {
+            this.config = _.extend({}, this.config, w.UI_CONFIG, {
+              artifacts: {
+                type: "rest",
+                url: `${__webpack_public_path__}/api`,
+              },
+            });
             console.info("[ConfigService] Applied UI_CONFIG:");
             console.info(w.UI_CONFIG);
           }
