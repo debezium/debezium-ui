@@ -25,7 +25,6 @@ export const AppHeader: React.FC<IAppHeader> = (props) => {
 	}
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
 	const handleModalToggle = () => setIsModalOpen(!isModalOpen);
-	const commitLink = `https://github.com/debezium/debezium-ui/commit/${process.env.COMMIT_HASH}`;
 	const BuildModal = () => (
 		<AboutModal
 			isOpen={isModalOpen}
@@ -35,18 +34,24 @@ export const AppHeader: React.FC<IAppHeader> = (props) => {
 			productName="Debezium UI"
 		>
 			<TextContent>
+			{typeof process.env.COMMIT_HASH !== 'undefined' && 
 				<TextList component="dl">
 					<TextListItem component="dt">Build</TextListItem>
-					<TextListItem component="dd"><a href={commitLink} target="_blank">{process.env.COMMIT_HASH}</a></TextListItem>
+					<TextListItem component="dd"><a href={`https://github.com/debezium/debezium-ui/commit/${process.env.COMMIT_HASH}`} target="_blank">{process.env.COMMIT_HASH}</a></TextListItem>
 				</TextList>
+			}
 			</TextContent>
 		</AboutModal>
 	);
 	const headerTools = (
 		<PageHeaderTools>
 			<KafkaConnectCluster handleChange={props.handleClusterChange} />
-			<OutlinedQuestionCircleIcon onClick={handleModalToggle} />
-			<BuildModal />
+			{typeof process.env.COMMIT_HASH !== 'undefined' && 
+				<>
+					<OutlinedQuestionCircleIcon onClick={handleModalToggle} />
+					<BuildModal />
+				</>
+			}
 		</PageHeaderTools>
 	);
 
