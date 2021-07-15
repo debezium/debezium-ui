@@ -1,4 +1,5 @@
 const path = require("path");
+const {execSync} = require("child_process");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
@@ -7,14 +8,16 @@ const webpack = require("webpack");
 const ChunkMapper = require("@redhat-cloud-services/frontend-components-config/chunk-mapper");
 const { dependencies, federatedModuleName } = require("./package.json");
 
+const getCommitHash = () => {
+  try {
+    return execSync('git rev-parse --short HEAD').toString();
+  } catch (e) {
+    console.error("\x1b[31m", '🔥🔥 Command failed: git rev-parse --short HEAD. Make sure .git dir available and git installed!');
+  }
+}
+const COMMIT_HASH = process.env.COMMIT_HASH || getCommitHash();
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
-const COMMIT_HASH =
-  process.env.COMMIT_HASH ||
-  require("child_process")
-    .execSync("git rev-parse --short HEAD")
-    .toString()
-    .trim();
 
 module.exports = (argv) => {
   const isProduction = argv || argv.mode === "production";
@@ -39,7 +42,7 @@ module.exports = (argv) => {
         {
           test: /\.css$/,
           use: [
-            // MiniCssExtractPlugin.loader, 
+            // MiniCssExtractPlugin.loader,
             {
               loader: 'style-loader'
             },
