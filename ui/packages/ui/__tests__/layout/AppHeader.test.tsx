@@ -1,11 +1,12 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { AppHeader, IAppHeader } from "../../src/app/layout/AppHeader";
+import { BrowserRouter } from 'react-router-dom';
 
 describe("<AppHeader/>", () => {
   
   const renderSetup = (props: IAppHeader) => {
-    return render(<AppHeader {...props} />);
+    return render(<BrowserRouter><AppHeader {...props} /></BrowserRouter>);
   };
 
   it("should render AppHeader ", () => {

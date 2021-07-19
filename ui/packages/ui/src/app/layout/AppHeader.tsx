@@ -45,7 +45,7 @@ export const AppHeader: React.FC<IAppHeader> = (props) => {
 			</Link>
 			<KafkaConnectCluster handleChange={props.handleClusterChange} />
 		</>
-	)	
+	);
 	const headerTools = (
 		<PageHeaderTools>
 			{typeof process.env.COMMIT_HASH !== 'undefined' && 
