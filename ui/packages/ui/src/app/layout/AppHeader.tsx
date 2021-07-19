@@ -5,11 +5,11 @@ import {
 	PageHeaderTools,
 	TextContent,
 	TextList,
-	TextListItem
+	TextListItem,
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import BrandLogo from 'assets/images/debezium_logo_300px.png';
 import { KafkaConnectCluster } from "components";
 
@@ -18,11 +18,6 @@ export interface IAppHeader {
 }
 
 export const AppHeader: React.FC<IAppHeader> = (props) => {
-	const history = useHistory();
-
-	const homeClick = () => {
-		history.push("/")
-	}
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
 	const handleModalToggle = () => setIsModalOpen(!isModalOpen);
 	const BuildModal = () => (
@@ -43,9 +38,16 @@ export const AppHeader: React.FC<IAppHeader> = (props) => {
 			</TextContent>
 		</AboutModal>
 	);
+	const logoComponent = (
+		<>
+			<Link to="./">
+				<Brand className="brandLogo" src={BrandLogo} alt="Debezium" />
+			</Link>
+			<KafkaConnectCluster handleChange={props.handleClusterChange} />
+		</>
+	)	
 	const headerTools = (
 		<PageHeaderTools>
-			<KafkaConnectCluster handleChange={props.handleClusterChange} />
 			{typeof process.env.COMMIT_HASH !== 'undefined' && 
 				<>
 					<OutlinedQuestionCircleIcon onClick={handleModalToggle} />
@@ -56,6 +58,10 @@ export const AppHeader: React.FC<IAppHeader> = (props) => {
 	);
 
 	return (
-		<PageHeader logo={<Brand onClick={homeClick} className="brandLogo" src={BrandLogo} alt="Debezium" />} headerTools={headerTools} />
+		<PageHeader 
+			logo={logoComponent} 
+			logoComponent={'div'}
+			headerTools={headerTools} 
+		/>
 	);
 }

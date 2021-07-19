@@ -1457,6 +1457,11 @@
   dependencies:
     "@octokit/openapi-types" "^8.2.0"
 
+"@patternfly/patternfly@^4.115.2":
+  version "4.115.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.115.2.tgz#200111d52fe07d1380371530304bad9edf45de51"
+  integrity sha512-7hbJ4pRmj+rlXclD2F/UwceO6fS+9flGsgHc4eUc7NyTN2GXl6PLcqrjE2CtiKEPV90+KwsGQGJXZj8bz9HweA==
+
 "@patternfly/react-core@^4.106.2", "@patternfly/react-core@^4.135.0":
   version "4.135.0"
   resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.135.0.tgz#b64ad4da10a8814926e28fad727bc7690cd60e66"
