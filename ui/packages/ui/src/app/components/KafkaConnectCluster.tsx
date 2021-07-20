@@ -28,12 +28,11 @@ export const KafkaConnectCluster: React.FC<IKafkaConnectCluster> = (props) => {
   }, [setConnectClusters]);
 
   return (
-    <div className="kafka-connect">
+    <div className="kafka-connect pf-u-ml-lg">
       <div className="kafka-connect__cluster">
         <Form>
           <BasicSelectInput
             options={connectClusters}
-            label="Kafka connect cluster"
             fieldId="kafka-connect-cluster"
             propertyChange={handleClusterChange}
           />

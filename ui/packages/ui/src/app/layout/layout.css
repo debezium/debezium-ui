@@ -22,7 +22,7 @@
     }
     .pf-c-form{
       &__group{
-        min-width: 320px;
+        min-width: 250px;
         @media screen and (max-width: 480px) {
           min-width: 200px;
         }

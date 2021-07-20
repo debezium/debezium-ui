@@ -8,7 +8,7 @@ import * as React from 'react';
 import "./BasicSelectInput.css";
 
 export interface IBasicSelectInputProps {
-    label: string,
+    label?: string,
     fieldId: string,
     options: string[],
     propertyChange: (name: string, selection?: any) => void;
