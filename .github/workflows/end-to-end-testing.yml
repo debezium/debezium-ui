@@ -3,7 +3,7 @@ name: End-to-End Tests
 on:
   push:
     branches:
-      - master
+      - moreE2E
     paths:
       - 'pom.xml'
       - 'Dockerfile'
@@ -12,7 +12,7 @@ on:
       - '.github/workflows/end-to-end-testing.yml'
   pull_request:
     branches:
-      - master
+      - moreE2E
     paths:
       - 'pom.xml'
       - 'Dockerfile'
@@ -65,9 +65,25 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           working-directory: ./ui
-      - name: End-to-End Test Debezium UI
+      - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          # we have already installed everything
+          install: false
           working-directory: ./ui
+      - name: upload Cypress screenshots for failed tests
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ui/cypress/screenshots      
+
+      # Test run video was always captured, so this action uses "always()" condition
+      - name: upload Cypress test run video
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: ui/cypress/videos   
       - name: Stop Debezium UI container
         run: docker rm -f dbzui-container
