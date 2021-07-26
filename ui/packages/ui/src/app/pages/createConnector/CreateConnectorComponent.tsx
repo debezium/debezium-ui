@@ -48,6 +48,7 @@ import {
   PropertiesStep,
   ReviewStep,
   RuntimeOptionsStep,
+  TransformsStep
 } from "./connectorSteps";
 import "./CreateConnectorComponent.css";
 
@@ -104,6 +105,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     </div>
   );
   const FILTER_CONFIGURATION_STEP = t("filterConfiguration");
+  const TRANSFORMS_STEP = "Transforms";
   const DATA_OPTIONS_STEP = t("dataOptions");
   const RUNTIME_OPTIONS_STEP = t("runtimeOptions");
   const REVIEW_STEP = t("review");
@@ -657,6 +659,22 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     ),
   };
 
+  // const TransformStep =    {
+  //   id: 2,
+  //   name: TRANSFORMS_STEP,
+  //   component: (
+  //     <>
+  //       <ConnectorNameTypeHeader
+  //         connectorName={getConnectorName()}
+  //         connectorType={selectedConnectorType}
+  //         showIcon={false}
+  //       />
+  //       <TransformsStep/>
+  //     </>
+  //   ),
+  //   canJumpTo: stepIdReached >= 2,
+  // };
+
   const propertiesStep = {
     id: 2,
     name: PROPERTIES_STEP,
@@ -781,6 +799,21 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       },
       {
         id: 4,
+        name: TRANSFORMS_STEP,
+        component: (
+          <>
+            <ConnectorNameTypeHeader
+              connectorName={getConnectorName()}
+              connectorType={selectedConnectorType}
+              showIcon={false}
+            />
+            <TransformsStep/>
+          </>
+        ),
+        canJumpTo: stepIdReached >= 4,
+      },
+      {
+        id: 5,
         name: DATA_OPTIONS_STEP,
         component: (
           <>
@@ -824,10 +857,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ) : null}
           </>
         ),
-        canJumpTo: stepIdReached >= 4,
+        canJumpTo: stepIdReached >= 5,
       },
       {
-        id: 5,
+        id: 6,
         name: RUNTIME_OPTIONS_STEP,
         component: (
           <>
@@ -871,13 +904,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ) : null}
           </>
         ),
-        canJumpTo: stepIdReached >= 5,
+        canJumpTo: stepIdReached >= 6,
       },
     ],
   };
 
   const reviewStep = {
-    id: 6,
+    id: 7,
     name: REVIEW_STEP,
     component: (
       <>
@@ -901,6 +934,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const wizardSteps = [
     connectorTypeStep,
+    // TransformStep,
     propertiesStep,
     additionalPropertiesStep,
     reviewStep,
