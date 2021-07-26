@@ -3,7 +3,7 @@ name: End-to-End Tests
 on:
   push:
     branches:
-      - moreE2E
+      - master
     paths:
       - 'pom.xml'
       - 'Dockerfile'
@@ -12,7 +12,7 @@ on:
       - '.github/workflows/end-to-end-testing.yml'
   pull_request:
     branches:
-      - moreE2E
+      - master
     paths:
       - 'pom.xml'
       - 'Dockerfile'
