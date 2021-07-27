@@ -113,9 +113,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const CONNECTOR_TYPE_STEP_ID = 1;
   const PROPERTIES_STEP_ID = 2;
   const FILTER_CONFIGURATION_STEP_ID = 3;
-  const DATA_OPTIONS_STEP_ID = 4;
-  const RUNTIME_OPTIONS_STEP_ID = 5;
-  const REVIEW_STEP_ID = 6;
+  const TRANSFORM_STEP_ID = 4
+  const DATA_OPTIONS_STEP_ID = 5;
+  const RUNTIME_OPTIONS_STEP_ID = 6;
+  const REVIEW_STEP_ID = 7;
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
@@ -643,7 +644,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   }, [connectorTypes]);
 
   const connectorTypeStep = {
-    id: 1,
+    id: CONNECTOR_TYPE_STEP_ID,
     name: CONNECTOR_TYPE_STEP,
     component: (
       <ConnectorTypeStep
@@ -676,7 +677,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   // };
 
   const propertiesStep = {
-    id: 2,
+    id: PROPERTIES_STEP_ID,
     name: PROPERTIES_STEP,
     component: (
       <>
@@ -765,7 +766,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         )}
       </>
     ),
-    canJumpTo: stepIdReached >= 2,
+    canJumpTo: stepIdReached >= PROPERTIES_STEP_ID,
   };
 
   const additionalPropertiesStep = {
@@ -774,7 +775,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     // name: <div>Additional properties<Label color="blue">Optional</Label></div>,
     steps: [
       {
-        id: 3,
+        id: FILTER_CONFIGURATION_STEP_ID,
         name: FILTER_CONFIGURATION_STEP,
         component: (
           <>
@@ -795,10 +796,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             />
           </>
         ),
-        canJumpTo: stepIdReached >= 3,
+        canJumpTo: stepIdReached >= FILTER_CONFIGURATION_STEP_ID,
       },
       {
-        id: 4,
+        id: TRANSFORM_STEP_ID,
         name: TRANSFORMS_STEP,
         component: (
           <>
@@ -810,10 +811,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             <TransformsStep/>
           </>
         ),
-        canJumpTo: stepIdReached >= 4,
+        canJumpTo: stepIdReached >= TRANSFORM_STEP_ID,
       },
       {
-        id: 5,
+        id: DATA_OPTIONS_STEP_ID,
         name: DATA_OPTIONS_STEP,
         component: (
           <>
@@ -857,10 +858,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ) : null}
           </>
         ),
-        canJumpTo: stepIdReached >= 5,
+        canJumpTo: stepIdReached >= DATA_OPTIONS_STEP_ID,
       },
       {
-        id: 6,
+        id: RUNTIME_OPTIONS_STEP_ID,
         name: RUNTIME_OPTIONS_STEP,
         component: (
           <>
@@ -904,13 +905,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ) : null}
           </>
         ),
-        canJumpTo: stepIdReached >= 6,
+        canJumpTo: stepIdReached >= RUNTIME_OPTIONS_STEP_ID,
       },
     ],
   };
 
   const reviewStep = {
-    id: 7,
+    id: REVIEW_STEP_ID,
     name: REVIEW_STEP,
     component: (
       <>
@@ -928,7 +929,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         />
       </>
     ),
-    canJumpTo: stepIdReached >= 2,
+    canJumpTo: stepIdReached >= PROPERTIES_STEP_ID,
     nextButtonText: t("finish"),
   };
 
@@ -954,8 +955,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           return (
             <>
               {activeStep.id &&
-                activeStep.id > 2 &&
-                activeStep.id !== 6 &&
+                activeStep.id > PROPERTIES_STEP_ID &&
+                activeStep.id !== REVIEW_STEP_ID &&
                 !disableNextButton(activeStep.id) && (
                   <div className="skipToNextInfoBox">
                     <NotificationDrawer>
@@ -1065,7 +1066,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               <Button
                 variant="secondary"
                 onClick={
-                  activeStep.id === 6
+                  activeStep.id === REVIEW_STEP_ID
                     ? () => backToFinishStep(goToStepById)
                     : onBack
                 }

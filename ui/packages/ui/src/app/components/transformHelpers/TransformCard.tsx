@@ -1,5 +1,8 @@
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
   ExpandableSection,
   Flex,
   FlexItem,
@@ -16,8 +19,7 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon, GripVerticalIcon, HelpIcon, TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
-import { FormInputField } from 'src/app/components/formElements/FormInputField';
-import { FormSelectField } from 'src/app/components/formElements/FormSelectField';
+import { FormInputField, FormSelectField } from 'components';
 import './TransformCard.css';
 
 export interface ITransformCardProps {
@@ -25,7 +27,10 @@ export interface ITransformCardProps {
   transformName: string;
   transformType: string;
   transformConfig?: any;
+  isTop: boolean;
+  isBottom: boolean;
   deleteTransform: (order: number) => void;
+  moveTransformOrder: (order: number, position: string) => void;
 }
 
 export const TransformCard: React.FunctionComponent<ITransformCardProps> = (props: ITransformCardProps) => {
@@ -42,6 +47,8 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
 
   const [nullHandle, setNullHandle] = React.useState<string>('keep');
 
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+
   const deleteCard = () => {
     props.deleteTransform(props.transformNo);
   };
@@ -54,6 +61,35 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
     const { value } = event.currentTarget;
     setFilterMethod(value);
   };
+
+  // tslint:disable-next-line: no-shadowed-variable
+  const onPositionToggle = isOpen => {
+    setIsOpen(isOpen);
+  };
+  const onPositionSelect = event => {
+    setIsOpen(!isOpen);
+    props.moveTransformOrder(props.transformNo, event.currentTarget.id);
+    onFocus();
+  };
+  const onFocus = () => {
+    const element = document.getElementById('transform-order-toggle');
+    element?.focus();
+  };
+
+  const dropdownItems = [
+    <DropdownItem key="move_top" component="button" id="top" isDisabled={props.isTop}>
+      Move top
+    </DropdownItem>,
+    <DropdownItem key="move_up" component="button" id="up" isDisabled={props.isTop || (props.isTop && props.isBottom)}>
+      Move up
+    </DropdownItem>,
+    <DropdownItem key="move_down" component="button" id="down" isDisabled={(props.isTop && props.isBottom) || props.isBottom}>
+      Move down
+    </DropdownItem>,
+    <DropdownItem key="move_bottom" component="button" id="bottom" isDisabled={props.isBottom}>
+      Move bottom
+    </DropdownItem>
+  ];
 
   const typeOptions = [
     { value: 'Select type', label: 'Select type', isPlaceholder: true, disabled: false },
@@ -120,7 +156,25 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
         <div className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'}>
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
-              <GripVerticalIcon />
+            <Tooltip content={<div>Reorder transform</div>}>
+            <Dropdown
+                className={'position_toggle'}
+                onSelect={onPositionSelect}
+                isOpen={isOpen}
+                isPlain={true}
+                dropdownItems={dropdownItems}
+                toggle={
+                  <DropdownToggle
+                    toggleIndicator={null}
+                    onToggle={onPositionToggle}
+                    aria-label="Applications"
+                    id="transform-order-toggle"
+                  >
+                    <GripVerticalIcon />
+                  </DropdownToggle>
+                }
+              />
+              </Tooltip>
             </SplitItem>
             <SplitItem isFilled={true}>
               <Title headingLevel="h2">Transformation # {props.transformNo}</Title>
@@ -285,7 +339,7 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
             </SplitItem>
             <SplitItem>
               <Tooltip content={<div>Delete transform</div>}>
-                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard}/>
+                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} />
               </Tooltip>
             </SplitItem>
           </Split>

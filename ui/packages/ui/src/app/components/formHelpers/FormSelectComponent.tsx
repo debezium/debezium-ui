@@ -8,12 +8,6 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import * as React from 'react';
 import { HelpInfoIcon } from './HelpInfoIcon';
-
-
-export interface ISelectOptions {
-  value: string,
-  disabled: boolean
-}
 export interface IFormSelectComponentProps {
     label: string,
     name: string;

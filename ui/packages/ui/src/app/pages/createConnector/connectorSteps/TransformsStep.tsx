@@ -1,6 +1,6 @@
 import { Alert, Button } from '@patternfly/react-core';
 import React from 'react';
-import { TransformCard } from './TransformCard';
+import { TransformCard } from 'components';
 
 export const TransformsStep: React.FunctionComponent = () => {
   const [transform, setTransform] = React.useState<Map<number, any>>(new Map<number, any>());
@@ -16,7 +16,6 @@ export const TransformsStep: React.FunctionComponent = () => {
       transformCopy.delete(order);
       const transformResult = new Map<number, any>();
       for (const [key, value] of transformCopy.entries()) {
-        console.log(key);
         if(key>order){
           transformResult.set(+key-1,value);
         }else if(key<order){
@@ -24,6 +23,30 @@ export const TransformsStep: React.FunctionComponent = () => {
         }
       }
       setTransform(transformResult);
+    },[transform]
+  );
+
+
+  const moveTransformOrder = React.useCallback(
+    (order,position) => {
+      const transformCopy = new Map(transform);
+        switch (position){
+          case "top":
+            // transformCopy.set(position,transform.get(0)) 
+          case "up":
+            transformCopy.set(order-1,transform.get(order))
+            transformCopy.set(order,transform.get(order-1))
+            break;
+          case "down":
+            transformCopy.set(order+1,transform.get(order))
+            transformCopy.set(order,transform.get(order+1))
+            break;
+          case "bottom":
+            //
+          default:
+            break;
+        }
+      setTransform(transformCopy);
     },[transform]
   );
 
@@ -43,6 +66,9 @@ export const TransformsStep: React.FunctionComponent = () => {
             transformType={transform.get(key)?.type || ''}
             transformConfig={transform.get(key)?.config || {}}
             deleteTransform={deleteTransformCallback}
+            moveTransformOrder={moveTransformOrder}
+            isTop={key === 1}
+            isBottom={key === transform.size}
           />
         );
       })}
