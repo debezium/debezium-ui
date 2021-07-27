@@ -65,7 +65,7 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           working-directory: ./ui
-      - name: Cypress run
+      - name: End-to-End Test Debezium UI
         uses: cypress-io/github-action@v2
         with:
           # we have already installed everything
