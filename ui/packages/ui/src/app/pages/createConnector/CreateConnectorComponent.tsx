@@ -660,24 +660,24 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     ),
   };
 
-  // const TransformStep =    {
-  //   id: 2,
-  //   name: TRANSFORMS_STEP,
-  //   component: (
-  //     <>
-  //       <ConnectorNameTypeHeader
-  //         connectorName={getConnectorName()}
-  //         connectorType={selectedConnectorType}
-  //         showIcon={false}
-  //       />
-  //       <TransformsStep/>
-  //     </>
-  //   ),
-  //   canJumpTo: stepIdReached >= 2,
-  // };
+  const TransformStep =    {
+    id: 2,
+    name: TRANSFORMS_STEP,
+    component: (
+      <>
+        <ConnectorNameTypeHeader
+          connectorName={getConnectorName()}
+          connectorType={selectedConnectorType}
+          showIcon={false}
+        />
+        <TransformsStep/>
+      </>
+    ),
+    canJumpTo: stepIdReached >= 2,
+  };
 
   const propertiesStep = {
-    id: PROPERTIES_STEP_ID,
+    id: 3,
     name: PROPERTIES_STEP,
     component: (
       <>
@@ -766,7 +766,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         )}
       </>
     ),
-    canJumpTo: stepIdReached >= PROPERTIES_STEP_ID,
+    canJumpTo: stepIdReached >= 3,
   };
 
   const additionalPropertiesStep = {
@@ -798,21 +798,21 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         ),
         canJumpTo: stepIdReached >= FILTER_CONFIGURATION_STEP_ID,
       },
-      {
-        id: TRANSFORM_STEP_ID,
-        name: TRANSFORMS_STEP,
-        component: (
-          <>
-            <ConnectorNameTypeHeader
-              connectorName={getConnectorName()}
-              connectorType={selectedConnectorType}
-              showIcon={false}
-            />
-            <TransformsStep/>
-          </>
-        ),
-        canJumpTo: stepIdReached >= TRANSFORM_STEP_ID,
-      },
+      // {
+      //   id: TRANSFORM_STEP_ID,
+      //   name: TRANSFORMS_STEP,
+      //   component: (
+      //     <>
+      //       <ConnectorNameTypeHeader
+      //         connectorName={getConnectorName()}
+      //         connectorType={selectedConnectorType}
+      //         showIcon={false}
+      //       />
+      //       <TransformsStep/>
+      //     </>
+      //   ),
+      //   canJumpTo: stepIdReached >= TRANSFORM_STEP_ID,
+      // },
       {
         id: DATA_OPTIONS_STEP_ID,
         name: DATA_OPTIONS_STEP,
@@ -935,7 +935,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const wizardSteps = [
     connectorTypeStep,
-    // TransformStep,
+    TransformStep,
     propertiesStep,
     additionalPropertiesStep,
     reviewStep,

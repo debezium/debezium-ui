@@ -1,25 +1,30 @@
 import {
   Button,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownToggle,
   ExpandableSection,
-  Flex,
-  FlexItem,
   Form,
-  FormGroup,
   Grid,
   GridItem,
-  Popover,
-  Radio,
+  SelectGroup,
+  SelectOption,
   Split,
   SplitItem,
   Title,
   Tooltip
 } from '@patternfly/react-core';
-import { ExclamationCircleIcon, GripVerticalIcon, HelpIcon, TrashIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, GripVerticalIcon, TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
-import { FormInputField, FormSelectField } from 'components';
+import {
+  RoutingConfig,
+  FormInputField,
+  ValueToKeyConfig,
+  TopicRoutingConfig,
+  TypeSelectorComponent,
+  TimestampRouterConfig
+} from 'components';
 import './TransformCard.css';
 
 export interface ITransformCardProps {
@@ -37,34 +42,33 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
   const [name, setName] = React.useState<string>('');
   const [type, setType] = React.useState<string>('');
 
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
-
-  const [filterMethod, setFilterMethod] = React.useState<string>('');
-
-  const [language, setLanguage] = React.useState<string>('');
-  const [expression, setExpression] = React.useState<string>('');
-  const [regex, setRegex] = React.useState<string>('');
-
-  const [nullHandle, setNullHandle] = React.useState<string>('keep');
-
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const deleteCard = () => {
-    props.deleteTransform(props.transformNo);
-  };
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
+
+  // const [configComplete, setConfigComplete] = React.useState<boolean>(false);
+
+  // const focusout = (e) =>{
+  //       if (e.currentTarget === e.target) {
+  //         alert("blur (self)");
+  //       }
+  //       if (!e.currentTarget?.contains(e.relatedTarget)) {
+  //         console.log("focusleave");
+  //       }
+    
+  // }
 
   const onToggle = (isExpandedVal: boolean) => {
     setIsExpanded(isExpandedVal);
   };
 
-  const filterMethodChange = (_, event) => {
-    const { value } = event.currentTarget;
-    setFilterMethod(value);
+  const deleteCard = () => {
+    props.deleteTransform(props.transformNo);
   };
 
   // tslint:disable-next-line: no-shadowed-variable
-  const onPositionToggle = isOpen => {
-    setIsOpen(isOpen);
+  const onPositionToggle = isOpenVal => {
+    setIsOpen(isOpenVal);
   };
   const onPositionSelect = event => {
     setIsOpen(!isOpen);
@@ -83,7 +87,12 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
     <DropdownItem key="move_up" component="button" id="up" isDisabled={props.isTop || (props.isTop && props.isBottom)}>
       Move up
     </DropdownItem>,
-    <DropdownItem key="move_down" component="button" id="down" isDisabled={(props.isTop && props.isBottom) || props.isBottom}>
+    <DropdownItem
+      key="move_down"
+      component="button"
+      id="down"
+      isDisabled={(props.isTop && props.isBottom) || props.isBottom}
+    >
       Move down
     </DropdownItem>,
     <DropdownItem key="move_bottom" component="button" id="bottom" isDisabled={props.isBottom}>
@@ -91,93 +100,73 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
     </DropdownItem>
   ];
 
-  const typeOptions = [
-    { value: 'Select type', label: 'Select type', isPlaceholder: true, disabled: false },
-    {
-      value: 'io.debezium.transforms.ExtractNewRecordState',
-      label: 'io.debezium.transforms.ExtractNewRecordState',
-      disabled: false
-    },
-    {
-      value: 'io.debezium.transforms.ContentBasedRouter',
-      label: 'io.debezium.transforms.ContentBasedRouter',
-      disabled: false
-    },
-    {
-      value: 'io.debezium.transforms.ByLogicalTableRouter',
-      label: 'io.debezium.transforms.ByLogicalTableRouter',
-      disabled: false
-    },
-    {
-      value: 'org.apache.kafka.connect.transforms.TimestampRouter',
-      label: 'org.apache.kafka.connect.transforms.TimestampRouter',
-      disabled: true
-    },
-    {
-      value: 'org.apache.kafka.connect.transforms.ValueToKey',
-      label: 'org.apache.kafka.connect.transforms.ValueToKey',
-      disabled: false
-    },
-    { value: 'other', label: 'Other', disabled: false }
-  ];
+  const transformConfig = (transformType: string) => {
+    switch (transformType) {
+      case 'io.debezium.transforms.Filter':
+      case 'io.debezium.transforms.ContentBasedRouter':
+        return <RoutingConfig transformConfig={props.transformConfig} />;
+      case 'io.debezium.transforms.ByLogicalTableRouter':
+        return <TopicRoutingConfig transformConfig={props.transformConfig} />;
+      case 'org.apache.kafka.connect.transforms.ValueToKey':
+        return <ValueToKeyConfig transformConfig={props.transformConfig} />;
+      case 'org.apache.kafka.connect.transforms.TimestampRoute':
+        return <TimestampRouterConfig transformConfig={props.transformConfig} />;
+      default:
+        return <></>;
+    }
+  };
 
-  const LanguageOptions = [
-    { value: 'Language', label: 'Language', isPlaceholder: true, disabled: false },
-    {
-      value: 'jsr223.groovy',
-      label: 'jsr223.groovy',
-      disabled: false
-    },
-    {
-      value: 'jsr223.graal.js',
-      label: 'jsr223.graal.js',
-      disabled: false
-    },
-    { value: 'other', label: 'Other', disabled: false }
-  ];
-
-  const NullHandelOption = [
-    {
-      value: 'keep',
-      label: 'Keep',
-      disabled: false
-    },
-    {
-      value: 'drop',
-      label: 'Drop',
-      disabled: false
-    },
-    { value: 'evaluate', label: 'Evaluate', disabled: false }
+  const option = [
+    <SelectGroup label="Debezium" key="group1">
+      <SelectOption key={0} value="io.debezium.transforms.Filter" />
+      <SelectOption key={1} value="io.debezium.transforms.ContentBasedRouter" />
+      <SelectOption key={2} value="io.debezium.transforms.ExtractNewRecordState" isDisabled={true} />
+      <SelectOption key={3} value="io.debezium.transforms.ByLogicalTableRouter" />
+    </SelectGroup>,
+    <Divider key="divider" />,
+    <SelectGroup label="Apache kafka" key="group2">
+      <SelectOption key={4} value="org.apache.kafka.connect.transforms.ValueToKey" />
+      <SelectOption key={5} value="org.apache.kafka.connect.transforms.TimestampRoute" />
+      <SelectOption key={6} value="org.apache.kafka.connect.transforms.ExtractField" isDisabled={true} />
+      <SelectOption key={7} value="org.apache.kafka.connect.transforms.Cast" isDisabled={true} />
+    </SelectGroup>
   ];
 
   return (
     <Grid>
       <GridItem span={9}>
-        <div className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'}>
+        <div 
+          className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'} 
+          // onBlur={focusout} 
+          id='transform-parent'>
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
-            <Tooltip content={<div>Reorder transform</div>}>
-            <Dropdown
-                className={'position_toggle'}
-                onSelect={onPositionSelect}
-                isOpen={isOpen}
-                isPlain={true}
-                dropdownItems={dropdownItems}
-                toggle={
-                  <DropdownToggle
-                    toggleIndicator={null}
-                    onToggle={onPositionToggle}
-                    aria-label="Applications"
-                    id="transform-order-toggle"
-                  >
-                    <GripVerticalIcon />
-                  </DropdownToggle>
-                }
-              />
+              <Tooltip content={<div>Reorder transform</div>}>
+                <Dropdown
+                  className={'position_toggle'}
+                  onSelect={onPositionSelect}
+                  isOpen={isOpen}
+                  isPlain={true}
+                  dropdownItems={dropdownItems}
+                  toggle={
+                    <DropdownToggle
+                      toggleIndicator={null}
+                      onToggle={onPositionToggle}
+                      aria-label="Applications"
+                      id="transform-order-toggle"
+                    >
+                      <GripVerticalIcon />
+                    </DropdownToggle>
+                  }
+                />
               </Tooltip>
             </SplitItem>
             <SplitItem isFilled={true}>
-              <Title headingLevel="h2">Transformation # {props.transformNo}</Title>
+              <Title headingLevel="h2">
+                Transformation # {props.transformNo} &nbsp;
+                {name && type && <CheckCircleIcon style={{ color: '#3E8635' }} />}
+                {/* <ExclamationCircleIcon style={{color: '#C9190B'}}/> */}
+              </Title>
               <Form>
                 <Grid hasGutter={true}>
                   <GridItem span={4}>
@@ -195,143 +184,24 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
                   </GridItem>
 
                   <GridItem span={8}>
-                    <FormSelectField
+                    <TypeSelectorComponent
                       label="Type"
                       description=""
                       fieldId="transform_type"
                       isRequired={true}
                       isDisabled={name === ''}
-                      options={typeOptions}
+                      options={option}
                       value={type}
                       setFieldValue={setType}
                     />
                   </GridItem>
-                  {type && name && (
+                  {type && (
                     <ExpandableSection
                       toggleText={isExpanded ? 'Hide config' : 'Show config'}
                       onToggle={onToggle}
                       isExpanded={isExpanded}
                     >
-                      <Grid hasGutter={true}>
-                        <GridItem span={6}>
-                          <FormGroup
-                            label="Filter target topic via"
-                            fieldId="transform_filter"
-                            isRequired={true}
-                            labelIcon={
-                              <Popover
-                                bodyContent={
-                                  <div>
-                                    msg
-                                    <br />
-                                    <a
-                                      href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                                      target="_blank"
-                                    >
-                                      More Info
-                                    </a>
-                                  </div>
-                                }
-                              >
-                                <button
-                                  aria-label="More info for filter field"
-                                  onClick={e => e.preventDefault()}
-                                  aria-describedby="simple-form-filter"
-                                  className="pf-c-form__group-label-help"
-                                >
-                                  <HelpIcon noVerticalAlign={true} />
-                                </button>
-                              </Popover>
-                            }
-                            helperTextInvalidIcon={<ExclamationCircleIcon />}
-                          >
-                            <Flex>
-                              <FlexItem>
-                                {' '}
-                                <Radio
-                                  isChecked={filterMethod === 'topic.regex'}
-                                  name="filter_method"
-                                  onChange={filterMethodChange}
-                                  label="regex"
-                                  id="filter_method"
-                                  value="topic.regex"
-                                />
-                              </FlexItem>
-                              <FlexItem>
-                                <Radio
-                                  isChecked={filterMethod === 'topic.expression'}
-                                  name="filter_method"
-                                  onChange={filterMethodChange}
-                                  label="expression"
-                                  id="filter_method"
-                                  value="topic.expression"
-                                />
-                              </FlexItem>
-                            </Flex>
-                          </FormGroup>
-                        </GridItem>
-                        <GridItem span={6} />
-                        {filterMethod &&
-                          (filterMethod === 'topic.expression' ? (
-                            <>
-                              <GridItem span={3}>
-                                <FormSelectField
-                                  label="Language"
-                                  description=""
-                                  fieldId="filter_language"
-                                  isRequired={true}
-                                  isDisabled={false}
-                                  options={LanguageOptions}
-                                  value={language}
-                                  setFieldValue={setLanguage}
-                                />
-                              </GridItem>
-                              <GridItem span={9}>
-                                <FormInputField
-                                  label="Expression"
-                                  description=""
-                                  fieldId="filter_expression"
-                                  isRequired={true}
-                                  name="filter_expression"
-                                  placeholder="expression"
-                                  inputType="text"
-                                  value={expression}
-                                  setFieldValue={setExpression}
-                                />
-                              </GridItem>
-                            </>
-                          ) : (
-                            <>
-                              <GridItem span={9}>
-                                <FormInputField
-                                  label="Regex"
-                                  description=""
-                                  fieldId="filter_regex"
-                                  isRequired={true}
-                                  name="filter_regex"
-                                  placeholder="regex"
-                                  inputType="text"
-                                  value={regex}
-                                  setFieldValue={setRegex}
-                                />
-                              </GridItem>
-                              <GridItem span={3} />
-                            </>
-                          ))}
-
-                        <GridItem span={3}>
-                          <FormSelectField
-                            label="Null handler"
-                            description=""
-                            fieldId="filter_null_handler"
-                            isRequired={true}
-                            isDisabled={false}
-                            options={NullHandelOption}
-                            value={nullHandle}
-                            setFieldValue={setNullHandle}
-                          />
-                        </GridItem>
-                      </Grid>
+                      {transformConfig(type)}
                     </ExpandableSection>
                   )}
                 </Grid>

@@ -2,8 +2,15 @@ import { Alert, Button } from '@patternfly/react-core';
 import React from 'react';
 import { TransformCard } from 'components';
 
+export interface ITransformData {
+  key: number;
+  name?: string;
+  type?: string;
+  config?: any;
+}
+
 export const TransformsStep: React.FunctionComponent = () => {
-  const [transform, setTransform] = React.useState<Map<number, any>>(new Map<number, any>());
+  const [transform, setTransform] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
   const addTransform = () => {
     const transformCopy = new Map(transform);
     transformCopy.set(transformCopy.size + 1, {key:Math.random()*10000});
@@ -29,17 +36,17 @@ export const TransformsStep: React.FunctionComponent = () => {
 
   const moveTransformOrder = React.useCallback(
     (order,position) => {
-      const transformCopy = new Map(transform);
+      const transformCopy = new Map<number,ITransformData>(transform);
         switch (position){
           case "top":
             // transformCopy.set(position,transform.get(0)) 
           case "up":
-            transformCopy.set(order-1,transform.get(order))
-            transformCopy.set(order,transform.get(order-1))
+            transformCopy.set(order-1,transform.get(order)!)
+            transformCopy.set(order,transform.get(order-1)!)
             break;
           case "down":
-            transformCopy.set(order+1,transform.get(order))
-            transformCopy.set(order,transform.get(order+1))
+            transformCopy.set(order+1,transform.get(order)!)
+            transformCopy.set(order,transform.get(order+1)!)
             break;
           case "bottom":
             //
@@ -60,7 +67,7 @@ export const TransformsStep: React.FunctionComponent = () => {
       {Array.from(transform.keys()).map((key,index) => {
         return (
           <TransformCard
-            key={transform.get(key).key}
+            key={transform.get(key)?.key}
             transformNo={key}
             transformName={transform.get(key)?.name || ''}
             transformType={transform.get(key)?.type || ''}
