@@ -60,6 +60,7 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
       validated={props.validated}
     >
       <TextInput
+        name={field.name}
         onChange={(e) => {
           field.onChange(field.name)(e);
         }}
