@@ -113,6 +113,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
         onSubmit={(values) => {
           handleSubmit(values);
         }}
+        enableReinitialize={true}
       >
         {({ errors, touched, setFieldValue }) => (
           <Form className="pf-c-form">

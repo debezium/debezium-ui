@@ -60,9 +60,12 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
       validated={props.validated}
     >
       <TextInput
-        {...field}
         onChange={(e) => {
           field.onChange(field.name)(e);
+        }}
+        defaultValue={field.value}
+        onBlur={(e) => {
+          field.onBlur(field.name)(e);
         }}
         aria-label={field.name}
         validated={props.validated}

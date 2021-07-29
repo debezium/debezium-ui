@@ -131,6 +131,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
           onSubmit={(values) => {
             handleSubmit(values);
           }}
+          enableReinitialize={true}
         >
           {({ errors, touched, setFieldValue }) => (
             <Form className="pf-c-form">
