@@ -46,6 +46,8 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
 
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
 
+  const tooltipRef = React.useRef();
+
   // const [configComplete, setConfigComplete] = React.useState<boolean>(false);
 
   // const focusout = (e) =>{
@@ -55,7 +57,7 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
   //       if (!e.currentTarget?.contains(e.relatedTarget)) {
   //         console.log("focusleave");
   //       }
-    
+
   // }
 
   const onToggle = (isExpandedVal: boolean) => {
@@ -135,13 +137,14 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
   return (
     <Grid>
       <GridItem span={9}>
-        <div 
-          className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'} 
-          // onBlur={focusout} 
-          id='transform-parent'>
+        <div
+          className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'}
+          // onBlur={focusout}
+          id="transform-parent"
+        >
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
-              <Tooltip content={<div>Reorder transform</div>}>
+              {/* <Tooltip content={<div>Reorder transform</div>}> */}
                 <Dropdown
                   className={'position_toggle'}
                   onSelect={onPositionSelect}
@@ -159,7 +162,7 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
                     </DropdownToggle>
                   }
                 />
-              </Tooltip>
+              {/* </Tooltip> */}
             </SplitItem>
             <SplitItem isFilled={true}>
               <Title headingLevel="h2">
@@ -208,9 +211,8 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
               </Form>
             </SplitItem>
             <SplitItem>
-              <Tooltip content={<div>Delete transform</div>}>
-                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} />
-              </Tooltip>
+              <Tooltip content={<div>Delete transform</div>} reference={tooltipRef} />
+              <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} ref={tooltipRef} />
             </SplitItem>
           </Split>
         </div>

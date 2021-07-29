@@ -39,7 +39,13 @@ export const TransformsStep: React.FunctionComponent = () => {
       const transformCopy = new Map<number,ITransformData>(transform);
         switch (position){
           case "top":
-            // transformCopy.set(position,transform.get(0)) 
+            transformCopy.set(1,transform.get(order)!)
+            let i = 1;
+            while (i < order){
+              transformCopy.set(i+1,transform.get(i)!)
+              i++;
+            }
+            break;
           case "up":
             transformCopy.set(order-1,transform.get(order)!)
             transformCopy.set(order,transform.get(order-1)!)
@@ -49,7 +55,13 @@ export const TransformsStep: React.FunctionComponent = () => {
             transformCopy.set(order,transform.get(order+1)!)
             break;
           case "bottom":
-            //
+            transformCopy.set(transform.size,transform.get(order)!)
+            let j = transform.size;
+            while (j > order){
+              transformCopy.set(j-1,transform.get(j)!)
+              j--;
+            }
+            break;
           default:
             break;
         }
