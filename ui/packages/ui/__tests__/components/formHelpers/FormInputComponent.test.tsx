@@ -22,7 +22,7 @@ describe("<FormInputComponent />", () => {
   };
 
   it("should render FormInputComponent", () => {
-
+    const clearValidationErrorMock = jest.fn()
     const props: IFormInputComponentProps = {
       label: "InputComp",
       infoText: "InfoText",
@@ -31,7 +31,7 @@ describe("<FormInputComponent />", () => {
       infoTitle: "InfoTitle",
       type: "STRING",
       isRequired: true,
-      clearValidationError: () => void
+      clearValidationError: clearValidationErrorMock,
     };
     renderSetup(props);
 
