@@ -174,6 +174,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
                 setFieldValue={setFieldValue}
                 errors={errors}
                 touched={touched}
+                clearValidationError={props.clearValidationError}
               />
               <FormSubmit
                 ref={ref}

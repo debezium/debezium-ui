@@ -588,7 +588,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       props.onCancelCallback();
     }
   });
-
+  const clearValidationError = () => {
+    setConnectionPropsValidMsg([]);
+  }
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
     fetch_retry(globalsService.getConnectorTypes, globalsService)
@@ -684,6 +686,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           setConnectionPropsValid={setConnectionPropsValid}
           setConnectionStepsValid={setConnectionStepsValid}
           invalidMsg={connectionPropsValidMsg}
+          clearValidationError={clearValidationError}
         />
         {validateInProgress ? (
           <Spinner size="lg" />
