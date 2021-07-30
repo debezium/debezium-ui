@@ -18,6 +18,7 @@ const getCommitHash = () => {
 const COMMIT_HASH = process.env.COMMIT_HASH || getCommitHash();
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
+const reactCSSRegex = /(react-[\w-]+\/dist|react-styles\/css)\/.*\.css$/;
 
 module.exports = (argv) => {
   const isProduction = argv || argv.mode === "production";
@@ -40,12 +41,10 @@ module.exports = (argv) => {
           ]
         },
         {
-          test: /\.css|s[ac]ss$/i,
+          test: /\.css$/,
+          exclude: reactCSSRegex,
           use: [
             MiniCssExtractPlugin.loader,
-            // {
-            //   loader: 'style-loader'
-            // },
             {
               loader: 'css-loader',
               options: {importLoaders: 1},
@@ -59,6 +58,10 @@ module.exports = (argv) => {
               },
             }],
           sideEffects: true
+        },
+        {
+          test: reactCSSRegex,
+          use: 'null-loader'
         },
         {
           test: /\.(ttf|eot|woff|woff2)$/,
@@ -116,7 +119,6 @@ module.exports = (argv) => {
       new MiniCssExtractPlugin({
         filename: '[name].[contenthash:8].css',
         chunkFilename: '[contenthash:8].css',
-        ignoreOrder: true, // Enable to remove warnings about conflicting order
       }),
       new ChunkMapper({
         modules: [federatedModuleName],

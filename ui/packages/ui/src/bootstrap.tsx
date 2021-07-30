@@ -1,4 +1,3 @@
-// import "@patternfly/react-core/dist/styles/base.css";
 import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import '@patternfly/patternfly/utilities/Sizing/sizing.css';

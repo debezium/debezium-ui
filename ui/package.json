@@ -57,6 +57,7 @@
     "keycloak-js": "9.0.0",
     "lerna": "3.21.0",
     "mini-css-extract-plugin": "^1.0.0",
+    "null-loader": "^4.0.1",
     "postcss-css-variables": "^0.17.0",
     "postcss-loader": "^3.0.0",
     "postcss-nested": "^4.2.3",
