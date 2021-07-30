@@ -40,12 +40,12 @@ module.exports = (argv) => {
           ]
         },
         {
-          test: /\.css$/,
+          test: /\.css|s[ac]ss$/i,
           use: [
-            // MiniCssExtractPlugin.loader,
-            {
-              loader: 'style-loader'
-            },
+            MiniCssExtractPlugin.loader,
+            // {
+            //   loader: 'style-loader'
+            // },
             {
               loader: 'css-loader',
               options: {importLoaders: 1},
@@ -115,7 +115,8 @@ module.exports = (argv) => {
       }),
       new MiniCssExtractPlugin({
         filename: '[name].[contenthash:8].css',
-        chunkFilename: '[contenthash:8].css'
+        chunkFilename: '[contenthash:8].css',
+        ignoreOrder: true, // Enable to remove warnings about conflicting order
       }),
       new ChunkMapper({
         modules: [federatedModuleName],
