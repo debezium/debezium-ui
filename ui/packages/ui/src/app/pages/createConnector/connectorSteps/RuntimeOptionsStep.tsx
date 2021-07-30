@@ -23,6 +23,7 @@ export interface IRuntimeOptionsStepProps {
     connectorProperties: Map<string, string>,
     propertyCategory: PropertyCategory
   ) => void;
+  clearValidationError: () => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
@@ -145,6 +146,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
                 setFieldValue={setFieldValue}
                 errors={errors}
                 touched={touched}
+                clearValidationError={props.clearValidationError}
               />
               <FormSubmit
                 ref={ref}

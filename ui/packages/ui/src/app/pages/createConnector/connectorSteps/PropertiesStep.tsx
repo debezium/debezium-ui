@@ -25,6 +25,7 @@ export interface IPropertiesStepProps {
     basicPropertyValues: Map<string, string>,
     advancePropertyValues: Map<string, string>
   ) => void;
+  clearValidationError: () => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(

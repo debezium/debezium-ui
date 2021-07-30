@@ -28,6 +28,7 @@ export interface IDataOptionsComponentProps {
   ) => void;
   errors: FormikErrors<any>;
   touched: FormikTouched<any>;
+  clearValidationError: () => void;
 }
 
 export const DataOptionsComponent: React.FC<IDataOptionsComponentProps> = React.forwardRef((props, ref) => {
@@ -101,6 +102,7 @@ export const DataOptionsComponent: React.FC<IDataOptionsComponentProps> = React.
                             ? "error"
                             : "default"
                         }
+                        clearValidationError={props.clearValidationError}
                       />
                     </GridItem>
                   );
@@ -143,6 +145,7 @@ export const DataOptionsComponent: React.FC<IDataOptionsComponentProps> = React.
                             : "default"
                         }
                         propertyChange={handlePropertyChange}
+                        clearValidationError={props.clearValidationError}
                       />
                     </GridItem>
                   );
@@ -181,6 +184,7 @@ export const DataOptionsComponent: React.FC<IDataOptionsComponentProps> = React.
                             : "default"
                         }
                         propertyChange={handlePropertyChange}
+                        clearValidationError={props.clearValidationError}
                       />
                     </GridItem>
                   );
