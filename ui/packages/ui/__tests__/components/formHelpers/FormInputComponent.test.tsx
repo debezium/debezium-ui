@@ -30,7 +30,8 @@ describe("<FormInputComponent />", () => {
       name: "InputComp",
       infoTitle: "InfoTitle",
       type: "STRING",
-      isRequired: true
+      isRequired: true,
+      clearValidationError: () => void
     };
     renderSetup(props);
 
