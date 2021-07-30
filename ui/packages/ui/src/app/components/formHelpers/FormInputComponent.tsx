@@ -17,6 +17,7 @@ export interface IFormInputComponentProps {
   type: any;
   isRequired: boolean;
   validated?: "default" | "success" | "warning" | "error" | undefined
+  clearValidationError: () => void;
 }
 export const FormInputComponent: React.FunctionComponent<IFormInputComponentProps> = props => {
   const [field] = useField(props);
@@ -60,9 +61,14 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
       validated={props.validated}
     >
       <TextInput
-        {...field}
+        name={field.name}
         onChange={(e) => {
           field.onChange(field.name)(e);
+          props.clearValidationError();
+        }}
+        defaultValue={field.value}
+        onBlur={(e) => {
+          field.onBlur(field.name)(e);
         }}
         aria-label={field.name}
         validated={props.validated}

@@ -24,6 +24,7 @@ export interface IRuntimeOptionsComponentProps {
   ) => void;
   errors: FormikErrors<any>;
   touched: FormikTouched<any>;
+  clearValidationError: () => void;
 }
 
 export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = React.forwardRef(
@@ -115,6 +116,7 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
                               : "default"
                           }
                           propertyChange={handlePropertyChange}
+                          clearValidationError={props.clearValidationError}
                         />
                       </GridItem>
                     );
@@ -157,6 +159,7 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
                               ? "error"
                               : "default"
                           }
+                          clearValidationError={props.clearValidationError}
                         />
                       </GridItem>
                     );

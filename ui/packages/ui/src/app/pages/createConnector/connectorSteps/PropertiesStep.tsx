@@ -25,6 +25,7 @@ export interface IPropertiesStepProps {
     basicPropertyValues: Map<string, string>,
     advancePropertyValues: Map<string, string>
   ) => void;
+  clearValidationError: () => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
@@ -156,24 +157,26 @@ export const PropertiesStep: React.FC<any> = React.forwardRef(
           onSubmit={(values) => {
             handleSubmit(values);
           }}
+          enableReinitialize={true}
         >
           {({ errors, touched, setFieldValue }) => (
             <Form className="pf-c-form">
               <PropertiesStepsComponent
-              connectorType={props.connectorType}
-              basicPropertyDefinitions={props.basicPropertyDefinitions}
-              basicPropertyValues={props.basicPropertyValues}
-              advancedPropertyDefinitions={props.advancedPropertyDefinitions}
-              advancedPropertyValues={props.advancedPropertyValues}
-              invalidMsg={props.invalidMsg}
-              i18nAdvancedPropertiesText={props.i18nAdvancedPropertiesText}
-              i18nAdvancedPublicationPropertiesText={props.i18nAdvancedPublicationPropertiesText}
-              i18nAdvancedReplicationPropertiesText={props.i18nAdvancedReplicationPropertiesText}
-              i18nBasicPropertiesText={props.i18nBasicPropertiesText}
-              setFieldValue={setFieldValue}
-              errors={errors}
-              touched={touched}
-                />
+                connectorType={props.connectorType}
+                basicPropertyDefinitions={props.basicPropertyDefinitions}
+                basicPropertyValues={props.basicPropertyValues}
+                advancedPropertyDefinitions={props.advancedPropertyDefinitions}
+                advancedPropertyValues={props.advancedPropertyValues}
+                invalidMsg={props.invalidMsg}
+                i18nAdvancedPropertiesText={props.i18nAdvancedPropertiesText}
+                i18nAdvancedPublicationPropertiesText={props.i18nAdvancedPublicationPropertiesText}
+                i18nAdvancedReplicationPropertiesText={props.i18nAdvancedReplicationPropertiesText}
+                i18nBasicPropertiesText={props.i18nBasicPropertiesText}
+                setFieldValue={setFieldValue}
+                errors={errors}
+                touched={touched}
+                clearValidationError={props.clearValidationError}
+              />
               <FormSubmit
                 ref={ref}
                 setConnectionPropsValid={props.setConnectionPropsValid}

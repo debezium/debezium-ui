@@ -22,6 +22,7 @@ export interface IDataOptionsStepProps {
     connectorProperties: Map<string, string>,
     propertyCategory: PropertyCategory
   ) => void;
+  clearValidationError: () => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
@@ -113,6 +114,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
         onSubmit={(values) => {
           handleSubmit(values);
         }}
+        enableReinitialize={true}
       >
         {({ errors, touched, setFieldValue }) => (
           <Form className="pf-c-form">
@@ -128,6 +130,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
               setFieldValue={setFieldValue}
               errors={errors}
               touched={touched}
+              clearValidationError={props.clearValidationError}
             />
             <FormSubmit
               ref={ref}
