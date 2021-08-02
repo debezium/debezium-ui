@@ -175,7 +175,7 @@ export enum PropertyCategory {
 /**
  * Max retries for re-fetching the api call in case of error
  */
-const MAX_RETRIES: number = 5;
+const MAX_RETRIES: number = 2;
 
 /**
  * Get a description of the ConnectorType, based on the id
