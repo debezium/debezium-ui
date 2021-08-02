@@ -22,6 +22,7 @@
     "i18n": "i18next 'src/**/**/*.{ts,tsx}' [-oc] -c './i18next-parser.config.js' -o './src/locales/$LOCALE/$NAMESPACE.json'"
   },
   "peerDependencies": {
+    "@patternfly/patternfly": "^4.115.2",
     "@patternfly/react-core": "^4.87.2",
     "@patternfly/react-icons": "^4.7.11",
     "@patternfly/react-styles": "^4.7.8",

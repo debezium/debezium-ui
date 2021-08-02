@@ -1,5 +1,3 @@
-export * from './ApplicationErrorPage';
-export * from './BasicSelectInput';
 export * from './ConnectorIcon';
 export * from './ConnectionPropertiesError';
 export * from './KafkaConnectCluster';
@@ -9,3 +7,5 @@ export * from './connectorStepHelpers';
 export * from './formHelpers';
 export * from './ToastAlertComponent';
 export * from './ConnectorTypeComponent';
+export * from './ApplicationErrorPage';
+export * from './BasicSelectInput';
