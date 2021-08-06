@@ -6,7 +6,6 @@ import {
   CodeBlockCode,
   Text,
   TextVariants,
-  Title,
   Tooltip
 } from '@patternfly/react-core';
 import { FileDownloadIcon } from '@patternfly/react-icons';

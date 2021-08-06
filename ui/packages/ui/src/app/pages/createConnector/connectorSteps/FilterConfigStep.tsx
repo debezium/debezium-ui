@@ -7,7 +7,6 @@ import {
   Form,
   Text,
   TextVariants,
-  Title,
 } from "@patternfly/react-core";
 import _ from "lodash";
 import React, { SetStateAction } from "react";
@@ -170,9 +169,6 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
 
   return (
     <>
-      <Title headingLevel="h2" size="3xl">
-        {t("filterConfiguration")}
-      </Title>
       <Text component={TextVariants.h2}>
         {t("filterPageHeadingText", {
           parent: filterConfigurationPageContentObj.fieldArray[0].field,
