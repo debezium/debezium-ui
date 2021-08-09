@@ -8,7 +8,7 @@ import {
   Text,
   TextVariants,
 } from "@patternfly/react-core";
-import _, { map } from "lodash";
+import _ from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { FilterTreeComponent, FilterExcludeFieldComponent, FilterInputFieldComponent, NoPreviewFilterField } from "components";
