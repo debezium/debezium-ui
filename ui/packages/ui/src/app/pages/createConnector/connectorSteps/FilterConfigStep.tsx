@@ -153,10 +153,11 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
 
   React.useEffect(() => {
     getFilterSchema(false, props.filterValues);
+    setFormData(new Map(props.filterValues))
   }, []);
 
   React.useEffect(() => {
-    if (formData.size === 0) {
+    if (formData.size === 0 || _.isEqual(formData, props.filterValues)) {
       props.setIsValidFilter(true);
     } else {
       props.setIsValidFilter(false);
