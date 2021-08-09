@@ -8,7 +8,7 @@ import {
   Text,
   TextVariants,
 } from "@patternfly/react-core";
-import _ from "lodash";
+import _, { map } from "lodash";
 import React, { SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { FilterTreeComponent, FilterExcludeFieldComponent, FilterInputFieldComponent, NoPreviewFilterField } from "components";
@@ -153,10 +153,11 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
 
   React.useEffect(() => {
     getFilterSchema(false, props.filterValues);
+    setFormData(new Map(props.filterValues))
   }, []);
 
   React.useEffect(() => {
-    if (formData.size === 0) {
+    if (formData.size === 0 || _.isEqual(formData, props.filterValues)) {
       props.setIsValidFilter(true);
     } else {
       props.setIsValidFilter(false);
