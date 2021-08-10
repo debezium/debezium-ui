@@ -138,7 +138,7 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
 
         PostgresConnectorConfig config = new PostgresConnectorConfig(Configuration.from(properties));
 
-        try (PostgresConnection connection = new PostgresConnection(config.jdbcConfig())) {
+        try (PostgresConnection connection = new PostgresConnection(config.getJdbcConfig())) {
             Set<TableId> tables;
             try {
                 tables = connection.readTableNames(config.databaseName(), null, null, new String[]{ "TABLE" });
