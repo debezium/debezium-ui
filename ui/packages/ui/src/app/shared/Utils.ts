@@ -699,7 +699,7 @@ export function mapToObject(inputMap: Map<string, string>): {key: string, value:
 
 export function maskPropertyValues(inputObj:{key: string, value: any}){
   for (const [key, value] of Object.entries(inputObj)) {
-    if(key === "database.password") {
+    if(key.includes("password")) {
   	  inputObj[key] = "*".repeat(value.length);
   	}
   }
