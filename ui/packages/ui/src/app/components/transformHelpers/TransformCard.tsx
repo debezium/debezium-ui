@@ -15,17 +15,12 @@ import {
   Title,
   Tooltip
 } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon, GripVerticalIcon, TrashIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, GripVerticalIcon, TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
-import {
-  RoutingConfig,
-  FormInputField,
-  ValueToKeyConfig,
-  TopicRoutingConfig,
-  TypeSelectorComponent,
-  TimestampRouterConfig
-} from 'components';
+import { FormInputField, TypeSelectorComponent, TransformConfig } from 'components';
 import './TransformCard.css';
+import _ from 'lodash';
+import { getFormattedConfig } from 'shared';
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -36,29 +31,45 @@ export interface ITransformCardProps {
   isBottom: boolean;
   deleteTransform: (order: number) => void;
   moveTransformOrder: (order: number, position: string) => void;
+  updateTransform: (key: number, field: string, value: any) => void;
+  transformsData: any;
 }
 
-export const TransformCard: React.FunctionComponent<ITransformCardProps> = (props: ITransformCardProps) => {
+const getOptions = response => {
+  const TransformData: any[] = [];
+  response.forEach(data => {
+    data.transform.includes('io.debezium') ? TransformData.unshift(data) : TransformData.push(data);
+  });
+  const dbzTransform: JSX.Element[] = [];
+  const apacheTransform: JSX.Element[] = [];
+  TransformData.forEach((data, index) => {
+    data.transform.includes('io.debezium')
+      ? dbzTransform.push(<SelectOption key={index} value={`${data.transform}`} isDisabled={!data.enabled} />)
+      : apacheTransform.push(<SelectOption key={index} value={`${data.transform}`} isDisabled={!data.enabled} />);
+  });
+
+  return [
+    <SelectGroup label="Debezium" key="group1">
+      {dbzTransform}
+    </SelectGroup>,
+    <Divider key="divider" />,
+    <SelectGroup label="Apache kafka" key="group2">
+      {apacheTransform}
+    </SelectGroup>
+  ];
+};
+
+export const TransformCard: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
   const [name, setName] = React.useState<string>('');
   const [type, setType] = React.useState<string>('');
+
+  const [val, setVal] = React.useState([]);
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
 
   const tooltipRef = React.useRef();
-
-  // const [configComplete, setConfigComplete] = React.useState<boolean>(false);
-
-  // const focusout = (e) =>{
-  //       if (e.currentTarget === e.target) {
-  //         alert("blur (self)");
-  //       }
-  //       if (!e.currentTarget?.contains(e.relatedTarget)) {
-  //         console.log("focusleave");
-  //       }
-
-  // }
 
   const onToggle = (isExpandedVal: boolean) => {
     setIsExpanded(isExpandedVal);
@@ -102,49 +113,21 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
     </DropdownItem>
   ];
 
-  const transformConfig = (transformType: string) => {
-    switch (transformType) {
-      case 'io.debezium.transforms.Filter':
-      case 'io.debezium.transforms.ContentBasedRouter':
-        return <RoutingConfig transformConfig={props.transformConfig} />;
-      case 'io.debezium.transforms.ByLogicalTableRouter':
-        return <TopicRoutingConfig transformConfig={props.transformConfig} />;
-      case 'org.apache.kafka.connect.transforms.ValueToKey':
-        return <ValueToKeyConfig transformConfig={props.transformConfig} />;
-      case 'org.apache.kafka.connect.transforms.TimestampRoute':
-        return <TimestampRouterConfig transformConfig={props.transformConfig} />;
-      default:
-        return <></>;
-    }
-  };
-
-  const option = [
-    <SelectGroup label="Debezium" key="group1">
-      <SelectOption key={0} value="io.debezium.transforms.Filter" />
-      <SelectOption key={1} value="io.debezium.transforms.ContentBasedRouter" />
-      <SelectOption key={2} value="io.debezium.transforms.ExtractNewRecordState" isDisabled={true} />
-      <SelectOption key={3} value="io.debezium.transforms.ByLogicalTableRouter" />
-    </SelectGroup>,
-    <Divider key="divider" />,
-    <SelectGroup label="Apache kafka" key="group2">
-      <SelectOption key={4} value="org.apache.kafka.connect.transforms.ValueToKey" />
-      <SelectOption key={5} value="org.apache.kafka.connect.transforms.TimestampRoute" />
-      <SelectOption key={6} value="org.apache.kafka.connect.transforms.ExtractField" isDisabled={true} />
-      <SelectOption key={7} value="org.apache.kafka.connect.transforms.Cast" isDisabled={true} />
-    </SelectGroup>
-  ];
+  React.useEffect(() => {
+    props.updateTransform(props.transformNo, 'name', name);
+  }, [name]);
+  React.useEffect(() => {
+    props.updateTransform(props.transformNo, 'type', type);
+    type && setVal(getFormattedConfig(props.transformsData, type));
+  }, [type]);
 
   return (
     <Grid>
       <GridItem span={9}>
-        <div
-          className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'}
-          // onBlur={focusout}
-          id="transform-parent"
-        >
+        <div className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'} id="transform-parent">
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
-              {/* <Tooltip content={<div>Reorder transform</div>}> */}
+              <Tooltip content={<div>Reorder transform</div>}>
                 <Dropdown
                   className={'position_toggle'}
                   onSelect={onPositionSelect}
@@ -162,7 +145,7 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
                     </DropdownToggle>
                   }
                 />
-              {/* </Tooltip> */}
+              </Tooltip>
             </SplitItem>
             <SplitItem isFilled={true}>
               <Title headingLevel="h2">
@@ -193,22 +176,22 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
                       fieldId="transform_type"
                       isRequired={true}
                       isDisabled={name === ''}
-                      options={option}
+                      options={getOptions(props.transformsData)}
                       value={type}
                       setFieldValue={setType}
                     />
                   </GridItem>
-                  {type && (
-                    <ExpandableSection
-                      toggleText={isExpanded ? 'Hide config' : 'Show config'}
-                      onToggle={onToggle}
-                      isExpanded={isExpanded}
-                    >
-                      {transformConfig(type)}
-                    </ExpandableSection>
-                  )}
                 </Grid>
               </Form>
+              {type && (
+                <ExpandableSection
+                  toggleText={isExpanded ? 'Hide config' : 'Show config'}
+                  onToggle={onToggle}
+                  isExpanded={isExpanded}
+                >
+                  <TransformConfig ref={ref} transformConfiguration={val} transformConfig={props.transformConfig} />
+                </ExpandableSection>
+              )}
             </SplitItem>
             <SplitItem>
               <Tooltip content={<div>Delete transform</div>} reference={tooltipRef} />
@@ -219,4 +202,4 @@ export const TransformCard: React.FunctionComponent<ITransformCardProps> = (prop
       </GridItem>
     </Grid>
   );
-};
+});

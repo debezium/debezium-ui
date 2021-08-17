@@ -1,4 +1,5 @@
 import { ConnectorProperty, ConnectorType } from "@debezium/ui-models";
+import _ from "lodash";
 
 export enum ConnectorState {
   UNASSIGNED = "UNASSIGNED",
@@ -611,6 +612,44 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
     }
   }
   return formattedPropertyDefns;
+}
+
+/**
+ * Alter the supplied transform properties for display purposes.
+ * - Apply optional grid formatting values to some properties for better layouts.
+ * @param transformConfig the array of transform config
+ * @returns the array of altered transform config
+ */
+ export function getFormattedConfig (transformConfig: any[], transformTypeId: string): any {
+  const formattedTransformConfig: ConnectorProperty[] = transformTypeId ? _.find(transformConfig,['transform',transformTypeId])?.configurationOptions : [];
+    for (const transConfig of formattedTransformConfig) {
+      transConfig.gridWidthSm = 10;
+      const propName = transConfig.name.replace(/_/g, ".");  // Ensure dotted version of name
+      if (transformTypeId === 'io.debezium.transforms.Filter' || transformTypeId === 'io.debezium.transforms.ContentBasedRouter') {
+        switch (propName) {
+          case 'condition':
+            transConfig.gridWidthLg = 9;
+            break;
+          case 'language':
+            transConfig.gridWidthLg = 3;
+            break;
+          case 'null.handling.mode':
+            transConfig.gridWidthLg = 3;
+            break;
+          default:
+            transConfig.gridWidthLg = 10;
+            break;
+        }
+      }else if (transformTypeId === 'org.apache.kafka.connect.transforms.ValueToKey') {
+        switch (propName) {
+          default:
+            transConfig.gridWidthLg = 10;
+            break;
+        }
+      }
+
+    }
+    return formattedTransformConfig;
 }
 
 /**
