@@ -22,11 +22,15 @@ export interface IFormInputFieldProps {
     | 'url';
   name: string;
   placeholder: string;
-  setFieldValue: (value: any) => void;
+  setFieldValue: (value: any, field: string) => void;
 }
 
 export const FormInputField = (props: IFormInputFieldProps) => {
   const { label, description, fieldId, isRequired, name, placeholder, inputType, value, setFieldValue } = props;
+
+  const saveInputText = (val: any) =>{
+    setFieldValue(val,props.label);
+  }
 
   return (
     <FormGroup
@@ -65,7 +69,7 @@ export const FormInputField = (props: IFormInputFieldProps) => {
         id={fieldId}
         isRequired={isRequired}
         value={value}
-        onChange={setFieldValue}
+        onChange={saveInputText}
         aria-label="text input"
         name={name}
         placeholder={placeholder}

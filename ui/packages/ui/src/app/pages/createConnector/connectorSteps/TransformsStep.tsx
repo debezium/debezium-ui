@@ -8,13 +8,13 @@ export interface ITransformData {
   key: number;
   name?: string;
   type?: string;
-  config: any;
+  config?: any;
 }
 
 // tslint:disable-next-line: no-empty-interface
 export interface ITransformStepProps {
-  // transformValues: Map<string, string>;
-  // updateTransformValues: (data: any) => void;
+  transformsValues: Map<string, any>;
+  updateTransformValues: (data: any) => void;
 }
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
@@ -84,7 +84,6 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   const saveTransforms = () => {
     console.log('saved');
     transformSaveRef?.current?.validate();
-    // props.updateTransformValues(transforms);
   };
 
   const updateTransformCallback = React.useCallback(
@@ -94,14 +93,51 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       if (field === 'name' || field === 'type') {
         transformCopy![field] = value;
       } else {
-        transformCopy!.config![field] = value;
+        transformCopy!.config = value;
       }
       transformsCopy.set(key, transformCopy!);
       setTransforms(transformsCopy);
-      console.log(transformsCopy);
+      console.log('transform set',transformsCopy);
     },
     [transforms]
   );
+
+  React.useEffect(()=>{
+    if(transforms.size > 0){
+      const transformValues = new Map();
+      transforms.forEach((val)=>{
+        transformValues.has('transforms') ? transformValues.set('transforms',transformValues.get('transforms')+','+val.name) : transformValues.set('transforms',val.name);
+        transformValues.set(`transforms.${val.name}.type`,val.type);
+        for(const [key, value] of Object.entries(val.config)){
+          transformValues.set(`transforms.${val.name}.${key}`,value);
+        }
+      })
+      props.updateTransformValues(transformValues);
+      console.log('data',transformValues)
+    }
+    
+  },[transforms]);
+
+  React.useEffect(() => {
+    if(props.transformsValues.size > 0){
+      const transformsVal = new Map();
+      const transformList = props.transformsValues.get('transforms')?.split(',')
+      transformList.forEach((tName,index) => {
+        const transformData:ITransformData  = {key: Math.random() * 10000};
+        transformData.name = tName;
+        transformData.type = props.transformsValues.get(`transforms.${tName}.type`);
+        transformData.config = {};
+        for (const [key, value] of props.transformsValues.entries()) {
+          if(key.includes(tName) && !key.includes('type')){
+            const fieldName = key.split('.')[key.split('.').length-1]
+            transformData.config[fieldName] = value;
+          }
+        }
+        transformsVal.set(index+1,transformData);
+        setTransforms(transformsVal)
+      });
+    }
+  }, []);
 
   return (
     <div>

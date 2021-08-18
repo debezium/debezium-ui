@@ -16,6 +16,7 @@
         "isMandatory": true,
         "name": "language",
         "allowedValues": ["groovy", "graal"],
+        "defaultValue": "groovy",
         "type": "STRING"
       },
       {
@@ -89,9 +90,9 @@
     "configurationOptions": [
       {
         "description": "Replace the record key with a new key formed from a subset of fields in the record value.",
-        "displayName": "Value To Key",
+        "displayName": "Fields",
         "isMandatory": true,
-        "name": "ValueToKey",
+        "name": "fields",
         "type": "STRING"
       }
     ]

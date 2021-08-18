@@ -3,10 +3,12 @@ import React from 'react';
 import { FormComponent } from 'components';
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
+import _ from 'lodash';
 
 export interface ITransformConfigProps {
-  transformConfiguration: any[];
-  transformConfig?: any;
+  transformConfigOptions: any[];
+  transformConfigValues?: any;
+  updateTransform: (key: number, field: string, value: any) => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
@@ -27,13 +29,14 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
 });
 
 export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
+  
   const getInitialValues = (configurations: any) => {
     const combinedValue: any = {};
-    const userValues = props.transformConfig;
+    const userValues = {...props.transformConfigValues};
 
     for (const config of configurations) {
       if (!combinedValue[config.name]) {
-        if (userValues.size === 0) {
+        if (_.isEmpty(userValues)) {
           config.defaultValue === undefined
             ? (combinedValue[config.name] = config.type === 'INT' || config.type === 'LONG' ? 0 : '')
             : (combinedValue[config.name] = config.defaultValue);
@@ -44,11 +47,12 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
     }
     return combinedValue;
   };
-  const initialValues = getInitialValues(props.transformConfiguration);
+  const configList = props.transformConfigOptions
+  const initialValues = getInitialValues(configList);
 
   const basicValidationSchema = {};
 
-  const transformConfigurationList = [...props.transformConfiguration];
+  const transformConfigurationList = [...props.transformConfigOptions];
 
   transformConfigurationList.map((key: any) => {
     if (key.type === 'STRING') {
@@ -65,7 +69,12 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
   const validationSchema = Yup.object().shape({ ...basicValidationSchema });
 
   const handleSubmit = (value: any) => {
-    console.log('Form submit', value);
+    const basicValue = {};
+      for (const basicVal of props.transformConfigOptions) {
+        basicValue[basicVal.name.replace(/_/g, ".")]= value[basicVal.name];
+      }
+    console.log('Form submit', basicValue);
+    props.updateTransform(props.transformNo, 'config', basicValue);
   };
 
   return (
@@ -81,7 +90,7 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
         {({ errors, touched, setFieldValue }) => (
           <Form className="pf-c-form">
             <Grid hasGutter={true}>
-              {props.transformConfiguration.map((configuration, index) => {
+              {props.transformConfigOptions.map((configuration, index) => {
                 return (
                   <GridItem key={index} lg={configuration.gridWidthLg} sm={configuration.gridWidthSm}>
                     <FormComponent

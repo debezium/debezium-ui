@@ -136,6 +136,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
     new Map<string, string>()
   );
+  const [transformsValues, setTransformsValues] = React.useState<Map<string, any>>(
+    new Map<string, any>()
+  );
   const [basicPropValues, setBasicPropValues] = React.useState<
     Map<string, string>
   >(new Map<string, string>());
@@ -249,12 +252,21 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         break;
+      case TRANSFORM_STEP_ID:
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
       case DATA_OPTIONS_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
       default:
@@ -263,15 +275,19 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
     }
 
-    return minimizePropertyValues(
+    return stepId < TRANSFORM_STEP_ID ? minimizePropertyValues(
       allPropValues,
       selectedConnectorPropertyDefns
-    );
+    ): new Map([...minimizePropertyValues(
+      allPropValues,
+      selectedConnectorPropertyDefns
+    ), ...transformsValues]);
   };
 
   const onFinish = () => {
@@ -401,6 +417,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const initPropertyValues = (): void => {
     setFilterValues(new Map<string, string>());
+    setTransformsValues(new Map<string,any>())
     setBasicPropValues(new Map<string, string>());
     setAdvancedPropValues(new Map<string, string>());
     setDataOptionsPropValues(new Map<string, string>());
@@ -583,6 +600,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   // Update the filter values
   const handleFilterUpdate = (filterValue: Map<string, string>) => {
     setFilterValues(new Map(filterValue));
+  };
+
+  // Update the filter values
+  const handleTransformsUpdate = (transformsValue: Map<string, string>) => {
+    setTransformsValues(new Map(transformsValue));
   };
 
   React.useEffect(() => {
@@ -808,7 +830,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               connectorType={selectedConnectorType}
               showIcon={false}
             />
-            <TransformsStep/>
+            <TransformsStep
+              transformsValues={transformsValues}
+              updateTransformValues={handleTransformsUpdate}
+            />
           </>
         ),
         canJumpTo: stepIdReached >= TRANSFORM_STEP_ID,

@@ -621,10 +621,11 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
  * @returns the array of altered transform config
  */
  export function getFormattedConfig (transformConfig: any[], transformTypeId: string): any {
-  const formattedTransformConfig: ConnectorProperty[] = transformTypeId ? _.find(transformConfig,['transform',transformTypeId])?.configurationOptions : [];
+  const formattedTransformConfig: ConnectorProperty[] = transformTypeId ? _.find([...transformConfig],['transform',transformTypeId])?.configurationOptions : [];
     for (const transConfig of formattedTransformConfig) {
       transConfig.gridWidthSm = 10;
-      const propName = transConfig.name.replace(/_/g, ".");  // Ensure dotted version of name
+      const propName = transConfig.name.replace(/\./g, "_");  // Ensure dotted version of name
+      transConfig.name = propName;
       if (transformTypeId === 'io.debezium.transforms.Filter' || transformTypeId === 'io.debezium.transforms.ContentBasedRouter') {
         switch (propName) {
           case 'condition':

@@ -60,10 +60,10 @@ const getOptions = response => {
 };
 
 export const TransformCard: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
-  const [name, setName] = React.useState<string>('');
-  const [type, setType] = React.useState<string>('');
+  // const [name, setName] = React.useState<string>('');
+  // const [type, setType] = React.useState<string>('');
 
-  const [val, setVal] = React.useState([]);
+  // const [val, setVal] = React.useState([]);
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -112,14 +112,18 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
       Move bottom
     </DropdownItem>
   ];
+  const updateNameType = (value: string, field?: string) =>{
+    if(field){
+      props.updateTransform(props.transformNo, 'name', value)
+    }else{
+      props.updateTransform(props.transformNo, 'type', value);
+      // value && setVal(getFormattedConfig(props.transformsData, value));
+    }
+  }
 
-  React.useEffect(() => {
-    props.updateTransform(props.transformNo, 'name', name);
-  }, [name]);
-  React.useEffect(() => {
-    props.updateTransform(props.transformNo, 'type', type);
-    type && setVal(getFormattedConfig(props.transformsData, type));
-  }, [type]);
+  // React.useEffect(() => {
+  //   props.transformType && setVal(getFormattedConfig(props.transformsData, props.transformType));
+  // }, [props.transformType]);
 
   return (
     <Grid>
@@ -150,7 +154,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
             <SplitItem isFilled={true}>
               <Title headingLevel="h2">
                 Transformation # {props.transformNo} &nbsp;
-                {name && type && <CheckCircleIcon style={{ color: '#3E8635' }} />}
+                {props.transformName && props.transformType && <CheckCircleIcon style={{ color: '#3E8635' }} />}
                 {/* <ExclamationCircleIcon style={{color: '#C9190B'}}/> */}
               </Title>
               <Form>
@@ -164,8 +168,8 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                       name="transform_name"
                       placeholder="Name"
                       inputType="text"
-                      value={name}
-                      setFieldValue={setName}
+                      value={props.transformName}
+                      setFieldValue={updateNameType}
                     />
                   </GridItem>
 
@@ -175,21 +179,21 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                       description=""
                       fieldId="transform_type"
                       isRequired={true}
-                      isDisabled={name === ''}
+                      isDisabled={props.transformName === ''}
                       options={getOptions(props.transformsData)}
-                      value={type}
-                      setFieldValue={setType}
+                      value={props.transformType}
+                      setFieldValue={updateNameType}
                     />
                   </GridItem>
                 </Grid>
               </Form>
-              {type && (
+              {props.transformType && (
                 <ExpandableSection
                   toggleText={isExpanded ? 'Hide config' : 'Show config'}
                   onToggle={onToggle}
                   isExpanded={isExpanded}
                 >
-                  <TransformConfig ref={ref} transformConfiguration={val} transformConfig={props.transformConfig} />
+                  <TransformConfig ref={ref} transformConfigOptions={getFormattedConfig(props.transformsData, props.transformType)} transformConfigValues={props.transformConfig} updateTransform={props.updateTransform} transformNo={props.transformNo}/>
                 </ExpandableSection>
               )}
             </SplitItem>
