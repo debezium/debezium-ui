@@ -1,13 +1,6 @@
 import { FormGroup, Popover, Select, SelectVariant } from '@patternfly/react-core';
 import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import * as React from 'react';
-
-export interface ISelectOptions {
-  value: any;
-  label: string;
-  isPlaceholder?: boolean;
-  disabled?: boolean;
-}
 export interface ITypeSelectorComponentProps {
   label: string;
   description: string;
