@@ -62,6 +62,7 @@ export const TypeSelectorComponent = ({
           if (filteredGroup.props?.children?.length > 0) {
             return filteredGroup;
           }
+          return null;
         })
         .filter(Boolean);
       return filteredGroups;
