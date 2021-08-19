@@ -15,8 +15,7 @@
         "displayName": "Language",
         "isMandatory": true,
         "name": "language",
-        "allowedValues": ["groovy", "graal"],
-        "defaultValue": "groovy",
+        "allowedValues": ["jsr223.groovy", "jsr223.graal.js"],
         "type": "STRING"
       },
       {

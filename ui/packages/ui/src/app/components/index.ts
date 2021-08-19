@@ -10,4 +10,3 @@ export * from './ConnectorTypeComponent';
 export * from './ApplicationErrorPage';
 export * from './BasicSelectInput';
 export * from './transformHelpers';
-export * from './formComponents';

@@ -1,8 +1,19 @@
-import { Alert, Button } from '@patternfly/react-core';
+import {
+  Alert,
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Grid,
+  GridItem,
+  Title
+} from '@patternfly/react-core';
 import React from 'react';
 import { TransformCard } from 'components';
 import transformResponse from '../../../../../assets/mockResponse/transform.json';
 import { IValidationRef } from '..';
+import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
 
 export interface ITransformData {
   key: number;
@@ -10,11 +21,11 @@ export interface ITransformData {
   type?: string;
   config?: any;
 }
-
-// tslint:disable-next-line: no-empty-interface
 export interface ITransformStepProps {
   transformsValues: Map<string, any>;
   updateTransformValues: (data: any) => void;
+  setIsTransformDirty: (data: boolean) => void;
+  isTransformDirty: boolean;
 }
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
@@ -26,6 +37,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
     const transformsCopy = new Map(transforms);
     transformsCopy.set(transformsCopy.size + 1, { key: Math.random() * 10000, config: {} });
     setTransforms(transformsCopy);
+    props.setIsTransformDirty(true);
   };
 
   const deleteTransformCallback = React.useCallback(
@@ -41,6 +53,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         }
       }
       setTransforms(transformResult);
+      props.setIsTransformDirty(true);
     },
     [transforms]
   );
@@ -77,12 +90,20 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
           break;
       }
       setTransforms(transformsCopy);
+      props.setIsTransformDirty(true);
     },
     [transforms]
   );
 
+  const getNameList = (): string[] => {
+    const nameList: string[] = [];
+    transforms.forEach(val => {
+      val.name && nameList.push(val.name);
+    });
+    return nameList;
+  };
+
   const saveTransforms = () => {
-    console.log('saved');
     transformSaveRef?.current?.validate();
   };
 
@@ -97,81 +118,121 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       }
       transformsCopy.set(key, transformCopy!);
       setTransforms(transformsCopy);
-      console.log('transform set',transformsCopy);
+      props.setIsTransformDirty(true);
     },
     [transforms]
   );
 
-  React.useEffect(()=>{
-    if(transforms.size > 0){
+  React.useEffect(() => {
+    if (transforms.size > 0) {
       const transformValues = new Map();
-      transforms.forEach((val)=>{
-        transformValues.has('transforms') ? transformValues.set('transforms',transformValues.get('transforms')+','+val.name) : transformValues.set('transforms',val.name);
-        transformValues.set(`transforms.${val.name}.type`,val.type);
-        for(const [key, value] of Object.entries(val.config)){
-          transformValues.set(`transforms.${val.name}.${key}`,value);
+      transforms.forEach(val => {
+        transformValues.has('transforms')
+          ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
+          : transformValues.set('transforms', val.name);
+        transformValues.set(`transforms.${val.name}.type`, val.type);
+        for (const [key, value] of Object.entries(val.config)) {
+          transformValues.set(`transforms.${val.name}.${key}`, value);
         }
-      })
+      });
       props.updateTransformValues(transformValues);
-      console.log('data',transformValues)
+      console.log('data', transformValues);
     }
-    
-  },[transforms]);
+  }, [transforms]);
 
   React.useEffect(() => {
-    if(props.transformsValues.size > 0){
+    if (props.transformsValues.size > 0) {
       const transformsVal = new Map();
-      const transformList = props.transformsValues.get('transforms')?.split(',')
-      transformList.forEach((tName,index) => {
-        const transformData:ITransformData  = {key: Math.random() * 10000};
+      const transformList = props.transformsValues.get('transforms')?.split(',');
+      transformList.forEach((tName, index) => {
+        const transformData: ITransformData = { key: Math.random() * 10000 };
         transformData.name = tName;
         transformData.type = props.transformsValues.get(`transforms.${tName}.type`);
         transformData.config = {};
         for (const [key, value] of props.transformsValues.entries()) {
-          if(key.includes(tName) && !key.includes('type')){
-            const fieldName = key.split('.')[key.split('.').length-1]
+          if (key.includes(tName) && !key.includes('type')) {
+            const fieldName = key.split(`transforms.${tName}.`)[1];
             transformData.config[fieldName] = value;
           }
         }
-        transformsVal.set(index+1,transformData);
-        setTransforms(transformsVal)
+        transformsVal.set(index + 1, transformData);
+        console.log('Received data', transformsVal);
+        setTransforms(transformsVal);
       });
     }
   }, []);
 
   return (
     <div>
-      <Alert
-        variant="info"
-        isInline={true}
-        title="Transformations enable single message at a time modification. See documentation for more details."
-      />
-      {Array.from(transforms.keys()).map((key, index) => {
-        return (
-          <TransformCard
-            key={transforms.get(key)?.key}
-            transformNo={key}
-            ref={transformSaveRef}
-            transformName={transforms.get(key)?.name || ''}
-            transformType={transforms.get(key)?.type || ''}
-            transformConfig={transforms.get(key)?.config || {}}
-            deleteTransform={deleteTransformCallback}
-            moveTransformOrder={moveTransformOrder}
-            isTop={key === 1}
-            isBottom={key === transforms.size}
-            updateTransform={updateTransformCallback}
-            transformsData={transformResponse}
+      {transforms.size === 0 ? (
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={CubesIcon} />
+          <Title headingLevel="h4" size="lg">
+            No transform added
+          </Title>
+          <EmptyStateBody>
+            Transformations enable single message at a time modification. See{' '}
+            <a href="https://debezium.io/documentation/" target="_blank">
+              documentation
+            </a>{' '}
+            for more details.
+          </EmptyStateBody>
+          <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
+            Add transform
+          </Button>
+        </EmptyState>
+      ) : (
+        <>
+          <Alert
+            variant="info"
+            isInline={true}
+            title={
+              <Title headingLevel="h6" size="md">
+                Transformations enable single message at a time modification. See{' '}
+                <a href="https://debezium.io/documentation/" target="_blank">
+                  documentation
+                </a>{' '}
+                for more details.
+              </Title>
+            }
           />
-        );
-      })}
-      {transforms.size !== 0 && (
-        <Button variant="primary" className="pf-u-mt-lg pf-u-mr-md" onClick={saveTransforms}>
-          Save
-        </Button>
+          <Grid>
+            <GridItem span={9}>
+              {Array.from(transforms.keys()).map((key, index) => {
+                return (
+                  <TransformCard
+                    key={transforms.get(key)?.key}
+                    transformNo={key}
+                    ref={transformSaveRef}
+                    transformName={transforms.get(key)?.name || ''}
+                    transformType={transforms.get(key)?.type || ''}
+                    transformConfig={transforms.get(key)?.config || {}}
+                    transformNameList={getNameList()}
+                    deleteTransform={deleteTransformCallback}
+                    moveTransformOrder={moveTransformOrder}
+                    isTop={key === 1}
+                    isBottom={key === transforms.size}
+                    updateTransform={updateTransformCallback}
+                    transformsData={transformResponse}
+                    setIsTransformDirty={props.setIsTransformDirty}
+                  />
+                );
+              })}
+            </GridItem>
+          </Grid>
+          <Button
+            variant="secondary"
+            isDisabled={!props.isTransformDirty}
+            className="pf-u-mt-lg pf-u-mr-sm"
+            onClick={saveTransforms}
+          >
+            Apply
+          </Button>
+          <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
+            Add transform
+          </Button>
+        </>
       )}
-      <Button variant="secondary" className="pf-u-mt-lg" onClick={addTransform}>
-        Add transform
-      </Button>
     </div>
   );
 };

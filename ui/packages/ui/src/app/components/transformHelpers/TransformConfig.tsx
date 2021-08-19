@@ -9,6 +9,7 @@ export interface ITransformConfigProps {
   transformConfigOptions: any[];
   transformConfigValues?: any;
   updateTransform: (key: number, field: string, value: any) => void;
+  setIsTransformDirty: (data: boolean) => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
@@ -22,17 +23,17 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
   }));
   React.useEffect(() => {
     if (dirty) {
-      console.log('dirt');
+      // console.log('dirt');
+      props.setIsTransformDirty(true);
     }
   }, [dirty]);
   return null;
 });
 
 export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
-  
   const getInitialValues = (configurations: any) => {
     const combinedValue: any = {};
-    const userValues = {...props.transformConfigValues};
+    const userValues = { ...props.transformConfigValues };
 
     for (const config of configurations) {
       if (!combinedValue[config.name]) {
@@ -47,7 +48,7 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
     }
     return combinedValue;
   };
-  const configList = props.transformConfigOptions
+  const configList = props.transformConfigOptions;
   const initialValues = getInitialValues(configList);
 
   const basicValidationSchema = {};
@@ -70,11 +71,12 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
 
   const handleSubmit = (value: any) => {
     const basicValue = {};
-      for (const basicVal of props.transformConfigOptions) {
-        basicValue[basicVal.name.replace(/_/g, ".")]= value[basicVal.name];
-      }
-    console.log('Form submit', basicValue);
+    for (const basicVal of props.transformConfigOptions) {
+      basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
+    }
+    // console.log('Form submit', basicValue);
     props.updateTransform(props.transformNo, 'config', basicValue);
+    props.setIsTransformDirty(false);
   };
 
   return (
@@ -108,7 +110,7 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
                 );
               })}
             </Grid>
-            <FormSubmit ref={ref} />
+            <FormSubmit ref={ref} setIsTransformDirty={props.setIsTransformDirty} />
           </Form>
         )}
       </Formik>

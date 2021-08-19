@@ -126,6 +126,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     RUNTIME_OPTIONS_STEP_ID
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
+  const [isTransformDirty, setIsTransformDirty] = React.useState<boolean>(false);
   const [
     selectedConnectorPropertyDefns,
     setSelectedConnectorPropertyDefns,
@@ -833,6 +834,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             <TransformsStep
               transformsValues={transformsValues}
               updateTransformValues={handleTransformsUpdate}
+              setIsTransformDirty={setIsTransformDirty}
+              isTransformDirty={isTransformDirty}
             />
           </>
         ),
@@ -1000,8 +1003,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                                 variant="link"
                                 type="submit"
                                 className={
-                                  activeStep.name ===
-                                    FILTER_CONFIGURATION_STEP && !isValidFilter
+                                  (activeStep.name ===
+                                    FILTER_CONFIGURATION_STEP && !isValidFilter)
+                                    ||
+                                  (activeStep.name ===
+                                    TRANSFORMS_STEP && isTransformDirty)  
                                     ? "pf-m-disabled"
                                     : ""
                                 }
@@ -1062,6 +1068,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   className={
                     (activeStep.id === FILTER_CONFIGURATION_STEP_ID &&
                       !isValidFilter) ||
+                      (activeStep.id === TRANSFORM_STEP_ID &&
+                        isTransformDirty) ||  
                     (activeStep.id === CONNECTOR_TYPE_STEP_ID &&
                       selectedConnectorType === undefined)
                       ? "pf-m-disabled"
@@ -1078,6 +1086,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   className={
                     (activeStep.id === FILTER_CONFIGURATION_STEP_ID &&
                       !isValidFilter) ||
+                    (activeStep.id === TRANSFORM_STEP_ID &&
+                      isTransformDirty) ||
                     (activeStep.id === CONNECTOR_TYPE_STEP_ID &&
                       selectedConnectorType === undefined)
                       ? "pf-m-disabled"

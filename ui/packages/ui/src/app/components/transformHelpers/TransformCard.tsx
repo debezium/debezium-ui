@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core';
 import { CheckCircleIcon, GripVerticalIcon, TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
-import { FormInputField, TypeSelectorComponent, TransformConfig } from 'components';
+import { NameInputField, TypeSelectorComponent, TransformConfig } from 'components';
 import './TransformCard.css';
 import _ from 'lodash';
 import { getFormattedConfig } from 'shared';
@@ -26,13 +26,15 @@ export interface ITransformCardProps {
   transformNo: number;
   transformName: string;
   transformType: string;
-  transformConfig?: any;
+  transformConfig: any;
+  transformNameList: string[];
   isTop: boolean;
   isBottom: boolean;
   deleteTransform: (order: number) => void;
   moveTransformOrder: (order: number, position: string) => void;
   updateTransform: (key: number, field: string, value: any) => void;
   transformsData: any;
+  setIsTransformDirty: (data: boolean) => void;
 }
 
 const getOptions = response => {
@@ -60,14 +62,9 @@ const getOptions = response => {
 };
 
 export const TransformCard: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
-  // const [name, setName] = React.useState<string>('');
-  // const [type, setType] = React.useState<string>('');
-
-  // const [val, setVal] = React.useState([]);
-
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
+  const [nameIsValid, setNameIsValid] = React.useState<boolean>(true);
 
   const tooltipRef = React.useRef();
 
@@ -112,22 +109,19 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
       Move bottom
     </DropdownItem>
   ];
-  const updateNameType = (value: string, field?: string) =>{
-    if(field){
-      props.updateTransform(props.transformNo, 'name', value)
-    }else{
+  const updateNameType = (value: string, field?: string) => {
+    if (field) {
+      value === '' || props.transformNameList.includes(value) ? setNameIsValid(false) : setNameIsValid(true);
+      props.updateTransform(props.transformNo, 'name', value);
+    } else {
       props.updateTransform(props.transformNo, 'type', value);
-      // value && setVal(getFormattedConfig(props.transformsData, value));
+      console.log('type changed');
     }
-  }
-
-  // React.useEffect(() => {
-  //   props.transformType && setVal(getFormattedConfig(props.transformsData, props.transformType));
-  // }, [props.transformType]);
+  };
 
   return (
     <Grid>
-      <GridItem span={9}>
+      <GridItem span={12}>
         <div className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'} id="transform-parent">
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
@@ -160,7 +154,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
               <Form>
                 <Grid hasGutter={true}>
                   <GridItem span={4}>
-                    <FormInputField
+                    <NameInputField
                       label="Name"
                       description=""
                       fieldId="transform_name"
@@ -170,6 +164,8 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                       inputType="text"
                       value={props.transformName}
                       setFieldValue={updateNameType}
+                      isInvalid={!nameIsValid}
+                      invalidText={props.transformName ? 'Name should be unique.' : 'Name is required.'}
                     />
                   </GridItem>
 
@@ -193,7 +189,14 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                   onToggle={onToggle}
                   isExpanded={isExpanded}
                 >
-                  <TransformConfig ref={ref} transformConfigOptions={getFormattedConfig(props.transformsData, props.transformType)} transformConfigValues={props.transformConfig} updateTransform={props.updateTransform} transformNo={props.transformNo}/>
+                  <TransformConfig
+                    ref={ref}
+                    transformConfigOptions={getFormattedConfig(props.transformsData, props.transformType)}
+                    transformConfigValues={props.transformConfig}
+                    updateTransform={props.updateTransform}
+                    transformNo={props.transformNo}
+                    setIsTransformDirty={props.setIsTransformDirty}
+                  />
                 </ExpandableSection>
               )}
             </SplitItem>

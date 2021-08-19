@@ -634,7 +634,7 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
           case 'language':
             transConfig.gridWidthLg = 3;
             break;
-          case 'null.handling.mode':
+          case 'null_handling_mode':
             transConfig.gridWidthLg = 3;
             break;
           default:
