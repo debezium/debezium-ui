@@ -13,6 +13,15 @@
   "addDefinition": "+ Aggiungi definizione",
   "addDefinitionTooltip": "Aggiungere un'altra riga definizione",
   "removeDefinitionTooltip": "Rimuovi questa riga di definizione",
+  "topicCreationPageHeadingText": "Definire le proprietà e i gruppi predefiniti per la creazione automatica di argomenti",
+  "topicCreation": "Creazione di argomenti",
+  "topicCreationDefaultsTitle": "Default creazione argomento",
+  "topicCreationHeadingText": "Definisci le impostazioni predefinite di creazione degli argomenti e i gruppi di argomenti",
+  "topicGroupsTitle": "Gruppi di argomenti",
+  "topicGroupsNoneDefinedText": "Nessun gruppo di argomenti è stato definito. Fare clic su 'Aggiungi gruppo di argomenti' per creare un gruppo.",
+  "addTopicGroup": "Aggiungi gruppo di argomenti",
+  "addTopicGroupTooltip": "Aggiungi un altro gruppo di argomenti",
+  "removeTopicGroupTooltip": "Rimuovi questo gruppo di argomenti",
   "pageNotFound": "pagina non trovata",
   "pageNotFoundMsg": "Questa pagina non è stata trovata. Se pensi che si tratti di un bug, segnala il problema.",
   "takeBackToHome": "Riporta a casa",
@@ -26,8 +35,8 @@
   "nameRequired": "Il nome è obbligatorio.",
   "transformTypeDescription": "Transformation tipo da applicare.",
   "typeRequired": "Il tipo di trasformazione è obbligatorio.",
-  "hideConfig": "Hide config",
-  "showConfig": "Nascondi configurazione",
+  "hideConfig": "Nascondi configurazione",
+  "showConfig": "Mostra configurazione",
   "apiErrorTitle": "Problema dell'API del server",
   "apiErrorMsg": "Si è verificato un problema durante l'interazione con il server. Vedi sotto per maggiori informazioni (se disponibili). Se il problema persiste, puoi provare a ricaricare o segnalare il problema a un amministratore.",
   "connectors": "Connettori",
@@ -136,8 +145,13 @@
   "skipToReviewTooltip": "È ora possibile creare il connettore. Puoi continuare a configurare il tuo oggetto connettore oppure puoi saltare direttamente alla fase di revisione.",
   "reviewToFinish": "Rivedi e concludi",
   "createConnector": "Crea connettore",
+<<<<<<< HEAD
   "tryAgain": "Riprova",
   "resolvePropertySucessMsg": "Tutta la configurazione richiesta è completa. Se lo desideri, puoi procedere a",
   "validationSucessMsg": "La convalida ha avuto successo",
   "optionalMsg": "Questo passaggio è facoltativo"
 }
+=======
+  "tryAgain": "Riprova"
+}
+>>>>>>> DBZ-3696 Addition of Topic Groups

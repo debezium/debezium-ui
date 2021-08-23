@@ -35,7 +35,8 @@ import {
   PropertiesStep,
   ReviewStep,
   RuntimeOptionsStep,
-  TransformsStep
+  TransformsStep,
+  TopicCreationStep
 } from './connectorSteps';
 import './CreateConnectorComponent.css';
 
@@ -92,6 +93,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   );
   const FILTER_CONFIGURATION_STEP = t('filterConfiguration');
   const TRANSFORMS_STEP = t('transform');
+  const TOPIC_CREATION_STEP = t('topicCreation');
   const DATA_OPTIONS_STEP = t('dataOptions');
   const RUNTIME_OPTIONS_STEP = t('runtimeOptions');
   const REVIEW_STEP = t('review');
@@ -100,19 +102,22 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const PROPERTIES_STEP_ID = 2;
   const FILTER_CONFIGURATION_STEP_ID = 3;
   const TRANSFORM_STEP_ID = 4;
-  const DATA_OPTIONS_STEP_ID = 5;
-  const RUNTIME_OPTIONS_STEP_ID = 6;
-  const REVIEW_STEP_ID = 7;
+  const TOPIC_CREATION_STEP_ID = 5;
+  const DATA_OPTIONS_STEP_ID = 6;
+  const RUNTIME_OPTIONS_STEP_ID = 7;
+  const REVIEW_STEP_ID = 8;
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<string | undefined>();
   const [finishStepId, setFinishStepId] = React.useState<number>(RUNTIME_OPTIONS_STEP_ID);
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
   const [isTransformDirty, setIsTransformDirty] = React.useState<boolean>(false);
+  const [isTopicCreationDirty, setIsTopicCreationDirty] = React.useState<boolean>(false);
   const [selectedConnectorPropertyDefns, setSelectedConnectorPropertyDefns] = React.useState<ConnectorProperty[]>([]);
   const [connectorTypes, setConnectorTypes] = React.useState<ConnectorType[]>([]);
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(new Map<string, string>());
   const [transformsValues, setTransformsValues] = React.useState<Map<string, any>>(new Map<string, any>());
+  const [topicCreationPropValues, setTopicCreationPropValues] = React.useState<Map<string, any>>(new Map<string, any>());
   const [basicPropValues, setBasicPropValues] = React.useState<Map<string, string>>(new Map<string, string>());
   const [advancedPropValues, setAdvancedPropValues] = React.useState<Map<string, string>>(new Map<string, string>());
   const [dataOptionsPropValues, setDataOptionsPropValues] = React.useState<Map<string, string>>(
@@ -206,6 +211,15 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         transformsValues.forEach((v, k) => allPropValues.set(k, v));
         break;
+      case TOPIC_CREATION_STEP_ID:
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
+        topicCreationPropValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
       case DATA_OPTIONS_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
@@ -213,6 +227,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         transformsValues.forEach((v, k) => allPropValues.set(k, v));
+        topicCreationPropValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
       default:
@@ -222,6 +237,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         transformsValues.forEach((v, k) => allPropValues.set(k, v));
+        topicCreationPropValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
@@ -229,7 +245,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
     return stepId < TRANSFORM_STEP_ID
       ? minimizePropertyValues(allPropValues, selectedConnectorPropertyDefns)
-      : new Map([...minimizePropertyValues(allPropValues, selectedConnectorPropertyDefns), ...transformsValues]);
+      : new Map([...minimizePropertyValues(allPropValues, selectedConnectorPropertyDefns), ...transformsValues, ...topicCreationPropValues]);
   };
 
   const onFinish = () => {
@@ -352,7 +368,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const initPropertyValues = (): void => {
     setFilterValues(new Map<string, string>());
-    setTransformsValues(new Map<string, any>());
+    setTransformsValues(new Map<string,any>())
+    setTopicCreationPropValues(new Map<string,any>())
     setBasicPropValues(new Map<string, string>());
     setAdvancedPropValues(new Map<string, string>());
     setDataOptionsPropValues(new Map<string, string>());
@@ -513,6 +530,22 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const handleTransformsUpdate = (transformsValue: Map<string, string>) => {
     setTransformsValues(new Map(transformsValue));
   };
+
+  // Update the topic creation values
+  const handleTopicCreationUpdate = (topicCreationValues: Map<string, string>) => {
+    // The properties are maintained with keys in 'dotted' form.
+    const dottedProperties = convertPropertyKeys(topicCreationValues, "_", ".");
+    setTopicCreationPropValues(dottedProperties);
+  };
+
+  // Allows conversion of map keys, e.g. between dotted and underscore delimited forms
+  const convertPropertyKeys = (propertyMap: Map<string, string>, searchStr: string, replaceStr: string) => {
+    const convertedMap = new Map<string, string>();
+    for (const [key, value] of propertyMap) {
+      convertedMap.set(key.replaceAll(searchStr,replaceStr), value);
+    }
+    return convertedMap; 
+  }
 
   React.useEffect(() => {
     const currentNames = props.connectorNames;
@@ -680,6 +713,26 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         canJumpTo: stepIdReached >= TRANSFORM_STEP_ID
       },
       {
+        id: TOPIC_CREATION_STEP_ID,
+        name: TOPIC_CREATION_STEP,
+        component: (
+          <>
+            <ConnectorNameTypeHeader
+              connectorName={getConnectorName()}
+              connectorType={selectedConnectorType}
+              showIcon={false}
+            />
+            <TopicCreationStep
+              topicCreationValues={convertPropertyKeys(topicCreationPropValues, ".", "_")}
+              updateTopicCreationValues={handleTopicCreationUpdate}
+              setIsTopicCreationDirty={setIsTopicCreationDirty}
+              isTopicCreationDirty={isTopicCreationDirty}
+            />
+          </>
+        ),
+        canJumpTo: stepIdReached >= TOPIC_CREATION_STEP_ID,
+      },
+      {
         id: DATA_OPTIONS_STEP_ID,
         name: DATA_OPTIONS_STEP,
         component: (
@@ -805,7 +858,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const wizardSteps = [
     connectorTypeStep,
-    // TransformStep,
     propertiesStep,
     additionalPropertiesStep,
     reviewStep
@@ -852,6 +904,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   className={
                     (activeStep.id === FILTER_CONFIGURATION_STEP_ID && !isValidFilter) ||
                     (activeStep.id === TRANSFORM_STEP_ID && isTransformDirty) ||
+                    (activeStep.id === TOPIC_CREATION_STEP_ID && isTopicCreationDirty) ||
                     (activeStep.id === CONNECTOR_TYPE_STEP_ID && selectedConnectorType === undefined)
                       ? 'pf-m-disabled'
                       : ''
@@ -867,6 +920,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   className={
                     (activeStep.id === FILTER_CONFIGURATION_STEP_ID && !isValidFilter) ||
                     (activeStep.id === TRANSFORM_STEP_ID && isTransformDirty) ||
+                    (activeStep.id === TOPIC_CREATION_STEP_ID && isTopicCreationDirty) ||
                     (activeStep.id === CONNECTOR_TYPE_STEP_ID && selectedConnectorType === undefined)
                       ? 'pf-m-disabled'
                       : ''
@@ -890,6 +944,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                     onClick={() => skipToReview(activeStep.id, goToStepById)}
                     isDisabled={
                       (activeStep.name === FILTER_CONFIGURATION_STEP && !isValidFilter) ||
+                      (activeStep.name === TOPIC_CREATION_STEP && isTopicCreationDirty) ||
                       (activeStep.name === TRANSFORMS_STEP && isTransformDirty) ||
                       disableNextButton(activeStep.id)
                     }

@@ -1,0 +1,9 @@
+.topic-creation-step {
+    &-defaults-title {
+      margin-top: 30px;
+    }
+    &-topic-groups-title {
+      margin-top: 30px;
+    }
+}
+  
