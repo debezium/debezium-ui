@@ -11,6 +11,7 @@ export interface ITransformConfigProps {
   updateTransform: (key: number, field: string, value: any) => void;
   setIsTransformDirty: (data: boolean) => void;
   nameIsValid: boolean;
+  transformType: string;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
@@ -95,7 +96,7 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
             <Grid hasGutter={true}>
               {props.transformConfigOptions.map((configuration, index) => {
                 return (
-                  <GridItem key={index} lg={configuration.gridWidthLg} sm={configuration.gridWidthSm}>
+                  <GridItem key={props.transformType+configuration.name} lg={configuration.gridWidthLg} sm={configuration.gridWidthSm}>
                     <FormComponent
                       propertyDefinition={configuration}
                       // tslint:disable-next-line: no-empty

@@ -623,7 +623,7 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
  export function getFormattedConfig (transformConfig: any[], transformTypeId: string): any {
   const formattedTransformConfig: ConnectorProperty[] = transformTypeId ? _.find([...transformConfig],['transform',transformTypeId])?.configurationOptions : [];
     for (const transConfig of formattedTransformConfig) {
-      transConfig.gridWidthSm = 10;
+      transConfig.gridWidthSm = 12;
       const propName = transConfig.name.replace(/\./g, "_");  // Ensure dotted version of name
       transConfig.name = propName;
       if (transformTypeId === 'io.debezium.transforms.Filter' || transformTypeId === 'io.debezium.transforms.ContentBasedRouter') {
@@ -638,13 +638,38 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
             transConfig.gridWidthLg = 3;
             break;
           default:
-            transConfig.gridWidthLg = 10;
+            transConfig.gridWidthLg = 12;
             break;
         }
-      }else if (transformTypeId === 'org.apache.kafka.connect.transforms.ValueToKey') {
+      }else if (transformTypeId === 'io.debezium.transforms.ExtractNewRecordState') {
+        switch (propName) {
+          case 'drop_tombstones':
+            transConfig.type = "BOOLEAN-SWITCH";
+            break;
+          case 'delete_handling​_mode':
+            transConfig.gridWidthLg = 4;
+            break;
+          case 'add_fields_prefix':
+            transConfig.gridWidthLg = 3;
+            break;
+          case 'add_fields':
+            transConfig.gridWidthLg = 9;
+            break;
+          case 'add_headers_prefix':
+            transConfig.gridWidthLg = 3;
+            break;
+          case 'add_headers':
+            transConfig.gridWidthLg = 9;
+            break;
+          default:
+            transConfig.gridWidthLg = 12;
+            break;
+        }
+      }
+      else if (transformTypeId === 'org.apache.kafka.connect.transforms.ValueToKey') {
         switch (propName) {
           default:
-            transConfig.gridWidthLg = 10;
+            transConfig.gridWidthLg = 12;
             break;
         }
       }

@@ -35,6 +35,7 @@ export interface ITransformCardProps {
   updateTransform: (key: number, field: string, value: any) => void;
   transformsData: any;
   setIsTransformDirty: (data: boolean) => void;
+  selectedConnectorType: string;
 }
 
 const getOptions = response => {
@@ -197,6 +198,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                     transformNo={props.transformNo}
                     setIsTransformDirty={props.setIsTransformDirty}
                     nameIsValid={nameIsValid}
+                    transformType={props.transformType}
                   />
                 </ExpandableSection>
               )}

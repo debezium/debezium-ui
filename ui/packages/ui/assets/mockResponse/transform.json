@@ -1,5 +1,11 @@
 [
   {
+    "transform": "io.debezium.transforms.ByLogicalTableRouter",
+    "enabled": false,
+    "configurationOptions": [
+    ]
+  },
+  {
     "transform": "io.debezium.transforms.Filter",
     "enabled": true,
     "configurationOptions": [
@@ -75,13 +81,56 @@
   },
   {
     "transform": "io.debezium.transforms.ExtractNewRecordState",
-    "enabled": false,
-    "configurationOptions": []
-  },
-  {
-    "transform": "io.debezium.transforms.ByLogicalTableRouter",
-    "enabled": false,
-    "configurationOptions": []
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "Debezium generates a change event record for each DELETE operation. The default behavior is that event flattening SMT removes these records from the stream.",
+        "displayName": "Delete handling",
+        "isMandatory": true,
+        "name": "delete.handling​.mode",
+        "defaultValue": "drop",
+        "allowedValues": ["drop", "none", "rewrite"],
+        "type": "STRING"
+      },
+      {
+        "description": "Debezium generates a tombstone record for each DELETE operation. To keep tombstone records in the stream, specify drop.tombstones=false",
+        "displayName": "Drop tombstone",
+        "isMandatory": false,
+        "defaultValue": true,
+        "name": "drop.tombstones",
+        "type": "BOOLEAN"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Fields prefix",
+        "isMandatory": false,
+        "defaultValue": "__",
+        "name": "add.fields.prefix",
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Fields",
+        "isMandatory": false,
+        "name": "add.fields",
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Header prefix",
+        "isMandatory": false,
+        "defaultValue": "__",
+        "name": "add.headers.prefix",
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Header",
+        "isMandatory": false,
+        "name": "add.headers",
+        "type": "STRING"
+      }
+    ]
   },
   {
     "transform": "org.apache.kafka.connect.transforms.ValueToKey",

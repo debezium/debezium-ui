@@ -835,6 +835,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               transformsValues={transformsValues}
               updateTransformValues={handleTransformsUpdate}
               setIsTransformDirty={setIsTransformDirty}
+              selectedConnectorType={selectedConnectorType || ""}
             />
           </>
         ),

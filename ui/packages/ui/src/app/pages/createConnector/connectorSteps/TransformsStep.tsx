@@ -25,6 +25,7 @@ export interface ITransformStepProps {
   transformsValues: Map<string, any>;
   updateTransformValues: (data: any) => void;
   setIsTransformDirty: (data: boolean) => void;
+  selectedConnectorType: string;
 }
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
@@ -221,6 +222,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                     updateTransform={updateTransformCallback}
                     transformsData={transformResponse}
                     setIsTransformDirty={props.setIsTransformDirty}
+                    selectedConnectorTyp={props.selectedConnectorType}
                   />
                 );
               })}
