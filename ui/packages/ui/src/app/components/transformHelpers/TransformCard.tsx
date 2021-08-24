@@ -196,6 +196,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                     updateTransform={props.updateTransform}
                     transformNo={props.transformNo}
                     setIsTransformDirty={props.setIsTransformDirty}
+                    nameIsValid={nameIsValid}
                   />
                 </ExpandableSection>
               )}

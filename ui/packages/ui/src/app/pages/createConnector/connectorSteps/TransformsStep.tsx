@@ -25,7 +25,6 @@ export interface ITransformStepProps {
   transformsValues: Map<string, any>;
   updateTransformValues: (data: any) => void;
   setIsTransformDirty: (data: boolean) => void;
-  isTransformDirty: boolean;
 }
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
@@ -53,7 +52,10 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         }
       }
       setTransforms(transformResult);
-      props.setIsTransformDirty(true);
+      if(transformResult.size === 0){
+        props.setIsTransformDirty(false);
+        props.updateTransformValues(new Map());
+      }
     },
     [transforms]
   );
@@ -127,12 +129,14 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
     if (transforms.size > 0) {
       const transformValues = new Map();
       transforms.forEach(val => {
-        transformValues.has('transforms')
-          ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
-          : transformValues.set('transforms', val.name);
-        transformValues.set(`transforms.${val.name}.type`, val.type);
-        for (const [key, value] of Object.entries(val.config)) {
-          transformValues.set(`transforms.${val.name}.${key}`, value);
+        if (val.name && val.type) {
+          transformValues.has('transforms')
+            ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
+            : transformValues.set('transforms', val.name);
+          transformValues.set(`transforms.${val.name}.type`, val.type);
+          for (const [key, value] of Object.entries(val.config)) {
+            transformValues.set(`transforms.${val.name}.${key}`, value);
+          }
         }
       });
       props.updateTransformValues(transformValues);
@@ -159,6 +163,8 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         console.log('Received data', transformsVal);
         setTransforms(transformsVal);
       });
+    }else{
+      props.setIsTransformDirty(false);
     }
   }, []);
 
@@ -187,13 +193,13 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
             variant="info"
             isInline={true}
             title={
-              <Title headingLevel="h6" size="md">
+              <p>
                 Transformations enable single message at a time modification. See{' '}
                 <a href="https://debezium.io/documentation/" target="_blank">
                   documentation
                 </a>{' '}
                 for more details.
-              </Title>
+              </p>
             }
           />
           <Grid>
@@ -222,7 +228,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
           </Grid>
           <Button
             variant="secondary"
-            isDisabled={!props.isTransformDirty}
+            // isDisabled={!props.isTransformDirty}
             className="pf-u-mt-lg pf-u-mr-sm"
             onClick={saveTransforms}
           >

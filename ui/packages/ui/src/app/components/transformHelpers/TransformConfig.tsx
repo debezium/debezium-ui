@@ -10,6 +10,7 @@ export interface ITransformConfigProps {
   transformConfigValues?: any;
   updateTransform: (key: number, field: string, value: any) => void;
   setIsTransformDirty: (data: boolean) => void;
+  nameIsValid: boolean;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
@@ -74,9 +75,9 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
     for (const basicVal of props.transformConfigOptions) {
       basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
     }
-    // console.log('Form submit', basicValue);
+    console.log('Form submit', basicValue);
     props.updateTransform(props.transformNo, 'config', basicValue);
-    props.setIsTransformDirty(false);
+    props.nameIsValid && props.setIsTransformDirty(false);
   };
 
   return (
