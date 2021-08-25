@@ -14,6 +14,7 @@ import { TransformCard } from 'components';
 import transformResponse from '../../../../../assets/mockResponse/transform.json';
 import { IValidationRef } from '..';
 import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
 
 export interface ITransformData {
   key: number;
@@ -29,6 +30,9 @@ export interface ITransformStepProps {
 }
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
+
+  const { t } = useTranslation();
+  
   const [transforms, setTransforms] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
 
   const transformSaveRef = React.useRef() as React.MutableRefObject<IValidationRef>;
@@ -53,7 +57,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         }
       }
       setTransforms(transformResult);
-      if(transformResult.size === 0){
+      if (transformResult.size === 0) {
         props.setIsTransformDirty(false);
         props.updateTransformValues(new Map());
       }
@@ -141,7 +145,6 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         }
       });
       props.updateTransformValues(transformValues);
-      console.log('data', transformValues);
     }
   }, [transforms]);
 
@@ -161,10 +164,9 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
           }
         }
         transformsVal.set(index + 1, transformData);
-        console.log('Received data', transformsVal);
         setTransforms(transformsVal);
       });
-    }else{
+    } else {
       props.setIsTransformDirty(false);
     }
   }, []);
@@ -175,17 +177,19 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h4" size="lg">
-            No transform added
+          {t("noTransformAdded")}
           </Title>
           <EmptyStateBody>
-            Transformations enable single message at a time modification. See{' '}
+          {t("transformAlert")}
+            {' See '}
             <a href="https://debezium.io/documentation/" target="_blank">
-              documentation
+            {t("documentation")}
             </a>{' '}
-            for more details.
+            {t("moreDetails")}
           </EmptyStateBody>
           <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-            Add transform
+          {t("addTransform")}
+    
           </Button>
         </EmptyState>
       ) : (
@@ -222,22 +226,17 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                     updateTransform={updateTransformCallback}
                     transformsData={transformResponse}
                     setIsTransformDirty={props.setIsTransformDirty}
-                    selectedConnectorTyp={props.selectedConnectorType}
+                    selectedConnectorType={props.selectedConnectorType}
                   />
                 );
               })}
             </GridItem>
           </Grid>
-          <Button
-            variant="secondary"
-            // isDisabled={!props.isTransformDirty}
-            className="pf-u-mt-lg pf-u-mr-sm"
-            onClick={saveTransforms}
-          >
-            Apply
+          <Button variant="secondary" className="pf-u-mt-lg pf-u-mr-sm" onClick={saveTransforms}>
+          {t("apply")}
           </Button>
           <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-            Add transform
+          {t("addTransform")}
           </Button>
         </>
       )}

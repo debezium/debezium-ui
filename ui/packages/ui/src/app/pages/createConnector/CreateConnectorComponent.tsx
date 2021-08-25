@@ -105,7 +105,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     </div>
   );
   const FILTER_CONFIGURATION_STEP = t("filterConfiguration");
-  const TRANSFORMS_STEP = "Transforms";
+  const TRANSFORMS_STEP = t("transform");
   const DATA_OPTIONS_STEP = t("dataOptions");
   const RUNTIME_OPTIONS_STEP = t("runtimeOptions");
   const REVIEW_STEP = t("review");
@@ -682,22 +682,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       />
     ),
   };
-
-  // const TransformStep =    {
-  //   id: 2,
-  //   name: TRANSFORMS_STEP,
-  //   component: (
-  //     <>
-  //       <ConnectorNameTypeHeader
-  //         connectorName={getConnectorName()}
-  //         connectorType={selectedConnectorType}
-  //         showIcon={false}
-  //       />
-  //       <TransformsStep/>
-  //     </>
-  //   ),
-  //   canJumpTo: stepIdReached >= 2,
-  // };
 
   const propertiesStep = {
     id: PROPERTIES_STEP_ID,

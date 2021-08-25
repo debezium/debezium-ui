@@ -44,7 +44,7 @@
   },
   {
     "transform": "io.debezium.transforms.ContentBasedRouter",
-    "enabled": true,
+    "enabled": false,
     "configurationOptions": [
       {
         "description": "An optional regular expression that evaluates the name of the destination topic for an event to determine whether to apply filtering logic.",
@@ -147,8 +147,25 @@
   },
   {
     "transform": "org.apache.kafka.connect.transforms.TimestampRoute",
-    "enabled": false,
-    "configurationOptions": []
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "Format string for the timestamp that is compatible with java.text.SimpleDateFormat. For additional details, see SimpleDateFormat.",
+        "displayName": "Timestamp format",
+        "isMandatory": true,
+        "defaultValue": "yyyyMMdd",
+        "name": "timestamp.format",
+        "type": "STRING"
+      },
+      {
+        "description": "Format string which can contain ${topic} and ${timestamp} as placeholders for the topic and timestamp, respectively.",
+        "displayName": "Topic format",
+        "isMandatory": true,
+        "defaultValue": "${topic}-${timestamp}",
+        "name": "topic.format",
+        "type": "STRING"
+      }
+    ]
   },
   {
     "transform": "org.apache.kafka.connect.transforms.ExtractField",

@@ -12,6 +12,7 @@ export interface ITransformConfigProps {
   setIsTransformDirty: (data: boolean) => void;
   nameIsValid: boolean;
   transformType: string;
+  transformNo: number;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
@@ -25,14 +26,13 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
   }));
   React.useEffect(() => {
     if (dirty) {
-      // console.log('dirt');
       props.setIsTransformDirty(true);
     }
   }, [dirty]);
   return null;
 });
 
-export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
+export const TransformConfig = React.forwardRef<any, ITransformConfigProps>((props, ref) => {
   const getInitialValues = (configurations: any) => {
     const combinedValue: any = {};
     const userValues = { ...props.transformConfigValues };
@@ -50,8 +50,6 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
     }
     return combinedValue;
   };
-  const configList = props.transformConfigOptions;
-  const initialValues = getInitialValues(configList);
 
   const basicValidationSchema = {};
 
@@ -66,7 +64,7 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
       basicValidationSchema[key.name] = Yup.string();
     }
     if (key.isMandatory) {
-      basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.name} required`);
+      basicValidationSchema[key.name] = basicValidationSchema[key.name].required(`${key.displayName} required`);
     }
   });
   const validationSchema = Yup.object().shape({ ...basicValidationSchema });
@@ -76,7 +74,6 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
     for (const basicVal of props.transformConfigOptions) {
       basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
     }
-    console.log('Form submit', basicValue);
     props.updateTransform(props.transformNo, 'config', basicValue);
     props.nameIsValid && props.setIsTransformDirty(false);
   };
@@ -84,7 +81,7 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
   return (
     <>
       <Formik
-        initialValues={initialValues}
+        initialValues={getInitialValues(props.transformConfigOptions)}
         validationSchema={validationSchema}
         onSubmit={values => {
           handleSubmit(values);
@@ -96,7 +93,11 @@ export const TransformConfig: React.FunctionComponent<any> = React.forwardRef((p
             <Grid hasGutter={true}>
               {props.transformConfigOptions.map((configuration, index) => {
                 return (
-                  <GridItem key={props.transformType+configuration.name} lg={configuration.gridWidthLg} sm={configuration.gridWidthSm}>
+                  <GridItem
+                    key={props.transformType + configuration.name}
+                    lg={configuration.gridWidthLg}
+                    sm={configuration.gridWidthSm}
+                  >
                     <FormComponent
                       propertyDefinition={configuration}
                       // tslint:disable-next-line: no-empty

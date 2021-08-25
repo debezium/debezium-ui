@@ -21,6 +21,7 @@ import { NameInputField, TypeSelectorComponent, TransformConfig } from 'componen
 import './TransformCard.css';
 import _ from 'lodash';
 import { getFormattedConfig } from 'shared';
+import { useTranslation } from 'react-i18next';
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -62,12 +63,12 @@ const getOptions = response => {
   ];
 };
 
-export const TransformCard: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
+export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, ref) => {
+  const { t } = useTranslation();
+  
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
   const [nameIsValid, setNameIsValid] = React.useState<boolean>(true);
-
-  const tooltipRef = React.useRef();
 
   const onToggle = (isExpandedVal: boolean) => {
     setIsExpanded(isExpandedVal);
@@ -93,10 +94,10 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
 
   const dropdownItems = [
     <DropdownItem key="move_top" component="button" id="top" isDisabled={props.isTop}>
-      Move top
+      {t("moveTop")}
     </DropdownItem>,
     <DropdownItem key="move_up" component="button" id="up" isDisabled={props.isTop || (props.isTop && props.isBottom)}>
-      Move up
+      {t("moveUp")}
     </DropdownItem>,
     <DropdownItem
       key="move_down"
@@ -104,10 +105,10 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
       id="down"
       isDisabled={(props.isTop && props.isBottom) || props.isBottom}
     >
-      Move down
+      {t("moveDown")}
     </DropdownItem>,
     <DropdownItem key="move_bottom" component="button" id="bottom" isDisabled={props.isBottom}>
-      Move bottom
+      {t("moveBottom")}
     </DropdownItem>
   ];
   const updateNameType = (value: string, field?: string) => {
@@ -116,7 +117,6 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
       props.updateTransform(props.transformNo, 'name', value);
     } else {
       props.updateTransform(props.transformNo, 'type', value);
-      console.log('type changed');
     }
   };
 
@@ -126,7 +126,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
         <div className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'} id="transform-parent">
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
-              <Tooltip content={<div>Reorder transform</div>}>
+              <Tooltip content={<div>{t("reorderTransform")}</div>}>
                 <Dropdown
                   className={'position_toggle'}
                   onSelect={onPositionSelect}
@@ -166,7 +166,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
                       value={props.transformName}
                       setFieldValue={updateNameType}
                       isInvalid={!nameIsValid}
-                      invalidText={props.transformName ? 'Name should be unique.' : 'Name is required.'}
+                      invalidText={props.transformName ? t("uniqueName") : t("nameRequired")}
                     />
                   </GridItem>
 
@@ -186,7 +186,7 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
               </Form>
               {props.transformType && (
                 <ExpandableSection
-                  toggleText={isExpanded ? 'Hide config' : 'Show config'}
+                  toggleText={isExpanded ? t("hideConfig") : t('showConfig')}
                   onToggle={onToggle}
                   isExpanded={isExpanded}
                 >
@@ -204,8 +204,9 @@ export const TransformCard: React.FunctionComponent<any> = React.forwardRef((pro
               )}
             </SplitItem>
             <SplitItem>
-              <Tooltip content={<div>Delete transform</div>} reference={tooltipRef} />
-              <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} ref={tooltipRef} />
+              <Tooltip content={<div>{t("deleteTransform")}</div>}>
+                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} />
+              </Tooltip>
             </SplitItem>
           </Split>
         </div>
