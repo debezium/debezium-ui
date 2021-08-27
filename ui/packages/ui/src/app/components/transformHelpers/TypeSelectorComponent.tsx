@@ -1,5 +1,6 @@
 import { FormGroup, Popover, Select, SelectVariant } from '@patternfly/react-core';
 import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import { HelpInfoIcon } from 'components';
 import * as React from 'react';
 export interface ITypeSelectorComponentProps {
   label: string;
@@ -68,29 +69,7 @@ export const TypeSelectorComponent = ({
       isRequired={isRequired}
       fieldId={fieldId}
       labelIcon={
-        <Popover
-          bodyContent={
-            <div>
-              {description}
-              <br />
-              <a
-                href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                target="_blank"
-              >
-                More Info
-              </a>
-            </div>
-          }
-        >
-          <button
-            aria-label="More info for filter field"
-            onClick={e => e.preventDefault()}
-            aria-describedby="simple-form-filter"
-            className="pf-c-form__group-label-help"
-          >
-            <HelpIcon noVerticalAlign={true} />
-          </button>
-        </Popover>
+        <HelpInfoIcon label={label} description={description} />
       }
       helperTextInvalidIcon={<ExclamationCircleIcon />}
     >

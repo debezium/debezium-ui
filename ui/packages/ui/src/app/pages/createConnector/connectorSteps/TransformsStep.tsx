@@ -12,7 +12,7 @@ import {
 import React from 'react';
 import { TransformCard } from 'components';
 import transformResponse from '../../../../../assets/mockResponse/transform.json';
-import { IValidationRef } from '..';
+import MultiRef from 'react-multi-ref';
 import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -30,12 +30,12 @@ export interface ITransformStepProps {
 }
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
-
   const { t } = useTranslation();
-  
+
   const [transforms, setTransforms] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
 
-  const transformSaveRef = React.useRef() as React.MutableRefObject<IValidationRef>;
+  // tslint:disable-next-line: variable-name
+  const _items = new MultiRef();
 
   const addTransform = () => {
     const transformsCopy = new Map(transforms);
@@ -111,7 +111,9 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   };
 
   const saveTransforms = () => {
-    transformSaveRef?.current?.validate();
+    _items.map.forEach((input:any) => {
+      input.validate();
+    });
   };
 
   const updateTransformCallback = React.useCallback(
@@ -120,12 +122,12 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       const transformCopy = transforms.get(key);
       if (field === 'name' || field === 'type') {
         transformCopy![field] = value;
+        props.setIsTransformDirty(true);
       } else {
         transformCopy!.config = value;
       }
       transformsCopy.set(key, transformCopy!);
       setTransforms(transformsCopy);
-      props.setIsTransformDirty(true);
     },
     [transforms]
   );
@@ -177,19 +179,18 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h4" size="lg">
-          {t("noTransformAdded")}
+            {t('noTransformAdded')}
           </Title>
           <EmptyStateBody>
-          {t("transformAlert")}
+            {t('transformAlert')}
             {' See '}
             <a href="https://debezium.io/documentation/" target="_blank">
-            {t("documentation")}
+              {t('documentation')}
             </a>{' '}
-            {t("moreDetails")}
+            {t('moreDetails')}
           </EmptyStateBody>
           <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-          {t("addTransform")}
-    
+            {t('addTransform')}
           </Button>
         </EmptyState>
       ) : (
@@ -199,11 +200,11 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
             isInline={true}
             title={
               <p>
-                Transformations enable single message at a time modification. See{' '}
+                {t('transformAlert')} {' See '}
                 <a href="https://debezium.io/documentation/" target="_blank">
-                  documentation
+                  {t('documentation')}
                 </a>{' '}
-                for more details.
+                {t('moreDetails')}
               </p>
             }
           />
@@ -214,7 +215,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                   <TransformCard
                     key={transforms.get(key)?.key}
                     transformNo={key}
-                    ref={transformSaveRef}
+                    ref={_items.ref(transforms.get(key)?.key)}
                     transformName={transforms.get(key)?.name || ''}
                     transformType={transforms.get(key)?.type || ''}
                     transformConfig={transforms.get(key)?.config || {}}
@@ -233,10 +234,10 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
             </GridItem>
           </Grid>
           <Button variant="secondary" className="pf-u-mt-lg pf-u-mr-sm" onClick={saveTransforms}>
-          {t("apply")}
+            {t('apply')}
           </Button>
           <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-          {t("addTransform")}
+            {t('addTransform')}
           </Button>
         </>
       )}

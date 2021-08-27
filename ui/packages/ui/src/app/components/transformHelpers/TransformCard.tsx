@@ -157,7 +157,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                   <GridItem span={4}>
                     <NameInputField
                       label="Name"
-                      description=""
+                      description={t("transformNameDescription")}
                       fieldId="transform_name"
                       isRequired={true}
                       name="transform_name"
@@ -173,7 +173,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                   <GridItem span={8}>
                     <TypeSelectorComponent
                       label="Type"
-                      description=""
+                      description={t("transformTypeDescription")}
                       fieldId="transform_type"
                       isRequired={true}
                       isDisabled={props.transformName === ''}
@@ -204,9 +204,9 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
               )}
             </SplitItem>
             <SplitItem>
-              <Tooltip content={<div>{t("deleteTransform")}</div>}>
-                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} />
-              </Tooltip>
+
+                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} id="tooltip-selector"/>
+               
             </SplitItem>
           </Split>
         </div>

@@ -19,8 +19,10 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
   const { dirty, submitForm, validateForm } = useFormikContext();
 
   React.useImperativeHandle(ref, () => ({
-    validate() {
-      validateForm();
+    async validate() {
+      const valid  = await validateForm();
+
+      _.isEmpty(valid) ? props.setIsTransformDirty(false) : props.setIsTransformDirty(true);
       submitForm();
     }
   }));
@@ -75,7 +77,6 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>((pro
       basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
     }
     props.updateTransform(props.transformNo, 'config', basicValue);
-    props.nameIsValid && props.setIsTransformDirty(false);
   };
 
   return (
@@ -113,7 +114,7 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>((pro
                 );
               })}
             </Grid>
-            <FormSubmit ref={ref} setIsTransformDirty={props.setIsTransformDirty} />
+            <FormSubmit ref={ref} setIsTransformDirty={props.setIsTransformDirty} nameIsValid={props.nameIsValid} />
           </Form>
         )}
       </Formik>

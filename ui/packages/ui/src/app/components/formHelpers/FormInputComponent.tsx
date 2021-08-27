@@ -16,7 +16,7 @@ export interface IFormInputComponentProps {
   helperTextInvalid?: any;
   type: any;
   isRequired: boolean;
-  validated?: "default" | "success" | "warning" | "error" | undefined
+  validated?: "default" | "success" | "warning" | "error" | undefined;
   clearValidationError: () => void;
 }
 export const FormInputComponent: React.FunctionComponent<IFormInputComponentProps> = props => {
