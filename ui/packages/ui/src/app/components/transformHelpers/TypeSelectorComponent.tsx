@@ -1,5 +1,5 @@
-import { FormGroup, Popover, Select, SelectVariant } from '@patternfly/react-core';
-import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import { FormGroup, Select, SelectVariant } from '@patternfly/react-core';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { HelpInfoIcon } from 'components';
 import * as React from 'react';
 export interface ITypeSelectorComponentProps {
