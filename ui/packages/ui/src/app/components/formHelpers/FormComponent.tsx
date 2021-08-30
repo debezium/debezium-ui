@@ -65,6 +65,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
         options={props.propertyDefinition.allowedValues}
+        validated={getValidate()}
       />
     );
     // Boolean - checkbox

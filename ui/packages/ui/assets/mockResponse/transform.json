@@ -1,0 +1,180 @@
+[
+  {
+    "transform": "io.debezium.transforms.ByLogicalTableRouter",
+    "enabled": false,
+    "configurationOptions": [
+    ]
+  },
+  {
+    "transform": "io.debezium.transforms.Filter",
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "An optional regular expression that evaluates the name of the destination topic for an event to determine whether to apply filtering logic.",
+        "displayName": "Regex",
+        "isMandatory": false,
+        "name": "topic.regex",
+        "type": "STRING"
+      },
+      {
+        "description": "The language in which the expression is written. Must begin with jsr223., for example, jsr223.groovy, or jsr223.graal.js. Debezium supports bootstrapping through the JSR 223 API ('ScriptingfortheJava™Platform') only.",
+        "displayName": "Language",
+        "isMandatory": true,
+        "name": "language",
+        "allowedValues": ["jsr223.groovy", "jsr223.graal.js"],
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Condition",
+        "isMandatory": true,
+        "name": "condition",
+        "type": "STRING"
+      },
+      {
+        "description": "Specifies how the transformation handles null (tombstone) messages.",
+        "displayName": "Null handler",
+        "isMandatory": true,
+        "name": "null.handling.mode",
+        "allowedValues": ["keep", "drop", "evaluate"],
+        "defaultValue": "keep",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "transform": "io.debezium.transforms.ContentBasedRouter",
+    "enabled": false,
+    "configurationOptions": [
+      {
+        "description": "An optional regular expression that evaluates the name of the destination topic for an event to determine whether to apply filtering logic.",
+        "displayName": "Regex",
+        "isMandatory": false,
+        "name": "topic.regex",
+        "type": "STRING"
+      },
+      {
+        "description": "The language in which the expression is written. Must begin with jsr223., for example, jsr223.groovy, or jsr223.graal.js. Debezium supports bootstrapping through the JSR 223 API ('ScriptingfortheJava™Platform') only.",
+        "displayName": "Language",
+        "isMandatory": true,
+        "name": "language",
+        "allowedValues": ["jsr223.groovy", "jsr223.graal.js"],
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Condition",
+        "isMandatory": true,
+        "name": "condition",
+        "type": "STRING"
+      },
+      {
+        "description": "Specifies how the transformation handles null (tombstone) messages.",
+        "displayName": "Null handler",
+        "isMandatory": true,
+        "name": "null.handling.mode",
+        "allowedValues": ["keep", "drop", "evaluate"],
+        "defaultValue": "keep",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "transform": "io.debezium.transforms.ExtractNewRecordState",
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "Debezium generates a change event record for each DELETE operation. The default behavior is that event flattening SMT removes these records from the stream.",
+        "displayName": "Delete handling",
+        "isMandatory": true,
+        "name": "delete.handling​.mode",
+        "defaultValue": "drop",
+        "allowedValues": ["drop", "none", "rewrite"],
+        "type": "STRING"
+      },
+      {
+        "description": "Debezium generates a tombstone record for each DELETE operation. To keep tombstone records in the stream, specify drop.tombstones=false",
+        "displayName": "Drop tombstone",
+        "isMandatory": false,
+        "defaultValue": true,
+        "name": "drop.tombstones",
+        "type": "BOOLEAN"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Fields prefix",
+        "isMandatory": false,
+        "defaultValue": "__",
+        "name": "add.fields.prefix",
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Fields",
+        "isMandatory": false,
+        "name": "add.fields",
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Header prefix",
+        "isMandatory": false,
+        "defaultValue": "__",
+        "name": "add.headers.prefix",
+        "type": "STRING"
+      },
+      {
+        "description": "The expression to be evaluated for every message. Must evaluate to a Boolean value where a result of true keeps the message, and a result of false removes it.",
+        "displayName": "Header",
+        "isMandatory": false,
+        "name": "add.headers",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "transform": "org.apache.kafka.connect.transforms.ValueToKey",
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "Replace the record key with a new key formed from a subset of fields in the record value.",
+        "displayName": "Fields",
+        "isMandatory": true,
+        "name": "fields",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "transform": "org.apache.kafka.connect.transforms.TimestampRoute",
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "Format string for the timestamp that is compatible with java.text.SimpleDateFormat. For additional details, see SimpleDateFormat.",
+        "displayName": "Timestamp format",
+        "isMandatory": true,
+        "defaultValue": "yyyyMMdd",
+        "name": "timestamp.format",
+        "type": "STRING"
+      },
+      {
+        "description": "Format string which can contain ${topic} and ${timestamp} as placeholders for the topic and timestamp, respectively.",
+        "displayName": "Topic format",
+        "isMandatory": true,
+        "defaultValue": "${topic}-${timestamp}",
+        "name": "topic.format",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "transform": "org.apache.kafka.connect.transforms.ExtractField",
+    "enabled": false,
+    "configurationOptions": []
+  },
+  {
+    "transform": "org.apache.kafka.connect.transforms.Cast",
+    "enabled": false,
+    "configurationOptions": []
+  }
+]

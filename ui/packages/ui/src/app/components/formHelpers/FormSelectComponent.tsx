@@ -8,20 +8,15 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import * as React from 'react';
 import { HelpInfoIcon } from './HelpInfoIcon';
-
-
-export interface ISelectOptions {
-  value: string,
-  disabled: boolean
-}
 export interface IFormSelectComponentProps {
-    label: string,
+    label: string;
     name: string;
-    description: string,
-    fieldId: string,
+    description: string;
+    fieldId: string;
     helperTextInvalid: string,
-    isRequired: boolean,
-    options: string[],
+    isRequired: boolean;
+    options: string[];
+    validated?: "default" | "success" | "warning" | "error" | undefined;
     propertyChange: (name: string, selection: any) => void;
     setFieldValue: (
       field: string,
@@ -33,6 +28,7 @@ export interface IFormSelectComponentProps {
 export const FormSelectComponent = (props: IFormSelectComponentProps) => {
   const {
     label,
+    isRequired,
     description,
     fieldId,
     helperTextInvalid,
@@ -70,6 +66,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
   return (
     <FormGroup
       label={label}
+      isRequired={isRequired}
       labelIcon={
         <HelpInfoIcon label={label} description={description} />
       }
@@ -77,14 +74,17 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       fieldId={field.name}
       name={fieldId}
+      validated={props.validated}
     >
       <Select
         variant={SelectVariant.single}
+        placeholderText="Select an option"
         aria-label="Select Input"
         onToggle={onToggle}
         onSelect={onSelect}
         selections={field.value}
         isOpen={isOpen}
+        validated={props.validated}
       >
         {selectOptions.map((option:any, index) => (
           <SelectOption

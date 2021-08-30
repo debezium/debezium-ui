@@ -48,6 +48,7 @@ import {
   PropertiesStep,
   ReviewStep,
   RuntimeOptionsStep,
+  TransformsStep
 } from "./connectorSteps";
 import "./CreateConnectorComponent.css";
 
@@ -104,6 +105,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     </div>
   );
   const FILTER_CONFIGURATION_STEP = t("filterConfiguration");
+  const TRANSFORMS_STEP = t("transform");
   const DATA_OPTIONS_STEP = t("dataOptions");
   const RUNTIME_OPTIONS_STEP = t("runtimeOptions");
   const REVIEW_STEP = t("review");
@@ -111,9 +113,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const CONNECTOR_TYPE_STEP_ID = 1;
   const PROPERTIES_STEP_ID = 2;
   const FILTER_CONFIGURATION_STEP_ID = 3;
-  const DATA_OPTIONS_STEP_ID = 4;
-  const RUNTIME_OPTIONS_STEP_ID = 5;
-  const REVIEW_STEP_ID = 6;
+  const TRANSFORM_STEP_ID = 4
+  const DATA_OPTIONS_STEP_ID = 5;
+  const RUNTIME_OPTIONS_STEP_ID = 6;
+  const REVIEW_STEP_ID = 7;
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
@@ -123,6 +126,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     RUNTIME_OPTIONS_STEP_ID
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
+  const [isTransformDirty, setIsTransformDirty] = React.useState<boolean>(false);
   const [
     selectedConnectorPropertyDefns,
     setSelectedConnectorPropertyDefns,
@@ -132,6 +136,9 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   );
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
     new Map<string, string>()
+  );
+  const [transformsValues, setTransformsValues] = React.useState<Map<string, any>>(
+    new Map<string, any>()
   );
   const [basicPropValues, setBasicPropValues] = React.useState<
     Map<string, string>
@@ -246,12 +253,21 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
         break;
+      case TRANSFORM_STEP_ID:
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
       case DATA_OPTIONS_STEP_ID:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
       default:
@@ -260,15 +276,19 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         });
         advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
         filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
     }
 
-    return minimizePropertyValues(
+    return stepId < TRANSFORM_STEP_ID ? minimizePropertyValues(
       allPropValues,
       selectedConnectorPropertyDefns
-    );
+    ): new Map([...minimizePropertyValues(
+      allPropValues,
+      selectedConnectorPropertyDefns
+    ), ...transformsValues]);
   };
 
   const onFinish = () => {
@@ -398,6 +418,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
 
   const initPropertyValues = (): void => {
     setFilterValues(new Map<string, string>());
+    setTransformsValues(new Map<string,any>())
     setBasicPropValues(new Map<string, string>());
     setAdvancedPropValues(new Map<string, string>());
     setDataOptionsPropValues(new Map<string, string>());
@@ -582,6 +603,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setFilterValues(new Map(filterValue));
   };
 
+  // Update the filter values
+  const handleTransformsUpdate = (transformsValue: Map<string, string>) => {
+    setTransformsValues(new Map(transformsValue));
+  };
+
   React.useEffect(() => {
     const currentNames = props.connectorNames;
     if (currentNames === undefined) {
@@ -641,7 +667,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   }, [connectorTypes]);
 
   const connectorTypeStep = {
-    id: 1,
+    id: CONNECTOR_TYPE_STEP_ID,
     name: CONNECTOR_TYPE_STEP,
     component: (
       <ConnectorTypeStep
@@ -658,7 +684,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   };
 
   const propertiesStep = {
-    id: 2,
+    id: PROPERTIES_STEP_ID,
     name: PROPERTIES_STEP,
     component: (
       <>
@@ -747,7 +773,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         )}
       </>
     ),
-    canJumpTo: stepIdReached >= 2,
+    canJumpTo: stepIdReached >= PROPERTIES_STEP_ID,
   };
 
   const additionalPropertiesStep = {
@@ -756,7 +782,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     // name: <div>Additional properties<Label color="blue">Optional</Label></div>,
     steps: [
       {
-        id: 3,
+        id: FILTER_CONFIGURATION_STEP_ID,
         name: FILTER_CONFIGURATION_STEP,
         component: (
           <>
@@ -777,10 +803,30 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             />
           </>
         ),
-        canJumpTo: stepIdReached >= 3,
+        canJumpTo: stepIdReached >= FILTER_CONFIGURATION_STEP_ID,
       },
       {
-        id: 4,
+        id: TRANSFORM_STEP_ID,
+        name: TRANSFORMS_STEP,
+        component: (
+          <>
+            <ConnectorNameTypeHeader
+              connectorName={getConnectorName()}
+              connectorType={selectedConnectorType}
+              showIcon={false}
+            />
+            <TransformsStep
+              transformsValues={transformsValues}
+              updateTransformValues={handleTransformsUpdate}
+              setIsTransformDirty={setIsTransformDirty}
+              selectedConnectorType={selectedConnectorType || ""}
+            />
+          </>
+        ),
+        canJumpTo: stepIdReached >= TRANSFORM_STEP_ID,
+      },
+      {
+        id: DATA_OPTIONS_STEP_ID,
         name: DATA_OPTIONS_STEP,
         component: (
           <>
@@ -824,10 +870,10 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ) : null}
           </>
         ),
-        canJumpTo: stepIdReached >= 4,
+        canJumpTo: stepIdReached >= DATA_OPTIONS_STEP_ID,
       },
       {
-        id: 5,
+        id: RUNTIME_OPTIONS_STEP_ID,
         name: RUNTIME_OPTIONS_STEP,
         component: (
           <>
@@ -871,13 +917,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
             ) : null}
           </>
         ),
-        canJumpTo: stepIdReached >= 5,
+        canJumpTo: stepIdReached >= RUNTIME_OPTIONS_STEP_ID,
       },
     ],
   };
 
   const reviewStep = {
-    id: 6,
+    id: REVIEW_STEP_ID,
     name: REVIEW_STEP,
     component: (
       <>
@@ -895,12 +941,13 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         />
       </>
     ),
-    canJumpTo: stepIdReached >= 2,
+    canJumpTo: stepIdReached >= PROPERTIES_STEP_ID,
     nextButtonText: t("finish"),
   };
 
   const wizardSteps = [
     connectorTypeStep,
+    // TransformStep,
     propertiesStep,
     additionalPropertiesStep,
     reviewStep,
@@ -920,8 +967,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
           return (
             <>
               {activeStep.id &&
-                activeStep.id > 2 &&
-                activeStep.id !== 6 &&
+                activeStep.id > PROPERTIES_STEP_ID &&
+                activeStep.id !== REVIEW_STEP_ID &&
                 !disableNextButton(activeStep.id) && (
                   <div className="skipToNextInfoBox">
                     <NotificationDrawer>
@@ -940,8 +987,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                                 variant="link"
                                 type="submit"
                                 className={
-                                  activeStep.name ===
-                                    FILTER_CONFIGURATION_STEP && !isValidFilter
+                                  (activeStep.name ===
+                                    FILTER_CONFIGURATION_STEP && !isValidFilter)
+                                    ||
+                                  (activeStep.name ===
+                                    TRANSFORMS_STEP && isTransformDirty)  
                                     ? "pf-m-disabled"
                                     : ""
                                 }
@@ -1002,6 +1052,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   className={
                     (activeStep.id === FILTER_CONFIGURATION_STEP_ID &&
                       !isValidFilter) ||
+                      (activeStep.id === TRANSFORM_STEP_ID &&
+                        isTransformDirty) ||  
                     (activeStep.id === CONNECTOR_TYPE_STEP_ID &&
                       selectedConnectorType === undefined)
                       ? "pf-m-disabled"
@@ -1018,6 +1070,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
                   className={
                     (activeStep.id === FILTER_CONFIGURATION_STEP_ID &&
                       !isValidFilter) ||
+                    (activeStep.id === TRANSFORM_STEP_ID &&
+                      isTransformDirty) ||
                     (activeStep.id === CONNECTOR_TYPE_STEP_ID &&
                       selectedConnectorType === undefined)
                       ? "pf-m-disabled"
@@ -1031,7 +1085,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               <Button
                 variant="secondary"
                 onClick={
-                  activeStep.id === 6
+                  activeStep.id === REVIEW_STEP_ID
                     ? () => backToFinishStep(goToStepById)
                     : onBack
                 }

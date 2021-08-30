@@ -1475,10 +1475,10 @@
   dependencies:
     "@octokit/openapi-types" "^8.2.0"
 
-"@patternfly/patternfly@^4.115.2":
-  version "4.115.2"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.115.2.tgz#200111d52fe07d1380371530304bad9edf45de51"
-  integrity sha512-7hbJ4pRmj+rlXclD2F/UwceO6fS+9flGsgHc4eUc7NyTN2GXl6PLcqrjE2CtiKEPV90+KwsGQGJXZj8bz9HweA==
+"@patternfly/patternfly@^4.133.0":
+  version "4.133.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.133.0.tgz#58e8d9d3112c7e03ead514d1711c5d64e2fba4d5"
+  integrity sha512-G1PKUp/WdWPuM1q6e2CfZR5c8s8UEyuCGC9Ykom8UXfOfZMdX1uQijF+UxQsrYOQbXsoxBlKYwrIxHL7uo9yTg==
 
 "@patternfly/react-core@^4.106.2", "@patternfly/react-core@^4.135.0":
   version "4.135.0"
@@ -10375,6 +10375,13 @@ react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-multi-ref@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-multi-ref/-/react-multi-ref-1.0.0.tgz#6075731f82666ce9b59fa1a2763e8bb534202e7e"
+  integrity sha512-LJuQXEabnv8JLcvcWeJcTogxG4eXVFiPfQ9CECuwWUbfJdrVpPf13m9RxmImyJS0J99BWokGn7dlR1dR06XPDw==
+  dependencies:
+    "@babel/runtime" "^7.1.2"
 
 react-router-dom@5.2.0:
   version "5.2.0"
