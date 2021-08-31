@@ -30,7 +30,7 @@ describe("Connectors page", () => {
       "fulfillment"
     );
     cy.get('input[name="database_hostname"]', { timeout: 50000 }).type(
-      "dbzui-postgres"
+      "dbzui-db-pg"
     );
     cy.get('input[name="database_user"]', { timeout: 50000 }).type("postgres");
     cy.get('input[name="database_password"]', { timeout: 50000 }).type(
@@ -42,12 +42,10 @@ describe("Connectors page", () => {
     cy.findByRole("button", { name: "Validate" }).click();
   });
   it("Checks if the form is valid", () => {
-    cy.findByText("The validation was successful").should("exist");
+    cy.findByText("The validation was successful.").should("exist");
   });
   it("Skips to review step", () => {
-    cy.get(".pf-c-button.pf-m-link")
-      .findByText("Review")
-      .click();
+    cy.findByRole("button", { name: "Review and finish" }).click();
   });
   it("Finish to configure connector", () => {
     cy.findByRole("button", { name: "Finish" }).click();
