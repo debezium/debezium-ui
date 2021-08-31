@@ -30,7 +30,7 @@ describe("Connectors page", () => {
       "fulfillment"
     );
     cy.get('input[name="database_hostname"]', { timeout: 50000 }).type(
-      "dbzui-db-pg"
+      "dbzui-postgres"
     );
     cy.get('input[name="database_user"]', { timeout: 50000 }).type("postgres");
     cy.get('input[name="database_password"]', { timeout: 50000 }).type(
