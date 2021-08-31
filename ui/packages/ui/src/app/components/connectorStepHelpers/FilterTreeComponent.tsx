@@ -7,7 +7,7 @@ import {
   Title,
   TreeView,
 } from "@patternfly/react-core";
-import { CubesIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon, SearchIcon } from "@patternfly/react-icons";
 import React from "react";
 import { PageLoader } from "..";
 import { ApiError, WithLoader } from "shared";
@@ -76,7 +76,7 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
                 </p>
               </Alert>
               <EmptyState variant={EmptyStateVariant.small}>
-                <EmptyStateIcon icon={CubesIcon} />
+                <EmptyStateIcon icon={SearchIcon} />
                 <Title headingLevel="h4" size="lg">
                   {props.i18nNoMatchingTables}
                 </Title>
