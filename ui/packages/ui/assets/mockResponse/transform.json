@@ -1,11 +1,5 @@
 [
   {
-    "transform": "io.debezium.transforms.ByLogicalTableRouter",
-    "enabled": false,
-    "configurationOptions": [
-    ]
-  },
-  {
     "transform": "io.debezium.transforms.Filter",
     "enabled": true,
     "configurationOptions": [
@@ -44,7 +38,7 @@
   },
   {
     "transform": "io.debezium.transforms.ContentBasedRouter",
-    "enabled": false,
+    "enabled": true,
     "configurationOptions": [
       {
         "description": "An optional regular expression that evaluates the name of the destination topic for an event to determine whether to apply filtering logic.",
@@ -133,6 +127,56 @@
     ]
   },
   {
+    "transform": "io.debezium.transforms.ByLogicalTableRouter",
+    "enabled": true,
+    "configurationOptions": [
+      {
+        "description": "Specifies a regular expression that the transformation applies to each change event record to determine if it should be routed to a particular topic.",
+        "displayName": "Topic regex",
+        "isMandatory": true,
+        "name": "topic.regex",
+        "type": "STRING"
+      },
+      {
+        "description": "Specifies a regular expression that represents the destination topic name.",
+        "displayName": "Topic replacement",
+        "isMandatory": true,
+        "name": "topic.replacement",
+        "type": "STRING"
+      },
+      {
+        "description": "Indicates whether to add a field to the record’s change event key.",
+        "displayName": "Enforce key uniqueness",
+        "isMandatory": false,
+        "defaultValue": true,
+        "name": "key.enforce​.uniqueness",
+        "type": "BOOLEAN"
+      },
+      {
+        "description": "Name of a field to be added to the change event key",
+        "displayName": "key field name",
+        "isMandatory": false,
+        "defaultValue": "__dbz__physicalTableIdentifier",
+        "name": "key.field.name",
+        "type": "STRING"
+      },
+      {
+        "description": "Specifies a regular expression that the transformation applies to the default destination topic name to capture one or more groups of characters.",
+        "displayName": "Key fields regex",
+        "isMandatory": false,
+        "name": "key.field.regex",
+        "type": "STRING"
+      },
+      {
+        "description": "Specifies a regular expression for determining the value of the inserted key field in terms of the groups captured by the expression specified for key.",
+        "displayName": "key fields replacement",
+        "isMandatory": false,
+        "name": "key.field.replacement",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
     "transform": "org.apache.kafka.connect.transforms.ValueToKey",
     "enabled": true,
     "configurationOptions": [
@@ -166,15 +210,5 @@
         "type": "STRING"
       }
     ]
-  },
-  {
-    "transform": "org.apache.kafka.connect.transforms.ExtractField",
-    "enabled": false,
-    "configurationOptions": []
-  },
-  {
-    "transform": "org.apache.kafka.connect.transforms.Cast",
-    "enabled": false,
-    "configurationOptions": []
   }
 ]
