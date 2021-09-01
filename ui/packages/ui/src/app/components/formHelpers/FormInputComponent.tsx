@@ -66,7 +66,7 @@ export const FormInputComponent: React.FunctionComponent<IFormInputComponentProp
           field.onChange(field.name)(e);
           props.clearValidationError();
         }}
-        value={field.value}
+        value={field.value || ''}
         onBlur={(e) => {
           field.onBlur(field.name)(e);
         }}
