@@ -201,6 +201,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
                       updateTopicGroup={updateTopicGroupCallback}
                       // tslint:disable: no-string-literal
                       topicGroupsData={topicCreationResponse['groups']['properties']}
+                      topicGroupOptionsData={topicCreationResponse['groups']['options']}
                       // tslint:enable: no-string-literal
                       setIsTopicCreationDirty={props.setIsTopicCreationDirty}
                     />

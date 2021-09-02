@@ -23,6 +23,7 @@ export interface ITopicGroupCardProps {
   deleteTopicGroup: (order: number) => void;
   updateTopicGroup: (key: number, field: string, value: any) => void;
   topicGroupsData: any;
+  topicGroupOptionsData: any;
   setIsTopicCreationDirty: (data: boolean) => void;
 }
   
@@ -73,6 +74,7 @@ export const TopicGroupCard: React.FunctionComponent<any> = React.forwardRef((pr
                 ref={ref}
                 topicGroupConfigProperties={getFormattedTopicCreationProperties(props.topicGroupsData)}
                 topicGroupConfigValues={props.topicGroupConfig}
+                topicGroupOptionProperties={getFormattedTopicCreationProperties(props.topicGroupOptionsData)}
                 updateTopicGroup={props.updateTopicGroup}
                 topicGroupNo={props.topicGroupNo}
                 setIsTopicCreationDirty={props.setIsTopicCreationDirty}

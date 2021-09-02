@@ -69,7 +69,7 @@
     "options": [
       {
         "category": "TOPIC_CREATION",
-        "defaultValue": 1,
+        "defaultValue": -1,
         "description": "Topic Replication Factor value",
         "displayName": "Topic Replication Factor",
         "isMandatory": false,
@@ -78,7 +78,7 @@
       },
       {
         "category": "TOPIC_CREATION",
-        "defaultValue": 1,
+        "defaultValue": -1,
         "description": "Topic Partitions value",
         "displayName": "Topic Partitions",
         "isMandatory": false,

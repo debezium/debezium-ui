@@ -164,6 +164,10 @@ export enum PropertyName {
   TOPIC_CREATION_GROUPS = "topic.creation.groups",
   TOPIC_CREATION_GROUP_INCLUDE = "topic.creation.(.+).include",
   TOPIC_CREATION_GROUP_EXCLUDE = "topic.creation.(.+).exclude",
+  TOPIC_CREATION_GROUP_REPLICATION_FACTOR = "topic.creation.(.+).replication.factor",
+  TOPIC_CREATION_GROUP_PARTITIONS = "topic.creation.(.+).partitions",
+  TOPIC_CREATION_GROUP_CLEANUP_POLICY = "topic.creation.(.+).cleanup.policy",
+  TOPIC_CREATION_GROUP_COMPRESSION_TYPE = "topic.creation.(.+).compression.type",
   XMIN_FETCH_INTERVAL_MS = "xmin.fetch.interval.ms"
 }
 
