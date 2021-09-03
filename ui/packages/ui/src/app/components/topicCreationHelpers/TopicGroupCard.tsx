@@ -72,11 +72,11 @@ export const TopicGroupCard: React.FunctionComponent<any> = React.forwardRef((pr
               </Form>
               <TopicGroupConfig
                 ref={ref}
+                topicGroupNo={props.topicGroupNo}
                 topicGroupConfigProperties={getFormattedTopicCreationProperties(props.topicGroupsData)}
                 topicGroupConfigValues={props.topicGroupConfig}
                 topicGroupOptionProperties={getFormattedTopicCreationProperties(props.topicGroupOptionsData)}
                 updateTopicGroup={props.updateTopicGroup}
-                topicGroupNo={props.topicGroupNo}
                 setIsTopicCreationDirty={props.setIsTopicCreationDirty}
               />
             </SplitItem>

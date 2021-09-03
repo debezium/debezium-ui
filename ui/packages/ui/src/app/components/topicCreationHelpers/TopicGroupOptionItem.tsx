@@ -23,6 +23,9 @@ export interface ITopicGroupOptionItemProps {
   deleteTopicGroupOptionItem: (rowId: number) => void;
 }
 
+const COMPRESSION_TYPE = 'compression_type';
+const CLEANUP_POLICY = 'cleanup_policy';
+
 export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItemProps> = (
   props
 ) => {
@@ -41,13 +44,13 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
     return selectOptions;
   }
   
-  const getGroupOptionPropName = (dName: string) => {
+  const getGroupOptionPropName = (dispName: string) => {
     let result: any;
-    if (dName === "Select an option") {
+    if (dispName === "Select an option") {
       result = undefined;
     } else {
       const theProp = props.topicGroupOptionProperties.find(
-        (prop) => prop.displayName === dName
+        (prop) => prop.displayName === dispName
       );
       if (theProp) {
         result = theProp.name;
@@ -56,13 +59,13 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
     return result;
   }
 
-  const getGroupOptionPropDefaultValue = (dName: string) => {
+  const getGroupOptionPropDefaultValue = (dispName: string) => {
     let result: any;
-    if (dName === "Select an option") {
+    if (dispName === "Select an option") {
       result = undefined;
     } else {
       const theProp = props.topicGroupOptionProperties.find(
-        (prop) => prop.displayName === dName
+        (prop) => prop.displayName === dispName
       );
       if (theProp && theProp.defaultValue) {
         result = theProp.defaultValue;
@@ -71,13 +74,13 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
     return result;
   }
 
-  const getGroupOptionDisplayName = (pName: string) => {
+  const getGroupOptionDisplayName = (propName: string) => {
     let result: any;
-    if (!pName) {
+    if (!propName) {
       result = "Select an option";
     } else {
       const theProp = props.topicGroupOptionProperties.find(
-        (prop) => prop.name === pName
+        (prop) => prop.name === propName
       );
       if (theProp) {
         result = theProp.displayName;
@@ -169,7 +172,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
       <GridItem span={3}>
         <Flex>
           <FlexItem className={"topic-group-option-item-value-input"}>
-            {props.itemName && (props.itemName === 'cleanup_policy' || props.itemName === 'compression_type')
+            {props.itemName && (props.itemName === COMPRESSION_TYPE || props.itemName === CLEANUP_POLICY)
             ?
             <Select
               id={`${props.rowId}value`}

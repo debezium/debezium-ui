@@ -36,7 +36,6 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
 
   // tslint:disable-next-line: variable-name  
   const _items = new MultiRef();
-  // const topicGroupSaveRef = React.useRef() as React.MutableRefObject<IValidationRef>;
   const topicDefaultsSaveRef = React.useRef() as React.MutableRefObject<IValidationRef>;
 
   const TOPIC_CREATION_GROUPS = "topic_creation_groups";
@@ -110,11 +109,13 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
     const topicCreateValues = new Map();
     if (topicGroups.size > 0) {
       topicGroups.forEach(val => {
-        topicCreateValues.has(TOPIC_CREATION_GROUPS)
-          ? topicCreateValues.set(TOPIC_CREATION_GROUPS, topicCreateValues.get(TOPIC_CREATION_GROUPS) + ',' + val.name)
-          : topicCreateValues.set(TOPIC_CREATION_GROUPS, val.name);
-        for (const [key, value] of Object.entries(val.config)) {
-          topicCreateValues.set(`topic_creation_${val.name}_${key}`, value);
+        if (val.name) {
+          topicCreateValues.has(TOPIC_CREATION_GROUPS)
+            ? topicCreateValues.set(TOPIC_CREATION_GROUPS, topicCreateValues.get(TOPIC_CREATION_GROUPS) + ',' + val.name)
+            : topicCreateValues.set(TOPIC_CREATION_GROUPS, val.name);
+          for (const [key, value] of Object.entries(val.config)) {
+            topicCreateValues.set(`topic_creation_${val.name}_${key}`, value);
+          }
         }
       });
     }

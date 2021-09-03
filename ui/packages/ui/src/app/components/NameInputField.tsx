@@ -42,7 +42,7 @@ export const NameInputField = (props: INameInputFieldProps) => {
         isRequired={isRequired}
         defaultValue={value}
         onChange={saveInputText}
-        aria-label="transform name input"
+        aria-label="name input"
         validated={isInvalid ? "error" : 'default'}
         name={name}
         placeholder={placeholder}

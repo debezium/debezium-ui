@@ -74,7 +74,6 @@ export const TopicGroupConfig: React.FunctionComponent<any> = React.forwardRef((
   const getInitialValues = () => {
     const combinedValue: any = {};
     const userValues = { ...props.topicGroupConfigValues };
-    // console.log("userValues: " + JSON.stringify(userValues));
     
     for (const prop of props.topicGroupConfigProperties) {
       if (!combinedValue[prop.name]) {
