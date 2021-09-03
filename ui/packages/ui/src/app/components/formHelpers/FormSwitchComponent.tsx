@@ -23,7 +23,7 @@ export const FormSwitchComponent: React.FunctionComponent<IFormSwitchComponentPr
       <Split>
         <SplitItem>
           <Switch
-            id={field.name}
+            id={field.name+Math.random()}
             name={field.name}
             aria-label={props.label}
             label={props.label}
