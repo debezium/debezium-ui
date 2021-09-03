@@ -39,7 +39,7 @@ export interface ITransformCardProps {
   selectedConnectorType: string;
 }
 
-const getOptions = response => {
+const getOptions = (response, connectorType) => {
   const TransformData: any[] = [];
   response.forEach(data => {
     data.transform.includes('io.debezium') ? TransformData.unshift(data) : TransformData.push(data);
@@ -48,7 +48,30 @@ const getOptions = response => {
   const apacheTransform: JSX.Element[] = [];
   TransformData.forEach((data, index) => {
     data.transform.includes('io.debezium')
-      ? dbzTransform.push(<SelectOption key={index} value={`${data.transform}`} isDisabled={!data.enabled} />)
+      ? dbzTransform.push(
+          <SelectOption
+            key={index}
+            value={`${data.transform}`}
+            isDisabled={
+              !data.enabled ||
+              (connectorType === 'mongodb' && data.transform === 'io.debezium.transforms.ExtractNewRecordState')
+            }
+            description={
+              data.transform.includes('.Filter') || data.transform.includes('.ContentBasedRouter') ? (
+                <>
+                  Scripting is not enabled. See{' '}
+                  <a href="https://debezium.io/documentation/reference/transformations/index.html" target="_blank">
+                    documentation
+                  </a>
+                </>
+              ) : (connectorType === 'mongodb' && data.transform.includes('.ExtractNewRecordState')) ? (
+                'Supported for only the SQL database connectors.'
+              ) : (
+                ''
+              )
+            }
+          />
+        )
       : apacheTransform.push(<SelectOption key={index} value={`${data.transform}`} isDisabled={!data.enabled} />);
   });
 
@@ -65,7 +88,7 @@ const getOptions = response => {
 
 export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, ref) => {
   const { t } = useTranslation();
-  
+
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
   const [nameIsValid, setNameIsValid] = React.useState<boolean>(true);
@@ -94,10 +117,10 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
 
   const dropdownItems = [
     <DropdownItem key="move_top" component="button" id="top" isDisabled={props.isTop}>
-      {t("moveTop")}
+      {t('moveTop')}
     </DropdownItem>,
     <DropdownItem key="move_up" component="button" id="up" isDisabled={props.isTop || (props.isTop && props.isBottom)}>
-      {t("moveUp")}
+      {t('moveUp')}
     </DropdownItem>,
     <DropdownItem
       key="move_down"
@@ -105,10 +128,10 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
       id="down"
       isDisabled={(props.isTop && props.isBottom) || props.isBottom}
     >
-      {t("moveDown")}
+      {t('moveDown')}
     </DropdownItem>,
     <DropdownItem key="move_bottom" component="button" id="bottom" isDisabled={props.isBottom}>
-      {t("moveBottom")}
+      {t('moveBottom')}
     </DropdownItem>
   ];
   const updateNameType = (value: string, field?: string) => {
@@ -126,7 +149,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
         <div className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'} id="transform-parent">
           <Split>
             <SplitItem className={'pf-u-pr-sm'}>
-              <Tooltip content={<div>{t("reorderTransform")}</div>}>
+              <Tooltip content={<div>{t('reorderTransform')}</div>}>
                 <Dropdown
                   className={'position_toggle'}
                   onSelect={onPositionSelect}
@@ -157,7 +180,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                   <GridItem span={4}>
                     <NameInputField
                       label="Name"
-                      description={t("transformNameDescription")}
+                      description={t('transformNameDescription')}
                       fieldId="transform_name"
                       isRequired={true}
                       name="transform_name"
@@ -166,18 +189,18 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                       value={props.transformName}
                       setFieldValue={updateNameType}
                       isInvalid={!nameIsValid}
-                      invalidText={props.transformName ? t("uniqueName") : t("nameRequired")}
+                      invalidText={props.transformName ? t('uniqueName') : t('nameRequired')}
                     />
                   </GridItem>
 
                   <GridItem span={8}>
                     <TypeSelectorComponent
                       label="Type"
-                      description={t("transformTypeDescription")}
+                      description={t('transformTypeDescription')}
                       fieldId="transform_type"
                       isRequired={true}
                       isDisabled={props.transformName === ''}
-                      options={getOptions(props.transformsData)}
+                      options={getOptions(props.transformsData, props.selectedConnectorType)}
                       value={props.transformType}
                       setFieldValue={updateNameType}
                     />
@@ -186,7 +209,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
               </Form>
               {props.transformType && (
                 <ExpandableSection
-                  toggleText={isExpanded ? t("hideConfig") : t('showConfig')}
+                  toggleText={isExpanded ? t('hideConfig') : t('showConfig')}
                   onToggle={onToggle}
                   isExpanded={isExpanded}
                 >
@@ -204,9 +227,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
               )}
             </SplitItem>
             <SplitItem>
-
-                <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} id="tooltip-selector"/>
-               
+              <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} id="tooltip-selector" />
             </SplitItem>
           </Split>
         </div>

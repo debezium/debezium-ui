@@ -666,10 +666,10 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
             break;
         }
       }
-      else if (transformTypeId === 'org.apache.kafka.connect.transforms.ValueToKey') {
+      else if (transformTypeId === 'io.debezium.transforms.ByLogicalTableRouter') {
         switch (propName) {
-          default:
-            transConfig.gridWidthLg = 12;
+          case 'key_enforce​_uniqueness':
+            transConfig.type = "BOOLEAN-SWITCH";
             break;
         }
       }

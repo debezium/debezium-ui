@@ -9,7 +9,7 @@ import {
   GridItem,
   Title
 } from '@patternfly/react-core';
-import React from 'react';
+import React, { FC } from 'react';
 import { TransformCard } from 'components';
 import transformResponse from '../../../../../assets/mockResponse/transform.json';
 import MultiRef from 'react-multi-ref';
@@ -28,6 +28,20 @@ export interface ITransformStepProps {
   setIsTransformDirty: (data: boolean) => void;
   selectedConnectorType: string;
 }
+
+const TransformAlert: FC = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {t('transformAlert')}
+      {' See '}
+      <a href="https://debezium.io/documentation/reference/transformations/index.html" target="_blank">
+        {t('documentation')}
+      </a>{' '}
+      {t('moreDetails')}
+    </>
+  );
+};
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
   const { t } = useTranslation();
@@ -111,7 +125,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   };
 
   const saveTransforms = () => {
-    _items.map.forEach((input:any) => {
+    _items.map.forEach((input: any) => {
       input.validate();
     });
   };
@@ -182,12 +196,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
             {t('noTransformAdded')}
           </Title>
           <EmptyStateBody>
-            {t('transformAlert')}
-            {' See '}
-            <a href="https://debezium.io/documentation/" target="_blank">
-              {t('documentation')}
-            </a>{' '}
-            {t('moreDetails')}
+            <TransformAlert />
           </EmptyStateBody>
           <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
             {t('addTransform')}
@@ -200,11 +209,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
             isInline={true}
             title={
               <p>
-                {t('transformAlert')} {' See '}
-                <a href="https://debezium.io/documentation/" target="_blank">
-                  {t('documentation')}
-                </a>{' '}
-                {t('moreDetails')}
+                <TransformAlert />
               </p>
             }
           />
