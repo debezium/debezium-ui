@@ -25,6 +25,10 @@
   "addTopicGroupTooltip": "Aggiungi un altro gruppo di argomenti",
   "removeTopicGroupTooltip": "Rimuovi questo gruppo di argomenti",
   "addTopicGroupOption": "Aggiungi opzione",
+  "topicCreationDisabledAlert": "Kafka creazione automatica di argomento non è abilitata.",
+  "topicCreationSee": "Vedere la",
+  "topicCreationDocumentation": "documentazione",
+  "topicCreationMoreDetailsToEnable": "per i dettagli sull'abilitazione di questa funzione.",
   "pageNotFound": "pagina non trovata",
   "pageNotFoundMsg": "Questa pagina non è stata trovata. Se pensi che si tratti di un bug, segnala il problema.",
   "takeBackToHome": "Riporta a casa",
@@ -148,13 +152,8 @@
   "skipToReviewTooltip": "È ora possibile creare il connettore. Puoi continuare a configurare il tuo oggetto connettore oppure puoi saltare direttamente alla fase di revisione.",
   "reviewToFinish": "Rivedi e concludi",
   "createConnector": "Crea connettore",
-<<<<<<< HEAD
   "tryAgain": "Riprova",
   "resolvePropertySucessMsg": "Tutta la configurazione richiesta è completa. Se lo desideri, puoi procedere a",
   "validationSucessMsg": "La convalida ha avuto successo",
   "optionalMsg": "Questo passaggio è facoltativo"
 }
-=======
-  "tryAgain": "Riprova"
-}
->>>>>>> DBZ-3696 Addition of Topic Groups

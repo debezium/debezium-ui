@@ -10,10 +10,10 @@ import {
 import { TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { NameInputField, TopicGroupConfig } from 'components';
-import './TopicGroupCard.css';
 import _ from 'lodash';
 import { getFormattedTopicCreationProperties } from 'shared';
 import { useTranslation } from 'react-i18next';
+import './TopicGroupCard.css';
   
 export interface ITopicGroupCardProps {
   topicGroupNo: number;
@@ -65,7 +65,7 @@ export const TopicGroupCard: React.FunctionComponent<any> = React.forwardRef((pr
                       value={props.topicGroupName}
                       setFieldValue={updateName}
                       isInvalid={!nameIsValid}
-                      invalidText={props.topicGroupName ? t("uniqueName") : t("nameRequired")}
+                      invalidText={props.topicGroupName ? t('uniqueName') : t('nameRequired')}
                     />
                   </GridItem>
                 </Grid>

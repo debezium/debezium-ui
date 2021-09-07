@@ -23,6 +23,7 @@ export interface ITopicGroupOptionItemProps {
   deleteTopicGroupOptionItem: (rowId: number) => void;
 }
 
+const SELECT_AN_OPTION = 'Select an option';
 const COMPRESSION_TYPE = 'compression_type';
 const CLEANUP_POLICY = 'cleanup_policy';
 
@@ -46,9 +47,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
   
   const getGroupOptionPropName = (dispName: string) => {
     let result: any;
-    if (dispName === "Select an option") {
-      result = undefined;
-    } else {
+    if (dispName !== SELECT_AN_OPTION) {
       const theProp = props.topicGroupOptionProperties.find(
         (prop) => prop.displayName === dispName
       );
@@ -61,9 +60,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
 
   const getGroupOptionPropDefaultValue = (dispName: string) => {
     let result: any;
-    if (dispName === "Select an option") {
-      result = undefined;
-    } else {
+    if (dispName !== SELECT_AN_OPTION) {
       const theProp = props.topicGroupOptionProperties.find(
         (prop) => prop.displayName === dispName
       );
@@ -75,10 +72,8 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
   }
 
   const getGroupOptionDisplayName = (propName: string) => {
-    let result: any;
-    if (!propName) {
-      result = "Select an option";
-    } else {
+    let result = SELECT_AN_OPTION;
+    if (propName) {
       const theProp = props.topicGroupOptionProperties.find(
         (prop) => prop.name === propName
       );
@@ -162,7 +157,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
               onSelect={onOptionSelect}
               selections={selectedOptionName}
               isOpen={isOptionSelectorOpen}
-              placeholderText="Select an option"
+              placeholderText={SELECT_AN_OPTION}
             >
               {getTopicGroupSelectOptions()}
           </Select>
@@ -192,7 +187,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
               type={"number"}
               min={-1}
               onChange={handleItemValueChange}
-              value={props.itemValue}
+              value={props.itemValue || -1}
               onKeyPress={(event) => handleKeyPress(event as any)}
             />
             }

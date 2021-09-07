@@ -73,9 +73,9 @@ export const TopicDefaults: React.FunctionComponent<any> = React.forwardRef((pro
   const handleSubmit = (value: any) => {
     const newValues = {};
     for (const prop of props.topicDefaultProperties) {
-      const newValue = (prop.type === "INT" || prop.type === "LONG" || 
-                        prop.type === "NON-NEG-INT" || prop.type === "NON-NEG-LONG" || 
-                        prop.type === "POS-INT") ? Number(value[prop.name]) : value[prop.name];
+      const newValue = (prop.type === 'INT' || prop.type === 'LONG' || 
+                        prop.type === 'NON-NEG-INT' || prop.type === 'NON-NEG-LONG' || 
+                        prop.type === 'POS-INT') ? Number(value[prop.name]) : value[prop.name];
       if (!prop.defaultValue || newValue !== prop.defaultValue) {
         newValues[prop.name] = newValue;
       }

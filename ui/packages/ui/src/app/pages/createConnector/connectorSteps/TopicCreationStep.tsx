@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Grid,
   GridItem,
@@ -7,7 +8,7 @@ import {
   Title,
   TitleSizes
 } from '@patternfly/react-core';
-import React from 'react';
+import React, { FC } from 'react';
 import { TopicDefaults, TopicGroupCard } from 'components';
 import topicCreationResponse from '../../../../../assets/mockResponse/topicCreation.json';
 import { IValidationRef } from '..';
@@ -22,12 +23,27 @@ export interface ITopicGroupData {
   name?: string;
   config?: any;
 }
+
 export interface ITopicCreationStepProps {
   topicCreationValues: Map<string, any>;
   updateTopicCreationValues: (data: any) => void;
   setIsTopicCreationDirty: (data: boolean) => void;
   isTopicCreationDirty: boolean;
 }
+
+const TopicCreationDisabledAlert: FC = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {t('topicCreationDisabledAlert')}
+      &nbsp;&nbsp;{t('topicCreationSee')}&nbsp;
+      <a href="https://debezium.io/documentation/reference/configuration/topic-auto-create-config.html" target="_blank">
+        {t('topicCreationDocumentation')}
+      </a>
+      &nbsp;{t('topicCreationMoreDetailsToEnable')}
+    </>
+  );
+};
 
 export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps> = props => {
   const { t } = useTranslation();
@@ -160,30 +176,41 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   }, []);
 
   return (
+    // tslint:disable: no-string-literal
     <div>
-      <>
-        <Text component={TextVariants.h2}>
-        {t("topicCreationPageHeadingText")}
-        </Text>
-        <Grid>
-          <GridItem span={10}>
-            <Title className={"topic-creation-step-defaults-title"} headingLevel="h5" size={TitleSizes.lg}>
-              {t("topicCreationDefaultsTitle")}
-            </Title>
-            <TopicDefaults
+      {!topicCreationResponse['topicCreationEnabled'] ? (
+        <Alert
+          variant="info"
+          isInline={true}
+          className={'topic-creation-step-alert'}
+          title={
+            <p>
+              <TopicCreationDisabledAlert />
+            </p>
+          }
+        />
+      ) : (
+        <>
+          <Text component={TextVariants.h2}>
+            {t("topicCreationPageHeadingText")}
+          </Text>
+          <Grid>
+            <GridItem span={10}>
+              <Title className={"topic-creation-step-defaults-title"} headingLevel="h5" size={TitleSizes.lg}>
+                {t("topicCreationDefaultsTitle")}
+              </Title>
+              <TopicDefaults
                 ref={topicDefaultsSaveRef}
-                // tslint:disable: no-string-literal
                 topicDefaultProperties={getFormattedTopicCreationProperties(topicCreationResponse['defaults'])}
-                // tslint:enable: no-string-literal
                 topicDefaultValues={topicDefaults}
                 updateTopicDefaults={updateTopicDefaultsCallback}
                 setIsTopicCreationDirty={props.setIsTopicCreationDirty}
-            />
-          </GridItem>
-          <GridItem span={8}>
-            <Title className={"topic-creation-step-topic-groups-title"} headingLevel="h5" size={TitleSizes.lg}>
-              {t("topicGroupsTitle")}
-            </Title>
+              />
+            </GridItem>
+            <GridItem span={8}>
+              <Title className={"topic-creation-step-topic-groups-title"} headingLevel="h5" size={TitleSizes.lg}>
+                {t("topicGroupsTitle")}
+              </Title>
               {topicGroups.size === 0 ? (
                 <Text component={TextVariants.h2}>
                   {t("topicGroupsNoneDefinedText")}
@@ -200,28 +227,28 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
                       topicGroupConfig={topicGroups.get(key)?.config || {}}
                       deleteTopicGroup={deleteTopicGroupCallback}
                       updateTopicGroup={updateTopicGroupCallback}
-                      // tslint:disable: no-string-literal
                       topicGroupsData={topicCreationResponse['groups']['properties']}
                       topicGroupOptionsData={topicCreationResponse['groups']['options']}
-                      // tslint:enable: no-string-literal
                       setIsTopicCreationDirty={props.setIsTopicCreationDirty}
                     />
                   );
                 }))}
-          </GridItem>
-        </Grid>
-        <Button
-          variant="secondary"
-          isDisabled={!props.isTopicCreationDirty}
-          className="pf-u-mt-lg pf-u-mr-sm"
-          onClick={saveTopicCreation}
-        >
-          {t('apply')}
-        </Button>
-        <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTopicGroup}>
-          {t('addTopicGroup')}
-        </Button>
-      </>
+            </GridItem>
+          </Grid>
+          <Button
+            variant="secondary"
+            isDisabled={!props.isTopicCreationDirty}
+            className="pf-u-mt-lg pf-u-mr-sm"
+            onClick={saveTopicCreation}
+          >
+            {t('apply')}
+          </Button>
+          <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTopicGroup}>
+            {t('addTopicGroup')}
+          </Button>
+        </>
+      )}
     </div>
+    // tslint:enable: no-string-literal
   );
 };

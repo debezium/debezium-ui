@@ -8,14 +8,14 @@ import {
   Title,
   TitleSizes } from '@patternfly/react-core';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { PlusCircleIcon } from '@patternfly/react-icons';
 import { FormComponent, TopicGroupOptionItem } from 'components';
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import { useTranslation } from 'react-i18next';
-import { PlusCircleIcon } from '@patternfly/react-icons';
-import './TopicGroupConfig.css';
 import { formatPropertyDefinitions } from 'shared';
+import './TopicGroupConfig.css';
 
 export interface ITopicGroupOption {
   name?: any;
