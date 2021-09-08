@@ -349,7 +349,7 @@ export function minimizePropertyValues (propertyValues: Map<string, string>, pro
       if (propDefn.isMandatory) {
         minimizedValues.set(key, value);
       // Include non-mandatory if has default and value is different
-      }else if (propDefn.defaultValue) {
+      }else if (propDefn.defaultValue != null) {
         if (propDefn.defaultValue !== value) {
           minimizedValues.set(key, value);
         }
