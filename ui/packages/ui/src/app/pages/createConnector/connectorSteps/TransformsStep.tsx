@@ -1,12 +1,15 @@
 import {
   Alert,
   Button,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
+  SelectGroup,
+  SelectOption,
   Title
 } from '@patternfly/react-core';
 import React, { FC } from 'react';
@@ -41,6 +44,53 @@ const TransformAlert: FC = () => {
       {t('moreDetails')}
     </>
   );
+};
+
+const getOptions = (response, connectorType) => {
+  const TransformData: any[] = [];
+  response.forEach(data => {
+    data.transform.includes('io.debezium') ? TransformData.unshift(data) : TransformData.push(data);
+  });
+  const dbzTransform: JSX.Element[] = [];
+  const apacheTransform: JSX.Element[] = [];
+  TransformData.forEach((data, index) => {
+    data.transform.includes('io.debezium')
+      ? dbzTransform.push(
+          <SelectOption
+            key={index}
+            value={`${data.transform}`}
+            isDisabled={
+              !data.enabled ||
+              (connectorType === 'mongodb' && data.transform === 'io.debezium.transforms.ExtractNewRecordState')
+            }
+            description={
+              data.transform.includes('.Filter') || data.transform.includes('.ContentBasedRouter') ? (
+                <>
+                  Scripting is not enabled. See{' '}
+                  <a href="https://debezium.io/documentation/reference/transformations/index.html" target="_blank">
+                    documentation
+                  </a>
+                </>
+              ) : (connectorType === 'mongodb' && data.transform.includes('.ExtractNewRecordState')) ? (
+                'Supported for only the SQL database connectors.'
+              ) : (
+                ''
+              )
+            }
+          />
+        )
+      : apacheTransform.push(<SelectOption key={index} value={`${data.transform}`} isDisabled={!data.enabled} />);
+  });
+
+  return [
+    <SelectGroup label="Debezium" key="group1">
+      {dbzTransform}
+    </SelectGroup>,
+    <Divider key="divider" />,
+    <SelectGroup label="Apache kafka" key="group2">
+      {apacheTransform}
+    </SelectGroup>
+  ];
 };
 
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
@@ -230,9 +280,9 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                     isTop={key === 1}
                     isBottom={key === transforms.size}
                     updateTransform={updateTransformCallback}
+                    transformsOptions={getOptions(transformResponse, props.selectedConnectorType)}
                     transformsData={transformResponse}
                     setIsTransformDirty={props.setIsTransformDirty}
-                    selectedConnectorType={props.selectedConnectorType}
                   />
                 );
               })}
