@@ -174,9 +174,19 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   };
 
   const saveTransforms = () => {
+    const cardsValid: any[] = [];
     nameTypeCheckRef.map.forEach((input: any) => {
-      input.check();
+      cardsValid.push(input.check());
     });
+
+    Promise.all(cardsValid).then(
+      d => {
+        props.setIsTransformDirty(false);
+      },
+      e => {
+        props.setIsTransformDirty(true);
+      }
+    );
   };
 
   const updateTransformCallback = React.useCallback(

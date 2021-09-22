@@ -21,14 +21,17 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
   React.useImperativeHandle(ref, () => ({
     async validate() {
       const valid = await validateForm();
-      if (_.isEmpty(valid)) {
-        props.setIsTransformDirty(false);
-        props.setConfigComplete(true);
-      } else {
-        props.setIsTransformDirty(true);
-        props.setConfigComplete(false);
-      }
+      const validPromise = new Promise((resolve, reject) => {
+        if (_.isEmpty(valid)) {
+          props.setConfigComplete(true);
+          resolve('done');
+        } else {
+          props.setConfigComplete(false);
+          reject('fail');
+        }
+      });
       submitForm();
+      return validPromise;
     }
   }));
   React.useEffect(() => {
@@ -81,7 +84,6 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>((pro
     for (const basicVal of props.transformConfigOptions) {
       basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
     }
-    // props.setIsTransformDirty(false)
     props.updateTransform(props.transformNo, 'config', basicValue);
   };
 

@@ -19,7 +19,6 @@ import './TransformCard.css';
 import _ from 'lodash';
 import { getFormattedConfig } from 'shared';
 import { useTranslation } from 'react-i18next';
-import { IValidationRef } from 'src/app/pages';
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -35,6 +34,10 @@ export interface ITransformCardProps {
   transformsOptions: any;
   transformsData: any;
   setIsTransformDirty: (data: boolean) => void;
+}
+
+export interface IConfigValidationRef {
+  validate: () => Promise<any>;
 }
 
 export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, ref) => {
@@ -102,19 +105,31 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
     }
   };
 
-  const configRef = React.useRef() as React.MutableRefObject<IValidationRef>;
+  const configRef = React.useRef() as React.MutableRefObject<IConfigValidationRef>;
 
   React.useImperativeHandle(ref, () => ({
     check() {
-      if (!props.transformName) {
-        setNameIsValid(false);
-        setConfigComplete(false);
-      } else if (nameIsValid && props.transformType) {
-        configRef?.current!.validate();
-      } else if (!props.transformType) {
-        setTypeIsThere(false);
-      }
+      const validPromise = new Promise((resolve, reject) => {
+        if (!props.transformName) {
+          setNameIsValid(false);
+          setConfigComplete(false);
+          reject('fail');
+        } else if (nameIsValid && props.transformType) {
+          configRef?.current!.validate().then(
+            d => {
+              resolve('done');
+            },
+            e => {
+              reject('fail');
+            }
+          );
+        } else if (!props.transformType) {
+          setTypeIsThere(false);
+          reject('fail');
+        }
+      });
       setSubmitted(true);
+      return validPromise;
     }
   }));
 
