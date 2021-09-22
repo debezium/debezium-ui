@@ -11,8 +11,8 @@ export interface ITransformConfigProps {
   updateTransform: (key: number, field: string, value: any) => void;
   setIsTransformDirty: (data: boolean) => void;
   transformType: string;
-  transformName: string;
   transformNo: number;
+  setConfigComplete: (data: boolean) => void;
 }
 
 const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
@@ -20,12 +20,15 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
 
   React.useImperativeHandle(ref, () => ({
     async validate() {
-      if(props.transformName && props.transformType){
-        const valid  = await validateForm();
-
-        _.isEmpty(valid) ? props.setIsTransformDirty(false) : props.setIsTransformDirty(true);
-        submitForm();
+      const valid = await validateForm();
+      if (_.isEmpty(valid)) {
+        props.setIsTransformDirty(false);
+        props.setConfigComplete(true);
+      } else {
+        props.setIsTransformDirty(true);
+        props.setConfigComplete(false);
       }
+      submitForm();
     }
   }));
   React.useEffect(() => {
@@ -78,6 +81,7 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>((pro
     for (const basicVal of props.transformConfigOptions) {
       basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
     }
+    // props.setIsTransformDirty(false)
     props.updateTransform(props.transformNo, 'config', basicValue);
   };
 
@@ -116,7 +120,11 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>((pro
                 );
               })}
             </Grid>
-            <FormSubmit ref={ref} setIsTransformDirty={props.setIsTransformDirty} transformName={props.transformName} transformType={props.transformType}/>
+            <FormSubmit
+              ref={ref}
+              setIsTransformDirty={props.setIsTransformDirty}
+              setConfigComplete={props.setConfigComplete}
+            />
           </Form>
         )}
       </Formik>

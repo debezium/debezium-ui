@@ -71,7 +71,7 @@ const getOptions = (response, connectorType) => {
                     documentation
                   </a>
                 </>
-              ) : (connectorType === 'mongodb' && data.transform.includes('.ExtractNewRecordState')) ? (
+              ) : connectorType === 'mongodb' && data.transform.includes('.ExtractNewRecordState') ? (
                 'Supported for only the SQL database connectors.'
               ) : (
                 ''
@@ -98,8 +98,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
 
   const [transforms, setTransforms] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
 
-  // tslint:disable-next-line: variable-name
-  const _items = new MultiRef();
+  const nameTypeCheckRef = new MultiRef();
 
   const addTransform = () => {
     const transformsCopy = new Map(transforms);
@@ -175,8 +174,8 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   };
 
   const saveTransforms = () => {
-    _items.map.forEach((input: any) => {
-      input.validate();
+    nameTypeCheckRef.map.forEach((input: any) => {
+      input.check();
     });
   };
 
@@ -270,7 +269,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                   <TransformCard
                     key={transforms.get(key)?.key}
                     transformNo={key}
-                    ref={_items.ref(transforms.get(key)?.key)}
+                    ref={nameTypeCheckRef.ref(transforms.get(key)?.key)}
                     transformName={transforms.get(key)?.name || ''}
                     transformType={transforms.get(key)?.type || ''}
                     transformConfig={transforms.get(key)?.config || {}}

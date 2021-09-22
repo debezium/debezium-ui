@@ -12,13 +12,14 @@ import {
   Title,
   Tooltip
 } from '@patternfly/react-core';
-import { CheckCircleIcon, GripVerticalIcon, TrashIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, GripVerticalIcon, TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { NameInputField, TypeSelectorComponent, TransformConfig } from 'components';
 import './TransformCard.css';
 import _ from 'lodash';
 import { getFormattedConfig } from 'shared';
 import { useTranslation } from 'react-i18next';
+import { IValidationRef } from 'src/app/pages';
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -41,7 +42,12 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
+
   const [nameIsValid, setNameIsValid] = React.useState<boolean>(true);
+  const [typeIsThere, setTypeIsThere] = React.useState<boolean>(true);
+
+  const [submitted, setSubmitted] = React.useState<boolean>(false);
+  const [configComplete, setConfigComplete] = React.useState<boolean>(false);
 
   const onToggle = (isExpandedVal: boolean) => {
     setIsExpanded(isExpandedVal);
@@ -55,11 +61,13 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
   const onPositionToggle = isOpenVal => {
     setIsOpen(isOpenVal);
   };
+
   const onPositionSelect = event => {
     setIsOpen(!isOpen);
     props.moveTransformOrder(props.transformNo, event.currentTarget.id);
     onFocus();
   };
+
   const onFocus = () => {
     const element = document.getElementById('transform-order-toggle');
     element?.focus();
@@ -84,6 +92,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
       {t('moveBottom')}
     </DropdownItem>
   ];
+
   const updateNameType = (value: string, field?: string) => {
     if (field) {
       value === '' || props.transformNameList.includes(value) ? setNameIsValid(false) : setNameIsValid(true);
@@ -92,6 +101,30 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
       props.updateTransform(props.transformNo, 'type', value);
     }
   };
+
+  const configRef = React.useRef() as React.MutableRefObject<IValidationRef>;
+
+  React.useImperativeHandle(ref, () => ({
+    check() {
+      if (!props.transformName) {
+        setNameIsValid(false);
+        setConfigComplete(false);
+      } else if (nameIsValid && props.transformType) {
+        configRef?.current!.validate();
+      } else if (!props.transformType) {
+        setTypeIsThere(false);
+      }
+      setSubmitted(true);
+    }
+  }));
+
+  const isConfigComplete = React.useCallback(val => {
+    setConfigComplete(val);
+  }, []);
+
+  React.useEffect(() => {
+    props.transformType && setTypeIsThere(true);
+  }, [props.transformType]);
 
   return (
     <Grid>
@@ -122,8 +155,8 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
             <SplitItem isFilled={true}>
               <Title headingLevel="h2">
                 Transformation # {props.transformNo} &nbsp;
-                {props.transformName && props.transformType && <CheckCircleIcon style={{ color: '#3E8635' }} />}
-                {/* <ExclamationCircleIcon style={{color: '#C9190B'}}/> */}
+                {configComplete && <CheckCircleIcon style={{ color: '#3E8635' }} />}
+                {submitted && !configComplete && <ExclamationCircleIcon style={{ color: '#C9190B' }} />}
               </Title>
               <Form>
                 <Grid hasGutter={true}>
@@ -153,6 +186,8 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                       options={props.transformsOptions}
                       value={props.transformType}
                       setFieldValue={updateNameType}
+                      isInvalid={!typeIsThere}
+                      invalidText={t('nameRequired')}
                     />
                   </GridItem>
                 </Grid>
@@ -164,14 +199,14 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                   isExpanded={isExpanded}
                 >
                   <TransformConfig
-                    ref={ref}
+                    ref={configRef}
                     transformConfigOptions={getFormattedConfig(props.transformsData, props.transformType)}
                     transformConfigValues={props.transformConfig}
                     updateTransform={props.updateTransform}
                     transformNo={props.transformNo}
                     setIsTransformDirty={props.setIsTransformDirty}
                     transformType={props.transformType}
-                    transformName={props.transformName}
+                    setConfigComplete={isConfigComplete}
                   />
                 </ExpandableSection>
               )}
