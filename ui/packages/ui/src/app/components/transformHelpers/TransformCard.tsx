@@ -202,7 +202,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
                       value={props.transformType}
                       setFieldValue={updateNameType}
                       isInvalid={!typeIsThere}
-                      invalidText={t('nameRequired')}
+                      invalidText={t('typeRequired')}
                     />
                   </GridItem>
                 </Grid>
