@@ -99,6 +99,9 @@
   "moreDetails": "for more details.",
   "noTransformAdded": "No transformations defined",
   "addTransform": "Add transformation",
+  "deleteTransform": "Delete transform",
+  "confirm": "Confirm",
+  "deleteTransformMsg": "Click confirm to remove any single message transformation.",
   "unknownError": "Unknown error - please consult your administrator",
   "connectorType": "Connector type",
   "properties": "Properties",
@@ -134,7 +137,6 @@
   "reviewToFinish": "Review and finish",
   "createConnector": "Create connector",
   "tryAgain": "Try Again",
-  "deleteTransform": "Delete transform",
   "validationSucessMsg": "The validation was successful",
   "optionalMsg": "This step is optional"
 }

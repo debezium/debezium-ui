@@ -8,6 +8,8 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
+  Modal,
+  ModalVariant,
   SelectGroup,
   SelectOption,
   Title
@@ -98,6 +100,8 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
 
   const [transforms, setTransforms] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
 
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+
   const nameTypeCheckRef = new MultiRef();
 
   const addTransform = () => {
@@ -112,21 +116,29 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       const transformsCopy = new Map(transforms);
       transformsCopy.delete(order);
       const transformResult = new Map<number, any>();
-      for (const [key, value] of transformsCopy.entries()) {
-        if (key > order) {
-          transformResult.set(+key - 1, value);
-        } else if (key < order) {
-          transformResult.set(+key, value);
+      if (transforms.size > 1) {
+        for (const [key, value] of transformsCopy.entries()) {
+          if (key > order) {
+            transformResult.set(+key - 1, value);
+          } else if (key < order) {
+            transformResult.set(+key, value);
+          }
         }
-      }
-      setTransforms(transformResult);
-      if (transformResult.size === 0) {
-        props.setIsTransformDirty(false);
-        props.updateTransformValues(new Map());
+        props.setIsTransformDirty(true);
+        setTransforms(transformResult);
+      } else {
+        setIsModalOpen(true);
       }
     },
     [transforms]
   );
+
+  const clearTransform = () => {
+    setTransforms(new Map());
+    props.updateTransformValues(new Map());
+    props.setIsTransformDirty(false);
+    handleModalToggle();
+  };
 
   const moveTransformOrder = React.useCallback(
     (order, position) => {
@@ -189,6 +201,10 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
     );
   };
 
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   const updateTransformCallback = React.useCallback(
     (key: number, field: string, value: any) => {
       const transformsCopy = new Map(transforms);
@@ -196,32 +212,32 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       if (field === 'name' || field === 'type') {
         transformCopy![field] = value;
         props.setIsTransformDirty(true);
+        transformsCopy.set(key, transformCopy!);
       } else {
         transformCopy!.config = value;
+        transformsCopy.set(key, transformCopy!);
+        saveTransform(transformsCopy);
       }
-      transformsCopy.set(key, transformCopy!);
       setTransforms(transformsCopy);
     },
     [transforms]
   );
 
-  React.useEffect(() => {
-    if (transforms.size > 0) {
-      const transformValues = new Map();
-      transforms.forEach(val => {
-        if (val.name && val.type) {
-          transformValues.has('transforms')
-            ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
-            : transformValues.set('transforms', val.name);
-          transformValues.set(`transforms.${val.name}.type`, val.type);
-          for (const [key, value] of Object.entries(val.config)) {
-            transformValues.set(`transforms.${val.name}.${key}`, value);
-          }
+  const saveTransform = (data: Map<number, ITransformData>) => {
+    const transformValues = new Map();
+    data.forEach(val => {
+      if (val.name && val.type) {
+        transformValues.has('transforms')
+          ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
+          : transformValues.set('transforms', val.name);
+        transformValues.set(`transforms.${val.name}.type`, val.type);
+        for (const [key, value] of Object.entries(val.config)) {
+          transformValues.set(`transforms.${val.name}.${key}`, value);
         }
-      });
-      props.updateTransformValues(transformValues);
-    }
-  }, [transforms]);
+      }
+    });
+    props.updateTransformValues(transformValues);
+  };
 
   React.useEffect(() => {
     if (props.transformsValues.size > 0) {
@@ -241,9 +257,8 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         transformsVal.set(index + 1, transformData);
         setTransforms(transformsVal);
       });
-    } else {
-      props.setIsTransformDirty(false);
     }
+    props.setIsTransformDirty(false);
   }, []);
 
   return (
@@ -305,6 +320,22 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
           </Button>
         </>
       )}
+      <Modal
+        variant={ModalVariant.small}
+        title={t('deleteTransform')}
+        isOpen={isModalOpen}
+        onClose={handleModalToggle}
+        actions={[
+          <Button key="confirm" variant="primary" onClick={clearTransform}>
+            {t('confirm')}
+          </Button>,
+          <Button key="cancel" variant="link" onClick={handleModalToggle}>
+            {t('cancel')}
+          </Button>
+        ]}
+      >
+        {t('deleteTransformMsg')}
+      </Modal>
     </div>
   );
 };

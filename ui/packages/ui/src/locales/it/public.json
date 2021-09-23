@@ -99,6 +99,9 @@
   "moreDetails": "per ulteriori dettagli.",
   "noTransformAdded": "No transform added",
   "addTransform": "Aggiungere transform",
+  "deleteTransform": "Elimina trasformazione",
+  "confirm": "Confermare",
+  "deleteTransformMsg": "Fare clic su Conferma per rimuovere ogni singola trasformazione del messaggio.",
   "unknownError": "Errore sconosciuto: consulta il tuo amministratore",
   "connectorType": "Tipo di connettore",
   "properties": "Proprietà",
@@ -134,7 +137,6 @@
   "reviewToFinish": "Rivedi e concludi",
   "createConnector": "Crea connettore",
   "tryAgain": "Riprova",
-  "deleteTransform": "Elimina trasformazione",
   "resolvePropertySucessMsg": "Tutta la configurazione richiesta è completa. Se lo desideri, puoi procedere a",
   "validationSucessMsg": "La convalida ha avuto successo",
   "optionalMsg": "Questo passaggio è facoltativo"
