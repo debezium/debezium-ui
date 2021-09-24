@@ -1,12 +1,17 @@
 import {
   Alert,
   Button,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
+  Modal,
+  ModalVariant,
+  SelectGroup,
+  SelectOption,
   Title
 } from '@patternfly/react-core';
 import React, { FC } from 'react';
@@ -43,13 +48,61 @@ const TransformAlert: FC = () => {
   );
 };
 
+const getOptions = (response, connectorType) => {
+  const TransformData: any[] = [];
+  response.forEach(data => {
+    data.transform.includes('io.debezium') ? TransformData.unshift(data) : TransformData.push(data);
+  });
+  const dbzTransform: JSX.Element[] = [];
+  const apacheTransform: JSX.Element[] = [];
+  TransformData.forEach((data, index) => {
+    data.transform.includes('io.debezium')
+      ? dbzTransform.push(
+          <SelectOption
+            key={index}
+            value={`${data.transform}`}
+            isDisabled={
+              !data.enabled ||
+              (connectorType === 'mongodb' && data.transform === 'io.debezium.transforms.ExtractNewRecordState')
+            }
+            description={
+              data.transform.includes('.Filter') || data.transform.includes('.ContentBasedRouter') ? (
+                <>
+                  Scripting is not enabled. See{' '}
+                  <a href="https://debezium.io/documentation/reference/transformations/index.html" target="_blank">
+                    documentation
+                  </a>
+                </>
+              ) : connectorType === 'mongodb' && data.transform.includes('.ExtractNewRecordState') ? (
+                'Supported for only the SQL database connectors.'
+              ) : (
+                ''
+              )
+            }
+          />
+        )
+      : apacheTransform.push(<SelectOption key={index} value={`${data.transform}`} isDisabled={!data.enabled} />);
+  });
+
+  return [
+    <SelectGroup label="Debezium" key="group1">
+      {dbzTransform}
+    </SelectGroup>,
+    <Divider key="divider" />,
+    <SelectGroup label="Apache kafka" key="group2">
+      {apacheTransform}
+    </SelectGroup>
+  ];
+};
+
 export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
   const { t } = useTranslation();
 
   const [transforms, setTransforms] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
 
-  // tslint:disable-next-line: variable-name
-  const _items = new MultiRef();
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+
+  const nameTypeCheckRef = new MultiRef();
 
   const addTransform = () => {
     const transformsCopy = new Map(transforms);
@@ -63,21 +116,29 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       const transformsCopy = new Map(transforms);
       transformsCopy.delete(order);
       const transformResult = new Map<number, any>();
-      for (const [key, value] of transformsCopy.entries()) {
-        if (key > order) {
-          transformResult.set(+key - 1, value);
-        } else if (key < order) {
-          transformResult.set(+key, value);
+      if (transforms.size > 1) {
+        for (const [key, value] of transformsCopy.entries()) {
+          if (key > order) {
+            transformResult.set(+key - 1, value);
+          } else if (key < order) {
+            transformResult.set(+key, value);
+          }
         }
-      }
-      setTransforms(transformResult);
-      if (transformResult.size === 0) {
-        props.setIsTransformDirty(false);
-        props.updateTransformValues(new Map());
+        props.setIsTransformDirty(true);
+        setTransforms(transformResult);
+      } else {
+        setIsModalOpen(true);
       }
     },
     [transforms]
   );
+
+  const clearTransform = () => {
+    setTransforms(new Map());
+    props.updateTransformValues(new Map());
+    props.setIsTransformDirty(false);
+    handleModalToggle();
+  };
 
   const moveTransformOrder = React.useCallback(
     (order, position) => {
@@ -125,9 +186,23 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   };
 
   const saveTransforms = () => {
-    _items.map.forEach((input: any) => {
-      input.validate();
+    const cardsValid: any[] = [];
+    nameTypeCheckRef.map.forEach((input: any) => {
+      cardsValid.push(input.check());
     });
+
+    Promise.all(cardsValid).then(
+      d => {
+        props.setIsTransformDirty(false);
+      },
+      e => {
+        props.setIsTransformDirty(true);
+      }
+    );
+  };
+
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   const updateTransformCallback = React.useCallback(
@@ -137,32 +212,32 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       if (field === 'name' || field === 'type') {
         transformCopy![field] = value;
         props.setIsTransformDirty(true);
+        transformsCopy.set(key, transformCopy!);
       } else {
         transformCopy!.config = value;
+        transformsCopy.set(key, transformCopy!);
+        saveTransform(transformsCopy);
       }
-      transformsCopy.set(key, transformCopy!);
       setTransforms(transformsCopy);
     },
     [transforms]
   );
 
-  React.useEffect(() => {
-    if (transforms.size > 0) {
-      const transformValues = new Map();
-      transforms.forEach(val => {
-        if (val.name && val.type) {
-          transformValues.has('transforms')
-            ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
-            : transformValues.set('transforms', val.name);
-          transformValues.set(`transforms.${val.name}.type`, val.type);
-          for (const [key, value] of Object.entries(val.config)) {
-            transformValues.set(`transforms.${val.name}.${key}`, value);
-          }
+  const saveTransform = (data: Map<number, ITransformData>) => {
+    const transformValues = new Map();
+    data.forEach(val => {
+      if (val.name && val.type) {
+        transformValues.has('transforms')
+          ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
+          : transformValues.set('transforms', val.name);
+        transformValues.set(`transforms.${val.name}.type`, val.type);
+        for (const [key, value] of Object.entries(val.config)) {
+          transformValues.set(`transforms.${val.name}.${key}`, value);
         }
-      });
-      props.updateTransformValues(transformValues);
-    }
-  }, [transforms]);
+      }
+    });
+    props.updateTransformValues(transformValues);
+  };
 
   React.useEffect(() => {
     if (props.transformsValues.size > 0) {
@@ -182,9 +257,8 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         transformsVal.set(index + 1, transformData);
         setTransforms(transformsVal);
       });
-    } else {
-      props.setIsTransformDirty(false);
     }
+    props.setIsTransformDirty(false);
   }, []);
 
   return (
@@ -220,7 +294,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                   <TransformCard
                     key={transforms.get(key)?.key}
                     transformNo={key}
-                    ref={_items.ref(transforms.get(key)?.key)}
+                    ref={nameTypeCheckRef.ref(transforms.get(key)?.key)}
                     transformName={transforms.get(key)?.name || ''}
                     transformType={transforms.get(key)?.type || ''}
                     transformConfig={transforms.get(key)?.config || {}}
@@ -230,9 +304,9 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
                     isTop={key === 1}
                     isBottom={key === transforms.size}
                     updateTransform={updateTransformCallback}
+                    transformsOptions={getOptions(transformResponse, props.selectedConnectorType)}
                     transformsData={transformResponse}
                     setIsTransformDirty={props.setIsTransformDirty}
-                    selectedConnectorType={props.selectedConnectorType}
                   />
                 );
               })}
@@ -246,6 +320,22 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
           </Button>
         </>
       )}
+      <Modal
+        variant={ModalVariant.small}
+        title={t('deleteTransform')}
+        isOpen={isModalOpen}
+        onClose={handleModalToggle}
+        actions={[
+          <Button key="confirm" variant="primary" onClick={clearTransform}>
+            {t('confirm')}
+          </Button>,
+          <Button key="cancel" variant="link" onClick={handleModalToggle}>
+            {t('cancel')}
+          </Button>
+        ]}
+      >
+        {t('deleteTransformMsg')}
+      </Modal>
     </div>
   );
 };

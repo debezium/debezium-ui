@@ -11,6 +11,8 @@ export interface ITypeSelectorComponentProps {
   options: any[];
   value: any;
   setFieldValue: (value: any) => void;
+  isInvalid: boolean;
+  invalidText: string;
 }
 
 export const TypeSelectorComponent = ({
@@ -21,7 +23,9 @@ export const TypeSelectorComponent = ({
   isDisabled,
   options,
   value,
-  setFieldValue
+  setFieldValue,
+  isInvalid,
+  invalidText
 }: ITypeSelectorComponentProps) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
 
@@ -68,10 +72,10 @@ export const TypeSelectorComponent = ({
       label={label}
       isRequired={isRequired}
       fieldId={fieldId}
-      labelIcon={
-        <HelpInfoIcon label={label} description={description} />
-      }
+      labelIcon={<HelpInfoIcon label={label} description={description} />}
+      helperTextInvalid={invalidText}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
+      validated={isInvalid ? 'error' : 'default'}
     >
       <Select
         variant={SelectVariant.single}
@@ -82,6 +86,7 @@ export const TypeSelectorComponent = ({
         selections={value}
         isOpen={isOpen}
         placeholderText="Select type"
+        validated={isInvalid ? 'error' : 'default'}
         onFilter={onFilter}
         isGrouped={true}
         hasInlineFilter={true}
