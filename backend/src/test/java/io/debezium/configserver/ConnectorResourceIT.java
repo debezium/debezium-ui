@@ -47,6 +47,7 @@ public class ConnectorResourceIT {
                     equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.SnapshotMode.values())))
             .body("properties.find { it.name == 'decimal.handling.mode' }.allowedValues",
                     equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.DecimalHandlingMode.values())))
+            .body("properties.contains(null)", is(false))
             .body("enabled", is(true));
     }
 
@@ -63,6 +64,7 @@ public class ConnectorResourceIT {
                     equalTo(ConnectorIntegratorBase.enumArrayToList(MySqlConnectorConfig.SnapshotLockingMode.values())))
             .body("properties.find { it.name == 'snapshot.new.tables' }.allowedValues",
                     equalTo(ConnectorIntegratorBase.enumArrayToList(MySqlConnectorConfig.SnapshotNewTables.values())))
+            .body("properties.contains(null)", is(false))
             .body("enabled", is(true));
     }
 
@@ -76,6 +78,7 @@ public class ConnectorResourceIT {
             .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
                     equalTo(ConnectorIntegratorBase.enumArrayToList(MongoDbConnectorConfig.SnapshotMode.values())))
             .body("properties.find { it.name == 'field.renames' }.category", is(ConnectorProperty.Category.CONNECTOR_ADVANCED.name()))
+            .body("properties.contains(null)", is(false))
             .body("enabled", is(true));
     }
 

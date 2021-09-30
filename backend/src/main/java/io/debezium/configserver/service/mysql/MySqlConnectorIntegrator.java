@@ -85,7 +85,6 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
         // Data type mapping properties:
         additionalMetadata.put(MySqlConnectorConfig.EVENT_DESERIALIZATION_FAILURE_HANDLING_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR, enumArrayToList(MySqlConnectorConfig.EventProcessingFailureHandlingMode.values())));
         additionalMetadata.put(MySqlConnectorConfig.ENABLE_TIME_ADJUSTER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR));
-        additionalMetadata.put(MySqlConnectorConfig.GTID_NEW_CHANNEL_POSITION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR));
         additionalMetadata.put(MySqlConnectorConfig.GTID_SOURCE_FILTER_DML_EVENTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR));
         additionalMetadata.put(MySqlConnectorConfig.GTID_SOURCE_INCLUDES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR));
         additionalMetadata.put(MySqlConnectorConfig.GTID_SOURCE_EXCLUDES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR));

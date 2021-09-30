@@ -80,8 +80,12 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
             .collect(Collectors.toMap(connectorProperty -> connectorProperty.name, connectorProperty -> connectorProperty));
 
         // apply sorting of properties provided by {@link #allPropertiesWithAdditionalMetadata()}
-        ArrayList<ConnectorProperty> sortedProperties = allPropertiesWithAdditionalMetadata().keySet()
-                .stream().map(properties::get).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<ConnectorProperty> sortedProperties = allPropertiesWithAdditionalMetadata()
+            .keySet()
+            .stream()
+            .map(properties::get)
+            .filter(prop -> prop != null)
+            .collect(Collectors.toCollection(ArrayList::new));
 
         return new ConnectorType(
                 descriptor.id,
