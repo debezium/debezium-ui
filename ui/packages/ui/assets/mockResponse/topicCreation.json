@@ -1,5 +1,6 @@
 {
-  "topicCreationEnabled": true,
+  "brokerTopicAutoCreateEnabled": true,
+  "topicAutoCreateEnabled": true,
   "defaults": [
     {
       "category": "TOPIC_CREATION",

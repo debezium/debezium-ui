@@ -178,7 +178,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   return (
     // tslint:disable: no-string-literal
     <div>
-      {!topicCreationResponse['topicCreationEnabled'] ? (
+      { (!topicCreationResponse['brokerTopicAutoCreateEnabled'] || !topicCreationResponse['topicAutoCreateEnabled']) ? (
         <Alert
           variant="info"
           isInline={true}
