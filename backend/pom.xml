@@ -6,6 +6,7 @@
     <groupId>io.debezium</groupId>
     <artifactId>debezium-ui-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>debezium-ui-backend</artifactId>
   <name>Debezium UI Backend</name>
@@ -132,8 +133,6 @@
         <executions>
           <execution>
             <goals>
-              <goal>prepare</goal>
-              <goal>prepare-tests</goal>
               <goal>build</goal>
             </goals>
           </execution>
@@ -177,7 +176,7 @@
           <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-checkstyle</artifactId>
-            <version>[${debezium.base.version}],[1.6.1-SNAPSHOT]</version>
+            <version>[${debezium.base.version}],[1.6.0-SNAPSHOT],[1.6.1-SNAPSHOT],[1.6.2-SNAPSHOT],[1.7.0-SNAPSHOT],[1.8.0-SNAPSHOT]</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -208,6 +207,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
+          <argLine>--illegal-access=permit</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
@@ -241,6 +241,7 @@
               <goal>verify</goal>
             </goals>
             <configuration>
+              <argLine>--illegal-access=permit</argLine>
               <skipTests>${skipITs}</skipTests>
               <enableAssertions>true</enableAssertions>
               <systemPropertyVariables>

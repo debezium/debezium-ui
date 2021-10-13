@@ -1,6 +1,5 @@
 [![License](http://img.shields.io/:license-apache%202.0-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.debezium/debezium-connector-vitess/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.debezium%22)
-[![Build Status](https://travis-ci.com/debezium/debezium-incubator.svg?branch=master)](https://travis-ci.com/debezium/debezium-connector-vitess/)
 [![User chat](https://img.shields.io/badge/chat-users-brightgreen.svg)](https://gitter.im/debezium/user)
 [![Developer chat](https://img.shields.io/badge/chat-devs-brightgreen.svg)](https://gitter.im/debezium/dev)
 [![Google Group](https://img.shields.io/:mailing%20list-debezium-brightgreen.svg)](https://groups.google.com/forum/#!forum/debezium)
@@ -92,7 +91,7 @@ The entire application (UI and backend) can be built via Maven:
 mvn clean install
 ```
 
-The UI part is an SPA application based on the React framework. It is packaged as JAR,
+The UI part is an single-page application (SPA) based on the React framework. It is packaged as JAR,
 whose contents are then exposed by the Quarkus-based backend application.
 
 ### Backend

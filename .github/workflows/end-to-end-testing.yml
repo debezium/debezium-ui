@@ -21,7 +21,7 @@ on:
       - '.github/workflows/end-to-end-testing.yml'
 
 jobs:
-  test:
+  e2e-test:
     runs-on: ubuntu-latest
 
     services:
@@ -44,10 +44,12 @@ jobs:
           POSTGRES_PASSWORD: postgres
       
       dbzui-connect:
-        image: debezium/connect:1.6
+        image: debezium/connect:nightly
         ports:
           - 8083:8083
         env:
+          ENABLE_DEBEZIUM_SCRIPTING: true
+          CONNECT_REST_EXTENSION_CLASSES: io.debezium.kcrestextension.DebeziumConnectRestExtension
           BOOTSTRAP_SERVERS: dbzui-kafka:9092
           GROUP_ID: 1
           CONFIG_STORAGE_TOPIC: my_connect_configs
