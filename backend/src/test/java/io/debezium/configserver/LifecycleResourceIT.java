@@ -14,6 +14,7 @@ import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -23,6 +24,10 @@ import static org.hamcrest.Matchers.is;
 @TestProfile(PostgresInfrastructureTestProfile.class)
 public class LifecycleResourceIT {
 
+    @BeforeEach
+    public void resetRunningConnectors() {
+        Infrastructure.getDebeziumContainer().deleteAllConnectors();
+    }
     @Test
     public void testPauseAndResumePostgresConnector() {
         final var connectorName = "pause-postgres-connector";

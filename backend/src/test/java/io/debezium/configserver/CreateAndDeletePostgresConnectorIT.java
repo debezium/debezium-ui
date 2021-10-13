@@ -40,6 +40,7 @@ public class CreateAndDeletePostgresConnectorIT {
 
     @Test
     public void testPostgresCreateConnectorEndpoint() {
+        Infrastructure.getDebeziumContainer().deleteAllConnectors();
         Connector connector = Connector.from(
                 "my-postgres-connector",
                 Infrastructure.getPostgresConnectorConfiguration(1)
@@ -70,8 +71,8 @@ public class CreateAndDeletePostgresConnectorIT {
 
     @Test
     public void testPostgresDeleteConnectorSuccessful() {
-        final var deletePostgresConnectorName = "delete-connector-postgres";
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
+        final var deletePostgresConnectorName = "delete-connector-postgres";
         Infrastructure.getDebeziumContainer().registerConnector(
                 deletePostgresConnectorName,
                 Infrastructure.getPostgresConnectorConfiguration(1));

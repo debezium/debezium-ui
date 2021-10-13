@@ -15,7 +15,7 @@ kind: ConfigMap
 metadata:
   name: dbzui-service-config
 data:
-  KAFKA_CONNECT_URI: http://dbzui-connect:8083
+  KAFKA_CONNECT_URIS: http://dbzui-connect:8083
   UI_MODE: prod
   UI_BASE_URI: https://dbzui.apps.cluster-e52d.e52d.example.opentlc.com/api
 ---

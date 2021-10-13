@@ -22,7 +22,7 @@ public class MultipleKafkaConnectClustersTestProfile implements QuarkusTestProfi
     public Map<String, String> getConfigOverrides() {
         Map<String, String> config = new HashMap<>();
         config.put(
-                KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URI,
+                KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URIS,
                 "http://localhost:1234,http://localhorst:4567 , http://localhosst:7890"
         );
         return config;

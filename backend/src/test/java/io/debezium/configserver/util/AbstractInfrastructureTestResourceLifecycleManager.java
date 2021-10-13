@@ -17,7 +17,7 @@ public abstract class AbstractInfrastructureTestResourceLifecycleManager impleme
     public Map<String, String> start() {
         Map<String, String> config = new HashMap<>();
         config.put(
-                KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URI,
+                KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URIS,
                 "http://" + Infrastructure.getDebeziumContainer().getHost() + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8083)
         );
         return config;

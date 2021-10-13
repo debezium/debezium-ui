@@ -27,6 +27,8 @@ import java.util.stream.Stream;
 
 public class Infrastructure {
 
+    private static final String KAFKA_HOSTNAME = "kafka-dbz-ui";
+
     public enum DATABASE {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, NONE
     }
@@ -38,6 +40,7 @@ public class Infrastructure {
 
     private static final KafkaContainer KAFKA_CONTAINER =
             new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.5"))
+                    .withNetworkAliases(KAFKA_HOSTNAME)
                     .withNetwork(NETWORK);
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
@@ -63,7 +66,7 @@ public class Infrastructure {
                     .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                     .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                     .withNetwork(NETWORK)
-                    .withKafka(KAFKA_CONTAINER)
+                    .withKafka(KAFKA_CONTAINER.getNetwork(), KAFKA_HOSTNAME + ":9092")
                     .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                     .dependsOn(KAFKA_CONTAINER);
 
@@ -138,9 +141,11 @@ public class Infrastructure {
 
     public static ConnectorConfiguration getMySqlConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(MYSQL_CONTAINER)
+                .with("database.user", "debezium")
+                .with("database.password", "dbz")
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
                 .with("database.server.name", "dbserver" + id)
-                .with("database.history.kafka.bootstrap.servers", "kafka:9092")
+                .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
                 .with("database.history.kafka.topic", "dbhistory.inventory")
                 .with("server.id", "debezium_" + (5555 + id - 1));
 

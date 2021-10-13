@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 
 public class KafkaConnectClientFactory {
 
-    public static final String PROPERTY_KAFKA_CONNECT_URI = "kafka.connect.uri";
+    public static final String PROPERTY_KAFKA_CONNECT_URIS = "kafka.connect.uris";
 
     private static List<String> kafkaConnectBaseUris;
     private static KafkaConnectClusterList kafkaConnectBaseURIsList;
@@ -28,7 +28,7 @@ public class KafkaConnectClientFactory {
     private static List<String> getKafkaConnectBaseUris() {
         if (null == kafkaConnectBaseUris) {
             try {
-                kafkaConnectBaseUris = ((SmallRyeConfig) ConfigProvider.getConfig()).getValues(PROPERTY_KAFKA_CONNECT_URI, String.class, ArrayList::new);
+                kafkaConnectBaseUris = ((SmallRyeConfig) ConfigProvider.getConfig()).getValues(PROPERTY_KAFKA_CONNECT_URIS, String.class, ArrayList::new);
             }
             catch (NoSuchElementException e) {
                 kafkaConnectBaseUris = Collections.singletonList("http://localhost:8083");
@@ -58,7 +58,7 @@ public class KafkaConnectClientFactory {
     }
 
     /**
-     * @param cluster the number of the cluster in the list of configured cluster URIs in #PROPERTY_KAFKA_CONNECT_URI (1, 2, 3, ...)
+     * @param cluster the number of the cluster in the list of configured cluster URIs in #PROPERTY_KAFKA_CONNECT_URIS (1, 2, 3, ...)
      *
      * @return the URI for the selected cluster
      */
@@ -67,7 +67,7 @@ public class KafkaConnectClientFactory {
 
         if (baseURIsList.isEmpty()) {
             throw new InvalidClusterException(
-                    "Kafka Connect cluster list is empty! Did you forget to set a value for configuration property \"" + PROPERTY_KAFKA_CONNECT_URI + "\"?"
+                    "Kafka Connect cluster list is empty! Did you forget to set a value for configuration property \"" + PROPERTY_KAFKA_CONNECT_URIS + "\"?"
             );
         }
 
