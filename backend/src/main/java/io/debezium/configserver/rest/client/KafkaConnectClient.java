@@ -7,6 +7,7 @@ package io.debezium.configserver.rest.client;
 
 import io.debezium.configserver.model.ConnectConnectorConfigResponse;
 import io.debezium.configserver.model.ConnectConnectorStatusResponse;
+import io.debezium.configserver.model.TransformsInfo;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.Consumes;
@@ -71,4 +72,13 @@ public interface KafkaConnectClient {
     @Produces("application/json")
     Response restartConnectorTask(@PathParam("connector-name") String connectorName, @PathParam("task-number") int taskNumber) throws ProcessingException, IOException;
 
+    @GET
+    @Path("/debezium/transforms")
+    @Produces("application/json")
+    List<TransformsInfo> listTransforms() throws ProcessingException, IOException;
+
+    @GET
+    @Path("/debezium/topic-creation")
+    @Produces("application/json")
+    Boolean isTopicCreationEnabled() throws ProcessingException, IOException;
 }

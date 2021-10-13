@@ -17,10 +17,10 @@ on:
       - '.github/workflows/backend-testing.yml'
 
 jobs:
-  test:
+  backend-test:
     runs-on: ubuntu-latest
     env:
-      DEBEZIUM_VERSION: "v1.5.0.Beta1"
+      DEBEZIUM_VERSION: "v1.6.1.Final"
     steps:
       - name: Checkout Debezium main repository
         uses: actions/checkout@v2

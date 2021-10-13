@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class Infrastructure {
 
     public enum DATABASE {
-        POSTGRES, MYSQL, SQLSERVER, MONGODB
+        POSTGRES, MYSQL, SQLSERVER, MONGODB, NONE
     }
 
     private static final String DEBEZIUM_CONTAINER_VERSION = "1.6";
@@ -37,7 +37,7 @@ public class Infrastructure {
     private static final Network NETWORK = Network.newNetwork();
 
     private static final KafkaContainer KAFKA_CONTAINER =
-            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"))
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.5"))
                     .withNetwork(NETWORK);
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
@@ -59,7 +59,9 @@ public class Infrastructure {
                     .withNetworkAliases("mongodb");
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
-            new DebeziumContainer(DockerImageName.parse("debezium/connect:" + DEBEZIUM_CONTAINER_VERSION))
+            new DebeziumContainer(DockerImageName.parse("debezium/connect:nightly"))
+                    .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
+                    .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                     .withNetwork(NETWORK)
                     .withKafka(KAFKA_CONTAINER)
                     .withLogConsumer(new Slf4jLogConsumer(LOGGER))
@@ -81,12 +83,19 @@ public class Infrastructure {
             case MONGODB:
                 dbContainer = MONGODB_CONTAINER;
                 break;
+            case NONE:
             default:
                 dbContainer = null;
                 break;
         }
 
-        Supplier<Stream<GenericContainer<?>>> containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
+        final Supplier<Stream<GenericContainer<?>>> containers;
+        if (null != dbContainer) {
+           containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
+        }
+        else {
+            containers = () -> Stream.of(KAFKA_CONTAINER, DEBEZIUM_CONTAINER);
+        }
         if ("true".equals(System.getenv("CI"))) {
             containers.get().forEach(container -> container.withStartupTimeout(Duration.ofSeconds(90)));
         }
