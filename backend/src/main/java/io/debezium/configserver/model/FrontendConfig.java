@@ -16,7 +16,7 @@ public class FrontendConfig {
     public static final String UI_MODE_PROD = "prod";
 
     public static final String DEPLOYMENT_MODE_DEFAULT = "default";
-    public static final String DEPLOYMENT_MODE_DISABLE_VALIDATION = "validation.disabled";
+    public static final String DEPLOYMENT_MODE_DISABLE_VALIDATION = "validation_disabled";
 
     @JsonbProperty("mode")
     public final String uiMode;
@@ -74,12 +74,12 @@ public class FrontendConfig {
         }
     }
 
-    public FrontendConfig(String baseURI, UIMode uiMode, DeploymentMode deploymentMode) {
-        this("rest", baseURI, uiMode, deploymentMode);
+    public FrontendConfig(UIMode uiMode, DeploymentMode deploymentMode) {
+        this("rest", uiMode, deploymentMode);
     }
 
-    public FrontendConfig(String artifactType, String baseURI, UIMode uiMode, DeploymentMode deploymentMode) {
-        this.artifacts = new FrontendConfigArtifacts(artifactType, baseURI);
+    public FrontendConfig(String artifactType, UIMode uiMode, DeploymentMode deploymentMode) {
+        this.artifacts = new FrontendConfigArtifacts(artifactType);
         this.uiMode = uiMode.getValue();
         this.deploymentMode = deploymentMode.getValue();
     }
