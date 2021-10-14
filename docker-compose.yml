@@ -59,6 +59,26 @@ services:
     depends_on:
       - dbzui-db-mongo
     command: bash -c 'sleep 20 && mongo -u admin -p admin --authenticationDatabase admin dbzui-db-mongo:27017/inventory --eval "rs.initiate();"'
+  dbzui-db-sqlserver:
+    container_name: dbzui-db-sqlserver
+    build:
+      context: sqlserver
+    ports:
+     - 1433:1433
+    networks:
+      - dbzui-network
+    environment:
+     - ACCEPT_EULA=Y
+     - MSSQL_PID=Standard
+     - SA_PASSWORD=Password!
+     - MSSQL_AGENT_ENABLED=true
+  sqlserver-initializer:
+    image: debezium-ui_dbzui-db-sqlserver
+    networks:
+      - dbzui-network
+    depends_on:
+      - dbzui-db-sqlserver
+    command: bash -c 'sleep 60 && /opt/mssql-tools/bin/sqlcmd -S dbzui-db-sqlserver -U sa -P Password! -i inventory.sql'
   dbzui-connect:
     container_name: dbzui-connect
     image: 

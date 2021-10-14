@@ -343,7 +343,6 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
       fetch_retry(connectorService.getConnectorInfo, connectorService, [cType])
         .then((cDetails: any) => {
           setLoading(false);
-
           // TODO: Find the solution to this issue.
           if (
             cDetails?.properties.find(
