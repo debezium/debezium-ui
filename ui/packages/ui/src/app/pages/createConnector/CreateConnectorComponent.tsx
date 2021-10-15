@@ -126,6 +126,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   const [runtimeOptionsPropValues, setRuntimeOptionsPropValues] = React.useState<Map<string, string>>(
     new Map<string, string>()
   );
+  const [topicCreationEnabled, setTopicCreationEnabled] = React.useState<boolean>(false);
 
   const [validateInProgress, setValidateInProgress] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -570,6 +571,17 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   }, [setConnectorTypes]);
 
   React.useEffect(() => {
+    const globalsService = Services.getGlobalsService();
+    fetch_retry(globalsService.getTopicCreationEnabled, globalsService, [props.clusterId])
+      .then((isEnabled: boolean) => {
+        setTopicCreationEnabled(isEnabled);
+      })
+      .catch((err: React.SetStateAction<Error>) => {
+        alert(err);
+      });
+  }, [setTopicCreationEnabled]);
+
+  React.useEffect(() => {
     if (connectorTypes.length !== 0) {
       connectorTypes[0]?.id && setSelectedConnectorType(connectorTypes[0].id);
 
@@ -723,6 +735,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               showIcon={false}
             />
             <TopicCreationStep
+              topicCreationEnabled={topicCreationEnabled}
               topicCreationValues={convertPropertyKeys(topicCreationPropValues, ".", "_")}
               updateTopicCreationValues={handleTopicCreationUpdate}
               setIsTopicCreationDirty={setIsTopicCreationDirty}

@@ -36,4 +36,14 @@ export class GlobalsService extends BaseService {
         return this.httpGet<string[]>(endpoint);
     }
 
+    /**
+     * Get the enabled state for topic creation for the supplied clusterId
+     */
+    public getTopicCreationEnabled(clusterId: number): Promise<boolean> {
+        this.logger?.info("[GlobalsService] Getting the enabled state for topic creation.");
+
+        const endpoint: string = this.endpoint("/:clusterId/topic-creation-enabled", { clusterId });
+        return this.httpGet<boolean>(endpoint);
+    }
+
 }

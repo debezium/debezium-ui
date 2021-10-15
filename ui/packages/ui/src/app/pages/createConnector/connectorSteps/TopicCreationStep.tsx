@@ -25,6 +25,7 @@ export interface ITopicGroupData {
 }
 
 export interface ITopicCreationStepProps {
+  topicCreationEnabled: boolean;
   topicCreationValues: Map<string, any>;
   updateTopicCreationValues: (data: any) => void;
   setIsTopicCreationDirty: (data: boolean) => void;
@@ -178,7 +179,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   return (
     // tslint:disable: no-string-literal
     <div>
-      { (!topicCreationResponse['brokerTopicAutoCreateEnabled'] || !topicCreationResponse['topicAutoCreateEnabled']) ? (
+      { (!props.topicCreationEnabled) ? (
         <Alert
           variant="info"
           isInline={true}
