@@ -634,9 +634,15 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
  * @returns the array of altered transform config
  */
  export function getFormattedConfig (transformConfig: any[], transformTypeId: string): any {
-  const formattedTransformConfig: ConnectorProperty[] = transformTypeId ? _.find([...transformConfig],['transform',transformTypeId])?.configurationOptions : [];
-    for (const transConfig of formattedTransformConfig) {
+  const selectedTransformConfig: any = transformTypeId ? _.find([...transformConfig],['transform',transformTypeId])?.properties : {};
+  const formattedTransformConfig: any[] = [];
+    // tslint:disable-next-line: forin
+    for (const transform in selectedTransformConfig) {
+      const transConfig = selectedTransformConfig[transform];
       transConfig.gridWidthSm = 12;
+      transConfig.name = transConfig['x-name'];
+      transConfig.displayName = transConfig.title;
+      transConfig.allowedValues = transConfig?.enum;
       const propName = transConfig.name.replace(/\./g, "_");  // Ensure dotted version of name
       transConfig.name = propName;
       if (transformTypeId === 'io.debezium.transforms.Filter' || transformTypeId === 'io.debezium.transforms.ContentBasedRouter') {
@@ -659,7 +665,7 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
           case 'drop_tombstones':
             transConfig.type = "BOOLEAN-SWITCH";
             break;
-          case 'delete_handling​_mode':
+          case 'delete_handling_mode':
             transConfig.gridWidthLg = 4;
             break;
           case 'add_fields_prefix':
@@ -686,7 +692,7 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
             break;
         }
       }
-
+      formattedTransformConfig.push(transConfig)
     }
     return formattedTransformConfig;
 }

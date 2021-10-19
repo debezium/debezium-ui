@@ -1,0 +1,116 @@
+[
+    {
+      "properties": {
+        "key.enforce.uniqueness": {
+          "defaultValue": "true",
+          "description": "Augment each record's key with a field denoting the source topic. This field distinguishes records coming from different physical tables which may otherwise have primary/unique key conflicts. If the source tables are guaranteed to have globally unique keys then this may be set to false to disable key rewriting.",
+          "title": "Add source topic name into key",
+          "type": "BOOLEAN",
+          "x-name": "key.enforce.uniqueness"
+        },
+        "key.field.regex": {
+          "description": "The regex used for extracting the physical table identifier from the original topic name. Now that multiple physical tables can share a topic, the event's key may need to be augmented to include fields other than just those for the record's primary/unique key, since these are not guaranteed to be unique across tables. We need some identifier added to the key that distinguishes the different physical tables.",
+          "title": "Key field regex",
+          "type": "STRING",
+          "x-name": "key.field.regex"
+        },
+        "topic.replacement": {
+          "description": "The replacement string used in conjunction with topic.regex. This will be used to create the new topic name.",
+          "title": "Topic replacement",
+          "type": "STRING",
+          "x-name": "topic.replacement"
+        },
+        "topic.regex": {
+          "description": "The regex used for extracting the name of the logical table from the original topic name.",
+          "title": "Topic regex",
+          "type": "STRING",
+          "x-name": "topic.regex"
+        },
+        "key.field.replacement": {
+          "description": "The replacement string used in conjunction with key.field.regex. This will be used to create the physical table identifier in the record's key.",
+          "title": "Key field replacement",
+          "type": "STRING",
+          "x-name": "key.field.replacement"
+        }
+      },
+      "transform": "io.debezium.transforms.ByLogicalTableRouter"
+    },
+    {
+      "properties": {
+        "delete.handling.mode": {
+          "defaultValue": "drop",
+          "description": "How to handle delete records. Options are: none - records are passed,drop - records are removed (the default),rewrite - __deleted field is added to records.",
+          "enum": [
+            "drop",
+            "rewrite",
+            "none"
+          ],
+          "title": "Handle delete records",
+          "type": "STRING",
+          "x-name": "delete.handling.mode"
+        },
+        "route.by.field": {
+          "defaultValue": "",
+          "description": "The column which determines how the events will be routed, the value will replace the topic name.",
+          "title": "Route by field name",
+          "type": "STRING",
+          "x-name": "route.by.field"
+        },
+        "add.headers": {
+          "defaultValue": "[]",
+          "description": "Adds each field listed to the header,  __ (or __<struct>_ if the struct is specified). Example: 'version,connector,source.ts_ms' would add __version, __connector and __source_ts_ms fields. Optionally one can also map new field name like version:VERSION,connector:CONNECTOR,source.ts_ms:EVENT_TIMESTAMP.Please note that the new field name is case-sensitive.",
+          "format": "list,regex",
+          "title": "Adds the specified fields to the header if they exist.",
+          "type": "STRING",
+          "x-name": "add.headers"
+        },
+        "drop.tombstones": {
+          "defaultValue": "true",
+          "description": "Debezium by default generates a tombstone record to enable Kafka compaction after a delete record was generated. This record is usually filtered out to avoid duplicates as a delete record is converted to a tombstone record, too",
+          "title": "Drop tombstones",
+          "type": "BOOLEAN",
+          "x-name": "drop.tombstones"
+        },
+        "add.fields": {
+          "defaultValue": "[]",
+          "description": "Adds each field listed, prefixed with __ (or __<struct>_ if the struct is specified). Example: 'version,connector,source.ts_ms' would add __version, __connector and __source_ts_ms fields. Optionally one can also map new field name like version:VERSION,connector:CONNECTOR,source.ts_ms:EVENT_TIMESTAMP.Please note that the new field name is case-sensitive.",
+          "format": "list,regex",
+          "title": "Adds the specified field(s) to the message if they exist.",
+          "type": "STRING",
+          "x-name": "add.fields"
+        }
+      },
+      "transform": "io.debezium.transforms.ExtractNewRecordState"
+    },
+    {
+      "properties": {
+        "timestamp.format": {
+          "defaultValue": "yyyyMMdd",
+          "description": "Format string for the timestamp that is compatible with <code>java.text.SimpleDateFormat</code>.",
+          "title": "timestamp.format",
+          "type": "STRING",
+          "x-name": "timestamp.format"
+        },
+        "topic.format": {
+          "defaultValue": "${topic}-${timestamp}",
+          "description": "Format string which can contain <code>${topic}</code> and <code>${timestamp}</code> as placeholders for the topic and timestamp, respectively.",
+          "title": "topic.format",
+          "type": "STRING",
+          "x-name": "topic.format"
+        }
+      },
+      "transform": "org.apache.kafka.connect.transforms.TimestampRouter"
+    },
+    {
+      "properties": {
+        "fields": {
+          "description": "Field names on the record value to extract as the record key.",
+          "format": "list,regex",
+          "title": "fields",
+          "type": "STRING",
+          "x-name": "fields"
+        }
+      },
+      "transform": "org.apache.kafka.connect.transforms.ValueToKey"
+    }
+  ]

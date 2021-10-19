@@ -189,4 +189,14 @@ export class ConnectorService extends BaseService {
         return this.httpPost(endpoint, body);
     }    
 
+    /**
+     * Get the transform list and their properties for supplied clusterId
+     */
+       public getTransform(clusterId: number): Promise<any[]> {
+        this.logger?.info("[ConnectorService] Getting the list of transform.");
+
+        const endpoint: string = this.endpoint("/:clusterId/transforms.json", { clusterId });
+        return this.httpGet<Connector[]>(endpoint);
+    }
+
 }
