@@ -155,6 +155,19 @@ export enum PropertyName {
   TIME_PRECISION_MODE = "time.precision.mode",
   TOASTED_VALUE_PLACEHOLDER = "toasted.value.placeholder",
   TOMBSTONES_ON_DELETE = "tombstones.on.delete",
+  TOPIC_CREATION_PREFIX = "topic.creation.",
+  TOPIC_CREATION_GROUP_PREFIX = "topic.creation.(.+).",
+  TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR = "topic.creation.default.replication.factor",
+  TOPIC_CREATION_DEFAULT_PARTITIONS = "topic.creation.default.partitions",
+  TOPIC_CREATION_DEFAULT_CLEANUP_POLICY = "topic.creation.default.cleanup.policy",
+  TOPIC_CREATION_DEFAULT_COMPRESSION_TYPE = "topic.creation.default.compression.type",
+  TOPIC_CREATION_GROUPS = "topic.creation.groups",
+  TOPIC_CREATION_GROUP_INCLUDE = "topic.creation.(.+).include",
+  TOPIC_CREATION_GROUP_EXCLUDE = "topic.creation.(.+).exclude",
+  TOPIC_CREATION_GROUP_REPLICATION_FACTOR = "topic.creation.(.+).replication.factor",
+  TOPIC_CREATION_GROUP_PARTITIONS = "topic.creation.(.+).partitions",
+  TOPIC_CREATION_GROUP_CLEANUP_POLICY = "topic.creation.(.+).cleanup.policy",
+  TOPIC_CREATION_GROUP_COMPRESSION_TYPE = "topic.creation.(.+).compression.type",
   XMIN_FETCH_INTERVAL_MS = "xmin.fetch.interval.ms"
 }
 
@@ -676,6 +689,48 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
 
     }
     return formattedTransformConfig;
+}
+
+/**
+ * Alter the supplied topic creation properties for display purposes.  The property names are also shortened to remove common
+ * prefixes ("topic.creation.", "topic.creation.(.+).")
+ * - Apply optional grid formatting values to some properties for better layouts.
+ * @param topicCreationConfig the array of topic create properties
+ * @returns the array of altered topic creation properties
+ */
+export function getFormattedTopicCreationProperties (topicCreationProperties: any[]): any {
+  // Topic Group forms deal with properties that have prefixes stripped off
+  topicCreationProperties.map((prop) => prop.name = prop.name.replaceAll(PropertyName.TOPIC_CREATION_GROUP_PREFIX,"")
+                                                          .replaceAll(PropertyName.TOPIC_CREATION_PREFIX,""));
+
+  const formattedTopicCreationProperties: ConnectorProperty[] = [
+    ...topicCreationProperties.filter((defn: any) => defn.name !== PropertyName.TOPIC_CREATION_GROUPS.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""))
+  ];
+
+  for (const topicGroupProp of formattedTopicCreationProperties) {
+    topicGroupProp.gridWidthSm = 12;
+    const propName = topicGroupProp.name.replace(/_/g, ".");  // Ensure dotted version of name
+
+    switch (propName) {
+      case PropertyName.TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_DEFAULT_PARTITIONS.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
+        topicGroupProp.gridWidthLg = 6;
+        break;
+      case PropertyName.TOPIC_CREATION_DEFAULT_CLEANUP_POLICY.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_DEFAULT_COMPRESSION_TYPE.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
+        topicGroupProp.gridWidthLg = 6;
+        break;
+      case PropertyName.TOPIC_CREATION_GROUP_INCLUDE.replaceAll(PropertyName.TOPIC_CREATION_GROUP_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_GROUP_EXCLUDE.replaceAll(PropertyName.TOPIC_CREATION_GROUP_PREFIX, ""):
+        topicGroupProp.gridWidthLg = 12;
+        break;
+      default:
+        topicGroupProp.gridWidthLg = 12;
+        break;
+    }
+
+  }
+  return formattedTopicCreationProperties;
 }
 
 /**
