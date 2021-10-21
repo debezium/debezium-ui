@@ -16,8 +16,6 @@ import {
 } from '@patternfly/react-core';
 import React, { FC } from 'react';
 import { TransformCard } from 'components';
-// import transformResponse from '../../../../../assets/mockResponse/transform.json';
-import transformResponse from '../../../../../assets/mockResponse/transformUpdate.json';
 import MultiRef from 'react-multi-ref';
 import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
@@ -65,24 +63,6 @@ const getOptions = (response, connectorType) => {
           <SelectOption
             key={index}
             value={`${data.transform}`}
-            // isDisabled={
-            //   !data.enabled ||
-            //   (connectorType === 'mongodb' && data.transform === 'io.debezium.transforms.ExtractNewRecordState')
-            // }
-            // description={
-            //   data.transform.includes('.Filter') || data.transform.includes('.ContentBasedRouter') ? (
-            //     <>
-            //       Scripting is not enabled. See{' '}
-            //       <a href="https://debezium.io/documentation/reference/transformations/index.html" target="_blank">
-            //         documentation
-            //       </a>
-            //     </>
-            //   ) : connectorType === 'mongodb' && data.transform.includes('.ExtractNewRecordState') ? (
-            //     'Supported for only the SQL database connectors.'
-            //   ) : (
-            //     ''
-            //   )
-            // }
           />
         )
       : apacheTransform.push(<SelectOption key={index} value={`${data.transform}`} />);
@@ -274,10 +254,11 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
     ])
       .then((cConnectors: any[]) => {
         console.log(cConnectors);
+
+        setResponseData(cConnectors);
       })
       .catch((err: React.SetStateAction<Error>) => {
         console.log(err);
-        setResponseData(transformResponse);
       });
   },[]);
 
