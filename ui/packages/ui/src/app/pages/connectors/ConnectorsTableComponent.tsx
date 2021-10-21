@@ -272,7 +272,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<IConnectorsTableC
   React.useEffect(() => {
     const getConnectorsInterval = setInterval(() => getConnectorsList(), 10000);
     return () => clearInterval(getConnectorsInterval);
-  }, [currentCategory]);
+  }, [currentCategory,props.clusterId]);
 
   const columns = [
     {
