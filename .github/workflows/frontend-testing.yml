@@ -3,13 +3,13 @@ name: Test Debezium UI Frontend
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'ui/**'
       - '.github/workflows/frontend-testing.yml'
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - 'ui/**'
       - '.github/workflows/frontend-testing.yml'

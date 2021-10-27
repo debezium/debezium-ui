@@ -3,14 +3,14 @@ name: Test Debezium UI Backend
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'pom.xml'
       - 'backend/**'
       - '.github/workflows/backend-testing.yml'
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - 'pom.xml'
       - 'backend/**'
