@@ -81,7 +81,6 @@ export const TopicDefaults: React.FunctionComponent<any> = React.forwardRef((pro
       }
     }
     props.updateTopicDefaults(newValues);
-    props.setIsTopicCreationDirty(false);
   };
   return (
     <>

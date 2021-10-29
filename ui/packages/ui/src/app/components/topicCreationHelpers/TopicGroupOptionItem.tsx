@@ -10,6 +10,8 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
+import { ITopicGroupOption } from "components";
+import _ from "lodash";
 import * as React from "react";
 import "./TopicGroupOptionItem.css";
 
@@ -21,6 +23,7 @@ export interface ITopicGroupOptionItemProps {
   topicGroupOptionNameChanged: (rowId: number, itemName: string | undefined) => void;
   topicGroupOptionValueChanged: (rowId: number, itemValue: any) => void;
   deleteTopicGroupOptionItem: (rowId: number) => void;
+  topicGroupOptions: ITopicGroupOption[];
 }
 
 const SELECT_AN_OPTION = 'Select an option';
@@ -92,7 +95,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
     const options: JSX.Element[] = [];
     options.push(<SelectOption key={0} value={'Choose option...'} isPlaceholder={true} />)
     props.topicGroupOptionProperties.forEach((prop, index) => {
-      options.push(<SelectOption key={index+1} value={getGroupOptionDisplayName(prop.name)} />);
+      options.push(<SelectOption key={index+1} value={getGroupOptionDisplayName(prop.name)} isDisabled={!!_.find(props.topicGroupOptions, {name: prop.name})}/>);
     });
     return options;
   };
@@ -185,9 +188,8 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
             <TextInput
               id={`${props.rowId}value`}
               type={"number"}
-              min={-1}
               onChange={handleItemValueChange}
-              value={props.itemValue || -1}
+              value={props.itemValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
             />
             }

@@ -51,8 +51,8 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   const [topicGroups, setTopicGroups] = React.useState<Map<number, ITopicGroupData>>(new Map<number, ITopicGroupData>());
   const [topicDefaults, setTopicDefaults] = React.useState({});
 
-  // tslint:disable-next-line: variable-name  
-  const _items = new MultiRef();
+
+  const groupNameCheckRef = new MultiRef();
   const topicDefaultsSaveRef = React.useRef() as React.MutableRefObject<IValidationRef>;
 
   const TOPIC_CREATION_GROUPS = "topic_creation_groups";
@@ -91,12 +91,21 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   };
 
   const saveTopicCreation = () => {
-    // topicGroupSaveRef?.current?.validate();
-    _items.map.forEach((input:any) => {
-      input.validate();
+    const cardsValid: any[] = [];
+    groupNameCheckRef.map.forEach((input: any) => {
+      cardsValid.push(input.check());
     });
+
+    Promise.all(cardsValid).then(
+      d => {
+        props.setIsTopicCreationDirty(false);
+      },
+      e => {
+        props.setIsTopicCreationDirty(true);
+      }
+    );
     topicDefaultsSaveRef?.current?.validate();
-  }
+  };
 
   const updateTopicGroupCallback = React.useCallback(
     (key: number, field: string, value: any) => {
@@ -117,7 +126,6 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   const updateTopicDefaultsCallback = React.useCallback(
     (value: any) => {
       setTopicDefaults(value);
-      props.setIsTopicCreationDirty(true);
     },
     [topicDefaults]
   );
@@ -174,6 +182,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
       }
       setTopicDefaults(topicDefaultsVal);
     }
+    props.setIsTopicCreationDirty(false);
   }, []);
 
   return (
@@ -222,7 +231,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
                     <TopicGroupCard
                       key={topicGroups.get(key)?.key}
                       topicGroupNo={key}
-                      ref={_items.ref(topicGroups.get(key)?.key)}
+                      ref={groupNameCheckRef.ref(topicGroups.get(key)?.key)}
                       topicGroupName={topicGroups.get(key)?.name || ''}
                       topicGroupNameList={getNameList()}
                       topicGroupConfig={topicGroups.get(key)?.config || {}}

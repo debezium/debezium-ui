@@ -35,9 +35,17 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef((props, ref) =
   const { dirty, submitForm, validateForm } = useFormikContext();
 
   React.useImperativeHandle(ref, () => ({
-    validate() {
-      validateForm();
+    async validate() {
+      const valid = await validateForm();
+      const validPromise = new Promise((resolve, reject) => {
+        if (_.isEmpty(valid)) {
+          resolve('done');
+        } else {
+          reject('fail');
+        }
+      });
       submitForm();
+      return validPromise;
     }
   }));
   React.useEffect(() => {
@@ -149,7 +157,6 @@ export const TopicGroupConfig: React.FunctionComponent<any> = React.forwardRef((
       }
     }
     props.updateTopicGroup(props.topicGroupNo, 'config', basicValue);
-    props.setIsTopicCreationDirty(false);
   };
 
   return (
@@ -202,6 +209,7 @@ export const TopicGroupConfig: React.FunctionComponent<any> = React.forwardRef((
                     topicGroupOptionNameChanged={handleTopicGroupOptionNameChanged}
                     topicGroupOptionValueChanged={handleTopicGroupOptionValueChanged}
                     deleteTopicGroupOptionItem={handleDeleteTopicGroupOptionItem}
+                    topicGroupOptions={topicGroupOptions}
                   />
                 );
               })}
