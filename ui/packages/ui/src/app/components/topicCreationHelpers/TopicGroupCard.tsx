@@ -26,10 +26,16 @@ export interface ITopicGroupCardProps {
   topicGroupOptionsData: any;
   setIsTopicCreationDirty: (data: boolean) => void;
 }
+
+export interface IOptionsValidationRef {
+  validate: () => Promise<any>;
+}
   
 export const TopicGroupCard: React.FunctionComponent<any> = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const [nameIsValid, setNameIsValid] = React.useState<boolean>(true);
+
+  const optionsRef = React.useRef() as React.MutableRefObject<IOptionsValidationRef>;
 
   const deleteCard = () => {
     props.deleteTopicGroup(props.topicGroupNo);
@@ -41,6 +47,27 @@ export const TopicGroupCard: React.FunctionComponent<any> = React.forwardRef((pr
       props.updateTopicGroup(props.topicGroupNo, 'name', value);
     }
   };
+
+  React.useImperativeHandle(ref, () => ({
+    check() {
+      const validPromise = new Promise((resolve, reject) => {
+       if (props.topicGroupName) {
+          optionsRef?.current!.validate().then(
+            d => {
+              resolve('done');
+            },
+            e => {
+              reject('fail');
+            }
+          );
+        } else {
+          setNameIsValid(false);
+          reject('fail');
+        }
+      });
+      return validPromise;
+    }
+  }));
 
   return (
     <Grid>
@@ -71,7 +98,7 @@ export const TopicGroupCard: React.FunctionComponent<any> = React.forwardRef((pr
                 </Grid>
               </Form>
               <TopicGroupConfig
-                ref={ref}
+                ref={optionsRef}
                 topicGroupNo={props.topicGroupNo}
                 topicGroupConfigProperties={getFormattedTopicCreationProperties(props.topicGroupsData)}
                 topicGroupConfigValues={props.topicGroupConfig}
