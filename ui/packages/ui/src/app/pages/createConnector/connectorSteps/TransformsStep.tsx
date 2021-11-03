@@ -15,12 +15,12 @@ import {
   Title
 } from '@patternfly/react-core';
 import React, { FC } from 'react';
-import { TransformCard } from 'components';
+import { PageLoader, TransformCard } from 'components';
 import MultiRef from 'react-multi-ref';
 import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { Services } from '@debezium/ui-services';
-import { fetch_retry } from 'shared';
+import { ApiError, fetch_retry, WithLoader } from 'shared';
 
 export interface ITransformData {
   key: number;
@@ -86,7 +86,11 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
 
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
-  const [responseData, setResponseData] = React.useState({})
+  const [responseData, setResponseData] = React.useState({});
+
+  const [loading, setLoading] = React.useState(true);
+  const [apiError, setApiError] = React.useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = React.useState<Error>(new Error());
 
   const nameTypeCheckRef = new MultiRef();
 
@@ -253,90 +257,99 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
       props.clusterId,
     ])
       .then((cConnectors: any[]) => {
-        console.log(cConnectors);
-
+        setLoading(false);
         setResponseData(cConnectors);
       })
       .catch((err: React.SetStateAction<Error>) => {
-        console.log(err);
+        setApiError(true);
+        setErrorMsg(err);
       });
   },[]);
 
   return (
-    <div>
-      {transforms.size === 0 ? (
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={CubesIcon} />
-          <Title headingLevel="h4" size="lg">
-            {t('noTransformAdded')}
-          </Title>
-          <EmptyStateBody>
-            <TransformAlert />
-          </EmptyStateBody>
-          <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-            {t('addTransform')}
-          </Button>
-        </EmptyState>
-      ) : (
-        <>
-          <Alert
-            variant="info"
-            isInline={true}
-            title={
-              <p>
-                <TransformAlert />
-              </p>
-            }
-          />
-          <Grid>
-            <GridItem span={9}>
-              {Array.from(transforms.keys()).map((key, index) => {
-                return (
-                  <TransformCard
-                    key={transforms.get(key)?.key}
-                    transformNo={key}
-                    ref={nameTypeCheckRef.ref(transforms.get(key)?.key)}
-                    transformName={transforms.get(key)?.name || ''}
-                    transformType={transforms.get(key)?.type || ''}
-                    transformConfig={transforms.get(key)?.config || {}}
-                    transformNameList={getNameList()}
-                    deleteTransform={deleteTransformCallback}
-                    moveTransformOrder={moveTransformOrder}
-                    isTop={key === 1}
-                    isBottom={key === transforms.size}
-                    updateTransform={updateTransformCallback}
-                    transformsOptions={getOptions(responseData, props.selectedConnectorType)}
-                    transformsData={responseData}
-                    setIsTransformDirty={props.setIsTransformDirty}
-                  />
-                );
-              })}
-            </GridItem>
-          </Grid>
-          <Button variant="secondary" className="pf-u-mt-lg pf-u-mr-sm" onClick={saveTransforms}>
-            {t('apply')}
-          </Button>
-          <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-            {t('addTransform')}
-          </Button>
-        </>
+    <WithLoader
+      error={apiError}
+      loading={loading}
+      loaderChildren={<PageLoader />}
+      errorChildren={<ApiError i18nErrorTitle={t('apiErrorTitle')} i18nErrorMsg={t('apiErrorMsg')} error={errorMsg} />}
+    >
+      {() => (
+        <div>
+        {transforms.size === 0 ? (
+          <EmptyState variant={EmptyStateVariant.small}>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title headingLevel="h4" size="lg">
+              {t('noTransformAdded')}
+            </Title>
+            <EmptyStateBody>
+              <TransformAlert />
+            </EmptyStateBody>
+            <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
+              {t('addTransform')}
+            </Button>
+          </EmptyState>
+        ) : (
+          <>
+            <Alert
+              variant="info"
+              isInline={true}
+              title={
+                <p>
+                  <TransformAlert />
+                </p>
+              }
+            />
+            <Grid>
+              <GridItem span={9}>
+                {Array.from(transforms.keys()).map((key, index) => {
+                  return (
+                    <TransformCard
+                      key={transforms.get(key)?.key}
+                      transformNo={key}
+                      ref={nameTypeCheckRef.ref(transforms.get(key)?.key)}
+                      transformName={transforms.get(key)?.name || ''}
+                      transformType={transforms.get(key)?.type || ''}
+                      transformConfig={transforms.get(key)?.config || {}}
+                      transformNameList={getNameList()}
+                      deleteTransform={deleteTransformCallback}
+                      moveTransformOrder={moveTransformOrder}
+                      isTop={key === 1}
+                      isBottom={key === transforms.size}
+                      updateTransform={updateTransformCallback}
+                      transformsOptions={getOptions(responseData, props.selectedConnectorType)}
+                      transformsData={responseData}
+                      setIsTransformDirty={props.setIsTransformDirty}
+                    />
+                  );
+                })}
+              </GridItem>
+            </Grid>
+            <Button variant="secondary" className="pf-u-mt-lg pf-u-mr-sm" onClick={saveTransforms}>
+              {t('apply')}
+            </Button>
+            <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
+              {t('addTransform')}
+            </Button>
+          </>
+        )}
+        <Modal
+          variant={ModalVariant.small}
+          title={t('deleteTransform')}
+          isOpen={isModalOpen}
+          onClose={handleModalToggle}
+          actions={[
+            <Button key="confirm" variant="primary" onClick={clearTransform}>
+              {t('confirm')}
+            </Button>,
+            <Button key="cancel" variant="link" onClick={handleModalToggle}>
+              {t('cancel')}
+            </Button>
+          ]}
+        >
+          {t('deleteTransformMsg')}
+        </Modal>
+      </div>
       )}
-      <Modal
-        variant={ModalVariant.small}
-        title={t('deleteTransform')}
-        isOpen={isModalOpen}
-        onClose={handleModalToggle}
-        actions={[
-          <Button key="confirm" variant="primary" onClick={clearTransform}>
-            {t('confirm')}
-          </Button>,
-          <Button key="cancel" variant="link" onClick={handleModalToggle}>
-            {t('cancel')}
-          </Button>
-        ]}
-      >
-        {t('deleteTransformMsg')}
-      </Modal>
-    </div>
+    </WithLoader>
   );
 };
