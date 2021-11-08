@@ -719,6 +719,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
               updateTransformValues={handleTransformsUpdate}
               setIsTransformDirty={setIsTransformDirty}
               selectedConnectorType={selectedConnectorType || ''}
+              clusterId={props.clusterId}
             />
           </>
         ),

@@ -227,7 +227,9 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>((props, 
               )}
             </SplitItem>
             <SplitItem>
+            <Tooltip content={<div>{t('deleteTransform')}</div>}>
               <Button variant="link" icon={<TrashIcon />} onClick={deleteCard} id="tooltip-selector" />
+              </Tooltip>
             </SplitItem>
           </Split>
         </div>
