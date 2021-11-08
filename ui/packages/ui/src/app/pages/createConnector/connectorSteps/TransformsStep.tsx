@@ -21,6 +21,7 @@ import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { Services } from '@debezium/ui-services';
 import { ApiError, fetch_retry, WithLoader } from 'shared';
+import _ from 'lodash';
 
 export interface ITransformData {
   key: number;
@@ -52,7 +53,7 @@ const TransformAlert: FC = () => {
 
 const getOptions = (response, connectorType) => {
   const TransformData: any[] = [];
-  response.forEach(data => {
+  !_.isEmpty(response) && response.forEach(data => {
     data.transform.includes('io.debezium') ? TransformData.unshift(data) : TransformData.push(data);
   });
   const dbzTransform: JSX.Element[] = [];
