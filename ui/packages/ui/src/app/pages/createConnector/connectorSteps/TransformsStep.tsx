@@ -74,7 +74,7 @@ const getOptions = (response, connectorType) => {
       {dbzTransform}
     </SelectGroup>,
     <Divider key="divider" />,
-    <SelectGroup label="Apache kafka" key="group2">
+    <SelectGroup label="Apache Kafka" key="group2">
       {apacheTransform}
     </SelectGroup>
   ];
