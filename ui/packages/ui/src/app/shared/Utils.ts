@@ -706,11 +706,11 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
  */
 export function getFormattedTopicCreationProperties (topicCreationProperties: any[]): any {
   // Topic Group forms deal with properties that have prefixes stripped off
-  topicCreationProperties.map((prop) => prop.name = prop.name.replaceAll(PropertyName.TOPIC_CREATION_GROUP_PREFIX,"")
-                                                          .replaceAll(PropertyName.TOPIC_CREATION_PREFIX,""));
+  topicCreationProperties.map((prop) => prop.name = prop.name.replace(PropertyName.TOPIC_CREATION_GROUP_PREFIX,"")
+                                                          .replace(PropertyName.TOPIC_CREATION_PREFIX,""));
 
   const formattedTopicCreationProperties: ConnectorProperty[] = [
-    ...topicCreationProperties.filter((defn: any) => defn.name !== PropertyName.TOPIC_CREATION_GROUPS.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""))
+    ...topicCreationProperties.filter((defn: any) => defn.name !== PropertyName.TOPIC_CREATION_GROUPS.replace(PropertyName.TOPIC_CREATION_PREFIX, ""))
   ];
 
   for (const topicGroupProp of formattedTopicCreationProperties) {
@@ -718,16 +718,16 @@ export function getFormattedTopicCreationProperties (topicCreationProperties: an
     const propName = topicGroupProp.name.replace(/_/g, ".");  // Ensure dotted version of name
 
     switch (propName) {
-      case PropertyName.TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
-      case PropertyName.TOPIC_CREATION_DEFAULT_PARTITIONS.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR.replace(PropertyName.TOPIC_CREATION_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_DEFAULT_PARTITIONS.replace(PropertyName.TOPIC_CREATION_PREFIX, ""):
         topicGroupProp.gridWidthLg = 6;
         break;
-      case PropertyName.TOPIC_CREATION_DEFAULT_CLEANUP_POLICY.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
-      case PropertyName.TOPIC_CREATION_DEFAULT_COMPRESSION_TYPE.replaceAll(PropertyName.TOPIC_CREATION_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_DEFAULT_CLEANUP_POLICY.replace(PropertyName.TOPIC_CREATION_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_DEFAULT_COMPRESSION_TYPE.replace(PropertyName.TOPIC_CREATION_PREFIX, ""):
         topicGroupProp.gridWidthLg = 6;
         break;
-      case PropertyName.TOPIC_CREATION_GROUP_INCLUDE.replaceAll(PropertyName.TOPIC_CREATION_GROUP_PREFIX, ""):
-      case PropertyName.TOPIC_CREATION_GROUP_EXCLUDE.replaceAll(PropertyName.TOPIC_CREATION_GROUP_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_GROUP_INCLUDE.replace(PropertyName.TOPIC_CREATION_GROUP_PREFIX, ""):
+      case PropertyName.TOPIC_CREATION_GROUP_EXCLUDE.replace(PropertyName.TOPIC_CREATION_GROUP_PREFIX, ""):
         topicGroupProp.gridWidthLg = 12;
         break;
       default:
