@@ -542,9 +542,8 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
   // Allows conversion of map keys, e.g. between dotted and underscore delimited forms
   const convertPropertyKeys = (propertyMap: Map<string, string>, searchStr: string, replaceStr: string) => {
     const convertedMap = new Map<string, string>();
-    const regEx = new RegExp(searchStr, 'g');
     for (const [key, value] of propertyMap) {
-      convertedMap.set(key.replace(regEx,replaceStr), value);
+      convertedMap.set(key.split(searchStr).join(replaceStr), value);
     }
     return convertedMap; 
   }
