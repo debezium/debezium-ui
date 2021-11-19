@@ -26,17 +26,17 @@ jobs:
 
     services:
       dbzui-zookeeper:
-        image: debezium/zookeeper:1.6
+        image: debezium/zookeeper:1.8
 
       dbzui-kafka:
-        image: debezium/kafka:1.6
+        image: debezium/kafka:1.8
         ports:
           - 9092:9092
         env: 
           ZOOKEEPER_CONNECT: dbzui-zookeeper:2181
 
       dbzui-postgres:
-        image: debezium/example-postgres:1.6
+        image: debezium/example-postgres:1.8
         ports:
           - 65432:5432
         env: 

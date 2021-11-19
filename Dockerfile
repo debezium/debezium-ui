@@ -30,11 +30,11 @@ COPY --chown=1001:root ui/pom.xml /javabuild/ui/pom.xml
 
 WORKDIR /javabuild
 
-RUN ./mvnw dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN ./mvnw dependency:resolve-plugins dependency:go-offline initialize -B -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 COPY --chown=1001:root . /javabuild/
 
-RUN ./mvnw clean package -am -pl backend -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN ./mvnw clean package -B -am -pl backend -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
@@ -61,11 +61,7 @@ RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
-# We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --from=builder --chown=1001 /javabuild/backend/target/quarkus-app/lib/ /deployments/lib/
-COPY --from=builder --chown=1001 /javabuild/backend/target/quarkus-app/*.jar /deployments/
-COPY --from=builder --chown=1001 /javabuild/backend/target/quarkus-app/app/ /deployments/app/
-COPY --from=builder --chown=1001 /javabuild/backend/target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=builder --chown=1001 /javabuild/backend/target/debezium-ui-backend-*-runner.jar /deployments/
 
 EXPOSE 8080
 USER 1001

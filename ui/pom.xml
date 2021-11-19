@@ -56,6 +56,7 @@
           <!-- Install Node and Yarn -->
           <execution>
             <id>install node and npm</id>
+            <phase>initialize</phase>
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>

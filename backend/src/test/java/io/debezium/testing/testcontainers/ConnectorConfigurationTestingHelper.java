@@ -7,10 +7,20 @@ package io.debezium.testing.testcontainers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class ConnectorConfigurationTestingHelper {
 
     public static ObjectNode getConfig(ConnectorConfiguration config) {
-        return config.getConfiguration();
+        try {
+            Method getConfigurationMethod = config.getClass().getDeclaredMethod("getConfiguration");
+            getConfigurationMethod.setAccessible(true);
+            return (ObjectNode) getConfigurationMethod.invoke(config);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

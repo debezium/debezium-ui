@@ -30,12 +30,12 @@ COPY --chown=1001:root ui/pom.xml /javabuild/ui/pom.xml
 
 WORKDIR /javabuild
 
-RUN ./mvnw clean dependency:go-offline -am -pl ui -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN ./mvnw dependency:resolve-plugins dependency:go-offline initialize -B -am -pl ui -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 COPY --chown=1001:root ui/ /javabuild/ui/
 COPY --chown=1001:root .git/ /javabuild/.git/
 
-RUN mvn -am -pl ui package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN mvn clean package -B -am -pl ui package -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM nginxinc/nginx-unprivileged:1
 

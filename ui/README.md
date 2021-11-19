@@ -1,9 +1,7 @@
+# Debezium UI React Single-Page Application (SPA)
 
-
-# Debezium UI
-
-This monorepo uses Lerna and npm Workspaces. 
-React-based Single Page Application code based on Patternfly 4 in present inside [ui](./packages/ui) folder.
+This project uses Lerna and NPM workspaces. 
+The Debezium UI frontend is a React-based Single Page Application which is based on Patternfly 4.
 
 ## Requirements
 * node (version 10.13.0 or higher) and npm version 6.x.x.  

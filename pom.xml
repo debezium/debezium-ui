@@ -30,11 +30,11 @@
     <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
-    <quarkus.plugin.version>1.12.1.Final</quarkus.plugin.version>
+    <quarkus.plugin.version>2.6.3.Final</quarkus.plugin.version>
+    <quarkus.platform.version>2.6.3.Final</quarkus.platform.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.12.1.Final</quarkus.platform.version>
-    <testcontainers.version>1.15.2</testcontainers.version>
+    <testcontainers.version>1.16.3</testcontainers.version>
     <okhttp.version>4.9.3</okhttp.version>
     <okio.version>2.10.0</okio.version>
     <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
