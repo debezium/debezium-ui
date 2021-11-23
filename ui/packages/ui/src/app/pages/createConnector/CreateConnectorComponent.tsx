@@ -289,10 +289,11 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     setShowCancelConfirmationDialog(true);
   };
 
-  const goToNext = (id: any, onNext: () => void) => {
+  const goToNext = (currentId: any, onNext: () => void) => {
     setConnectorCreateFailed(false);
-    id === 5 && setFinishStepId(RUNTIME_OPTIONS_STEP_ID);
-    setStepIdReached(stepIdReached < id ? id : stepIdReached);
+    const nextId = currentId + 1;
+    setFinishStepId(nextId);
+    setStepIdReached(stepIdReached < nextId ? nextId : stepIdReached);
     onNext();
   };
 
@@ -610,6 +611,19 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
     initPropertyValues();
   }, [connectorTypes]);
 
+  React.useEffect(() => {
+    if (connectionPropsValid === false) {
+      setStepIdReached(stepIdReached > PROPERTIES_STEP_ID ? PROPERTIES_STEP_ID : stepIdReached);
+      setFinishStepId(PROPERTIES_STEP_ID);
+      // Change in basic connection properties - resets Optional properties
+      setFilterValues(new Map<string, string>());
+      setTransformsValues(new Map<string,any>())
+      setTopicCreationPropValues(new Map<string,any>())
+      setDataOptionsPropValues(new Map<string, string>());
+      setRuntimeOptionsPropValues(new Map<string, string>());
+    }
+  }, [connectionPropsValid]);
+
   const connectorTypeStep = {
     id: CONNECTOR_TYPE_STEP_ID,
     name: CONNECTOR_TYPE_STEP,
@@ -866,7 +880,7 @@ export const CreateConnectorComponent: React.FunctionComponent<ICreateConnectorC
         />
       </>
     ),
-    canJumpTo: stepIdReached >= PROPERTIES_STEP_ID,
+    canJumpTo: connectionPropsValid,
     nextButtonText: t('finish')
   };
 
