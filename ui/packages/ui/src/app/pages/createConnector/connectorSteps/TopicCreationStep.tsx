@@ -143,6 +143,8 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
           }
         }
       });
+      topicCreateValues.set("topic_creation_default_partitions", -1);
+      topicCreateValues.set("topic_creation_default_replication_factor", -1);
     }
     if (Object.keys(topicDefaults).length >0) {
       for (const [key, value] of Object.entries(topicDefaults)) {
