@@ -32,8 +32,6 @@ export interface IPropertiesStepProps {
   touched: FormikTouched<any>
 }
 
-
-
 export const PropertiesStepsComponent: React.FC<IPropertiesStepProps> = React.forwardRef(
   (props, ref) => {
     const [basicExpanded, setBasicExpanded] = React.useState<boolean>(true);
@@ -209,6 +207,7 @@ export const PropertiesStepsComponent: React.FC<IPropertiesStepProps> = React.fo
                 )}
               </Grid>
             </ExpandableSection>
+            {props.advancedPropertyDefinitions && props.advancedPropertyDefinitions.length > 0 && (
             <ExpandableSection
               toggleText={
                 advancedExpanded
@@ -353,6 +352,7 @@ export const PropertiesStepsComponent: React.FC<IPropertiesStepProps> = React.fo
                 </>
               )}
             </ExpandableSection>
+            )}
           </GridItem>
         </Grid>
       </>

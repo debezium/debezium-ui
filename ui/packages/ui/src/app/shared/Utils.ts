@@ -69,6 +69,7 @@ export enum PropertyName {
   DATABASE_INCLUDE_LIST = "database.include.list",
   DATABASE_EXCLUDE_LIST = "database.exclude.list",
   DATABASE_INITIAL_STATEMENTS = "database.initial.statements",
+  DATABASE_INSTANCE = "database.instance",
   DATABASE_HISTORY = "database.history",
   DATABASE_HISTORY_KAFKA_BOOTSTRAP_SERVERS = "database.history.kafka.bootstrap.servers",
   DATABASE_HISTORY_KAFKA_RECOVERY_ATTEMPTS = "database.history.kafka.recovery.attempts",
@@ -142,6 +143,8 @@ export enum PropertyName {
   SNAPSHOT_MODE = "snapshot.mode",
   SNAPSHOT_DELAY_MS = "snapshot.delay.ms",
   SNAPSHOT_FETCH_SIZE = "snapshot.fetch.size",
+  SNAPSHOT_ISOLATION_MODE = "snapshot.isolation.mode",
+  SNAPSHOT_MAX_THREADS = "snapshot.max.threads",
   SNAPSHOT_SELECT_STATEMENT_OVERRIDES = "snapshot.select.statement.overrides",
   SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms",
   SNAPSHOT_LOCKING_MODE = "snapshot.locking.mode",
@@ -621,6 +624,77 @@ export function getFormattedProperties (propertyDefns: ConnectorProperty[], conn
             propDefn.gridWidthLg = 12;
             break;
         }
+      }
+    }
+  } else if (connectorTypeId === ConnectorTypeId.SQLSERVER) {
+    for (const propDefn of formattedPropertyDefns) {
+      propDefn.gridWidthSm = 12;
+      const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
+      switch (propName) {
+        case PropertyName.BINARY_HANDLING_MODE:
+        case PropertyName.DECIMAL_HANDLING_MODE:
+        case PropertyName.TIME_PRECISION_MODE:
+        case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
+        case PropertyName.SNAPSHOT_MODE:
+        case PropertyName.SNAPSHOT_ISOLATION_MODE:
+          propDefn.gridWidthLg = 4;
+          break;
+        case PropertyName.QUERY_FETCH_SIZE:
+        case PropertyName.SNAPSHOT_MAX_THREADS:
+        case PropertyName.MAX_QUEUE_SIZE:
+        case PropertyName.MAX_BATCH_SIZE:
+          propDefn.gridWidthLg = 4;
+          propDefn.type = "POS-INT";
+          break;
+        case PropertyName.SNAPSHOT_DELAY_MS:
+        case PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS:
+        case PropertyName.HEARTBEAT_INTERVAL_MS:
+        case PropertyName.POLL_INTERVAL_MS:
+        case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
+          propDefn.gridWidthLg = 4;
+          propDefn.type = "DURATION";
+          propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
+          break;
+        case PropertyName.DATABASE_PORT:
+        case PropertyName.SNAPSHOT_FETCH_SIZE:
+          propDefn.gridWidthLg = 4;
+          propDefn.type =  "NON-NEG-INT";
+          break;
+        case PropertyName.DATABASE_DBNAME:
+        case PropertyName.DATABASE_INSTANCE:
+          propDefn.gridWidthLg = 6;
+          break;
+        case PropertyName.DATABASE_HISTORY_KAFKA_RECOVERY_POLL_INTERVAL_MS:
+          propDefn.gridWidthLg = 6;
+          propDefn.type = "DURATION";
+          propDefn.displayName = propDefn.displayName.replace("(ms)", "");
+          break;
+        case PropertyName.DATABASE_HISTORY_KAFKA_RECOVERY_ATTEMPTS:
+          propDefn.gridWidthLg = 6;
+          propDefn.type = "POS-INT";
+          break;
+        case PropertyName.DATABASE_HOSTNAME:
+          propDefn.gridWidthLg = 8;
+          break;
+        case PropertyName.TOMBSTONES_ON_DELETE:
+        case PropertyName.PROVIDE_TRANSACTION_METADATA:
+        case PropertyName.SANITIZE_FIELD_NAMES:
+        case PropertyName.INCLUDE_SCHEMA_CHANGES:
+          propDefn.gridWidthLg = 12;
+          propDefn.type = "BOOLEAN-SWITCH";
+          break;
+        case PropertyName.COLUMN_TRUNCATE:
+        case PropertyName.COLUMN_MASK:
+          propDefn.gridWidthLg = 12;
+          propDefn.type =  "COL_MASK_OR_TRUNCATE";
+          break;
+        case PropertyName.COLUMN_MASK_HASH_SALT:
+          propDefn.gridWidthLg = 12;
+          propDefn.type =  "COL_MASK_HASH_SALT";
+          break;
+        default:
+          propDefn.gridWidthLg = 12;
+          break;
       }
     }
   }
