@@ -124,8 +124,10 @@ module.exports = (argv) => {
         modules: [federatedModuleName],
       }),
       new webpack.container.ModuleFederationPlugin({
-        name: "debezium_ui",
-        filename: "dbz-connector-configurator.remoteEntry.js",
+        name: federatedModuleName,
+        filename: `${federatedModuleName}${
+          isProduction ? '[chunkhash:8]' : ''
+        }.js`,
         exposes: {
           "./config": "./src/app/pages/createConnector/federatedModule/config",
         },
@@ -134,12 +136,17 @@ module.exports = (argv) => {
           react: {
             eager: true,
             singleton: true,
-            requiredVersion: dependencies["react"],
+            requiredVersion: dependencies['react'],
           },
-          "react-dom": {
+          'react-dom': {
             eager: true,
             singleton: true,
-            requiredVersion: dependencies["react-dom"],
+            requiredVersion: dependencies['react-dom'],
+          },
+          'react-router-dom': {
+            singleton: true,
+            eager: true,
+            requiredVersion: dependencies['react-router-dom'],
           },
         },
       }),
