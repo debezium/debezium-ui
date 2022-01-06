@@ -13,7 +13,7 @@
     "start": "webpack serve --color --progress --config webpack.dev.js",
     "start:prod": "node scripts/serve",
     "lint": "tslint -c ./tslint.json --project .",
-    "lint:fix": "npm run lint --fix",
+    "lint:fix": "yarn run lint --fix",
     "format": "prettier --check --write ./src/**/*.{tsx,ts}",
     "format:fix": "prettier --write --ignore-unknown 'src'",
     "build:bundle-profile": "webpack --profile --json > stats.json",
