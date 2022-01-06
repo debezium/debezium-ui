@@ -8,13 +8,13 @@ import {
   TextVariants,
   ToggleGroup,
   ToggleGroupItem,
-} from "@patternfly/react-core";
+} from '@patternfly/react-core';
 import {
   ExclamationCircleIcon,
   HelpIcon,
   InfoCircleIcon,
-} from "@patternfly/react-icons";
-import React from "react";
+} from '@patternfly/react-icons';
+import React from 'react';
 
 export interface IFilterInputFieldComponentProps {
   fieldName: string;
@@ -36,7 +36,7 @@ const getInvalidFilterMsg = (
   filter: string,
   errorMsg: Map<string, string> | undefined
 ) => {
-  let returnVal = "";
+  let returnVal = '';
   errorMsg?.forEach((val, key) => {
     if (key.includes(filter)) {
       returnVal = val;
@@ -50,14 +50,18 @@ const getFieldExpression = (
   fieldExclude: string,
   fieldInclude: string
 ): string => {
-  return data.get(fieldExclude) as string || data.get(fieldInclude) as string || "";
+  return (
+    (data.get(fieldExclude) as string) ||
+    (data.get(fieldInclude) as string) ||
+    ''
+  );
 };
 
-export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFieldComponentProps> = (
-  props
-) => {
-  const FIELD_EXCLUDE = "fieldExclude";
-  const FIELD_INCLUDE = "fieldInclude";
+export const FilterInputFieldComponent: React.FunctionComponent<
+  IFilterInputFieldComponentProps
+> = (props) => {
+  const FIELD_EXCLUDE = 'fieldExclude';
+  const FIELD_INCLUDE = 'fieldInclude';
 
   const [filterField, setFilterField] = React.useState<string>(
     getFieldExpression(
@@ -101,17 +105,17 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
     const formDataCopy = new Map<string, string>(props.formData);
     if (fieldSelected === FIELD_EXCLUDE) {
       formDataCopy.delete(props.fieldIncludeList);
-      if(filterField){
+      if (filterField) {
         formDataCopy.set(props.fieldExcludeList, filterField);
-      }else {
+      } else {
         formDataCopy.delete(props.fieldExcludeList);
         setFieldSelected(FIELD_INCLUDE);
       }
     } else {
       formDataCopy.delete(props.fieldExcludeList);
       filterField
-      ? formDataCopy.set(props.fieldIncludeList, filterField)
-      : formDataCopy.delete(props.fieldIncludeList);
+        ? formDataCopy.set(props.fieldIncludeList, filterField)
+        : formDataCopy.delete(props.fieldIncludeList);
     }
     props.setFormData(formDataCopy);
   }, [fieldSelected, filterField]);
@@ -130,7 +134,7 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
             {props.i18nFilterFieldHelperText}
           </Text>
         ) : (
-          ""
+          ''
         )
       }
       labelIcon={
@@ -161,14 +165,14 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
       helperTextInvalid={
         props.invalidMsg?.size !== 0
           ? getInvalidFilterMsg(props.fieldName, props.invalidMsg)
-          : ""
+          : ''
       }
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       validated={
         props.invalidMsg?.size !== 0 &&
         getInvalidFilterMsg(props.fieldName, props.invalidMsg)
-          ? "error"
-          : "default"
+          ? 'error'
+          : 'default'
       }
     >
       <Flex>
@@ -178,8 +182,8 @@ export const FilterInputFieldComponent: React.FunctionComponent<IFilterInputFiel
             validated={
               props.invalidMsg?.size !== 0 &&
               getInvalidFilterMsg(props.fieldName, props.invalidMsg)
-                ? "error"
-                : "default"
+                ? 'error'
+                : 'default'
             }
             type="text"
             id="field_filter"

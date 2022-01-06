@@ -1,13 +1,13 @@
+import { ConnectorTypeComponent } from '..';
+import './ConnectorNameTypeHeader.css';
 import {
   Split,
   SplitItem,
   Text,
   TextContent,
   TextVariants,
-} from "@patternfly/react-core";
-import React from "react";
-import { ConnectorTypeComponent } from "..";
-import "./ConnectorNameTypeHeader.css";
+} from '@patternfly/react-core';
+import React from 'react';
 
 export interface IConnectorNameTypeHeaderProps {
   connectorName?: string;
@@ -15,10 +15,9 @@ export interface IConnectorNameTypeHeaderProps {
   showIcon: boolean;
 }
 
-export const ConnectorNameTypeHeader: React.FunctionComponent<IConnectorNameTypeHeaderProps> = (
-  props
-) => {
-
+export const ConnectorNameTypeHeader: React.FunctionComponent<
+  IConnectorNameTypeHeaderProps
+> = (props) => {
   return (
     <Split>
       <SplitItem>
@@ -28,11 +27,14 @@ export const ConnectorNameTypeHeader: React.FunctionComponent<IConnectorNameType
       </SplitItem>
       <SplitItem>
         <TextContent>
-          <Text className={"connector-name-type-header_divider"}>|</Text>
+          <Text className={'connector-name-type-header_divider'}>|</Text>
         </TextContent>
       </SplitItem>
       <SplitItem>
-        <ConnectorTypeComponent connectorType={props.connectorType} showIcon={props.showIcon}/>
+        <ConnectorTypeComponent
+          connectorType={props.connectorType}
+          showIcon={props.showIcon}
+        />
       </SplitItem>
     </Split>
   );

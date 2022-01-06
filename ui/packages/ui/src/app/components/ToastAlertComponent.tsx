@@ -6,17 +6,17 @@ import {
   Text,
   TextContent,
   TextVariants,
-} from "@patternfly/react-core";
-import React from "react";
+} from '@patternfly/react-core';
+import React from 'react';
 
 export interface IToastAlertComponentProps {
   alerts: any[];
-  removeAlert: (key: string)=> void;
+  removeAlert: (key: string) => void;
   i18nDetails: string;
 }
-export const ToastAlertComponent: React.FunctionComponent<IToastAlertComponentProps> = (
-  props
-) => {
+export const ToastAlertComponent: React.FunctionComponent<
+  IToastAlertComponentProps
+> = (props) => {
   return (
     <AlertGroup isToast={true}>
       {props.alerts.map(({ key, variant, title, message }) => (

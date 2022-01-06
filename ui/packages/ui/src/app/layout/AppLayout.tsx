@@ -1,7 +1,7 @@
-import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
-import * as React from "react";
-import {AppHeader, AppLayoutContext} from "layout";
-import "./layout.css";
+import './layout.css';
+import { Page, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { AppHeader, AppLayoutContext } from 'layout';
+import * as React from 'react';
 
 export const AppLayout: React.FC = ({ children }) => {
   const [breadcrumb, setHasBreadcrumb] = React.useState(null);

@@ -1,16 +1,16 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import './Properties.css';
+import { ConnectorProperty } from '@debezium/ui-models';
 import {
   ExpandableSection,
   Grid,
   GridItem,
   Title,
-} from "@patternfly/react-core";
-import { Form, Formik } from "formik";
-import _ from "lodash";
-import React from "react";
-import { FormComponent } from "components";
-import { PropertyCategory } from "shared";
-import "./Properties.css";
+} from '@patternfly/react-core';
+import { FormComponent } from 'components';
+import { Form, Formik } from 'formik';
+import _ from 'lodash';
+import React from 'react';
+import { PropertyCategory } from 'shared';
 
 export interface IPropertiesProps {
   connectorType: string;
@@ -27,7 +27,7 @@ export interface IPropertiesProps {
 const getInitialObject = (propertyList: ConnectorProperty[]) => {
   const returnObj = {};
   propertyList.forEach((property) => {
-    returnObj[property.name] = property.defaultValue || "";
+    returnObj[property.name] = property.defaultValue || '';
   });
   return returnObj;
 };
@@ -40,7 +40,11 @@ const checkIfRequired = (
   return matchProp ? matchProp.isMandatory : false;
 };
 
-const setValidation = (values: any, propertyList: ConnectorProperty[], requiredTest: string) => {
+const setValidation = (
+  values: any,
+  propertyList: ConnectorProperty[],
+  requiredTest: string
+) => {
   const errors = {};
 
   propertyList.forEach((property) => {
@@ -90,9 +94,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
     getInitialObject(props.propertyDefinitions)
   );
   const [basicExpanded, setBasicExpanded] = React.useState<boolean>(true);
-  const [advancedExpanded, setAdvancedExpanded] = React.useState<boolean>(
-    false
-  );
+  const [advancedExpanded, setAdvancedExpanded] =
+    React.useState<boolean>(false);
 
   const [basicPropertyDefinitions] = React.useState<ConnectorProperty[]>(
     getBasicProperty(props.propertyDefinitions)
@@ -124,13 +127,17 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
     ]);
     const finalConfiguration = new Map();
     updatedConfiguration.forEach((value: any, key: any) => {
-      finalConfiguration.set(key.replace(/_/g, "."), value);
+      finalConfiguration.set(key.replace(/_/g, '.'), value);
     });
     props.onChange(
       finalConfiguration,
       isFormValid(new Map(Object.entries(values)))
     );
-    return setValidation(values, props.propertyDefinitions, props.i18nIsRequiredText);
+    return setValidation(
+      values,
+      props.propertyDefinitions,
+      props.i18nIsRequiredText
+    );
   };
 
   const isFormValid = (formData: Map<string, unknown>): boolean => {
@@ -164,28 +171,33 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   React.useEffect(() => {
     const initialValuesCopy = JSON.parse(JSON.stringify(initialValues));
 
-      let isValid = true;
-      const updatedConfiguration = new Map();
-      if (props.configuration && props.configuration.size !== 0) {
-        props.configuration.forEach((value: any, key: any) => {
-          updatedConfiguration.set(key, value);
-        });
-      }
-      Object.keys(initialValues).forEach((key: string) => {
-        if (updatedConfiguration.get(key.replace(/[_]/g, "."))) {
-          initialValuesCopy[key] = updatedConfiguration.get(
-            key.replace(/[_]/g, ".")
-          );
-        } else if (checkIfRequired(props.propertyDefinitions, key)) {
-          initialValues[key] ? updatedConfiguration.set( key.replace(/[_]/g, "."), initialValues[key]) : isValid = false;
-        }
+    let isValid = true;
+    const updatedConfiguration = new Map();
+    if (props.configuration && props.configuration.size !== 0) {
+      props.configuration.forEach((value: any, key: any) => {
+        updatedConfiguration.set(key, value);
       });
-      setInitialValues(initialValuesCopy);
-      props.onChange(updatedConfiguration, isValid);
+    }
+    Object.keys(initialValues).forEach((key: string) => {
+      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+        initialValuesCopy[key] = updatedConfiguration.get(
+          key.replace(/[_]/g, '.')
+        );
+      } else if (checkIfRequired(props.propertyDefinitions, key)) {
+        initialValues[key]
+          ? updatedConfiguration.set(
+              key.replace(/[_]/g, '.'),
+              initialValues[key]
+            )
+          : (isValid = false);
+      }
+    });
+    setInitialValues(initialValuesCopy);
+    props.onChange(updatedConfiguration, isValid);
   }, []);
 
   return (
-    <div className={"properties-step-page pf-c-card"}>
+    <div className={'properties-step-page pf-c-card'}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
@@ -211,7 +223,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                   >
                     <Grid
                       hasGutter={true}
-                      className={"properties-step-expansion-content"}
+                      className={'properties-step-expansion-content'}
                     >
                       {basicPropertyDefinitions.map(
                         (propertyDefinition: ConnectorProperty, index: any) => {
@@ -233,8 +245,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                   errors[propertyDefinition.name] &&
                                   touched[propertyDefinition.name] &&
                                   errors[propertyDefinition.name]
-                                    ? "error"
-                                    : "default"
+                                    ? 'error'
+                                    : 'default'
                                 }
                               />
                             </GridItem>
@@ -255,7 +267,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                     <GridItem span={9}>
                       <Grid
                         hasGutter={true}
-                        className={"properties-step-expansion-content"}
+                        className={'properties-step-expansion-content'}
                       >
                         {advancedGeneralPropertyDefinitions.map(
                           (
@@ -280,8 +292,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                     errors[propertyDefinition.name] &&
                                     touched[propertyDefinition.name] &&
                                     errors[propertyDefinition.name]
-                                      ? "error"
-                                      : "default"
+                                      ? 'error'
+                                      : 'default'
                                   }
                                 />
                               </GridItem>
@@ -301,7 +313,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                     <GridItem span={9}>
                       <Grid
                         hasGutter={true}
-                        className={"properties-step-expansion-content"}
+                        className={'properties-step-expansion-content'}
                       >
                         {advancedReplicationPropertyDefinitions.map(
                           (
@@ -326,8 +338,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                     errors[propertyDefinition.name] &&
                                     touched[propertyDefinition.name] &&
                                     errors[propertyDefinition.name]
-                                      ? "error"
-                                      : "default"
+                                      ? 'error'
+                                      : 'default'
                                   }
                                 />
                               </GridItem>
@@ -351,7 +363,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                         <GridItem span={9}>
                           <Grid
                             hasGutter={true}
-                            className={"properties-step-expansion-content"}
+                            className={'properties-step-expansion-content'}
                           >
                             {advancedPublicationPropertyDefinitions.map(
                               (
@@ -376,8 +388,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                         errors[propertyDefinition.name] &&
                                         touched[propertyDefinition.name] &&
                                         errors[propertyDefinition.name]
-                                          ? "error"
-                                          : "default"
+                                          ? 'error'
+                                          : 'default'
                                       }
                                     />
                                   </GridItem>

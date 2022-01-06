@@ -1,10 +1,10 @@
 :root {
   --myApp-global--spacer--md: 30px;
 }
-body{
+body {
   font-size: var(--pf-global--FontSize--lg);
 }
-*:focus{
+*:focus {
   outline: none;
 }
 .app-container {
@@ -40,14 +40,19 @@ body{
 }
 
 .app-button-group-sm > *:not(:last-child) {
-  margin-right: var(--pf-global--spacer--sm); /* remove this when action group is added or we use utility classes */
+  margin-right: var(
+    --pf-global--spacer--sm
+  ); /* remove this when action group is added or we use utility classes */
 }
 
 .app-button-group-md > *:not(:last-child) {
-  margin-right: var(--pf-global--spacer--md); /* remove this when action group is added or we use utility classes */
+  margin-right: var(
+    --pf-global--spacer--md
+  ); /* remove this when action group is added or we use utility classes */
 }
 
-.app-empty-state > a > .pf-c-button.pf-m-primary, .app-empty-state .pf-c-empty-state__primary {
+.app-empty-state > a > .pf-c-button.pf-m-primary,
+.app-empty-state .pf-c-empty-state__primary {
   margin-top: var(--pf-c-empty-state--c-button--MarginTop);
 }
 

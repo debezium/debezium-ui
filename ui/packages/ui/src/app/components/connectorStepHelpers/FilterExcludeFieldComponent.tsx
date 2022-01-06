@@ -1,16 +1,13 @@
+import './FilterExcludeFieldComponent.css';
 import {
   Flex,
   FlexItem,
   FormGroup,
   Popover,
   TextInput,
-} from "@patternfly/react-core";
-import {
-  ExclamationCircleIcon,
-  HelpIcon,
-} from "@patternfly/react-icons";
-import React from "react";
-import './FilterExcludeFieldComponent.css';
+} from '@patternfly/react-core';
+import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import React from 'react';
 
 export interface IFilterExcludeFieldComponentProps {
   fieldName: string;
@@ -28,7 +25,7 @@ const getInvalidFilterMsg = (
   filter: string,
   errorMsg: Map<string, string> | undefined
 ) => {
-  let returnVal = "";
+  let returnVal = '';
   errorMsg?.forEach((val, key) => {
     if (key.includes(filter)) {
       returnVal = val;
@@ -41,17 +38,14 @@ const getFieldExpression = (
   data: Map<string, unknown>,
   fieldExclude: string
 ): string => {
-  return data.get(fieldExclude) as string || "";
+  return (data.get(fieldExclude) as string) || '';
 };
 
-export const FilterExcludeFieldComponent: React.FunctionComponent<IFilterExcludeFieldComponentProps> = (
-  props
-) => {
+export const FilterExcludeFieldComponent: React.FunctionComponent<
+  IFilterExcludeFieldComponentProps
+> = (props) => {
   const [filterField, setFilterField] = React.useState<string>(
-    getFieldExpression(
-      props.filterValues,
-      props.fieldExcludeList
-    )
+    getFieldExpression(props.filterValues, props.fieldExcludeList)
   );
 
   const handleParentFilter = (val: string) => {
@@ -60,10 +54,7 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<IFilterExclude
 
   React.useEffect(() => {
     setFilterField(
-      getFieldExpression(
-        props.filterValues,
-        props.fieldExcludeList
-      )
+      getFieldExpression(props.filterValues, props.fieldExcludeList)
     );
   }, [props.filterValues, props.fieldExcludeList]);
 
@@ -107,25 +98,25 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<IFilterExclude
       helperTextInvalid={
         props.invalidMsg?.size !== 0
           ? getInvalidFilterMsg(props.fieldName, props.invalidMsg)
-          : ""
+          : ''
       }
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       validated={
         props.invalidMsg?.size !== 0 &&
         getInvalidFilterMsg(props.fieldName, props.invalidMsg)
-          ? "error"
-          : "default"
+          ? 'error'
+          : 'default'
       }
     >
       <Flex>
-        <FlexItem className={"filter_exclude_field_component-input"}>
+        <FlexItem className={'filter_exclude_field_component-input'}>
           <TextInput
             value={filterField}
             validated={
               props.invalidMsg?.size !== 0 &&
               getInvalidFilterMsg(props.fieldName, props.invalidMsg)
-                ? "error"
-                : "default"
+                ? 'error'
+                : 'default'
             }
             type="text"
             id="field_filter"
@@ -136,7 +127,7 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<IFilterExclude
           />
         </FlexItem>
         <FlexItem>
-         <></>
+          <></>
         </FlexItem>
       </Flex>
     </FormGroup>

@@ -1,17 +1,17 @@
-import { ConnectorProperty } from "@debezium/ui-models";
+import './DataOption.css';
+import { ConnectorProperty } from '@debezium/ui-models';
 import {
   ExpandableSection,
   Form,
   Grid,
   GridItem,
-  Title
-} from "@patternfly/react-core";
-import { Formik } from "formik";
-import _ from "lodash";
-import React from "react";
-import { FormComponent } from "components";
-import { PropertyCategory } from "shared";
-import "./DataOption.css";
+  Title,
+} from '@patternfly/react-core';
+import { FormComponent } from 'components';
+import { Formik } from 'formik';
+import _ from 'lodash';
+import React from 'react';
+import { PropertyCategory } from 'shared';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
@@ -25,7 +25,7 @@ export interface IDataOptionsProps {
 const getInitialObject = (propertyList: ConnectorProperty[]) => {
   const returnObj = {};
   propertyList.forEach((property) => {
-    returnObj[property.name] = property.defaultValue || "";
+    returnObj[property.name] = property.defaultValue || '';
   });
   return returnObj;
 };
@@ -34,10 +34,7 @@ const checkIfRequired = (
   propertyList: ConnectorProperty[],
   property: string
 ): boolean => {
-  const matchProp = _.find(
-    propertyList,
-    (obj) => obj.name === property
-  );
+  const matchProp = _.find(propertyList, (obj) => obj.name === property);
   return matchProp ? matchProp.isMandatory : false;
 };
 
@@ -75,9 +72,15 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   const [mappingExpanded, setMappingExpanded] = React.useState<boolean>(false);
   const [snapshotExpanded, setSnapshotExpanded] = React.useState<boolean>(true);
 
-  const [mappingGeneralPropertyDefinitions] = React.useState<ConnectorProperty[]>(getMappingGeneralProperty(props.propertyDefinitions));
-  const [mappingAdvancedPropertyDefinitions] = React.useState<ConnectorProperty[]>(getMappingAdvanceProperty(props.propertyDefinitions));
-  const [snapshotPropertyDefinitions] = React.useState<ConnectorProperty[]>(getSnapshotProperty(props.propertyDefinitions));
+  const [mappingGeneralPropertyDefinitions] = React.useState<
+    ConnectorProperty[]
+  >(getMappingGeneralProperty(props.propertyDefinitions));
+  const [mappingAdvancedPropertyDefinitions] = React.useState<
+    ConnectorProperty[]
+  >(getMappingAdvanceProperty(props.propertyDefinitions));
+  const [snapshotPropertyDefinitions] = React.useState<ConnectorProperty[]>(
+    getSnapshotProperty(props.propertyDefinitions)
+  );
 
   const onToggleMapping = (isExpanded: boolean) => {
     setMappingExpanded(isExpanded);
@@ -88,7 +91,10 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   };
 
   const validateForm = (values: any) => {
-    const formEntries = Object.entries(values).reduce((a,[k,v])=>(initialValues[k]===v||(a[k]=v),a),{});
+    const formEntries = Object.entries(values).reduce(
+      (a, [k, v]) => (initialValues[k] === v || (a[k] = v), a),
+      {}
+    );
     const formValues = new Map(Object.entries(formEntries));
     const configCopy = props.configuration
       ? new Map<string, unknown>(props.configuration)
@@ -98,10 +104,13 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
       ...Array.from(formValues.entries()),
     ]);
     const finalConfiguration = new Map();
-    updatedConfiguration.forEach((value: any, key:any) => {
-      finalConfiguration.set(key.replace(/_/g, "."), value)
-    })
-    props.onChange(finalConfiguration, isFormValid(new Map(Object.entries(values))));
+    updatedConfiguration.forEach((value: any, key: any) => {
+      finalConfiguration.set(key.replace(/_/g, '.'), value);
+    });
+    props.onChange(
+      finalConfiguration,
+      isFormValid(new Map(Object.entries(values)))
+    );
   };
 
   const isFormValid = (formData: Map<string, unknown>): boolean => {
@@ -126,27 +135,34 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
 
   React.useEffect(() => {
     const initialValuesCopy = JSON.parse(JSON.stringify(initialValues));
-    
-      let isValid = true;
-      const updatedConfiguration = new Map();
-      if (props.configuration && props.configuration.size !== 0) {
-        props.configuration.forEach((value: any, key: any) => {
-          updatedConfiguration.set(key, value)
-        })
-      }
-      Object.keys(initialValues).forEach((key: string) => {
-        if (updatedConfiguration.get(key.replace(/[_]/g, "."))) {
-          initialValuesCopy[key] = updatedConfiguration.get(key.replace(/[_]/g, "."));
-        } else if (checkIfRequired(props.propertyDefinitions, key)) {
-          initialValues[key] ? updatedConfiguration.set( key.replace(/[_]/g, "."), initialValues[key]) : isValid = false;
-        }
+
+    let isValid = true;
+    const updatedConfiguration = new Map();
+    if (props.configuration && props.configuration.size !== 0) {
+      props.configuration.forEach((value: any, key: any) => {
+        updatedConfiguration.set(key, value);
       });
-      setInitialValues(initialValuesCopy);
-      props.onChange(updatedConfiguration, isValid);
+    }
+    Object.keys(initialValues).forEach((key: string) => {
+      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+        initialValuesCopy[key] = updatedConfiguration.get(
+          key.replace(/[_]/g, '.')
+        );
+      } else if (checkIfRequired(props.propertyDefinitions, key)) {
+        initialValues[key]
+          ? updatedConfiguration.set(
+              key.replace(/[_]/g, '.'),
+              initialValues[key]
+            )
+          : (isValid = false);
+      }
+    });
+    setInitialValues(initialValuesCopy);
+    props.onChange(updatedConfiguration, isValid);
   }, []);
 
   return (
-    <div className={"data-options-component-page pf-c-card"}>
+    <div className={'data-options-component-page pf-c-card'}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
@@ -172,10 +188,10 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                   >
                     <Grid
                       hasGutter={true}
-                      className={"data-options-component-expansion-content"}
+                      className={'data-options-component-expansion-content'}
                     >
-                      {snapshotPropertyDefinitions
-                        .map((propertyDefinition: ConnectorProperty, index) => {
+                      {snapshotPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
                           return (
                             <GridItem
                               key={index}
@@ -187,11 +203,12 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
                                 invalidMsg={[]}
-                                validated={"default"}
+                                validated={'default'}
                               />
                             </GridItem>
                           );
-                        })}
+                        }
+                      )}
                     </Grid>
                   </ExpandableSection>
                   <ExpandableSection
@@ -205,10 +222,10 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                   >
                     <Grid
                       hasGutter={true}
-                      className={"data-options-component-expansion-content"}
+                      className={'data-options-component-expansion-content'}
                     >
-                      {mappingGeneralPropertyDefinitions
-                        .map((propertyDefinition: ConnectorProperty, index) => {
+                      {mappingGeneralPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
                           return (
                             <GridItem
                               key={index}
@@ -220,24 +237,25 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
                                 invalidMsg={[]}
-                                validated={"default"}
+                                validated={'default'}
                               />
                             </GridItem>
                           );
-                        })}
+                        }
+                      )}
                     </Grid>
                     <Title
                       headingLevel="h3"
-                      className={"data-options-component-grouping"}
+                      className={'data-options-component-grouping'}
                     >
                       {props.i18nAdvancedMappingPropertiesText}
                     </Title>
                     <Grid
                       hasGutter={true}
-                      className={"data-options-component-expansion-content"}
+                      className={'data-options-component-expansion-content'}
                     >
-                      {mappingAdvancedPropertyDefinitions
-                        .map((propertyDefinition: ConnectorProperty, index) => {
+                      {mappingAdvancedPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
                           return (
                             <GridItem
                               key={index}
@@ -249,11 +267,12 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
                                 invalidMsg={[]}
-                                validated={"default"}
+                                validated={'default'}
                               />
                             </GridItem>
                           );
-                        })}
+                        }
+                      )}
                     </Grid>
                   </ExpandableSection>
                 </GridItem>

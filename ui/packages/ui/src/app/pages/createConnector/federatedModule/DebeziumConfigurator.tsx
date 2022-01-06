@@ -1,8 +1,12 @@
-import * as React from "react";
-import { DataOptions } from "./DataOptions";
-import { FilterConfig } from "./FilterConfig";
-import { Properties } from "./Properties";
-import { RuntimeOptions } from "./RuntimeOptions";
+import { DataOptions } from './DataOptions';
+import { FilterConfig } from './FilterConfig';
+import { Properties } from './Properties';
+import { RuntimeOptions } from './RuntimeOptions';
+import { ConnectorProperty } from '@debezium/ui-models';
+import i18n from 'i18n';
+import * as React from 'react';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+import { BrowserRouter } from 'react-router-dom';
 import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
@@ -12,11 +16,7 @@ import {
   getFilterConfigurationPageContent,
   ConnectorTypeId,
   formatPropertyDefinitions,
-} from "shared";
-import { ConnectorProperty } from "@debezium/ui-models";
-import { I18nextProvider, useTranslation } from "react-i18next";
-import i18n from "i18n";
-import { BrowserRouter } from "react-router-dom";
+} from 'shared';
 
 /**
  * Represents a connector type supported by the API
@@ -78,16 +78,16 @@ export interface IDebeziumConfiguratorProps {
 
 const getType = (prop: any) => {
   // tslint:disable: no-string-literal
-  let type = prop["type"];
-  let format = prop["format"];
+  let type = prop['type'];
+  let format = prop['format'];
 
   // handle passwords, which have 'oneOf' attributes
-  const oneOf = prop["oneOf"];
-  if(oneOf && oneOf !== null) {
-    for(const oneOfElem of oneOf) {
-      const oneOfType = oneOfElem["type"];
-      const oneOfFormat = oneOfElem["format"];
-      if(oneOfFormat && oneOfFormat === "password") {
+  const oneOf = prop['oneOf'];
+  if (oneOf && oneOf !== null) {
+    for (const oneOfElem of oneOf) {
+      const oneOfType = oneOfElem['type'];
+      const oneOfFormat = oneOfElem['format'];
+      if (oneOfFormat && oneOfFormat === 'password') {
         type = oneOfType;
         format = oneOfFormat;
         break;
@@ -95,33 +95,33 @@ const getType = (prop: any) => {
     }
   }
   // tslint:enable: no-string-literal
-  
-  if (type === "string") {
+
+  if (type === 'string') {
     if (!format) {
-      return "STRING";
-    } else if (format === "password") {
-      return "PASSWORD";
-    } else if (format === "class") {
-      return "CLASS";
-    } else if (format.indexOf("list") !== -1) {
-      return "LIST";
+      return 'STRING';
+    } else if (format === 'password') {
+      return 'PASSWORD';
+    } else if (format === 'class') {
+      return 'CLASS';
+    } else if (format.indexOf('list') !== -1) {
+      return 'LIST';
     } else {
-      return "STRING";
+      return 'STRING';
     }
-  } else if (type === "boolean") {
-    return "BOOLEAN";
-  } else if (type === "integer") {
+  } else if (type === 'boolean') {
+    return 'BOOLEAN';
+  } else if (type === 'integer') {
     if (!format) {
-      return "INT";
-    } else if (format === "int32") {
-      return "INT";
-    } else if (format === "int64") {
-      return "LONG";
+      return 'INT';
+    } else if (format === 'int32') {
+      return 'INT';
+    } else if (format === 'int64') {
+      return 'LONG';
     } else {
-      return "INT";
+      return 'INT';
     }
   }
-  return "STRING";
+  return 'STRING';
 };
 
 const getMandatory = (nullable: any) => {
@@ -157,25 +157,25 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
     const prop = schemaProperties[propKey];
     // tslint:disable: no-string-literal
     const name =
-      prop["x-name"] === "column.mask.hash.([^.]+).with.salt.(.+)"
-        ? "column.mask.hash"
-        : prop["x-name"];
-    const nullable = prop["nullable"];
+      prop['x-name'] === 'column.mask.hash.([^.]+).with.salt.(.+)'
+        ? 'column.mask.hash'
+        : prop['x-name'];
+    const nullable = prop['nullable'];
     const connProp = {
-      category: prop["x-category"],
-      description: prop["description"],
-      displayName: prop["title"],
+      category: prop['x-category'],
+      description: prop['description'],
+      displayName: prop['title'],
       name,
       isMandatory: getMandatory(nullable),
     } as ConnectorProperty;
 
     connProp.type = getType(prop);
 
-    if (prop["default"]) {
-      connProp.defaultValue = prop["default"];
+    if (prop['default']) {
+      connProp.defaultValue = prop['default'];
     }
-    if (prop["enum"]) {
-      connProp.allowedValues = prop["enum"];
+    if (prop['enum']) {
+      connProp.allowedValues = prop['enum'];
     }
     // tslint:enable: no-string-literal
     connProperties.push(connProp);
@@ -196,9 +196,8 @@ const getFilterInitialValues = (
 ): Map<string, string> => {
   const returnVal = new Map<string, string>();
   if (connectorData && connectorData.size !== 0) {
-    const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
-      selectedConnector || ""
-    );
+    const filterConfigurationPageContentObj: any =
+      getFilterConfigurationPageContent(selectedConnector || '');
     filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
       connectorData.get(`${fieldObj.field}.include.list`) &&
         returnVal.set(
@@ -225,21 +224,20 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   const DATA_OPTIONS_STEP_ID = 2;
   const RUNTIME_OPTIONS_STEP_ID = 3;
 
-  const [connectorProperties] = React.useState<
-    ConnectorProperty[]
-  >(getPropertiesData(props.connector));
+  const [connectorProperties] = React.useState<ConnectorProperty[]>(
+    getPropertiesData(props.connector)
+  );
 
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
-    getFilterInitialValues(props.configuration, "")
+    getFilterInitialValues(props.configuration, '')
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
   const clearFilterFields = (
     configObj: Map<string, unknown>
   ): Map<string, unknown> => {
-    const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
-      props.connector.name || ""
-    );
+    const filterConfigurationPageContentObj: any =
+      getFilterConfigurationPageContent(props.connector.name || '');
     filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
       configObj.delete(`${fieldObj.field}.include.list`) ||
         configObj.delete(`${fieldObj.field}.exclude.list`);
@@ -275,8 +273,8 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
           <Properties
             connectorType={
               props.connector?.json_schema
-                ? props.connector?.json_schema["x-connector-id"]
-                : ""
+                ? props.connector?.json_schema['x-connector-id']
+                : ''
             }
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
@@ -286,29 +284,27 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               ...getBasicPropertyDefinitions(connectorProperties, true),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
-            i18nIsRequiredText={t(
-              "isRequired"
-            )}
-            i18nAdvancedPropertiesText={t("advancedPropertiesText")}
+            i18nIsRequiredText={t('isRequired')}
+            i18nAdvancedPropertiesText={t('advancedPropertiesText')}
             i18nAdvancedPublicationPropertiesText={t(
-              "advancedPublicationPropertiesText"
+              'advancedPublicationPropertiesText'
             )}
             i18nAdvancedReplicationPropertiesText={t(
-              "advancedReplicationPropertiesText"
+              'advancedReplicationPropertiesText'
             )}
-            i18nBasicPropertiesText={t("basicPropertiesText")}
+            i18nBasicPropertiesText={t('basicPropertiesText')}
           />
         );
       case FILTER_CONFIGURATION_STEP_ID:
         return (
-          <div style={{ padding: "20px" }}>
+          <div style={{ padding: '20px' }}>
             <FilterConfig
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
               connectorType={
                 props.connector?.json_schema
-                  ? props.connector?.json_schema["x-connector-id"]
-                  : ""
+                  ? props.connector?.json_schema['x-connector-id']
+                  : ''
               }
               setIsValidFilter={setIsValidFilter}
             />
@@ -325,10 +321,10 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               connectorProperties
             )}
             i18nAdvancedMappingPropertiesText={t(
-              "advancedMappingPropertiesText"
+              'advancedMappingPropertiesText'
             )}
-            i18nMappingPropertiesText={t("mappingPropertiesText")}
-            i18nSnapshotPropertiesText={t("snapshotPropertiesText")}
+            i18nMappingPropertiesText={t('mappingPropertiesText')}
+            i18nSnapshotPropertiesText={t('snapshotPropertiesText')}
           />
         );
       case RUNTIME_OPTIONS_STEP_ID:
@@ -341,8 +337,8 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
               connectorProperties
             )}
-            i18nEngineProperties={t("engineProperties")}
-            i18nHeartbeatProperties={t("heartbeatProperties")}
+            i18nEngineProperties={t('engineProperties')}
+            i18nHeartbeatProperties={t('heartbeatProperties')}
           />
         );
       default:

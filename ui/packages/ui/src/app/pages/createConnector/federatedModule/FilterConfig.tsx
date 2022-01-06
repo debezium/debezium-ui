@@ -1,3 +1,4 @@
+import './FilterConfig.css';
 import {
   ActionGroup,
   Button,
@@ -6,21 +7,20 @@ import {
   Text,
   TextVariants,
   Title,
-} from "@patternfly/react-core";
-import _ from "lodash";
-import React, { SetStateAction } from "react";
-import { useTranslation } from "react-i18next";
+} from '@patternfly/react-core';
 import {
   FilterExcludeFieldComponent,
   FilterInputFieldComponent,
   NoPreviewFilterField,
-} from "components";
+} from 'components';
+import _ from 'lodash';
+import React, { SetStateAction } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   getFilterConfigurationPageContent,
-} from "shared";
-import "./FilterConfig.css";
+} from 'shared';
 
 export interface IFilterConfigProps {
   filterValues: Map<string, string>;
@@ -36,9 +36,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   const [formData, setFormData] = React.useState<Map<string, string>>(
     new Map(props.filterValues)
   );
-  const [invalidMsg] = React.useState<Map<string, string>>(
-    new Map()
-  );
+  const [invalidMsg] = React.useState<Map<string, string>>(new Map());
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
   const applyFilter = () => {
@@ -67,17 +65,16 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
       : props.setIsValidFilter(false);
   }, [formData]);
 
-  const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
-    props.connectorType || ""
-  );
+  const filterConfigurationPageContentObj: any =
+    getFilterConfigurationPageContent(props.connectorType || '');
 
   return (
     <div className="filter-config-page pf-c-card">
       <Title headingLevel="h2" size="3xl">
-        {t("filterConfiguration")}
+        {t('filterConfiguration')}
       </Title>
       <Text component={TextVariants.h2}>
-        {t("filterPageHeadingText", {
+        {t('filterPageHeadingText', {
           parent: filterConfigurationPageContentObj.fieldArray[0].field,
           child: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
@@ -95,15 +92,15 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
               fieldExcludeList={`${fieldFilter.field}.exclude.list`}
               fieldIncludeList={`${fieldFilter.field}.include.list`}
               fieldPlaceholder={fieldFilter.valueSample}
-              i18nFilterFieldLabel={t("filterFieldLabel", {
+              i18nFilterFieldLabel={t('filterFieldLabel', {
                 field: _.capitalize(fieldFilter.field),
               })}
-              i18nFilterFieldHelperText={t("filterFieldHelperText", {
+              i18nFilterFieldHelperText={t('filterFieldHelperText', {
                 field: fieldFilter.field,
               })}
-              i18nInclude={t("include")}
-              i18nExclude={t("exclude")}
-              i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+              i18nInclude={t('include')}
+              i18nExclude={t('exclude')}
+              i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                 field: fieldFilter.field,
                 sampleVal: fieldFilter.valueSample,
               })}
@@ -111,8 +108,8 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
           ) : (
             <NoPreviewFilterField
               key={fieldFilter.field}
-              i18nShowFilter={t("showFilter", { field: fieldFilter.field })}
-              i18nHideFilter={t("hideFilter", { field: fieldFilter.field })}
+              i18nShowFilter={t('showFilter', { field: fieldFilter.field })}
+              i18nHideFilter={t('hideFilter', { field: fieldFilter.field })}
             >
               {fieldFilter.excludeFilter ? (
                 <FilterExcludeFieldComponent
@@ -123,10 +120,10 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                   invalidMsg={invalidMsg}
                   fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                   fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterExcludeFieldLabel={t("filterExcludeFieldLabel", {
+                  i18nFilterExcludeFieldLabel={t('filterExcludeFieldLabel', {
                     field: _.capitalize(fieldFilter.field),
                   })}
-                  i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                  i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                     field: `${fieldFilter.field} exclude`,
                     sampleVal: fieldFilter.valueSample,
                   })}
@@ -141,15 +138,15 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                   fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                   fieldIncludeList={`${fieldFilter.field}.include.list`}
                   fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterFieldLabel={t("filterFieldLabel", {
+                  i18nFilterFieldLabel={t('filterFieldLabel', {
                     field: _.capitalize(fieldFilter.field),
                   })}
-                  i18nFilterFieldHelperText={t("filterFieldHelperText", {
+                  i18nFilterFieldHelperText={t('filterFieldHelperText', {
                     field: fieldFilter.field,
                   })}
-                  i18nInclude={t("include")}
-                  i18nExclude={t("exclude")}
-                  i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                  i18nInclude={t('include')}
+                  i18nExclude={t('exclude')}
+                  i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                     field: fieldFilter.field,
                     sampleVal: fieldFilter.valueSample,
                   })}
@@ -160,20 +157,20 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
         )}
         <ActionGroup>
           <Button variant="secondary" onClick={applyFilter}>
-            {t("apply")}
+            {t('apply')}
           </Button>
           <Button variant="link" isInline={true} onClick={clearFilter}>
-            {t("clearFilters")}
+            {t('clearFilters')}
           </Button>
         </ActionGroup>
       </Form>
       <Divider />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
-        i18nCancelButtonText={t("cancel")}
-        i18nConfirmButtonText={t("clear")}
-        i18nConfirmationMessage={t("clearFilterConfMsg")}
-        i18nTitle={t("clearFilters")}
+        i18nCancelButtonText={t('cancel')}
+        i18nConfirmButtonText={t('clear')}
+        i18nConfirmationMessage={t('clearFilterConfMsg')}
+        i18nTitle={t('clearFilters')}
         showDialog={showClearDialog}
         onCancel={doCancel}
         onConfirm={doClear}

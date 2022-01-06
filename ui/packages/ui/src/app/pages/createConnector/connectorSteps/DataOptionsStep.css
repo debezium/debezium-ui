@@ -34,7 +34,8 @@
       }
     }
   }
-  .pf-c-switch, .pf-c-switch__label {
+  .pf-c-switch,
+  .pf-c-switch__label {
     @media screen and (max-width: 768px) {
       display: inline;
     }

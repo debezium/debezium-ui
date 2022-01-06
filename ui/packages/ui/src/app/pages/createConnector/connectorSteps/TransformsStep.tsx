@@ -1,3 +1,4 @@
+import { Services } from '@debezium/ui-services';
 import {
   Alert,
   Button,
@@ -12,16 +13,15 @@ import {
   ModalVariant,
   SelectGroup,
   SelectOption,
-  Title
+  Title,
 } from '@patternfly/react-core';
-import React, { FC } from 'react';
-import { PageLoader, TransformCard } from 'components';
-import MultiRef from 'react-multi-ref';
 import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
-import { Services } from '@debezium/ui-services';
-import { ApiError, fetch_retry, WithLoader } from 'shared';
+import { PageLoader, TransformCard } from 'components';
 import _ from 'lodash';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import MultiRef from 'react-multi-ref';
+import { ApiError, fetch_retry, WithLoader } from 'shared';
 
 export interface ITransformData {
   key: number;
@@ -43,7 +43,10 @@ const TransformAlert: FC = () => {
     <>
       {t('transformAlert')}
       {' See '}
-      <a href="https://debezium.io/documentation/reference/transformations/index.html" target="_blank">
+      <a
+        href="https://debezium.io/documentation/reference/transformations/index.html"
+        target="_blank"
+      >
         {t('documentation')}
       </a>{' '}
       {t('moreDetails')}
@@ -53,20 +56,22 @@ const TransformAlert: FC = () => {
 
 const getOptions = (response, connectorType) => {
   const TransformData: any[] = [];
-  !_.isEmpty(response) && response.forEach(data => {
-    data.transform.includes('io.debezium') ? TransformData.unshift(data) : TransformData.push(data);
-  });
+  !_.isEmpty(response) &&
+    response.forEach((data) => {
+      data.transform.includes('io.debezium')
+        ? TransformData.unshift(data)
+        : TransformData.push(data);
+    });
   const dbzTransform: JSX.Element[] = [];
   const apacheTransform: JSX.Element[] = [];
   TransformData.forEach((data, index) => {
     data.transform.includes('io.debezium')
       ? dbzTransform.push(
-          <SelectOption
-            key={index}
-            value={`${data.transform}`}
-          />
+          <SelectOption key={index} value={`${data.transform}`} />
         )
-      : apacheTransform.push(<SelectOption key={index} value={`${data.transform}`} />);
+      : apacheTransform.push(
+          <SelectOption key={index} value={`${data.transform}`} />
+        );
   });
 
   return [
@@ -76,14 +81,18 @@ const getOptions = (response, connectorType) => {
     <Divider key="divider" />,
     <SelectGroup label="Apache Kafka" key="group2">
       {apacheTransform}
-    </SelectGroup>
+    </SelectGroup>,
   ];
 };
 
-export const TransformsStep: React.FunctionComponent<ITransformStepProps> = props => {
+export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
+  props
+) => {
   const { t } = useTranslation();
 
-  const [transforms, setTransforms] = React.useState<Map<number, ITransformData>>(new Map<number, ITransformData>());
+  const [transforms, setTransforms] = React.useState<
+    Map<number, ITransformData>
+  >(new Map<number, ITransformData>());
 
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
@@ -97,13 +106,16 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
 
   const addTransform = () => {
     const transformsCopy = new Map(transforms);
-    transformsCopy.set(transformsCopy.size + 1, { key: Math.random() * 10000, config: {} });
+    transformsCopy.set(transformsCopy.size + 1, {
+      key: Math.random() * 10000,
+      config: {},
+    });
     setTransforms(transformsCopy);
     props.setIsTransformDirty(true);
   };
 
   const deleteTransformCallback = React.useCallback(
-    order => {
+    (order) => {
       const transformsCopy = new Map(transforms);
       transformsCopy.delete(order);
       const transformResult = new Map<number, any>();
@@ -170,7 +182,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
 
   const getNameList = (): string[] => {
     const nameList: string[] = [];
-    transforms.forEach(val => {
+    transforms.forEach((val) => {
       val.name && nameList.push(val.name);
     });
     return nameList;
@@ -183,10 +195,10 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
     });
 
     Promise.all(cardsValid).then(
-      d => {
+      (d) => {
         props.setIsTransformDirty(false);
       },
-      e => {
+      (e) => {
         props.setIsTransformDirty(true);
       }
     );
@@ -216,10 +228,13 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
 
   const saveTransform = (data: Map<number, ITransformData>) => {
     const transformValues = new Map();
-    data.forEach(val => {
+    data.forEach((val) => {
       if (val.name && val.type) {
         transformValues.has('transforms')
-          ? transformValues.set('transforms', transformValues.get('transforms') + ',' + val.name)
+          ? transformValues.set(
+              'transforms',
+              transformValues.get('transforms') + ',' + val.name
+            )
           : transformValues.set('transforms', val.name);
         transformValues.set(`transforms.${val.name}.type`, val.type);
         for (const [key, value] of Object.entries(val.config)) {
@@ -233,11 +248,15 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
   React.useEffect(() => {
     if (props.transformsValues.size > 0) {
       const transformsVal = new Map();
-      const transformList = props.transformsValues.get('transforms')?.split(',');
+      const transformList = props.transformsValues
+        .get('transforms')
+        ?.split(',');
       transformList.forEach((tName, index) => {
         const transformData: ITransformData = { key: Math.random() * 10000 };
         transformData.name = tName;
-        transformData.type = props.transformsValues.get(`transforms.${tName}.type`);
+        transformData.type = props.transformsValues.get(
+          `transforms.${tName}.type`
+        );
         transformData.config = {};
         for (const [key, value] of props.transformsValues.entries()) {
           if (key.includes(tName) && !key.includes('type')) {
@@ -252,7 +271,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
     props.setIsTransformDirty(false);
   }, []);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.getTransform, connectorService, [
       props.clusterId,
@@ -265,91 +284,114 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = prop
         setApiError(true);
         setErrorMsg(err);
       });
-  },[]);
+  }, []);
 
   return (
     <WithLoader
       error={apiError}
       loading={loading}
       loaderChildren={<PageLoader />}
-      errorChildren={<ApiError i18nErrorTitle={t('apiErrorTitle')} i18nErrorMsg={t('apiErrorMsg')} error={errorMsg} />}
+      errorChildren={
+        <ApiError
+          i18nErrorTitle={t('apiErrorTitle')}
+          i18nErrorMsg={t('apiErrorMsg')}
+          error={errorMsg}
+        />
+      }
     >
       {() => (
         <div>
-        {transforms.size === 0 ? (
-          <EmptyState variant={EmptyStateVariant.small}>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {t('noTransformAdded')}
-            </Title>
-            <EmptyStateBody>
-              <TransformAlert />
-            </EmptyStateBody>
-            <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-              {t('addTransform')}
-            </Button>
-          </EmptyState>
-        ) : (
-          <>
-            <Alert
-              variant="info"
-              isInline={true}
-              title={
-                <p>
-                  <TransformAlert />
-                </p>
-              }
-            />
-            <Grid>
-              <GridItem span={9}>
-                {Array.from(transforms.keys()).map((key, index) => {
-                  return (
-                    <TransformCard
-                      key={transforms.get(key)?.key}
-                      transformNo={key}
-                      ref={nameTypeCheckRef.ref(transforms.get(key)?.key)}
-                      transformName={transforms.get(key)?.name || ''}
-                      transformType={transforms.get(key)?.type || ''}
-                      transformConfig={transforms.get(key)?.config || {}}
-                      transformNameList={getNameList()}
-                      deleteTransform={deleteTransformCallback}
-                      moveTransformOrder={moveTransformOrder}
-                      isTop={key === 1}
-                      isBottom={key === transforms.size}
-                      updateTransform={updateTransformCallback}
-                      transformsOptions={getOptions(responseData, props.selectedConnectorType)}
-                      transformsData={responseData}
-                      setIsTransformDirty={props.setIsTransformDirty}
-                    />
-                  );
-                })}
-              </GridItem>
-            </Grid>
-            <Button variant="secondary" className="pf-u-mt-lg pf-u-mr-sm" onClick={saveTransforms}>
-              {t('apply')}
-            </Button>
-            <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTransform}>
-              {t('addTransform')}
-            </Button>
-          </>
-        )}
-        <Modal
-          variant={ModalVariant.small}
-          title={t('deleteTransform')}
-          isOpen={isModalOpen}
-          onClose={handleModalToggle}
-          actions={[
-            <Button key="confirm" variant="primary" onClick={clearTransform}>
-              {t('confirm')}
-            </Button>,
-            <Button key="cancel" variant="link" onClick={handleModalToggle}>
-              {t('cancel')}
-            </Button>
-          ]}
-        >
-          {t('deleteTransformMsg')}
-        </Modal>
-      </div>
+          {transforms.size === 0 ? (
+            <EmptyState variant={EmptyStateVariant.small}>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                {t('noTransformAdded')}
+              </Title>
+              <EmptyStateBody>
+                <TransformAlert />
+              </EmptyStateBody>
+              <Button
+                variant="secondary"
+                className="pf-u-mt-lg"
+                icon={<PlusCircleIcon />}
+                onClick={addTransform}
+              >
+                {t('addTransform')}
+              </Button>
+            </EmptyState>
+          ) : (
+            <>
+              <Alert
+                variant="info"
+                isInline={true}
+                title={
+                  <p>
+                    <TransformAlert />
+                  </p>
+                }
+              />
+              <Grid>
+                <GridItem span={9}>
+                  {Array.from(transforms.keys()).map((key, index) => {
+                    return (
+                      <TransformCard
+                        key={transforms.get(key)?.key}
+                        transformNo={key}
+                        ref={nameTypeCheckRef.ref(transforms.get(key)?.key)}
+                        transformName={transforms.get(key)?.name || ''}
+                        transformType={transforms.get(key)?.type || ''}
+                        transformConfig={transforms.get(key)?.config || {}}
+                        transformNameList={getNameList()}
+                        deleteTransform={deleteTransformCallback}
+                        moveTransformOrder={moveTransformOrder}
+                        isTop={key === 1}
+                        isBottom={key === transforms.size}
+                        updateTransform={updateTransformCallback}
+                        transformsOptions={getOptions(
+                          responseData,
+                          props.selectedConnectorType
+                        )}
+                        transformsData={responseData}
+                        setIsTransformDirty={props.setIsTransformDirty}
+                      />
+                    );
+                  })}
+                </GridItem>
+              </Grid>
+              <Button
+                variant="secondary"
+                className="pf-u-mt-lg pf-u-mr-sm"
+                onClick={saveTransforms}
+              >
+                {t('apply')}
+              </Button>
+              <Button
+                variant="secondary"
+                className="pf-u-mt-lg"
+                icon={<PlusCircleIcon />}
+                onClick={addTransform}
+              >
+                {t('addTransform')}
+              </Button>
+            </>
+          )}
+          <Modal
+            variant={ModalVariant.small}
+            title={t('deleteTransform')}
+            isOpen={isModalOpen}
+            onClose={handleModalToggle}
+            actions={[
+              <Button key="confirm" variant="primary" onClick={clearTransform}>
+                {t('confirm')}
+              </Button>,
+              <Button key="cancel" variant="link" onClick={handleModalToggle}>
+                {t('cancel')}
+              </Button>,
+            ]}
+          >
+            {t('deleteTransformMsg')}
+          </Modal>
+        </div>
       )}
     </WithLoader>
   );

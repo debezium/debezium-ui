@@ -1,6 +1,6 @@
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
-import * as React from "react";
-import { ApplicationErrorPage } from "components";
+import { PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { ApplicationErrorPage } from 'components';
+import * as React from 'react';
 
 export interface IApiErrorProps {
   error: Error | string;
@@ -18,7 +18,7 @@ export const ApiError: React.FC<IApiErrorProps> = (props) => (
       title={props.i18nErrorTitle}
       msg={props.i18nErrorMsg}
       error={
-        typeof props.error === "string" ? new Error(props.error) : props.error
+        typeof props.error === 'string' ? new Error(props.error) : props.error
       }
       errorInfo={props.errorInfo}
     />

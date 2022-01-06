@@ -1,56 +1,46 @@
+import './BasicSelectInput.css';
 import {
   FormGroup,
   Select,
   SelectOption,
-  SelectVariant
+  SelectVariant,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import "./BasicSelectInput.css";
 
 export interface IBasicSelectInputProps {
-    label?: string,
-    fieldId: string,
-    options: string[],
-    propertyChange: (name: string, selection?: any) => void;
+  label?: string;
+  fieldId: string;
+  options: string[];
+  propertyChange: (name: string, selection?: any) => void;
 }
 
 export const BasicSelectInput = (props: IBasicSelectInputProps) => {
-  const {
-    label,
-    fieldId,
-    options,
-    propertyChange
-  } = props;
-  
-  const [isOpen, setOpen] = React.useState<boolean>(false)
-  const [selected, setSelected] = React.useState<boolean>(false)
- 
+  const { label, fieldId, options, propertyChange } = props;
+
+  const [isOpen, setOpen] = React.useState<boolean>(false);
+  const [selected, setSelected] = React.useState<boolean>(false);
+
   const onToggle = (open: boolean) => {
-    setOpen(open)
+    setOpen(open);
   };
 
   const clearSelection = () => {
-    setSelected(false)
-    setOpen(false)
-  };  
+    setSelected(false);
+    setOpen(false);
+  };
 
   const onSelect = (e: any, selection: any, isPlaceholder: any) => {
     if (isPlaceholder) {
       clearSelection();
-    }
-    else {
-      setSelected(selection)
-      setOpen(false)
+    } else {
+      setSelected(selection);
+      setOpen(false);
       propertyChange(selection);
     }
   };
-  
+
   return (
-    <FormGroup
-      label={label}
-      fieldId={fieldId}
-      name={fieldId}
-    >
+    <FormGroup label={label} fieldId={fieldId} name={fieldId}>
       <Select
         className="basic-select-input"
         variant={SelectVariant.single}
@@ -60,7 +50,7 @@ export const BasicSelectInput = (props: IBasicSelectInputProps) => {
         selections={selected}
         isOpen={isOpen}
       >
-        {options.map((option:any, index) => (
+        {options.map((option: any, index) => (
           <SelectOption
             key={index}
             value={option}
@@ -69,5 +59,5 @@ export const BasicSelectInput = (props: IBasicSelectInputProps) => {
         ))}
       </Select>
     </FormGroup>
-  )
-}
+  );
+};

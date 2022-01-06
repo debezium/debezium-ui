@@ -1,21 +1,21 @@
-import { Services } from "@debezium/ui-services";
+import { Services } from '@debezium/ui-services';
 import { Form } from '@patternfly/react-core';
+import { BasicSelectInput } from 'components';
 import * as React from 'react';
-import { BasicSelectInput } from "components";
-import { fetch_retry } from "shared";
+import { fetch_retry } from 'shared';
+
 export interface IKafkaConnectCluster {
   handleChange: (clusterId: number) => void;
 }
 
 export const KafkaConnectCluster: React.FC<IKafkaConnectCluster> = (props) => {
-
-  const [connectClusters, setConnectClusters] = React.useState<string[]>([""]);
+  const [connectClusters, setConnectClusters] = React.useState<string[]>(['']);
 
   const handleClusterChange = (value: string, event: any) => {
-    const index = connectClusters.indexOf(value) + 1
+    const index = connectClusters.indexOf(value) + 1;
     props.handleChange(index);
-  }
-  
+  };
+
   React.useEffect(() => {
     const globalsService = Services.getGlobalsService();
     fetch_retry(globalsService.getConnectCluster, globalsService)
@@ -40,4 +40,4 @@ export const KafkaConnectCluster: React.FC<IKafkaConnectCluster> = (props) => {
       </div>
     </div>
   );
-}
+};

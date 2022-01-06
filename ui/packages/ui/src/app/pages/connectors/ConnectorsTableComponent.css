@@ -1,39 +1,37 @@
-.connectors-page{
+.connectors-page {
   &_createButton {
     margin-top: var(--pf-c-empty-state__primary--MarginTop);
   }
   &_toolbarCreateButton {
     margin-bottom: var(--pf-global--spacer--sm);
-  }  
+  }
   &_toolbarSortIcon {
     cursor: pointer;
-  }  
+  }
   &_dataTable {
     margin-top: var(--pf-global--spacer--sm);
-    tr:nth-child(2){
+    tr:nth-child(2) {
       @media screen and (max-width: 768px) {
         padding: 20px;
       }
       td:nth-child(2),
-      td:nth-child(3)
-      {
+      td:nth-child(3) {
         @media screen and (max-width: 768px) {
           display: none;
         }
       }
-      td:nth-child(6)
-      {
-        .pf-c-dropdown{
+      td:nth-child(6) {
+        .pf-c-dropdown {
           display: none;
         }
       }
-      td:nth-child(4){
-        div.pf-l-flex{
+      td:nth-child(4) {
+        div.pf-l-flex {
           padding: 8px;
         }
       }
     }
-  }  
+  }
 
   &_toolbarFlex {
     padding: var(--pf-global--spacer--sm) 0;
@@ -41,23 +39,23 @@
     .flexCol {
       flex-direction: column;
     }
-    div:nth-child(2){
-      margin-right: var(--pf-global--spacer--xl);;
+    div:nth-child(2) {
+      margin-right: var(--pf-global--spacer--xl);
     }
-    .pf-c-button{
-      &.pf-m-primary{
+    .pf-c-button {
+      &.pf-m-primary {
         margin-bottom: 0;
       }
     }
-    .pf-c-toolbar{
-      &__content{
+    .pf-c-toolbar {
+      &__content {
         padding: 0;
       }
     }
   }
 }
 
-.status-indicator{
+.status-indicator {
   height: 25px;
   border-radius: 50%;
   margin-right: 10px;
@@ -68,21 +66,22 @@
 
 .pf-c-table {
   tbody {
-    >tr {
-      >* {
+    > tr {
+      > * {
         vertical-align: middle;
-        padding: 15px var(--pf-c-table--cell--PaddingRight) 10px var(--pf-c-table--cell--PaddingLeft);
+        padding: 15px var(--pf-c-table--cell--PaddingRight) 10px
+          var(--pf-c-table--cell--PaddingLeft);
       }
     }
   }
-  .pf-c-label{
-    &.no-bg{
-      background: none;;
+  .pf-c-label {
+    &.no-bg {
+      background: none;
     }
   }
 }
-.pf-c-tooltip{
-    .errors{
-      text-align: left;
-    }
+.pf-c-tooltip {
+  .errors {
+    text-align: left;
+  }
 }

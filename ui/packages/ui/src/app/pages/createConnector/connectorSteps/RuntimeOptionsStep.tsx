@@ -1,14 +1,14 @@
+import './RuntimeOptionsStep.css';
 import {
   ConnectorProperty,
   PropertyValidationResult,
-} from "@debezium/ui-models";
-import { Form, Formik, useFormikContext } from "formik";
-import _ from "lodash";
-import * as React from "react";
-import { RuntimeOptionsComponent } from "components";
-import { formatPropertyDefinitions, PropertyCategory } from "shared";
-import * as Yup from "yup";
-import "./RuntimeOptionsStep.css";
+} from '@debezium/ui-models';
+import { RuntimeOptionsComponent } from 'components';
+import { Form, Formik, useFormikContext } from 'formik';
+import _ from 'lodash';
+import * as React from 'react';
+import { formatPropertyDefinitions, PropertyCategory } from 'shared';
+import * as Yup from 'yup';
 
 export interface IRuntimeOptionsStepProps {
   propertyDefinitions: ConnectorProperty[];
@@ -64,11 +64,11 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
 
     // Just added String and Password type
     enginePropertyDefinitions.map((key: any) => {
-      if (key.type === "STRING") {
+      if (key.type === 'STRING') {
         basicValidationSchema[key.name] = Yup.string();
-      } else if (key.type === "PASSWORD") {
+      } else if (key.type === 'PASSWORD') {
         basicValidationSchema[key.name] = Yup.string();
-      } else if (key.type === "INT") {
+      } else if (key.type === 'INT') {
         basicValidationSchema[key.name] = Yup.string();
       }
       if (key.isMandatory) {
@@ -92,11 +92,11 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
             if (userValues.size === 0) {
               key.defaultValue === undefined
                 ? (combinedValue[key.name] =
-                    key.type === "INT" || key.type === "LONG" ? 0 : "")
+                    key.type === 'INT' || key.type === 'LONG' ? 0 : '')
                 : (combinedValue[key.name] = key.defaultValue);
             } else {
               combinedValue[key.name] = userValues.get(
-                key.name.replace(/_/g, ".")
+                key.name.replace(/_/g, '.')
               );
             }
           }
@@ -114,7 +114,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
       const runtimeValueMap: Map<string, string> = new Map();
       for (const runtimeValue of props.propertyDefinitions) {
         runtimeValueMap.set(
-          runtimeValue.name.replace(/_/g, "."),
+          runtimeValue.name.replace(/_/g, '.'),
           valueMap[runtimeValue.name]
         );
       }
@@ -125,7 +125,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
     };
 
     return (
-      <div className={"runtime-options-component-page"}>
+      <div className={'runtime-options-component-page'}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

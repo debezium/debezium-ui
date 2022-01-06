@@ -1,16 +1,17 @@
+import './FormMaskOrTruncateComponent.css';
+import { HelpInfoIcon } from './HelpInfoIcon';
+import { MaskOrTruncateItem } from './MaskOrTruncateItem';
 import {
-  Button, FormGroup,
+  Button,
+  FormGroup,
   InputGroup,
   Stack,
   StackItem,
-  Tooltip
-} from "@patternfly/react-core";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import { useField } from "formik";
-import * as React from "react";
-import "./FormMaskOrTruncateComponent.css";
-import { HelpInfoIcon } from "./HelpInfoIcon";
-import { MaskOrTruncateItem } from './MaskOrTruncateItem';
+  Tooltip,
+} from '@patternfly/react-core';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { useField } from 'formik';
+import * as React from 'react';
 
 export interface IFormMaskOrTruncateComponentProps {
   label: string;
@@ -19,7 +20,7 @@ export interface IFormMaskOrTruncateComponentProps {
   fieldId: string;
   helperTextInvalid?: any;
   isRequired: boolean;
-  validated: "default" | "success" | "warning" | "error";
+  validated: 'default' | 'success' | 'warning' | 'error';
   i18nAddDefinitionText: string;
   i18nAddDefinitionTooltip: string;
   i18nRemoveDefinitionTooltip: string;
@@ -31,57 +32,60 @@ export interface IFormMaskOrTruncateComponentProps {
   ) => void;
 }
 
-export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTruncateComponentProps> = (
-  props
-) => {
+export const FormMaskOrTruncateComponent: React.FunctionComponent<
+  IFormMaskOrTruncateComponentProps
+> = (props) => {
   const [field] = useField(props);
 
   const getItemRows = () => {
-    return (field.value)?.split("@^");
-  }
+    return field.value?.split('@^');
+  };
 
-  const handleMaskTruncateItemChanged = (rowId: number, maskTruncateValue: string) => {
+  const handleMaskTruncateItemChanged = (
+    rowId: number,
+    maskTruncateValue: string
+  ) => {
     // Break into rows
     const rows = [...getItemRows()];
     // replace element with updated content
     rows[rowId] = maskTruncateValue;
     // Join elements back together
-    const newValue = rows.join("@^");
+    const newValue = rows.join('@^');
     // Set new value
     props.setFieldValue(field.name, newValue, true);
     props.propertyChange(field.name, newValue);
-  }
+  };
 
   const handleDeleteMaskTruncateItem = (rowIndex: number) => {
     // Break into rows
     const rows = [...getItemRows()];
-    rows.splice(rowIndex,1);
+    rows.splice(rowIndex, 1);
     // Join elements back together
-    const newValue = rows.join("@^");
+    const newValue = rows.join('@^');
     // Set new value
     props.setFieldValue(field.name, newValue, true);
     props.propertyChange(field.name, newValue);
-  }
+  };
 
   const onAddDefinition = () => {
-    const newValue = field.value+"@^";
+    const newValue = field.value + '@^';
     props.setFieldValue(field.name, newValue, true);
     props.propertyChange(field.name, newValue);
-  }
+  };
 
   const getColumnsValue = (row: string) => {
     if (row && row.includes('&&')) {
-      return row.split("&&")[0];
+      return row.split('&&')[0];
     }
     return '';
-  }
+  };
 
   const getNValue = (row: string) => {
     if (row && row.includes('&&')) {
-      return row.split("&&")[1];
+      return row.split('&&')[1];
     }
     return '';
-  }
+  };
 
   const id = field.name;
 
@@ -98,7 +102,7 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
       validated={props.validated}
     >
       <InputGroup>
-        <Stack hasGutter={true} className={"form-mask-or-truncate-component"}>
+        <Stack hasGutter={true} className={'form-mask-or-truncate-component'}>
           {getItemRows()?.map((row: string, idx: number) => (
             <StackItem key={idx}>
               <MaskOrTruncateItem
@@ -114,7 +118,7 @@ export const FormMaskOrTruncateComponent: React.FunctionComponent<IFormMaskOrTru
           ))}
           <StackItem>
             <Tooltip
-              position={"right"}
+              position={'right'}
               content={props.i18nAddDefinitionTooltip}
             >
               <Button variant="link" onClick={onAddDefinition}>

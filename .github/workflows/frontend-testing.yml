@@ -40,3 +40,5 @@ jobs:
           working-directory: ./ui
       - name: Test Debezium UI Frontend
         run: yarn run unit:test
+      - name: Format
+        run: yarn run format
