@@ -1,3 +1,5 @@
+import CreateConnectorComponent from './CreateConnectorComponent';
+import './CreateConnectorComponent.css';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,12 +10,11 @@ import {
   TextContent,
   Title,
   TitleSizes,
-} from "@patternfly/react-core";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router-dom";
-import CreateConnectorComponent from "./CreateConnectorComponent";
-import "./CreateConnectorComponent.css";
+} from '@patternfly/react-core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory, useLocation } from 'react-router-dom';
+
 interface ILocationState {
   value: number;
   connectorNames: string[];
@@ -24,11 +25,11 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
   const history = useHistory();
 
   const onSuccess = () => {
-    history.push("/");
+    history.push('/');
   };
 
   const onCancel = () => {
-    history.push("/");
+    history.push('/');
   };
 
   const location = useLocation<ILocationState>();
@@ -45,14 +46,14 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
           <BreadcrumbItem isActive={true}>
-            {t("createConnector")}
+            {t('createConnector')}
           </BreadcrumbItem>
         </Breadcrumb>
         <Level hasGutter={true}>
           <LevelItem>
             <TextContent>
-              <Title headingLevel="h3" size={TitleSizes["2xl"]}>
-                {"Configure a connector"}
+              <Title headingLevel="h3" size={TitleSizes['2xl']}>
+                {'Configure a connector'}
               </Title>
             </TextContent>
           </LevelItem>
@@ -62,7 +63,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
         <CreateConnectorComponent
           onCancelCallback={onCancel}
           onSuccessCallback={onSuccess}
-          clusterId={"" + clusterID}
+          clusterId={'' + clusterID}
           connectorNames={connectorNames}
         />
       </div>

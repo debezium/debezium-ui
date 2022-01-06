@@ -11,19 +11,25 @@
   "scripts": {
     "lint": "lerna run --parallel --no-bail lint",
     "clean": "lerna run clean",
-    "prebuild": "yarn lint",
     "build": "lerna run build",
     "start": "lerna run start --scope=@debezium/ui",
     "start:prod": "lerna run start:prod --scope=@debezium/ui",
     "cypress:open": "cypress open",
     "cypress": "cypress run --headless --browser chrome",
+    "format": "lerna run format",
+    "lint-staged": "lerna run lint-staged",
     "unit:test": "lerna run test",
     "i18n": "lerna run i18n --scope=@debezium/ui"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn build"
+      "pre-commit": "yarn run lint-staged"
     }
+  },
+  "lint-staged": {
+    "src/**/*.ts*": [
+      "yarn run lint-staged"
+    ]
   },
   "devDependencies": {
     "@redhat-cloud-services/frontend-components-config": "^4.0.11",
@@ -50,7 +56,7 @@
     "enzyme-to-json": "^3.3.5",
     "file-loader": "^6.1.1",
     "html-webpack-plugin": "^5.3.2",
-    "husky": "^4.3.7",
+    "husky": "^7.0.0",
     "identity-obj-proxy": "^3.0.0",
     "imagemin": "^6.0.0",
     "jest": "^26.6.3",
@@ -84,7 +90,8 @@
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2",
-    "webpack-merge": "^5.7.3"
+    "webpack-merge": "^5.7.3",
+    "lint-staged": "^12.1.5"
   },
   "dependencies": {
     "@patternfly/patternfly": "^4.133.0",

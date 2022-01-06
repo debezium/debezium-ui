@@ -1,13 +1,13 @@
+import './DataOptionsStep.css';
 import {
   ConnectorProperty,
   PropertyValidationResult,
-} from "@debezium/ui-models";
-import { Form, Formik, useFormikContext } from "formik";
-import _ from "lodash";
-import * as React from "react";
-import { DataOptionsComponent } from "components";
-import { formatPropertyDefinitions, PropertyCategory } from "shared";
-import "./DataOptionsStep.css";
+} from '@debezium/ui-models';
+import { DataOptionsComponent } from 'components';
+import { Form, Formik, useFormikContext } from 'formik';
+import _ from 'lodash';
+import * as React from 'react';
+import { formatPropertyDefinitions, PropertyCategory } from 'shared';
 
 export interface IDataOptionsStepProps {
   propertyDefinitions: ConnectorProperty[];
@@ -71,11 +71,11 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
           if (userValues.size === 0) {
             key.defaultValue === undefined
               ? (combinedValue[key.name] =
-                  key.type === "INT" || key.type === "LONG" ? 0 : "")
+                  key.type === 'INT' || key.type === 'LONG' ? 0 : '')
               : (combinedValue[key.name] = key.defaultValue);
           } else {
             combinedValue[key.name] = userValues.get(
-              key.name.replace(/_/g, ".")
+              key.name.replace(/_/g, '.')
             );
           }
         }
@@ -97,7 +97,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
     const dataValueMap: Map<string, string> = new Map();
     for (const dataValue of props.propertyDefinitions) {
       dataValueMap.set(
-        dataValue.name.replace(/_/g, "."),
+        dataValue.name.replace(/_/g, '.'),
         valueMap[dataValue.name]
       );
     }
@@ -108,7 +108,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div className={"data-options-component-page"}>
+    <div className={'data-options-component-page'}>
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {

@@ -1,14 +1,14 @@
+import './MaskOrTruncateItem.css';
 import {
   Flex,
   FlexItem,
   Grid,
   GridItem,
   TextInput,
-  Tooltip
-} from "@patternfly/react-core";
-import { MinusCircleIcon } from "@patternfly/react-icons";
-import * as React from "react";
-import "./MaskOrTruncateItem.css";
+  Tooltip,
+} from '@patternfly/react-core';
+import { MinusCircleIcon } from '@patternfly/react-icons';
+import * as React from 'react';
 
 export interface IMaskOrTruncateItemProps {
   rowId: number;
@@ -20,30 +20,29 @@ export interface IMaskOrTruncateItemProps {
   deleteMaskTruncateItem: (rowId: number) => void;
 }
 
-export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProps> = (
-  props
-) => {
-
+export const MaskOrTruncateItem: React.FunctionComponent<
+  IMaskOrTruncateItemProps
+> = (props) => {
   const handleColumnsChange = (val: any) => {
     handleItemValueChange(val, props.nValue);
-  }
+  };
 
   const handleNChange = (val: any) => {
     handleItemValueChange(props.columnsValue, val);
-  }
+  };
 
   const handleItemValueChange = (columns: any, n: any) => {
-    const newValue = columns + "&&" + n;
+    const newValue = columns + '&&' + n;
     props.maskTruncateItemChanged(props.rowId, newValue);
-  }
+  };
 
   const handleRemoveItemClick = () => {
     props.deleteMaskTruncateItem(props.rowId);
-  }
+  };
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
     // do not allow entry of '.' or '-'
-    if (keyEvent.key === "." || keyEvent.key === "-") {
+    if (keyEvent.key === '.' || keyEvent.key === '-') {
       keyEvent.preventDefault();
     }
   };
@@ -51,11 +50,16 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
   return (
     <Grid>
       <GridItem span={8}>
-        <Flex className={"mask-or-truncate-item-column"}>
-          <FlexItem className={"mask-hash-salt-item-label mask-or-truncate-item-column-input"}>
-          <span>Columns:</span> <TextInput
+        <Flex className={'mask-or-truncate-item-column'}>
+          <FlexItem
+            className={
+              'mask-hash-salt-item-label mask-or-truncate-item-column-input'
+            }
+          >
+            <span>Columns:</span>{' '}
+            <TextInput
               id={`${props.rowId}columns`}
-              type={"text"}
+              type={'text'}
               onChange={handleColumnsChange}
               value={props.columnsValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
@@ -65,11 +69,12 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
       </GridItem>
       <GridItem span={3}>
         <Flex>
-          <FlexItem className={"mask-hash-salt-item-label"}>
-          <span>n:</span> <TextInput
+          <FlexItem className={'mask-hash-salt-item-label'}>
+            <span>n:</span>{' '}
+            <TextInput
               id={`${props.rowId}n`}
-              min={"1"}
-              type={"number"}
+              min={'1'}
+              type={'number'}
               onChange={handleNChange}
               value={props.nValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
@@ -79,11 +84,14 @@ export const MaskOrTruncateItem: React.FunctionComponent<IMaskOrTruncateItemProp
       </GridItem>
       {props.canDelete ? (
         <GridItem span={1}>
-          <Flex className={"mask-or-truncate-item-remove-button"}>
+          <Flex className={'mask-or-truncate-item-remove-button'}>
             <FlexItem>
-              <Tooltip position="right" content={props.i18nRemoveDefinitionTooltip}>
+              <Tooltip
+                position="right"
+                content={props.i18nRemoveDefinitionTooltip}
+              >
                 <MinusCircleIcon
-                  className={"mask-or-truncate-item-remove-button-icon"}
+                  className={'mask-or-truncate-item-remove-button-icon'}
                   onClick={handleRemoveItemClick}
                 />
               </Tooltip>

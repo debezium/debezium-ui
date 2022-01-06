@@ -1,3 +1,4 @@
+import './TopicGroupOptionItem.css';
 import {
   Button,
   Flex,
@@ -7,20 +8,22 @@ import {
   Select,
   SelectOption,
   SelectVariant,
-  TextInput
-} from "@patternfly/react-core";
-import { TrashIcon } from "@patternfly/react-icons";
-import { ITopicGroupOption } from "components";
-import _ from "lodash";
-import * as React from "react";
-import "./TopicGroupOptionItem.css";
+  TextInput,
+} from '@patternfly/react-core';
+import { TrashIcon } from '@patternfly/react-icons';
+import { ITopicGroupOption } from 'components';
+import _ from 'lodash';
+import * as React from 'react';
 
 export interface ITopicGroupOptionItemProps {
   rowId: number;
   itemName?: any;
   itemValue?: any;
   topicGroupOptionProperties: any[];
-  topicGroupOptionNameChanged: (rowId: number, itemName: string | undefined) => void;
+  topicGroupOptionNameChanged: (
+    rowId: number,
+    itemName: string | undefined
+  ) => void;
   topicGroupOptionValueChanged: (rowId: number, itemValue: any) => void;
   deleteTopicGroupOptionItem: (rowId: number) => void;
   topicGroupOptions: ITopicGroupOption[];
@@ -30,10 +33,9 @@ const SELECT_AN_OPTION = 'Select an option';
 const COMPRESSION_TYPE = 'compression_type';
 const CLEANUP_POLICY = 'cleanup_policy';
 
-export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItemProps> = (
-  props
-) => {
-
+export const TopicGroupOptionItem: React.FunctionComponent<
+  ITopicGroupOptionItemProps
+> = (props) => {
   const getValueSelectOptions = (pName: string) => {
     const selectOptions: JSX.Element[] = [];
     const theProp = props.topicGroupOptionProperties.find(
@@ -46,8 +48,8 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
       });
     }
     return selectOptions;
-  }
-  
+  };
+
   const getGroupOptionPropName = (dispName: string) => {
     let result: any;
     if (dispName !== SELECT_AN_OPTION) {
@@ -59,7 +61,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
       }
     }
     return result;
-  }
+  };
 
   const getGroupOptionPropDefaultValue = (dispName: string) => {
     let result: any;
@@ -72,7 +74,7 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
       }
     }
     return result;
-  }
+  };
 
   const getGroupOptionDisplayName = (propName: string) => {
     let result = SELECT_AN_OPTION;
@@ -85,21 +87,33 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
       }
     }
     return result;
-  }
+  };
 
-  const [selectedOptionName, setSelectedOptionName] = React.useState<string | undefined>(getGroupOptionDisplayName(props.itemName));
-  const [isOptionSelectorOpen, setOptionSelectorOpen] = React.useState<boolean>(false);
-  const [isOptionValueSelectorOpen, setOptionValueSelectorOpen] = React.useState<boolean>(false);
+  const [selectedOptionName, setSelectedOptionName] = React.useState<
+    string | undefined
+  >(getGroupOptionDisplayName(props.itemName));
+  const [isOptionSelectorOpen, setOptionSelectorOpen] =
+    React.useState<boolean>(false);
+  const [isOptionValueSelectorOpen, setOptionValueSelectorOpen] =
+    React.useState<boolean>(false);
 
   const getTopicGroupSelectOptions = () => {
     const options: JSX.Element[] = [];
-    options.push(<SelectOption key={0} value={'Choose option...'} isPlaceholder={true} />)
+    options.push(
+      <SelectOption key={0} value={'Choose option...'} isPlaceholder={true} />
+    );
     props.topicGroupOptionProperties.forEach((prop, index) => {
-      options.push(<SelectOption key={index+1} value={getGroupOptionDisplayName(prop.name)} isDisabled={!!_.find(props.topicGroupOptions, {name: prop.name})}/>);
+      options.push(
+        <SelectOption
+          key={index + 1}
+          value={getGroupOptionDisplayName(prop.name)}
+          isDisabled={!!_.find(props.topicGroupOptions, { name: prop.name })}
+        />
+      );
     });
     return options;
   };
-  
+
   const onOptionToggle = (open: boolean) => {
     setOptionSelectorOpen(open);
   };
@@ -117,9 +131,15 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
     } else {
       setSelectedOptionName(selection);
       setOptionSelectorOpen(false);
-      props.topicGroupOptionNameChanged(props.rowId, getGroupOptionPropName(selection));
+      props.topicGroupOptionNameChanged(
+        props.rowId,
+        getGroupOptionPropName(selection)
+      );
       // init to default value
-      props.topicGroupOptionValueChanged(props.rowId, getGroupOptionPropDefaultValue(selection));
+      props.topicGroupOptionValueChanged(
+        props.rowId,
+        getGroupOptionPropDefaultValue(selection)
+      );
     }
   };
 
@@ -134,15 +154,15 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
 
   const handleItemValueChange = (val: any) => {
     props.topicGroupOptionValueChanged(props.rowId, val);
-  }
+  };
 
   const handleRemoveItemClick = () => {
     props.deleteTopicGroupOptionItem(props.rowId);
-  }
+  };
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
     // do not allow entry of '.'
-    if (keyEvent.key === ".") {
+    if (keyEvent.key === '.') {
       keyEvent.preventDefault();
     }
   };
@@ -150,8 +170,8 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
   return (
     <Grid>
       <GridItem span={8}>
-        <Flex className={"topic-group-option-item-name"}>
-          <FlexItem className={"topic-group-option-item-name-input"}>
+        <Flex className={'topic-group-option-item-name'}>
+          <FlexItem className={'topic-group-option-item-name-input'}>
             <Select
               variant={SelectVariant.single}
               aria-label="Select topic group option"
@@ -163,43 +183,49 @@ export const TopicGroupOptionItem: React.FunctionComponent<ITopicGroupOptionItem
               placeholderText={SELECT_AN_OPTION}
             >
               {getTopicGroupSelectOptions()}
-          </Select>
+            </Select>
           </FlexItem>
         </Flex>
       </GridItem>
       <GridItem span={3}>
         <Flex>
-          <FlexItem className={"topic-group-option-item-value-input"}>
-            {props.itemName && (props.itemName === COMPRESSION_TYPE || props.itemName === CLEANUP_POLICY)
-            ?
-            <Select
-              id={`${props.rowId}value`}
-              variant={SelectVariant.single}
-              placeholderText="Select value"
-              aria-label="Select Value"
-              onToggle={onOptionValueToggle}
-              onSelect={onOptionValueSelect}
-              selections={props.itemValue}
-              isOpen={isOptionValueSelectorOpen}
-            >
-              {getValueSelectOptions(props.itemName)}
-            </Select>
-            :
-            <TextInput
-              id={`${props.rowId}value`}
-              type={"number"}
-              onChange={handleItemValueChange}
-              value={props.itemValue}
-              onKeyPress={(event) => handleKeyPress(event as any)}
-            />
-            }
+          <FlexItem className={'topic-group-option-item-value-input'}>
+            {props.itemName &&
+            (props.itemName === COMPRESSION_TYPE ||
+              props.itemName === CLEANUP_POLICY) ? (
+              <Select
+                id={`${props.rowId}value`}
+                variant={SelectVariant.single}
+                placeholderText="Select value"
+                aria-label="Select Value"
+                onToggle={onOptionValueToggle}
+                onSelect={onOptionValueSelect}
+                selections={props.itemValue}
+                isOpen={isOptionValueSelectorOpen}
+              >
+                {getValueSelectOptions(props.itemName)}
+              </Select>
+            ) : (
+              <TextInput
+                id={`${props.rowId}value`}
+                type={'number'}
+                onChange={handleItemValueChange}
+                value={props.itemValue}
+                onKeyPress={(event) => handleKeyPress(event as any)}
+              />
+            )}
           </FlexItem>
         </Flex>
       </GridItem>
       <GridItem span={1}>
         <Flex>
           <FlexItem>
-            <Button variant="link" icon={<TrashIcon />} onClick={handleRemoveItemClick} id='tooltip-selector' />
+            <Button
+              variant="link"
+              icon={<TrashIcon />}
+              onClick={handleRemoveItemClick}
+              id="tooltip-selector"
+            />
           </FlexItem>
         </Flex>
       </GridItem>

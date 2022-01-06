@@ -1,3 +1,5 @@
+import { PageLoader } from '..';
+import './FilterTreeComponent.css';
 import {
   Alert,
   EmptyState,
@@ -6,12 +8,10 @@ import {
   EmptyStateVariant,
   Title,
   TreeView,
-} from "@patternfly/react-core";
-import { ExclamationCircleIcon, SearchIcon } from "@patternfly/react-icons";
-import React from "react";
-import { PageLoader } from "..";
-import { ApiError, WithLoader } from "shared";
-import "./FilterTreeComponent.css";
+} from '@patternfly/react-core';
+import { ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import React from 'react';
+import { ApiError, WithLoader } from 'shared';
 
 export interface IFilterTreeComponentProps {
   treeData: any[];
@@ -36,14 +36,16 @@ export interface IFilterTreeComponentProps {
   i18nFilterExpressionResultText: string;
   i18nColumnOrFieldFilter: string;
 }
-export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentProps> = (
-  props
-) => {
+export const FilterTreeComponent: React.FunctionComponent<
+  IFilterTreeComponentProps
+> = (props) => {
   const [activeItems, setActiveItems] = React.useState<any>();
 
-  const getColumnOrFieldMsg = () =>{
-    return props.columnOrFieldFilter ? `. ${props.i18nColumnOrFieldFilter}` : ''
-  }
+  const getColumnOrFieldMsg = () => {
+    return props.columnOrFieldFilter
+      ? `. ${props.i18nColumnOrFieldFilter}`
+      : '';
+  };
 
   const onClick = (evt: any, treeViewItem: any, parentItem: any) => {
     setActiveItems([treeViewItem, parentItem]);
@@ -66,12 +68,12 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
           props.invalidMsg?.size === 0 ? (
             <>
               <Alert
-                variant={"warning"}
+                variant={'warning'}
                 isInline={true}
                 title={props.i18nNoMatchingFilterExpMsg + getColumnOrFieldMsg()}
               >
                 <p>
-                  {props.i18nClearFilterText + " "}
+                  {props.i18nClearFilterText + ' '}
                   <a onClick={props.clearFilter}>{props.i18nClearFilters}</a>
                 </p>
               </Alert>
@@ -88,7 +90,7 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
           ) : (
             <>
               <Alert
-                variant={"danger"}
+                variant={'danger'}
                 isInline={true}
                 title={props.i18nInvalidFilterText}
               />
@@ -106,17 +108,20 @@ export const FilterTreeComponent: React.FunctionComponent<IFilterTreeComponentPr
         ) : (
           <>
             <Alert
-              variant={"info"}
+              variant={'info'}
               isInline={true}
-              title={`${props.childNo} ${props.i18nMatchingFilterExpMsg}` + getColumnOrFieldMsg()}
+              title={
+                `${props.childNo} ${props.i18nMatchingFilterExpMsg}` +
+                getColumnOrFieldMsg()
+              }
             >
               {props.filterValues.size !== 0 ? (
                 <p>
-                  {props.i18nClearFilterText + " "}
+                  {props.i18nClearFilterText + ' '}
                   <a onClick={props.clearFilter}>{props.i18nClearFilters}</a>
                 </p>
               ) : (
-                ""
+                ''
               )}
             </Alert>
 

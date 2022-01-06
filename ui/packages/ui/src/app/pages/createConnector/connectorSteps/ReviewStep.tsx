@@ -6,9 +6,13 @@ import {
   CodeBlockCode,
   Text,
   TextVariants,
-  Tooltip
+  Tooltip,
 } from '@patternfly/react-core';
-import { EyeIcon, EyeSlashIcon, FileDownloadIcon} from '@patternfly/react-icons';
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  FileDownloadIcon,
+} from '@patternfly/react-icons';
 import * as React from 'react';
 import { mapToObject, maskPropertyValues } from 'shared';
 
@@ -19,10 +23,12 @@ export interface IReviewStepProps {
 }
 
 const getJson = (properties, showHiddenFields) => {
-  return showHiddenFields ? JSON.stringify(mapToObject(properties), null, 2) : JSON.stringify(maskPropertyValues(mapToObject(properties)), null, 2);
+  return showHiddenFields
+    ? JSON.stringify(mapToObject(properties), null, 2)
+    : JSON.stringify(maskPropertyValues(mapToObject(properties)), null, 2);
 };
 
-export const ReviewStep: React.FC<IReviewStepProps> = props => {
+export const ReviewStep: React.FC<IReviewStepProps> = (props) => {
   let timer;
   const [copied, setCopied] = React.useState<boolean>(false);
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
@@ -80,16 +86,24 @@ export const ReviewStep: React.FC<IReviewStepProps> = props => {
           ref={showTooltipRef}
           aria-label="show hidden fields icon"
           onClick={() => setShowPassword(!showPassword)}
-        >{showPassword ? <EyeSlashIcon/> : <EyeIcon/>}
+        >
+          {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
         </Button>
-        <Tooltip content={<div>{showPassword ? 'Hide password' : 'Show password'}</div>} reference={showTooltipRef} />
+        <Tooltip
+          content={
+            <div>{showPassword ? 'Hide password' : 'Show password'}</div>
+          }
+          reference={showTooltipRef}
+        />
       </CodeBlockAction>
       <CodeBlockAction>
         <ClipboardCopyButton
           id="copy-button"
           textId="code-content"
           aria-label="Copy to clipboard"
-          onClick={e => onClick(e, getJson(props.propertyValues, showPassword))}
+          onClick={(e) =>
+            onClick(e, getJson(props.propertyValues, showPassword))
+          }
           exitDelay={600}
           maxWidth="110px"
           variant="plain"
@@ -102,11 +116,16 @@ export const ReviewStep: React.FC<IReviewStepProps> = props => {
           variant="plain"
           ref={downloadTooltipRef}
           aria-label="Download icon"
-          onClick={e => downloadFile(e, getJson(props.propertyValues, showPassword))}
+          onClick={(e) =>
+            downloadFile(e, getJson(props.propertyValues, showPassword))
+          }
         >
           <FileDownloadIcon />
         </Button>
-        <Tooltip content={<div>Download JSON</div>} reference={downloadTooltipRef} />
+        <Tooltip
+          content={<div>Download JSON</div>}
+          reference={downloadTooltipRef}
+        />
       </CodeBlockAction>
     </React.Fragment>
   );
@@ -115,7 +134,9 @@ export const ReviewStep: React.FC<IReviewStepProps> = props => {
     <>
       <Text component={TextVariants.h2}>{props.i18nReviewMessage}</Text>
       <CodeBlock actions={actions}>
-        <CodeBlockCode id="code-content">{getJson(props.propertyValues, showPassword)}</CodeBlockCode>
+        <CodeBlockCode id="code-content">
+          {getJson(props.propertyValues, showPassword)}
+        </CodeBlockCode>
       </CodeBlock>
     </>
   );

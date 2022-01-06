@@ -1,14 +1,14 @@
 import {
   ConnectorProperty,
   PropertyValidationResult,
-} from "@debezium/ui-models";
-import { ExpandableSection, Grid, GridItem } from "@patternfly/react-core";
-import { FormikErrors, FormikTouched } from "formik";
-import _ from "lodash";
-import * as React from "react";
-import { formatPropertyDefinitions, PropertyCategory } from "shared";
-import * as Yup from "yup";
-import { FormComponent } from "components";
+} from '@debezium/ui-models';
+import { ExpandableSection, Grid, GridItem } from '@patternfly/react-core';
+import { FormComponent } from 'components';
+import { FormikErrors, FormikTouched } from 'formik';
+import _ from 'lodash';
+import * as React from 'react';
+import { formatPropertyDefinitions, PropertyCategory } from 'shared';
+import * as Yup from 'yup';
 
 export interface IRuntimeOptionsComponentProps {
   propertyDefinitions: ConnectorProperty[];
@@ -27,12 +27,11 @@ export interface IRuntimeOptionsComponentProps {
   clearValidationError: () => void;
 }
 
-export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = React.forwardRef(
-  (props, ref) => {
+export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> =
+  React.forwardRef((props, ref) => {
     const [engineExpanded, setEngineExpanded] = React.useState<boolean>(true);
-    const [heartbeatExpanded, setHeartbeatExpanded] = React.useState<boolean>(
-      true
-    );
+    const [heartbeatExpanded, setHeartbeatExpanded] =
+      React.useState<boolean>(true);
 
     const basicValidationSchema = {};
 
@@ -51,11 +50,11 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
 
     // Just added String and Password type
     enginePropertyDefinitions.map((key: any) => {
-      if (key.type === "STRING") {
+      if (key.type === 'STRING') {
         basicValidationSchema[key.name] = Yup.string();
-      } else if (key.type === "PASSWORD") {
+      } else if (key.type === 'PASSWORD') {
         basicValidationSchema[key.name] = Yup.string();
-      } else if (key.type === "INT") {
+      } else if (key.type === 'INT') {
         basicValidationSchema[key.name] = Yup.string();
       }
       if (key.isMandatory) {
@@ -92,7 +91,7 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
             >
               <Grid
                 hasGutter={true}
-                className={"runtime-options-component-expansion-content"}
+                className={'runtime-options-component-expansion-content'}
               >
                 {enginePropertyDefinitions.map(
                   (propertyDefinition: ConnectorProperty, index) => {
@@ -112,8 +111,8 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
                           validated={
                             props.errors[propertyDefinition.name] &&
                             props.touched[propertyDefinition.name]
-                              ? "error"
-                              : "default"
+                              ? 'error'
+                              : 'default'
                           }
                           propertyChange={handlePropertyChange}
                           clearValidationError={props.clearValidationError}
@@ -135,7 +134,7 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
             >
               <Grid
                 hasGutter={true}
-                className={"runtime-options-component-expansion-content"}
+                className={'runtime-options-component-expansion-content'}
               >
                 {heartbeatPropertyDefinitions.map(
                   (propertyDefinition: ConnectorProperty, index) => {
@@ -156,8 +155,8 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
                           validated={
                             props.errors[propertyDefinition.name] &&
                             props.touched[propertyDefinition.name]
-                              ? "error"
-                              : "default"
+                              ? 'error'
+                              : 'default'
                           }
                           clearValidationError={props.clearValidationError}
                         />
@@ -171,5 +170,4 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> = 
         </Grid>
       </>
     );
-  }
-);
+  });

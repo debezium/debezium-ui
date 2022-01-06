@@ -18,23 +18,33 @@ export interface INameInputFieldProps {
 }
 
 export const NameInputField = (props: INameInputFieldProps) => {
-  const { label, description, fieldId, isRequired, name, placeholder, inputType, value, setFieldValue, isInvalid, invalidText } = props;
+  const {
+    label,
+    description,
+    fieldId,
+    isRequired,
+    name,
+    placeholder,
+    inputType,
+    value,
+    setFieldValue,
+    isInvalid,
+    invalidText,
+  } = props;
 
-  const saveInputText = (val: any) =>{
-    setFieldValue(val,props.label);
-  }
+  const saveInputText = (val: any) => {
+    setFieldValue(val, props.label);
+  };
 
   return (
     <FormGroup
       label={label}
       isRequired={isRequired}
       fieldId={fieldId}
-      labelIcon={
-        <HelpInfoIcon label={props.label} description={description} />
-      }
+      labelIcon={<HelpInfoIcon label={props.label} description={description} />}
       helperTextInvalid={invalidText}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
-      validated={isInvalid ? "error" : 'default'}
+      validated={isInvalid ? 'error' : 'default'}
     >
       <TextInput
         type={inputType}
@@ -43,7 +53,7 @@ export const NameInputField = (props: INameInputFieldProps) => {
         defaultValue={value}
         onChange={saveInputText}
         aria-label="name input"
-        validated={isInvalid ? "error" : 'default'}
+        validated={isInvalid ? 'error' : 'default'}
         name={name}
         placeholder={placeholder}
       />

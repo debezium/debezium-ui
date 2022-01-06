@@ -52,67 +52,67 @@ export interface IWithLoaderState {
  * @see [children]{@link IWithLoaderProps#children}
  */
 export class WithLoader extends React.PureComponent<
-         IWithLoaderProps,
-         IWithLoaderState
-       > {
-         public static defaultProps = {
-           minWait: 500,
-         };
+  IWithLoaderProps,
+  IWithLoaderState
+> {
+  public static defaultProps = {
+    minWait: 500,
+  };
 
-         public isCompMounted = false;
+  public isCompMounted = false;
 
-         protected waitTimeout?: number;
+  protected waitTimeout?: number;
 
-         constructor(props: IWithLoaderProps) {
-           super(props);
-           this.state = {
-             loaded: !this.props.loading,
-           };
-         }
+  constructor(props: IWithLoaderProps) {
+    super(props);
+    this.state = {
+      loaded: !this.props.loading,
+    };
+  }
 
-         // tslint:disable-next-line
-         static getDerivedStateFromProps(props: IWithLoaderProps) {
-           return {
-             loaded: !props.loading,
-           };
-         }
+  // tslint:disable-next-line
+  static getDerivedStateFromProps(props: IWithLoaderProps) {
+    return {
+      loaded: !props.loading,
+    };
+  }
 
-         public componentDidUpdate(prevProps: IWithLoaderProps) {
-           this.isCompMounted = true;
-           if (!this.props.loading && !this.waitTimeout) {
-             this.setTimeout();
-           }
-         }
+  public componentDidUpdate(prevProps: IWithLoaderProps) {
+    this.isCompMounted = true;
+    if (!this.props.loading && !this.waitTimeout) {
+      this.setTimeout();
+    }
+  }
 
-         public componentWillUnmount() {
-           this.isCompMounted = false;
-         }
+  public componentWillUnmount() {
+    this.isCompMounted = false;
+  }
 
-         public render() {
-           if (this.props.error) {
-             return this.props.errorChildren;
-           }
-           if (this.props.loading) {
-             return this.props.loaderChildren;
-           }
-           return this.props.children();
-         }
+  public render() {
+    if (this.props.error) {
+      return this.props.errorChildren;
+    }
+    if (this.props.loading) {
+      return this.props.loaderChildren;
+    }
+    return this.props.children();
+  }
 
-         protected setTimeout() {
-           this.clearTimeout();
-           this.waitTimeout = window.setTimeout(() => {
-             if (this.isCompMounted) {
-               this.setState({
-                 loaded: true,
-               });
-             }
-           }, this.props.minWait!);
-         }
+  protected setTimeout() {
+    this.clearTimeout();
+    this.waitTimeout = window.setTimeout(() => {
+      if (this.isCompMounted) {
+        this.setState({
+          loaded: true,
+        });
+      }
+    }, this.props.minWait!);
+  }
 
-         protected clearTimeout() {
-           if (this.waitTimeout) {
-             clearTimeout(this.waitTimeout);
-             this.waitTimeout = undefined;
-           }
-         }
-       }
+  protected clearTimeout() {
+    if (this.waitTimeout) {
+      clearTimeout(this.waitTimeout);
+      this.waitTimeout = undefined;
+    }
+  }
+}

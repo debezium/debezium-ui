@@ -5,8 +5,8 @@
       &-control {
         .pf-l-flex > div {
           flex-grow: 1;
-          .pf-c-toggle-group{
-            .pf-m-selected{
+          .pf-c-toggle-group {
+            .pf-m-selected {
               color: var(--pf-global--active-color--100) !important;
             }
           }
@@ -21,12 +21,12 @@
     color: var(--pf-global--palette--blue-600);
     font-weight: bold;
     font-size: 0.8em;
-    &> svg{
-        color: var(--pf-global--palette--blue-200);
-    margin-right: 10px;
+    & > svg {
+      color: var(--pf-global--palette--blue-200);
+      margin-right: 10px;
     }
   }
 }
-.filter-config-page{
+.filter-config-page {
   padding: 20px;
 }

@@ -1,3 +1,6 @@
+import { IValidationRef } from '..';
+import topicCreationResponse from '../../../../../assets/mockResponse/topicCreation.json';
+import './TopicCreationStep.css';
 import {
   Alert,
   Button,
@@ -6,17 +9,14 @@ import {
   Text,
   TextVariants,
   Title,
-  TitleSizes
+  TitleSizes,
 } from '@patternfly/react-core';
-import React, { FC } from 'react';
-import { TopicDefaults, TopicGroupCard } from 'components';
-import topicCreationResponse from '../../../../../assets/mockResponse/topicCreation.json';
-import { IValidationRef } from '..';
-import MultiRef from 'react-multi-ref';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-import { getFormattedTopicCreationProperties } from 'shared';
+import { TopicDefaults, TopicGroupCard } from 'components';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import "./TopicCreationStep.css";
+import MultiRef from 'react-multi-ref';
+import { getFormattedTopicCreationProperties } from 'shared';
 
 export interface ITopicGroupData {
   key: number;
@@ -38,7 +38,10 @@ const TopicCreationDisabledAlert: FC = () => {
     <>
       {t('topicCreationDisabledAlert')}
       &nbsp;&nbsp;{t('topicCreationSee')}&nbsp;
-      <a href="https://debezium.io/documentation/reference/configuration/topic-auto-create-config.html" target="_blank">
+      <a
+        href="https://debezium.io/documentation/reference/configuration/topic-auto-create-config.html"
+        target="_blank"
+      >
         {t('topicCreationDocumentation')}
       </a>
       &nbsp;{t('topicCreationMoreDetailsToEnable')}
@@ -46,26 +49,33 @@ const TopicCreationDisabledAlert: FC = () => {
   );
 };
 
-export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps> = props => {
+export const TopicCreationStep: React.FunctionComponent<
+  ITopicCreationStepProps
+> = (props) => {
   const { t } = useTranslation();
-  const [topicGroups, setTopicGroups] = React.useState<Map<number, ITopicGroupData>>(new Map<number, ITopicGroupData>());
+  const [topicGroups, setTopicGroups] = React.useState<
+    Map<number, ITopicGroupData>
+  >(new Map<number, ITopicGroupData>());
   const [topicDefaults, setTopicDefaults] = React.useState({});
 
-
   const groupNameCheckRef = new MultiRef();
-  const topicDefaultsSaveRef = React.useRef() as React.MutableRefObject<IValidationRef>;
+  const topicDefaultsSaveRef =
+    React.useRef() as React.MutableRefObject<IValidationRef>;
 
-  const TOPIC_CREATION_GROUPS = "topic_creation_groups";
+  const TOPIC_CREATION_GROUPS = 'topic_creation_groups';
 
   const addTopicGroup = () => {
-     const topicGroupsCopy = new Map(topicGroups);
-     topicGroupsCopy.set(topicGroupsCopy.size + 1, { key: Math.random() * 10000, config: {} });
-     setTopicGroups(topicGroupsCopy);
-     props.setIsTopicCreationDirty(true);
+    const topicGroupsCopy = new Map(topicGroups);
+    topicGroupsCopy.set(topicGroupsCopy.size + 1, {
+      key: Math.random() * 10000,
+      config: {},
+    });
+    setTopicGroups(topicGroupsCopy);
+    props.setIsTopicCreationDirty(true);
   };
 
   const deleteTopicGroupCallback = React.useCallback(
-    order => {
+    (order) => {
       const topicGroupsCopy = new Map(topicGroups);
       topicGroupsCopy.delete(order);
       const topicGroupsResult = new Map<number, any>();
@@ -84,7 +94,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
 
   const getNameList = (): string[] => {
     const nameList: string[] = [];
-    topicGroups.forEach(val => {
+    topicGroups.forEach((val) => {
       val.name && nameList.push(val.name);
     });
     return nameList;
@@ -97,10 +107,10 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
     });
 
     Promise.all(cardsValid).then(
-      d => {
+      (d) => {
         props.setIsTopicCreationDirty(false);
       },
-      e => {
+      (e) => {
         props.setIsTopicCreationDirty(true);
       }
     );
@@ -133,35 +143,42 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   React.useEffect(() => {
     const topicCreateValues = new Map();
     if (topicGroups.size > 0) {
-      topicGroups.forEach(val => {
+      topicGroups.forEach((val) => {
         if (val.name) {
           topicCreateValues.has(TOPIC_CREATION_GROUPS)
-            ? topicCreateValues.set(TOPIC_CREATION_GROUPS, topicCreateValues.get(TOPIC_CREATION_GROUPS) + ',' + val.name)
+            ? topicCreateValues.set(
+                TOPIC_CREATION_GROUPS,
+                topicCreateValues.get(TOPIC_CREATION_GROUPS) + ',' + val.name
+              )
             : topicCreateValues.set(TOPIC_CREATION_GROUPS, val.name);
           for (const [key, value] of Object.entries(val.config)) {
             topicCreateValues.set(`topic_creation_${val.name}_${key}`, value);
           }
         }
       });
-      topicCreateValues.set("topic_creation_default_partitions", -1);
-      topicCreateValues.set("topic_creation_default_replication_factor", -1);
+      topicCreateValues.set('topic_creation_default_partitions', -1);
+      topicCreateValues.set('topic_creation_default_replication_factor', -1);
     }
-    if (Object.keys(topicDefaults).length >0) {
+    if (Object.keys(topicDefaults).length > 0) {
       for (const [key, value] of Object.entries(topicDefaults)) {
         topicCreateValues.set(`topic_creation_${key}`, value);
       }
     }
     props.updateTopicCreationValues(topicCreateValues);
-  }, [topicGroups,topicDefaults]);
+  }, [topicGroups, topicDefaults]);
 
   React.useEffect(() => {
     if (props.topicCreationValues.size > 0) {
       // Set the topic creation groups
       const topicGroupsVal = new Map();
-      const topicGroupList = props.topicCreationValues.get(TOPIC_CREATION_GROUPS)?.split(',');
-      if (topicGroupList ) {
+      const topicGroupList = props.topicCreationValues
+        .get(TOPIC_CREATION_GROUPS)
+        ?.split(',');
+      if (topicGroupList) {
         topicGroupList.forEach((tName, index) => {
-          const topicGroupData: ITopicGroupData = { key: Math.random() * 10000 };
+          const topicGroupData: ITopicGroupData = {
+            key: Math.random() * 10000,
+          };
           topicGroupData.name = tName;
           topicGroupData.config = {};
           for (const [key, value] of props.topicCreationValues.entries()) {
@@ -176,9 +193,9 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
       }
       // Set the topic creation default properties
       const topicDefaultsVal = {};
-      for(const [key, value] of props.topicCreationValues.entries()) {
-        if (key.startsWith("topic_creation_default_")) {
-          const fieldName = key.split("topic_creation_")[1];
+      for (const [key, value] of props.topicCreationValues.entries()) {
+        if (key.startsWith('topic_creation_default_')) {
+          const fieldName = key.split('topic_creation_')[1];
           topicDefaultsVal[fieldName] = value;
         }
       }
@@ -190,7 +207,7 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
   return (
     // tslint:disable: no-string-literal
     <div>
-      { (!props.topicCreationEnabled) ? (
+      {!props.topicCreationEnabled ? (
         <Alert
           variant="info"
           isInline={true}
@@ -204,28 +221,38 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
       ) : (
         <>
           <Text component={TextVariants.h2}>
-            {t("topicCreationPageHeadingText")}
+            {t('topicCreationPageHeadingText')}
           </Text>
           <Grid>
             <GridItem span={10}>
-              <Title className={"topic-creation-step-defaults-title"} headingLevel="h5" size={TitleSizes.lg}>
-                {t("topicCreationDefaultsTitle")}
+              <Title
+                className={'topic-creation-step-defaults-title'}
+                headingLevel="h5"
+                size={TitleSizes.lg}
+              >
+                {t('topicCreationDefaultsTitle')}
               </Title>
               <TopicDefaults
                 ref={topicDefaultsSaveRef}
-                topicDefaultProperties={getFormattedTopicCreationProperties(topicCreationResponse['defaults'])}
+                topicDefaultProperties={getFormattedTopicCreationProperties(
+                  topicCreationResponse['defaults']
+                )}
                 topicDefaultValues={topicDefaults}
                 updateTopicDefaults={updateTopicDefaultsCallback}
                 setIsTopicCreationDirty={props.setIsTopicCreationDirty}
               />
             </GridItem>
             <GridItem span={8}>
-              <Title className={"topic-creation-step-topic-groups-title"} headingLevel="h5" size={TitleSizes.lg}>
-                {t("topicGroupsTitle")}
+              <Title
+                className={'topic-creation-step-topic-groups-title'}
+                headingLevel="h5"
+                size={TitleSizes.lg}
+              >
+                {t('topicGroupsTitle')}
               </Title>
               {topicGroups.size === 0 ? (
                 <Text component={TextVariants.h2}>
-                  {t("topicGroupsNoneDefinedText")}
+                  {t('topicGroupsNoneDefinedText')}
                 </Text>
               ) : (
                 Array.from(topicGroups.keys()).map((key, index) => {
@@ -239,12 +266,17 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
                       topicGroupConfig={topicGroups.get(key)?.config || {}}
                       deleteTopicGroup={deleteTopicGroupCallback}
                       updateTopicGroup={updateTopicGroupCallback}
-                      topicGroupsData={topicCreationResponse['groups']['properties']}
-                      topicGroupOptionsData={topicCreationResponse['groups']['options']}
+                      topicGroupsData={
+                        topicCreationResponse['groups']['properties']
+                      }
+                      topicGroupOptionsData={
+                        topicCreationResponse['groups']['options']
+                      }
                       setIsTopicCreationDirty={props.setIsTopicCreationDirty}
                     />
                   );
-                }))}
+                })
+              )}
             </GridItem>
           </Grid>
           <Button
@@ -255,7 +287,12 @@ export const TopicCreationStep: React.FunctionComponent<ITopicCreationStepProps>
           >
             {t('apply')}
           </Button>
-          <Button variant="secondary" className="pf-u-mt-lg" icon={<PlusCircleIcon />} onClick={addTopicGroup}>
+          <Button
+            variant="secondary"
+            className="pf-u-mt-lg"
+            icon={<PlusCircleIcon />}
+            onClick={addTopicGroup}
+          >
             {t('addTopicGroup')}
           </Button>
         </>

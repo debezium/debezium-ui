@@ -2,6 +2,7 @@ import { FormGroup, Select, SelectVariant } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { HelpInfoIcon } from 'components';
 import * as React from 'react';
+
 export interface ITypeSelectorComponentProps {
   label: string;
   description: string;
@@ -25,7 +26,7 @@ export const TypeSelectorComponent = ({
   value,
   setFieldValue,
   isInvalid,
-  invalidText
+  invalidText,
 }: ITypeSelectorComponentProps) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
 
@@ -51,11 +52,13 @@ export const TypeSelectorComponent = ({
       return options;
     } else {
       const filteredGroups = options
-        .map(group => {
+        .map((group) => {
           const filteredGroup = React.cloneElement(group, {
-            children: group.props?.children?.filter(item => {
-              return item.props?.value?.toLowerCase().includes(textInput.toLowerCase());
-            })
+            children: group.props?.children?.filter((item) => {
+              return item.props?.value
+                ?.toLowerCase()
+                .includes(textInput.toLowerCase());
+            }),
           });
           if (filteredGroup.props?.children?.length > 0) {
             return filteredGroup;

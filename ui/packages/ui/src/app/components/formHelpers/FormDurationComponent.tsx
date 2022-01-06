@@ -1,3 +1,4 @@
+import { HelpInfoIcon } from './HelpInfoIcon';
 import {
   FormGroup,
   Grid,
@@ -7,11 +8,10 @@ import {
   SelectOption,
   SelectVariant,
   TextInput,
-} from "@patternfly/react-core";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import { useField } from "formik";
-import * as React from "react";
-import { HelpInfoIcon } from "./HelpInfoIcon";
+} from '@patternfly/react-core';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { useField } from 'formik';
+import * as React from 'react';
 
 const durationUnitOptions = [
   <SelectOption key={0} value="Milliseconds" />,
@@ -23,15 +23,15 @@ const durationUnitOptions = [
 
 function getDurationUnitFactor(durationOption: any) {
   switch (durationOption) {
-    case "Milliseconds":
+    case 'Milliseconds':
       return 1;
-    case "Seconds":
+    case 'Seconds':
       return 1000;
-    case "Minutes":
+    case 'Minutes':
       return 60000;
-    case "Hours":
+    case 'Hours':
       return 3600000;
-    case "Days":
+    case 'Days':
       return 86400000;
     default:
       return 1;
@@ -41,17 +41,17 @@ function getDurationUnitFactor(durationOption: any) {
 // Determines initial units.  Will auto-select the units which result in the lowest int value
 function getInitialDurationUnits(value: any) {
   if (value === 0) {
-    return "Milliseconds";
+    return 'Milliseconds';
   } else if (value / 86400000 >= 1.0 && Number.isInteger(value / 86400000)) {
-    return "Days";
+    return 'Days';
   } else if (value / 3600000 >= 1.0 && Number.isInteger(value / 3600000)) {
-    return "Hours";
+    return 'Hours';
   } else if (value / 60000 >= 1.0 && Number.isInteger(value / 60000)) {
-    return "Minutes";
+    return 'Minutes';
   } else if (value / 1000 >= 1.0 && Number.isInteger(value / 1000)) {
-    return "Seconds";
+    return 'Seconds';
   } else {
-    return "Milliseconds";
+    return 'Milliseconds';
   }
 }
 
@@ -70,7 +70,7 @@ export interface IFormDurationComponentProps {
   fieldId: string;
   helperTextInvalid?: any;
   isRequired: boolean;
-  validated: "default" | "success" | "warning" | "error";
+  validated: 'default' | 'success' | 'warning' | 'error';
   propertyChange: (name: string, selection: any) => void;
   setFieldValue: (
     field: string,
@@ -85,10 +85,9 @@ export interface IFormDurationComponentProps {
  * - decimals and negative values are not allowed
  * @param props the component properties
  */
-export const FormDurationComponent: React.FunctionComponent<IFormDurationComponentProps> = (
-  props
-) => {
-
+export const FormDurationComponent: React.FunctionComponent<
+  IFormDurationComponentProps
+> = (props) => {
   const [field] = useField(props);
   const [durationUnits, setDurationUnits] = React.useState<string>();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -96,10 +95,10 @@ export const FormDurationComponent: React.FunctionComponent<IFormDurationCompone
     setIsOpen(!isOpen);
   };
 
-  React.useEffect(()=> {
+  React.useEffect(() => {
     const initialDurationUnits = getInitialDurationUnits(field.value);
     setDurationUnits(initialDurationUnits);
-  })
+  });
   const onSelect = (e: any, selectedDurationUnits: any) => {
     setIsOpen(false);
 
@@ -118,7 +117,7 @@ export const FormDurationComponent: React.FunctionComponent<IFormDurationCompone
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
     // do not allow entry of '.' or '-'
-    if (keyEvent.key === "." || keyEvent.key === "-") {
+    if (keyEvent.key === '.' || keyEvent.key === '-') {
       keyEvent.preventDefault();
     }
   };
@@ -158,10 +157,10 @@ export const FormDurationComponent: React.FunctionComponent<IFormDurationCompone
         <Grid>
           <GridItem span={6}>
             <TextInput
-              min={"0"}
+              min={'0'}
               data-testid={id}
               id={id}
-              type={"number"}
+              type={'number'}
               value={`${calculateDuration(durationUnits, field.value)}`}
               validated={props.validated}
               onChange={handleTextInputChange}

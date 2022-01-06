@@ -1,3 +1,4 @@
+import './MaskHashSaltItem.css';
 import {
   Flex,
   FlexItem,
@@ -5,11 +6,12 @@ import {
   GridItem,
   Select,
   SelectOption,
-  SelectVariant, TextInput, Tooltip
-} from "@patternfly/react-core";
-import { MinusCircleIcon } from "@patternfly/react-icons";
-import * as React from "react";
-import "./MaskHashSaltItem.css";
+  SelectVariant,
+  TextInput,
+  Tooltip,
+} from '@patternfly/react-core';
+import { MinusCircleIcon } from '@patternfly/react-icons';
+import * as React from 'react';
 
 export interface IMaskHashSaltItemProps {
   rowId: number;
@@ -22,28 +24,28 @@ export interface IMaskHashSaltItemProps {
   deleteMaskHashSaltItem: (rowId: number) => void;
 }
 
-export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> = (
-  props
-) => {
-  const [isOpen, setOpen] = React.useState<boolean>(false)
+export const MaskHashSaltItem: React.FunctionComponent<
+  IMaskHashSaltItemProps
+> = (props) => {
+  const [isOpen, setOpen] = React.useState<boolean>(false);
 
   const onToggle = (open: boolean) => {
-    setOpen(open)
+    setOpen(open);
   };
 
   const selectOptions = [
-    {"value": "Choose...", isPlaceholder: true},
-    {"value": "MD2"},
-    {"value": "MD5"}, 
-    {"value": "SHA-1"}, 
-    {"value": "SHA-256"}, 
-    {"value": "SHA-384"}, 
-    {"value": "SHA-512"}
-  ]
+    { value: 'Choose...', isPlaceholder: true },
+    { value: 'MD2' },
+    { value: 'MD5' },
+    { value: 'SHA-1' },
+    { value: 'SHA-256' },
+    { value: 'SHA-384' },
+    { value: 'SHA-512' },
+  ];
 
   const handleColumnsChange = (val: any) => {
     handleItemValueChange(val, props.hashValue, props.saltValue);
-  }
+  };
 
   const handleHashChange = (event: any, selection: any, isPlaceholder: any) => {
     const hashVal = isPlaceholder ? '' : selection;
@@ -53,20 +55,20 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
 
   const handleSaltChange = (val: any) => {
     handleItemValueChange(props.columnsValue, props.hashValue, val);
-  }
+  };
 
   const handleItemValueChange = (columns: any, hash: any, salt: any) => {
-    const newValue = columns + "&&" + hash + "||" + salt;
+    const newValue = columns + '&&' + hash + '||' + salt;
     props.maskHashSaltItemChanged(props.rowId, newValue);
-  }
+  };
 
   const handleRemoveItemClick = () => {
     props.deleteMaskHashSaltItem(props.rowId);
-  }
+  };
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
     // do not allow entry of '.' or '-'
-    if (keyEvent.key === "." || keyEvent.key === "-") {
+    if (keyEvent.key === '.' || keyEvent.key === '-') {
       keyEvent.preventDefault();
     }
   };
@@ -74,12 +76,17 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
   return (
     <Grid>
       <GridItem span={5}>
-        <Flex className={"mask-hash-salt-item-column"}>
-          <FlexItem className={"mask-hash-salt-item-label mask-hash-salt-item-column-input"}>
-            <span>Columns:</span> <TextInput
+        <Flex className={'mask-hash-salt-item-column'}>
+          <FlexItem
+            className={
+              'mask-hash-salt-item-label mask-hash-salt-item-column-input'
+            }
+          >
+            <span>Columns:</span>{' '}
+            <TextInput
               data-testid={`${props.rowId}columns`}
               id={`${props.rowId}columns`}
-              type={"text"}
+              type={'text'}
               onChange={handleColumnsChange}
               value={props.columnsValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
@@ -90,10 +97,11 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
       <GridItem span={3}>
         <Flex>
           <FlexItem
-            spacer={{ default: "spacerXs" }}
+            spacer={{ default: 'spacerXs' }}
             className="mask-hash-salt-item-label"
           >
-            <span>Hash:</span> <Select
+            <span>Hash:</span>{' '}
+            <Select
               variant={SelectVariant.single}
               aria-label="Select Input"
               onToggle={onToggle}
@@ -115,13 +123,14 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
       <GridItem span={3}>
         <Flex className="pf-l-flex-nowrap">
           <FlexItem
-            spacer={{ default: "spacerXs" }}
+            spacer={{ default: 'spacerXs' }}
             className="mask-hash-salt-item-label"
           >
-            <span>Salt:</span> <TextInput
+            <span>Salt:</span>{' '}
+            <TextInput
               data-testid={`${props.rowId}salt`}
               id={`${props.rowId}salt`}
-              type={"text"}
+              type={'text'}
               onChange={handleSaltChange}
               value={props.saltValue}
               onKeyPress={(event) => handleKeyPress(event as any)}
@@ -131,11 +140,14 @@ export const MaskHashSaltItem: React.FunctionComponent<IMaskHashSaltItemProps> =
       </GridItem>
       {props.canDelete ? (
         <GridItem span={1}>
-          <Flex className={"mask-hash-salt-item-remove-button"}>
+          <Flex className={'mask-hash-salt-item-remove-button'}>
             <FlexItem>
-              <Tooltip position="right" content={props.i18nRemoveDefinitionTooltip}>
+              <Tooltip
+                position="right"
+                content={props.i18nRemoveDefinitionTooltip}
+              >
                 <MinusCircleIcon
-                  className={"mask-hash-salt-item-remove-button-icon"}
+                  className={'mask-hash-salt-item-remove-button-icon'}
                   onClick={handleRemoveItemClick}
                 />
               </Tooltip>

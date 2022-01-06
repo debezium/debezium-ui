@@ -1,5 +1,6 @@
-import { DataCollection, FilterValidationResult } from "@debezium/ui-models";
-import { Services } from "@debezium/ui-services";
+import './FilterConfigStep.css';
+import { DataCollection, FilterValidationResult } from '@debezium/ui-models';
+import { Services } from '@debezium/ui-services';
 import {
   ActionGroup,
   Button,
@@ -7,20 +8,23 @@ import {
   Form,
   Text,
   TextVariants,
-} from "@patternfly/react-core";
-import _ from "lodash";
-import React, { SetStateAction } from "react";
-import { useTranslation } from "react-i18next";
-import { FilterTreeComponent, FilterExcludeFieldComponent, FilterInputFieldComponent, NoPreviewFilterField } from "components";
-
+} from '@patternfly/react-core';
+import {
+  FilterTreeComponent,
+  FilterExcludeFieldComponent,
+  FilterInputFieldComponent,
+  NoPreviewFilterField,
+} from 'components';
+import _ from 'lodash';
+import React, { SetStateAction } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ConfirmationButtonStyle,
   ConfirmationDialog,
   fetch_retry,
   getFilterConfigurationPageContent,
   mapToObject,
-} from "shared";
-import "./FilterConfigStep.css";
+} from 'shared';
 
 export interface IFilterConfigStepProps {
   propertyValues: Map<string, string>;
@@ -37,7 +41,7 @@ const formatResponseData = (data: DataCollection[]) => {
     if (inx !== -1) {
       acc[inx].children.push({
         name: next.name,
-        id: next.namespace + "_" + next.name,
+        id: next.namespace + '_' + next.name,
       });
     } else {
       const newObj = {
@@ -46,7 +50,7 @@ const formatResponseData = (data: DataCollection[]) => {
         children: [
           {
             name: next.name,
-            id: next.namespace + "_" + next.name,
+            id: next.namespace + '_' + next.name,
           },
         ],
       };
@@ -56,9 +60,9 @@ const formatResponseData = (data: DataCollection[]) => {
   }, []);
 };
 
-export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> = (
-  props
-) => {
+export const FilterConfigStep: React.FunctionComponent<
+  IFilterConfigStepProps
+> = (props) => {
   const { t } = useTranslation();
   const [formData, setFormData] = React.useState<Map<string, string>>(
     new Map()
@@ -67,9 +71,8 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
     new Map()
   );
-  const [columnOrFieldFilter, setColumnOrFieldFilter] = React.useState<string>(
-    ""
-  );
+  const [columnOrFieldFilter, setColumnOrFieldFilter] =
+    React.useState<string>('');
   const [childNo, setChildNo] = React.useState<number>(0);
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
@@ -88,10 +91,10 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
   };
 
   const isColumnOrFieldFilterApplied = (formVal: Map<string, string>) => {
-    let includeFilter = "";
+    let includeFilter = '';
     formVal.forEach((val, key) => {
-      if (key.includes("column") || key.includes("field")) {
-        includeFilter = key.includes("column") ? "column" : "field";
+      if (key.includes('column') || key.includes('field')) {
+        includeFilter = key.includes('column') ? 'column' : 'field';
       }
     });
     setColumnOrFieldFilter(includeFilter);
@@ -111,7 +114,7 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
       mapToObject(new Map([...props.propertyValues, ...filterExpression])),
     ])
       .then((result: FilterValidationResult) => {
-        if (result.status === "INVALID") {
+        if (result.status === 'INVALID') {
           const errorMap = new Map();
           for (const e of result.propertyValidationResults) {
             errorMap.set(e.property, e.message);
@@ -153,7 +156,7 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
 
   React.useEffect(() => {
     getFilterSchema(false, props.filterValues);
-    setFormData(new Map(props.filterValues))
+    setFormData(new Map(props.filterValues));
   }, []);
 
   React.useEffect(() => {
@@ -164,14 +167,13 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
     }
   }, [formData]);
 
-  const filterConfigurationPageContentObj: any = getFilterConfigurationPageContent(
-    props.selectedConnectorType || ""
-  );
+  const filterConfigurationPageContentObj: any =
+    getFilterConfigurationPageContent(props.selectedConnectorType || '');
 
   return (
     <>
       <Text component={TextVariants.h2}>
-        {t("filterPageHeadingText", {
+        {t('filterPageHeadingText', {
           parent: filterConfigurationPageContentObj.fieldArray[0].field,
           child: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
@@ -189,15 +191,15 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
               fieldExcludeList={`${fieldFilter.field}.exclude.list`}
               fieldIncludeList={`${fieldFilter.field}.include.list`}
               fieldPlaceholder={fieldFilter.valueSample}
-              i18nFilterFieldLabel={t("filterFieldLabel", {
+              i18nFilterFieldLabel={t('filterFieldLabel', {
                 field: _.capitalize(fieldFilter.field),
               })}
-              i18nFilterFieldHelperText={t("filterFieldHelperText", {
+              i18nFilterFieldHelperText={t('filterFieldHelperText', {
                 field: fieldFilter.field,
               })}
-              i18nInclude={t("include")}
-              i18nExclude={t("exclude")}
-              i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+              i18nInclude={t('include')}
+              i18nExclude={t('exclude')}
+              i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                 field: fieldFilter.field,
                 sampleVal: fieldFilter.valueSample,
               })}
@@ -205,8 +207,8 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
           ) : (
             <NoPreviewFilterField
               key={fieldFilter.field}
-              i18nShowFilter={t("showFilter", { field: fieldFilter.field })}
-              i18nHideFilter={t("hideFilter", { field: fieldFilter.field })}
+              i18nShowFilter={t('showFilter', { field: fieldFilter.field })}
+              i18nHideFilter={t('hideFilter', { field: fieldFilter.field })}
             >
               {fieldFilter.excludeFilter ? (
                 <FilterExcludeFieldComponent
@@ -217,10 +219,10 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
                   invalidMsg={invalidMsg}
                   fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                   fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterExcludeFieldLabel={t("filterExcludeFieldLabel", {
+                  i18nFilterExcludeFieldLabel={t('filterExcludeFieldLabel', {
                     field: _.capitalize(fieldFilter.field),
                   })}
-                  i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                  i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                     field: `${fieldFilter.field} exclude`,
                     sampleVal: fieldFilter.valueSample,
                   })}
@@ -235,15 +237,15 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
                   fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                   fieldIncludeList={`${fieldFilter.field}.include.list`}
                   fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterFieldLabel={t("filterFieldLabel", {
+                  i18nFilterFieldLabel={t('filterFieldLabel', {
                     field: _.capitalize(fieldFilter.field),
                   })}
-                  i18nFilterFieldHelperText={t("filterFieldHelperText", {
+                  i18nFilterFieldHelperText={t('filterFieldHelperText', {
                     field: fieldFilter.field,
                   })}
-                  i18nInclude={t("include")}
-                  i18nExclude={t("exclude")}
-                  i18nFilterFieldInfoMsg={t("filterFieldInfoMsg", {
+                  i18nInclude={t('include')}
+                  i18nExclude={t('exclude')}
+                  i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                     field: fieldFilter.field,
                     sampleVal: fieldFilter.valueSample,
                   })}
@@ -254,10 +256,10 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
         )}
         <ActionGroup>
           <Button variant="secondary" onClick={applyFilter}>
-            {t("apply")}
+            {t('apply')}
           </Button>
           <Button variant="link" isInline={true} onClick={clearFilter}>
-            {t("clearFilters")}
+            {t('clearFilters')}
           </Button>
         </ActionGroup>
       </Form>
@@ -272,42 +274,42 @@ export const FilterConfigStep: React.FunctionComponent<IFilterConfigStepProps> =
         childNo={childNo}
         filterValues={props.filterValues}
         clearFilter={clearFilter}
-        i18nApiErrorTitle={t("apiErrorTitle")}
-        i18nApiErrorMsg={t("apiErrorMsg")}
-        i18nNoMatchingTables={t("noMatchingTables", {
+        i18nApiErrorTitle={t('apiErrorTitle')}
+        i18nApiErrorMsg={t('apiErrorMsg')}
+        i18nNoMatchingTables={t('noMatchingTables', {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nNoMatchingFilterExpMsg={t("noMatchingFilterExpMsg", {
+        i18nNoMatchingFilterExpMsg={t('noMatchingFilterExpMsg', {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nInvalidFilters={t("invalidFilters")}
-        i18nInvalidFilterExpText={t("invalidFilterExpText", {
+        i18nInvalidFilters={t('invalidFilters')}
+        i18nInvalidFilterExpText={t('invalidFilterExpText', {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nInvalidFilterText={t("invalidFilterText", {
+        i18nInvalidFilterText={t('invalidFilterText', {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nMatchingFilterExpMsg={t("matchingFilterExpMsg", {
+        i18nMatchingFilterExpMsg={t('matchingFilterExpMsg', {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nClearFilterText={t("clearFilterText", {
+        i18nClearFilterText={t('clearFilterText', {
           parent: filterConfigurationPageContentObj.fieldArray[0].field,
           child: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
-        i18nClearFilters={t("clearFilters")}
-        i18nFilterExpressionResultText={t("filterExpressionResultText", {
+        i18nClearFilters={t('clearFilters')}
+        i18nFilterExpressionResultText={t('filterExpressionResultText', {
           name: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
         i18nColumnOrFieldFilter={_.capitalize(
-          t("columnOrFieldFilter", { fieldName: columnOrFieldFilter })
+          t('columnOrFieldFilter', { fieldName: columnOrFieldFilter })
         )}
       />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
-        i18nCancelButtonText={t("cancel")}
-        i18nConfirmButtonText={t("clear")}
-        i18nConfirmationMessage={t("clearFilterConfMsg")}
-        i18nTitle={t("clearFilters")}
+        i18nCancelButtonText={t('cancel')}
+        i18nConfirmButtonText={t('clear')}
+        i18nConfirmationMessage={t('clearFilterConfMsg')}
+        i18nTitle={t('clearFilters')}
         showDialog={showClearDialog}
         onCancel={doCancel}
         onConfirm={doClear}

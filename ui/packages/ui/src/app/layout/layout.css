@@ -1,27 +1,27 @@
-:root{
+:root {
   --logo-width: 150px;
   --container-2xl: var(--pf-global--breakpoint--2xl);
 }
-.brandLogo{
-  width: var(--logo-width)
+.brandLogo {
+  width: var(--logo-width);
 }
-.container{
+.container {
   width: var(--container-2xl);
   margin: 0 auto;
 }
-.pf-c-page{
-  &__header{
+.pf-c-page {
+  &__header {
     display: flex;
     position: relative;
   }
 }
-.kafka-connect{
-  &__cluster{
+.kafka-connect {
+  &__cluster {
     @media screen and (max-width: 480px) {
       margin-left: -10px;
     }
-    .pf-c-form{
-      &__group{
+    .pf-c-form {
+      &__group {
         min-width: 250px;
         @media screen and (max-width: 480px) {
           min-width: 200px;
@@ -30,6 +30,6 @@
     }
   }
 }
-.pf-c-form__group-label{
+.pf-c-form__group-label {
   padding-bottom: 0;
 }

@@ -1,11 +1,16 @@
-import React from 'react';
-import { I18nextProvider, useTranslation } from 'react-i18next';
-import { BrowserRouter as Router } from 'react-router-dom';
 import './app.css';
 import i18n from 'i18n';
 import { AppLayout } from 'layout';
-
-import { ConfirmationButtonStyle, ConfirmationDialog, RenderRoutes, ROUTES, WithErrorBoundary } from 'shared';
+import React from 'react';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+import { BrowserRouter as Router } from 'react-router-dom';
+import {
+  ConfirmationButtonStyle,
+  ConfirmationDialog,
+  RenderRoutes,
+  ROUTES,
+  WithErrorBoundary,
+} from 'shared';
 
 const App: React.FC = () => {
   const [confirm, setConfirm] = React.useState(false);
@@ -25,7 +30,12 @@ const App: React.FC = () => {
           <React.Suspense fallback={null}>
             <WithErrorBoundary>
               <RenderRoutes routes={ROUTES} />
-              {confirm && <UserConfirm confirmCallback={confirmCallback} setConfirm={setConfirm} />}
+              {confirm && (
+                <UserConfirm
+                  confirmCallback={confirmCallback}
+                  setConfirm={setConfirm}
+                />
+              )}
             </WithErrorBoundary>
           </React.Suspense>
         </AppLayout>

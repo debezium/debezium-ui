@@ -1,6 +1,6 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { PageNotFound } from "components";
+import { PageNotFound } from 'components';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 /**
  * Use this component for any new section of routes (any config object that has a "routes" property

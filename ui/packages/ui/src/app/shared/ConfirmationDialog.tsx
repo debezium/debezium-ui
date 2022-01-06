@@ -90,7 +90,9 @@ export interface IConfirmationDialogProps {
 /**
  * A modal dialog to display for confirmation actions.
  */
-export const ConfirmationDialog: React.FunctionComponent<IConfirmationDialogProps> = ({
+export const ConfirmationDialog: React.FunctionComponent<
+  IConfirmationDialogProps
+> = ({
   buttonStyle,
   i18nCancelButtonText,
   i18nConfirmButtonText,
@@ -144,7 +146,9 @@ export const ConfirmationDialog: React.FunctionComponent<IConfirmationDialogProp
         <StackItem>
           <Split hasGutter={true}>
             <SplitItem isFilled={true}>
-              <Title headingLevel="h4" size={'lg'}>{i18nConfirmationMessage}</Title>
+              <Title headingLevel="h4" size={'lg'}>
+                {i18nConfirmationMessage}
+              </Title>
             </SplitItem>
           </Split>
         </StackItem>

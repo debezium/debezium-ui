@@ -1,28 +1,29 @@
+import { HelpInfoIcon } from './HelpInfoIcon';
 import {
   FormGroup,
   Select,
   SelectOption,
-  SelectVariant
+  SelectVariant,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import * as React from 'react';
-import { HelpInfoIcon } from './HelpInfoIcon';
+
 export interface IFormSelectComponentProps {
-    label: string;
-    name: string;
-    description: string;
-    fieldId: string;
-    helperTextInvalid: string,
-    isRequired: boolean;
-    options: string[];
-    validated?: "default" | "success" | "warning" | "error" | undefined;
-    propertyChange: (name: string, selection: any) => void;
-    setFieldValue: (
-      field: string,
-      value: any,
-      shouldValidate?: boolean | undefined
-    ) => void;
+  label: string;
+  name: string;
+  description: string;
+  fieldId: string;
+  helperTextInvalid: string;
+  isRequired: boolean;
+  options: string[];
+  validated?: 'default' | 'success' | 'warning' | 'error' | undefined;
+  propertyChange: (name: string, selection: any) => void;
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => void;
 }
 
 export const FormSelectComponent = (props: IFormSelectComponentProps) => {
@@ -34,42 +35,39 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
     helperTextInvalid,
     options,
     propertyChange,
-    setFieldValue
+    setFieldValue,
   } = props;
-  
-  const [isOpen, setOpen] = React.useState<boolean>(false)
+
+  const [isOpen, setOpen] = React.useState<boolean>(false);
   const [field] = useField(props);
 
   const onToggle = (open: boolean) => {
-    setOpen(open)
+    setOpen(open);
   };
 
   const clearSelection = () => {
-    setOpen(false)
-  };  
+    setOpen(false);
+  };
 
-  const onSelect = (e:any, selection: any, isPlaceholder: any) => {
+  const onSelect = (e: any, selection: any, isPlaceholder: any) => {
     if (isPlaceholder) {
       clearSelection();
-    }
-    else {
-      setOpen(false)
+    } else {
+      setOpen(false);
       setFieldValue(field.name, selection);
       propertyChange(field.name, selection);
     }
   };
 
   const selectOptions = options.map((value: any) => {
-    return {'value': value}
-  })
-  
+    return { value };
+  });
+
   return (
     <FormGroup
       label={label}
       isRequired={isRequired}
-      labelIcon={
-        <HelpInfoIcon label={label} description={description} />
-      }
+      labelIcon={<HelpInfoIcon label={label} description={description} />}
       helperTextInvalid={helperTextInvalid}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       fieldId={field.name}
@@ -86,7 +84,7 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
         isOpen={isOpen}
         validated={props.validated}
       >
-        {selectOptions.map((option:any, index) => (
+        {selectOptions.map((option: any, index) => (
           <SelectOption
             key={index}
             value={option.value}
@@ -95,5 +93,5 @@ export const FormSelectComponent = (props: IFormSelectComponentProps) => {
         ))}
       </Select>
     </FormGroup>
-  )
-}
+  );
+};

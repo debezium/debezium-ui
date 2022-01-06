@@ -1,22 +1,22 @@
+import { FormCheckboxComponent } from './FormCheckboxComponent';
+import { FormDurationComponent } from './FormDurationComponent';
+import { FormInputComponent } from './FormInputComponent';
+import { FormMaskHashSaltComponent } from './FormMaskHashSaltComponent';
+import { FormMaskOrTruncateComponent } from './FormMaskOrTruncateComponent';
+import { FormSelectComponent } from './FormSelectComponent';
+import { FormSwitchComponent } from './FormSwitchComponent';
 import {
   ConnectorProperty,
-  PropertyValidationResult
-} from "@debezium/ui-models";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { FormCheckboxComponent } from "./FormCheckboxComponent";
-import { FormDurationComponent } from "./FormDurationComponent";
-import { FormInputComponent } from "./FormInputComponent";
-import { FormMaskHashSaltComponent } from "./FormMaskHashSaltComponent";
-import { FormMaskOrTruncateComponent } from "./FormMaskOrTruncateComponent";
-import { FormSelectComponent } from "./FormSelectComponent";
-import { FormSwitchComponent } from "./FormSwitchComponent";
+  PropertyValidationResult,
+} from '@debezium/ui-models';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface IFormComponentProps {
   propertyDefinition: ConnectorProperty;
   helperTextInvalid?: any;
   invalidMsg: PropertyValidationResult[];
-  validated?: "default" | "success" | "warning" | "error" | undefined;
+  validated?: 'default' | 'success' | 'warning' | 'error' | undefined;
   propertyChange: (name: string, selection: any) => void;
   clearValidationError: () => void;
   setFieldValue: (
@@ -30,9 +30,9 @@ const getInvalidFilterMsg = (
   filter: string,
   errorMsg: PropertyValidationResult[]
 ) => {
-  let returnVal = "";
+  let returnVal = '';
   errorMsg?.forEach((val) => {
-    if (val.property === filter.replace(/_/g, ".")) {
+    if (val.property === filter.replace(/_/g, '.')) {
       returnVal = val.message;
     }
   });
@@ -45,11 +45,11 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   const { t } = useTranslation();
 
   const getValidate = () => {
-    return props.validated === "default"
+    return props.validated === 'default'
       ? getInvalidFilterMsg(props.propertyDefinition.name, props.invalidMsg)
-        ? "error"
-        : "default"
-      : "error";
+        ? 'error'
+        : 'default'
+      : 'error';
   };
 
   // Has allowed values - Select component
@@ -69,11 +69,11 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
       />
     );
     // Boolean - checkbox
-  } else if (props.propertyDefinition.type === "BOOLEAN") {
+  } else if (props.propertyDefinition.type === 'BOOLEAN') {
     return (
       <FormCheckboxComponent
         isChecked={
-          typeof props.propertyDefinition.defaultValue !== "undefined" &&
+          typeof props.propertyDefinition.defaultValue !== 'undefined' &&
           props.propertyDefinition.defaultValue === true
         }
         fieldId={props.propertyDefinition.name}
@@ -85,11 +85,11 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
       />
     );
     // Boolean - switch
-  } else if (props.propertyDefinition.type === "BOOLEAN-SWITCH") {
+  } else if (props.propertyDefinition.type === 'BOOLEAN-SWITCH') {
     return (
       <FormSwitchComponent
         isChecked={
-          typeof props.propertyDefinition.defaultValue !== "undefined" &&
+          typeof props.propertyDefinition.defaultValue !== 'undefined' &&
           props.propertyDefinition.defaultValue === true
         }
         fieldId={props.propertyDefinition.name}
@@ -101,7 +101,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
       />
     );
     // Duration
-  } else if (props.propertyDefinition.type === "DURATION") {
+  } else if (props.propertyDefinition.type === 'DURATION') {
     return (
       <FormDurationComponent
         description={props.propertyDefinition.description}
@@ -121,7 +121,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
       />
     );
     // Column Mask or Column Truncate
-  } else if (props.propertyDefinition.type === "COL_MASK_OR_TRUNCATE") {
+  } else if (props.propertyDefinition.type === 'COL_MASK_OR_TRUNCATE') {
     return (
       <FormMaskOrTruncateComponent
         description={props.propertyDefinition.description}
@@ -135,16 +135,16 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           ) || props.helperTextInvalid
         }
         label={props.propertyDefinition.displayName}
-        i18nAddDefinitionText={t("addDefinition")}
-        i18nAddDefinitionTooltip={t("addDefinitionTooltip")}
-        i18nRemoveDefinitionTooltip={t("removeDefinitionTooltip")}
+        i18nAddDefinitionText={t('addDefinition')}
+        i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
+        i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
         validated={getValidate()}
       />
     );
     // Column Mask Hash and Salt
-  } else if (props.propertyDefinition.type === "COL_MASK_HASH_SALT") {
+  } else if (props.propertyDefinition.type === 'COL_MASK_HASH_SALT') {
     return (
       <FormMaskHashSaltComponent
         description={props.propertyDefinition.description}
@@ -158,9 +158,9 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           ) || props.helperTextInvalid
         }
         label={props.propertyDefinition.displayName}
-        i18nAddDefinitionText={t("addDefinition")}
-        i18nAddDefinitionTooltip={t("addDefinitionTooltip")}
-        i18nRemoveDefinitionTooltip={t("removeDefinitionTooltip")}
+        i18nAddDefinitionText={t('addDefinition')}
+        i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
+        i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
         propertyChange={props.propertyChange}
         setFieldValue={props.setFieldValue}
         validated={getValidate()}

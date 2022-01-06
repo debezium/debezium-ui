@@ -9,17 +9,19 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "prebuild": "yarn clean",
     "build": "webpack --progress --config webpack.prod.js",
     "start": "webpack serve --color --progress --config webpack.dev.js",
     "start:prod": "node scripts/serve",
     "lint": "tslint -c ./tslint.json --project .",
+    "lint:fix": "npm run lint --fix",
     "format": "prettier --check --write ./src/**/*.{tsx,ts}",
+    "format:fix": "prettier --write --ignore-unknown 'src'",
     "build:bundle-profile": "webpack --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
     "test": "jest",
-    "i18n": "i18next 'src/**/**/*.{ts,tsx}' [-oc] -c './i18next-parser.config.js' -o './src/locales/$LOCALE/$NAMESPACE.json'"
+    "i18n": "i18next 'src/**/**/*.{ts,tsx}' [-oc] -c './i18next-parser.config.js' -o './src/locales/$LOCALE/$NAMESPACE.json'",
+    "lint-staged": "yarn run lint:fix && yarn run format:fix"
   },
   "peerDependencies": {
     "@patternfly/patternfly": "^4.115.2",
@@ -38,6 +40,10 @@
   "dependencies": {
     "@debezium/ui-models": "^1.0.0",
     "@debezium/ui-services": "^1.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^3.1.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
     "tslib": "^2.2.0"
   }
 }
