@@ -55,9 +55,12 @@ public class ListPostgresConnectorIT {
                 Infrastructure.getPostgresConnectorConfiguration(2)
                         .with("table.include.list", ".*"));
         Infrastructure.getDebeziumContainer().pauseConnector(pausedConnectorName);
+        // TODO When a stable version with DBZ-4517 is released and used the parameter name should be
+        // changed to 'slot.max.retries'
         Infrastructure.getDebeziumContainer().registerConnector(
                 failedConnectorName,
-                Infrastructure.getPostgresConnectorConfiguration(1));
+                Infrastructure.getPostgresConnectorConfiguration(1)
+                        .with("database.slot.max.retries", "0"));
         Infrastructure.getDebeziumContainer().ensureConnectorTaskState(failedConnectorName, 0, Connector.State.FAILED);
 
         given()
