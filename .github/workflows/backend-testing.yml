@@ -63,4 +63,4 @@ jobs:
       - name: Build debezium-checkstyle
         run: mvn clean install -f debezium/pom.xml -pl support/checkstyle -DskipTests -DskipITs
       - name: Test Debezium UI Backend
-        run: mvn clean install -f dbzui -B -Ddebezium.test.records.waittime=20 -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: mvn clean install -f dbzui -B -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
