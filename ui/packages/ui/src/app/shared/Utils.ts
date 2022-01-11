@@ -14,6 +14,7 @@ export enum ConnectorTypeId {
   MYSQL = 'mysql',
   SQLSERVER = 'sqlserver',
   MONGO = 'mongodb',
+  ORACLE = 'oracle'
 }
 
 export enum DatabaseFilter {
@@ -107,6 +108,18 @@ export enum PropertyName {
   INCLUDE_UNKNOWN_DATATYPES = 'include.unknown.datatypes',
   INCONSISTENT_SCHEMA_HANDLING_MODE = 'inconsistent.schema.handling.mode',
   INTERVAL_HANDLING_MODE = 'interval.handling.mode',
+  LOB_ENABLED = 'lob.enabled',
+  LOG_MINING_ARCHIVE_DESTINATION_NAME = 'log.mining.archive.destination.name',
+  LOG_MINING_ARCHIVE_LOG_ONLY_MODE = 'log.mining.archive.log.only.mode',
+  LOG_MINING_ARCHIVE_LOG_HOURS = 'log.mining.archive.log.hours',
+  LOG_MINING_BATCH_SIZE_DEFAULT = 'log.mining.batch.size.default',
+  LOG_MINING_BATCH_SIZE_MIN = 'log.mining.batch.size.min',
+  LOG_MINING_BATCH_SIZE_MAX = 'log.mining.batch.size.max',
+  LOG_MINING_SLEEP_TIME_DEFAULT_MS = 'log.mining.sleep.time.default.ms',
+  LOG_MINING_SLEEP_TIME_MIN_MS = 'log.mining.sleep.time.min.ms',
+  LOG_MINING_SLEEP_TIME_MAX_MS = 'log.mining.sleep.time.max.ms',
+  LOG_MINING_SLEEP_TIME_INCREMENT_MS = 'log.mining.sleep.time.increment.ms',
+  LOG_MINING_TRANSACTION_RETENTION_HOURS = 'log.mining.transaction.retention.hours',
   MAX_BATCH_SIZE = 'max.batch.size',
   MAX_QUEUE_SIZE = 'max.queue.size',
   MESSAGE_KEY_COLUMNS = 'message.key.columns',
@@ -210,6 +223,8 @@ export function getConnectorTypeDescription(connType: ConnectorType): string {
     return 'SQLServer database';
   } else if (connType.id === ConnectorTypeId.MONGO) {
     return 'MongoDB database';
+  } else if (connType.id === ConnectorTypeId.ORACLE) {
+    return 'Oracle database';
   }
   return 'Unknown type';
 }
@@ -352,6 +367,30 @@ export function isRuntimeOptions(propertyCategory: PropertyCategory): boolean {
     propertyCategory === PropertyCategory.RUNTIME_OPTIONS_ENGINE ||
     propertyCategory === PropertyCategory.RUNTIME_OPTIONS_HEARTBEAT
   );
+}
+
+/**
+ * Combine the supplied value maps, then minimize the property values.
+ * @param propValues1 map 1 of property values
+ * @param propValues2 map 2 of property values
+ * @param propertyDefns the array of property definitions
+ */
+export function combineAndMinimizePropertyValues(
+  propValues1: Map<string, string>,
+  propValues2: Map<string, string>,
+  propertyDefns: ConnectorProperty[]
+): Map<string, string> {
+  const valueMap = new Map(
+    (function* () {
+      yield* propValues1;
+      yield* propValues2;
+    })()
+  );
+  const minimizedValues = minimizePropertyValues(
+    valueMap,
+    propertyDefns
+  );
+  return minimizedValues;
 }
 
 /**
@@ -742,6 +781,78 @@ export function getFormattedProperties(
         case PropertyName.COLUMN_MASK_HASH_SALT:
           propDefn.gridWidthLg = 12;
           propDefn.type = 'COL_MASK_HASH_SALT';
+          break;
+        default:
+          propDefn.gridWidthLg = 12;
+          break;
+      }
+    }
+  } else if (connectorTypeId === ConnectorTypeId.ORACLE) {
+    for (const propDefn of formattedPropertyDefns) {
+      propDefn.gridWidthSm = 12;
+      const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
+      switch (propName) {
+        case PropertyName.DECIMAL_HANDLING_MODE:
+        case PropertyName.TIME_PRECISION_MODE:
+        case PropertyName.EVENT_PROCESSING_FAILURE_HANDLING_MODE:
+        case PropertyName.SNAPSHOT_MODE:
+        case PropertyName.SOURCE_STRUCT_VERSION:
+        case PropertyName.SNAPSHOT_LOCKING_MODE:
+          propDefn.gridWidthLg = 4;
+          break;
+        case PropertyName.QUERY_FETCH_SIZE:
+        case PropertyName.SNAPSHOT_MAX_THREADS:
+        case PropertyName.MAX_QUEUE_SIZE:
+        case PropertyName.MAX_BATCH_SIZE:
+        case PropertyName.DATABASE_HISTORY_KAFKA_RECOVERY_ATTEMPTS:
+        case PropertyName.LOG_MINING_BATCH_SIZE_DEFAULT:
+        case PropertyName.LOG_MINING_BATCH_SIZE_MIN:
+        case PropertyName.LOG_MINING_BATCH_SIZE_MAX:
+          propDefn.gridWidthLg = 4;
+          propDefn.type = "POS-INT";
+          break;
+        case PropertyName.SNAPSHOT_DELAY_MS:
+        case PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS:
+        case PropertyName.HEARTBEAT_INTERVAL_MS:
+        case PropertyName.POLL_INTERVAL_MS:
+        case PropertyName.DATABASE_HISTORY_KAFKA_RECOVERY_POLL_INTERVAL_MS:
+        case PropertyName.RETRIABLE_RESTART_CONNECTOR_WAIT_MS:
+        case PropertyName.LOG_MINING_SLEEP_TIME_DEFAULT_MS:
+        case PropertyName.LOG_MINING_SLEEP_TIME_MIN_MS:
+        case PropertyName.LOG_MINING_SLEEP_TIME_MAX_MS:
+        case PropertyName.LOG_MINING_SLEEP_TIME_INCREMENT_MS:
+          propDefn.gridWidthLg = 4;
+          propDefn.type = "DURATION";
+          propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
+          break;
+        case PropertyName.DATABASE_PORT:
+        case PropertyName.SNAPSHOT_FETCH_SIZE:
+          propDefn.gridWidthLg = 4;
+          propDefn.type =  "NON-NEG-INT";
+          break;
+        case PropertyName.DATABASE_DBNAME:
+          propDefn.gridWidthLg = 6;
+          break;
+        case PropertyName.DATABASE_HOSTNAME:
+          propDefn.gridWidthLg = 8;
+          break;
+        case PropertyName.TOMBSTONES_ON_DELETE:
+        case PropertyName.PROVIDE_TRANSACTION_METADATA:
+        case PropertyName.SANITIZE_FIELD_NAMES:
+        case PropertyName.INCLUDE_SCHEMA_CHANGES:
+        case PropertyName.LOB_ENABLED:
+        case PropertyName.LOG_MINING_ARCHIVE_LOG_ONLY_MODE:
+          propDefn.gridWidthLg = 12;
+          propDefn.type = "BOOLEAN-SWITCH";
+          break;
+        case PropertyName.COLUMN_TRUNCATE:
+        case PropertyName.COLUMN_MASK:
+          propDefn.gridWidthLg = 12;
+          propDefn.type =  "COL_MASK_OR_TRUNCATE";
+          break;
+        case PropertyName.COLUMN_MASK_HASH_SALT:
+          propDefn.gridWidthLg = 12;
+          propDefn.type =  "COL_MASK_HASH_SALT";
           break;
         default:
           propDefn.gridWidthLg = 12;

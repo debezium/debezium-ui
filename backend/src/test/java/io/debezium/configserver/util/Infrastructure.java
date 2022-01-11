@@ -38,7 +38,7 @@ public class Infrastructure {
     private static final String KAFKA_HOSTNAME = "kafka-dbz-ui";
 
     public enum DATABASE {
-        POSTGRES, MYSQL, SQLSERVER, MONGODB, NONE
+        POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
 
     private static final String DEBEZIUM_CONTAINER_VERSION = "1.8";
