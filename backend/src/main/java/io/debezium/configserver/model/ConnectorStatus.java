@@ -75,6 +75,10 @@ public class ConnectorStatus {
                 this.connectorType = "sqlserver";
                 this.databaseName = "SQL Server";
                 break;
+            case "io.debezium.connector.oracle.OracleConnector":
+                this.connectorType = "oracle";
+                this.databaseName = "Oracle";
+                break;
             default:
                 this.connectorType = connectorClassName;
                 this.databaseName = "unknown";

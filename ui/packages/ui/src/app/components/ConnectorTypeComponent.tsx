@@ -27,6 +27,8 @@ export const ConnectorTypeComponent: React.FunctionComponent<
       return 'MySQL';
     } else if (props.connectorType === ConnectorTypeId.SQLSERVER) {
       return 'SQL Server';
+    } else if ( props.connectorType === ConnectorTypeId.ORACLE ) {
+      return 'Oracle';
     }
     return 'Unknown';
   };

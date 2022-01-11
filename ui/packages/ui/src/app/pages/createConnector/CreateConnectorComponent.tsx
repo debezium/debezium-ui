@@ -47,6 +47,7 @@ import {
   isRuntimeOptions,
   mapToObject,
   minimizePropertyValues,
+  combineAndMinimizePropertyValues,
   PropertyCategory,
   PropertyName,
 } from 'shared';
@@ -446,14 +447,9 @@ export const CreateConnectorComponent: React.FunctionComponent<
 
     const connName = basicPropertyValues.get(PropertyName.CONNECTOR_NAME);
 
-    const valueMap = new Map(
-      (function* () {
-        yield* basicPropertyValues;
-        yield* advancePropertyValues;
-      })()
-    );
-    const minimizedValues = minimizePropertyValues(
-      valueMap,
+    const minimizedValues = combineAndMinimizePropertyValues(
+      basicPropertyValues,
+      advancePropertyValues,
       selectedConnectorPropertyDefns
     );
     validateConnectionProperties(minimizedValues, connName);
@@ -504,8 +500,8 @@ export const CreateConnectorComponent: React.FunctionComponent<
       mapToObject(new Map(propertyValues)),
     ])
       .then((result: ConnectionValidationResult) => {
-        if (result.status === 'INVALID') {
-          const connectorPropertyDefns = _.union(
+          if (result.status === 'INVALID') {
+            const connectorPropertyDefns = _.union(
             getBasicPropertyDefinitions(selectedConnectorPropertyDefns),
             getAdvancedPropertyDefinitions(selectedConnectorPropertyDefns)
           );
@@ -823,9 +819,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
               showIcon={false}
             />
             <FilterConfigStep
-              propertyValues={
-                new Map([...basicPropValues, ...advancedPropValues])
-              }
+              propertyValues={combineAndMinimizePropertyValues(basicPropValues,advancedPropValues,selectedConnectorPropertyDefns)}
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
               connectorType={selectedConnectorType || ''}
