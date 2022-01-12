@@ -138,7 +138,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         }
 
         List<DataCollection> matchingTables = collections.stream()
-                .map(collectionId -> new DataCollection(collectionId.replicaSetName() + "." + collectionId.dbName(), collectionId.name()))
+                .map(collectionId -> new DataCollection( (collectionId.replicaSetName() != null ? (collectionId.replicaSetName() + ".") : "") + collectionId.dbName(), collectionId.name()))
                 .collect(Collectors.toList());
 
         return FilterValidationResult.valid(matchingTables);
