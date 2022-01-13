@@ -139,44 +139,49 @@ export const ConnectorsTableComponent: React.FunctionComponent<
       case Action.DELETE:
         connectorService
           .deleteConnector(appLayoutContext.clusterId, connName)
-          .then((cConnectors: any) => {
-            addAlert('success', t('connectorDeletedSuccess'));
+          .then((cConnectors: Connector[]) => {
+            addAlert('success', t('connectorDeletedSuccess', {connectorName: connName}));
+            // Remove connName and reset connectors - if successful
+            const newConnectors = connectors.filter(function( conn ) {
+              return conn.name !== connName;
+            });
+            setConnectors(newConnectors);
           })
           .catch((err) => {
-            addAlert('danger', t('connectorDeletionFailed'), err?.message);
+            addAlert('danger', t('connectorDeletionFailed', {connectorName: connName}), err?.message);
           });
         break;
-      case Action.PAUSE:
+        case Action.PAUSE:
         connectorService
           .pauseConnector(appLayoutContext.clusterId, connName, {})
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorPausedSuccess'));
+            addAlert('success', t('connectorPausedSuccess', {connectorName: connName}));
             setConnectorStatus(connName, 'PAUSED');
           })
           .catch((err) => {
-            addAlert('danger', t('connectorPauseFailed'), err?.message);
+            addAlert('danger', t('connectorPauseFailed', {connectorName: connName}), err?.message);
           });
         break;
       case Action.RESUME:
         connectorService
           .resumeConnector(appLayoutContext.clusterId, connName, {})
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorResumedSuccess'));
+            addAlert('success', t('connectorResumedSuccess', {connectorName: connName}));
             setConnectorStatus(connName, 'RUNNING');
           })
           .catch((err) => {
-            addAlert('danger', t('connectorResumeFailed'), err?.message);
+            addAlert('danger', t('connectorResumeFailed', {connectorName: connName}), err?.message);
           });
         break;
       case Action.RESTART:
         connectorService
           .restartConnector(appLayoutContext.clusterId, connName, {})
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorRestartSuccess'));
+            addAlert('success', t('connectorRestartSuccess', {connectorName: connName}));
             setConnectorStatus(connName, 'RUNNING');
           })
           .catch((err) => {
-            addAlert('danger', t('connectorRestartFailed'), err?.message);
+            addAlert('danger', t('connectorRestartFailed', {connectorName: connName}), err?.message);
           });
         break;
       case Action.RESTART_TASK:
@@ -189,10 +194,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             {}
           )
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorTaskRestartSuccess'));
+            addAlert('success', t('connectorTaskRestartSuccess', {connectorName: connName}));
           })
           .catch((err) => {
-            addAlert('danger', t('connectorTaskRestartFailed'), err?.message);
+            addAlert('danger', t('connectorTaskRestartFailed', {connectorName: connName}), err?.message);
           });
         break;
       default:
