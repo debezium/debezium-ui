@@ -124,6 +124,14 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <id>ossrh</id>
+      <name>OSS Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>
@@ -165,6 +173,106 @@
               <excludes>META-INF/**</excludes>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-postgres-json</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>debezium-connector-postgres</artifactId>
+                  <classifier>plugin</classifier>
+                  <type>zip</type>
+                  <version>1.9.0-SNAPSHOT</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
+              <includes>**/*.json</includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-mysql-json</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>debezium-connector-mysql</artifactId>
+                  <classifier>plugin</classifier>
+                  <type>zip</type>
+                  <version>1.9.0-SNAPSHOT</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
+              <includes>**/*.json</includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-mongodb-json</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>debezium-connector-mongodb</artifactId>
+                  <classifier>plugin</classifier>
+                  <type>zip</type>
+                  <version>1.9.0-SNAPSHOT</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
+              <includes>**/*.json</includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-oracle-json</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>debezium-connector-oracle</artifactId>
+                  <classifier>plugin</classifier>
+                  <type>zip</type>
+                  <version>1.9.0-SNAPSHOT</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
+              <includes>**/*.json</includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-sqlserver-json</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>debezium-connector-sqlserver</artifactId>
+                  <classifier>plugin</classifier>
+                  <type>zip</type>
+                  <version>1.9.0-SNAPSHOT</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
+              <includes>**/*.json</includes>
             </configuration>
           </execution>
         </executions>
