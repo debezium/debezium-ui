@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ConnectConnectorConfigResponse {
 
     private String name;
-    private Map<String, String> config;
+    private Map<String, String> config; // @TODO This needs eventually be modeled with the JSON descriptors
 
     public ConnectConnectorConfigResponse() {
     }

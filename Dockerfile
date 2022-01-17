@@ -31,7 +31,7 @@ RUN mvn -am clean dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wa
 
 COPY --chown=1001:root . /javabuild/
 
-RUN mvn -am package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN mvn -am package -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 

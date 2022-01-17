@@ -2,18 +2,30 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>io.debezium</groupId>
     <artifactId>debezium-ui-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+
   <artifactId>debezium-ui-backend</artifactId>
   <name>Debezium UI Backend</name>
 
   <properties>
+    <quarkus.package.type>uber-jar</quarkus.package.type>
     <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>sonatype-oss-snapshots</id>
+      <name>Sonatype OSS SNAPSHOT Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <!--// repository in order to enable Debezium SNAPSHOT nightly builds //-->
+    </repository>
+  </repositories>
 
   <dependencyManagement>
     <dependencies>
@@ -35,6 +47,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.debezium</groupId>
+      <artifactId>debezium-ui-frontend</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
@@ -176,7 +193,7 @@
           <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-checkstyle</artifactId>
-            <version>[${debezium.base.version}],[1.6.0-SNAPSHOT],[1.6.1-SNAPSHOT],[1.6.2-SNAPSHOT],[1.7.0-SNAPSHOT],[1.8.0-SNAPSHOT]</version>
+            <version>${debezium.base.version}</version>
           </dependency>
         </dependencies>
         <configuration>

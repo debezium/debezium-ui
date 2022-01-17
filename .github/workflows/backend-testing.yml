@@ -19,14 +19,11 @@ on:
 jobs:
   backend-test:
     runs-on: ubuntu-latest
-    env:
-      DEBEZIUM_VERSION: "v1.6.1.Final"
     steps:
       - name: Checkout Debezium main repository
         uses: actions/checkout@v2
         with:
           repository: debezium/debezium
-          ref: ${{ env.DEBEZIUM_VERSION }}
           path: debezium
       - name: Checkout Debezium UI
         uses: actions/checkout@v2
@@ -56,4 +53,4 @@ jobs:
       - name: Build debezium-checkstyle
         run: mvn clean install -f debezium/pom.xml -pl support/checkstyle -DskipTests -DskipITs
       - name: Test Debezium UI Backend
-        run: mvn clean install -f dbzui -B -Ddebezium.test.records.waittime=20 -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: mvn clean install -f dbzui -am -pl backend -B -Ddebezium.test.records.waittime=20 -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn

@@ -26,7 +26,6 @@ import io.debezium.heartbeat.Heartbeat;
 import io.debezium.jdbc.TemporalPrecisionMode;
 import io.debezium.relational.TableId;
 import io.debezium.relational.history.KafkaDatabaseHistory;
-import io.debezium.util.Clock;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult.Status;
@@ -142,10 +141,10 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
     }
     
     private SqlServerConnection connect(SqlServerConnectorConfig sqlServerConfig) {
-        return new SqlServerConnection(sqlServerConfig.jdbcConfig(), Clock.system(),
+        return new SqlServerConnection(sqlServerConfig.jdbcConfig(),
                 sqlServerConfig.getSourceTimestampMode(), null,
                 () -> getClass().getClassLoader(),
-                Collections.emptySet());
+                Collections.emptySet(), false);
     }
 
     @Override
