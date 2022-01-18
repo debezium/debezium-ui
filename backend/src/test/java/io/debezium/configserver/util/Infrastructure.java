@@ -59,10 +59,12 @@ public class Infrastructure {
     private static final MongoDBContainer MONGODB_CONTAINER =
             new MongoDbContainer(DockerImageName.parse("mongo:3.6"))
                     .withNetwork(NETWORK)
+                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                     .withNetworkAliases("mongodb");
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
             new DebeziumContainer(DockerImageName.parse("debezium/connect:nightly"))
+                    .withEnv("HEAP_OPTS", "-Xmx512M -Xms512M")
                     .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                     .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                     .withNetwork(NETWORK)
