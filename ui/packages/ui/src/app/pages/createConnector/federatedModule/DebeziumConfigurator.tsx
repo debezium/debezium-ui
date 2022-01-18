@@ -65,7 +65,7 @@ export interface IConnectorType {
    * @type {object}
    * @memberof IConnectorType
    */
-  json_schema?: object;
+  schema?: object;
 }
 
 export interface IDebeziumConfiguratorProps {
@@ -151,7 +151,7 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   // const schema = schemas[schemaName];
   // const schemaProperties = schema.properties;
 
-  const schemaProperties = connectorData.json_schema.properties;
+  const schemaProperties = connectorData.schema.properties;
 
   for (const propKey of Object.keys(schemaProperties)) {
     const prop = schemaProperties[propKey];
@@ -272,8 +272,8 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
         return (
           <Properties
             connectorType={
-              props.connector?.json_schema
-                ? props.connector?.json_schema['x-connector-id']
+              props.connector?.schema
+                ? props.connector?.schema['x-connector-id']
                 : ''
             }
             configuration={props.configuration}
@@ -302,8 +302,8 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
               connectorType={
-                props.connector?.json_schema
-                  ? props.connector?.json_schema['x-connector-id']
+                props.connector?.schema
+                  ? props.connector?.schema['x-connector-id']
                   : ''
               }
               setIsValidFilter={setIsValidFilter}
