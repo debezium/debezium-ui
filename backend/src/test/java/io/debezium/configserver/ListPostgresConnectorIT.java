@@ -60,6 +60,7 @@ public class ListPostgresConnectorIT {
         Infrastructure.getDebeziumContainer().registerConnector(
                 failedConnectorName,
                 Infrastructure.getPostgresConnectorConfiguration(1)
+                        .with("database.server.name", "dbserver1-failing")
                         .with("database.slot.max.retries", "0"));
         Infrastructure.getDebeziumContainer().ensureConnectorTaskState(failedConnectorName, 0, Connector.State.FAILED);
 
