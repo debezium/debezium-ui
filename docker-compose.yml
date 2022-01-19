@@ -81,8 +81,7 @@ services:
     command: bash -c 'sleep 60 && /opt/mssql-tools/bin/sqlcmd -S dbzui-db-sqlserver -U sa -P Password! -i inventory.sql'
   dbzui-connect:
     container_name: dbzui-connect
-    image: 
-      debezium/connect:nightly
+    image: debezium/connect:nightly
     ports:
       - "8083:8083"
     depends_on:

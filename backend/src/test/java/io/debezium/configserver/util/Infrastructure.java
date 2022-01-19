@@ -57,7 +57,7 @@ public class Infrastructure {
                     .withNetworkAliases("mysql");
 
     private static final MongoDBContainer MONGODB_CONTAINER =
-            new MongoDbContainer(DockerImageName.parse("mongo:4.4"))
+            new MongoDbContainer(DockerImageName.parse("mongo:3.6"))
                     .withNetwork(NETWORK)
                     .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                     .withNetworkAliases("mongodb");
@@ -67,6 +67,7 @@ public class Infrastructure {
                     .withEnv("HEAP_OPTS", "-Xmx512M -Xms512M")
                     .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                     .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
+                    .withEnv("KAFKA_OPTS", "--illegal-access=permit")
                     .withNetwork(NETWORK)
                     .withKafka(KAFKA_CONTAINER.getNetwork(), KAFKA_HOSTNAME + ":9092")
                     .withLogConsumer(new Slf4jLogConsumer(LOGGER))
