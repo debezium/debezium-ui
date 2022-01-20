@@ -23,12 +23,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run lint-staged"
+      "pre-commit": "npm run lint-staged"
     }
   },
   "lint-staged": {
     "src/**/*.ts*": [
-      "yarn run lint-staged"
+      "npm run lint-staged"
     ]
   },
   "devDependencies": {
