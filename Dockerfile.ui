@@ -4,6 +4,7 @@ ARG JAVA_PACKAGE=java-11-openjdk-headless
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_HOME="/usr/lib/jvm/jre-11"
+ENV NPM_CONFIG_CACHE="/.cache/npm"
 
 RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
     && microdnf update \
