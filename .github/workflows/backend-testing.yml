@@ -43,16 +43,7 @@ jobs:
           key: dbzui-${{ runner.os }}-maven-${{ hashFiles('dbzui/pom.xml', 'dbzui/**/pom.xml') }}
           restore-keys: |
             dbzui-${{ runner.os }}-maven-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache local Yarn repository
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: dbzui-${{ runner.os }}-yarn-${{ hashFiles('dbzui/ui/yarn.lock') }}
-          restore-keys: |
-            dbzui-${{ runner.os }}-yarn-
+
       - name: Build debezium-checkstyle
         run: mvn clean install -f debezium/pom.xml -pl support/checkstyle -DskipTests -DskipITs
       - name: Test Debezium UI Backend
