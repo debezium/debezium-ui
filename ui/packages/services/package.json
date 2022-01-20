@@ -9,13 +9,13 @@
     "lint": "tslint -c ./tslint.json --project .",
     "build": " tsc && tsc -m es6 --outDir ./dist/esm && webpack --config webpack.config.js",
     "clean": "rimraf dist",
-    "prebuild": "yarn clean"
+    "prebuild": "npm clean"
   },
   "author": "Red Hat",
   "license": "Apache-2.0",
   "dependencies": {
     "@debezium/ui-models": "1.0.0",
     "yaml": "^1.10.0",
-    "axios":  "0.21.1"
+    "axios": "0.21.1"
   }
 }

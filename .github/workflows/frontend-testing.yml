@@ -39,4 +39,4 @@ jobs:
         with:
           working-directory: ./ui
       - name: Test Debezium UI Frontend
-        run: yarn run unit:test
+        run: npm run unit:test
