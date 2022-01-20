@@ -57,6 +57,7 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         uses: bahmutov/npm-install@v1
         with:
+          install-command: npm install --save --legacy-peer-deps
           working-directory: ./ui
 
       - name: Test Debezium UI Frontend
