@@ -67,7 +67,6 @@ public class CreateAndDeleteMongoDbConnectorIT {
 
     @Test
     public void testMongoDbDeleteConnectorFailed() {
-        Infrastructure.getDebeziumContainer().deleteAllConnectors();
         given()
                 .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
                 .then().log().all()
