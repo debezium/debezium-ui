@@ -53,8 +53,7 @@ jobs:
                 ${{ runner.os }}-build-
                 ${{ runner.os }}-
 
-      - name: Install dependencies if needed.
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+      - name: Install dependencies
         uses: bahmutov/npm-install@v1
         with:
           install-command: npm install --save --legacy-peer-deps
