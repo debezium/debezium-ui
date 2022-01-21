@@ -17,7 +17,7 @@
     "format": "prettier --check --write ./src/**/*.{tsx,ts}",
     "format:fix": "prettier --write --ignore-unknown 'src'",
     "build:bundle-profile": "webpack --profile --json > stats.json",
-    "bundle-profile:analyze": "npm build:bundle-profile && webpack-bundle-analyzer ./stats.json",
+    "bundle-profile:analyze": "npm run build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
     "test": "jest",
     "i18n": "i18next 'src/**/**/*.{ts,tsx}' [-oc] -c './i18next-parser.config.js' -o './src/locales/$LOCALE/$NAMESPACE.json'",
