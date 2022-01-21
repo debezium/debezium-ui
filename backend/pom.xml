@@ -146,14 +146,6 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>ossrh</id>
-      <name>OSS Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
-
   <build>
     <plugins>
       <plugin>
@@ -337,7 +329,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
-          <forkCount>1C</forkCount>
           <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
@@ -352,7 +343,6 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <forkCount>1C</forkCount>
               <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit</argLine>
               <systemProperties>
                 <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
@@ -374,7 +364,6 @@
               <goal>verify</goal>
             </goals>
             <configuration>
-              <forkCount>1C</forkCount>
               <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit</argLine>
               <skipTests>${skipITs}</skipTests>
               <enableAssertions>true</enableAssertions>
