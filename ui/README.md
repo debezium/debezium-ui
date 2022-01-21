@@ -18,12 +18,12 @@ npm install
 
 Run a full build
 ```sh
-npm build
+npm run build
 ```
 
 Start the development server
 ```sh
-npm start
+npm run start
 ```
 
 ## Internationalization
