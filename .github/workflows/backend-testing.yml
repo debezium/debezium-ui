@@ -44,6 +44,22 @@ jobs:
           restore-keys: |
             dbzui-${{ runner.os }}-maven-
 
+      - name: Cache node modules
+        id: npm-cache
+        uses: actions/cache@v2
+        env:
+            cache-name: cache-node-modules-v2
+        with:
+            path: |
+                ~/.npm
+                node_modules
+                */*/node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
+
       - name: Build debezium-checkstyle
         run: mvn clean install -f debezium/pom.xml -pl support/checkstyle -DskipTests -DskipITs
       - name: Test Debezium UI Backend
