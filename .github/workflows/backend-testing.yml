@@ -19,14 +19,11 @@ on:
 jobs:
   backend-test:
     runs-on: ubuntu-latest
-    env:
-      DEBEZIUM_VERSION: "v1.6.1.Final"
     steps:
       - name: Checkout Debezium main repository
         uses: actions/checkout@v2
         with:
           repository: debezium/debezium
-          ref: ${{ env.DEBEZIUM_VERSION }}
           path: debezium
       - name: Checkout Debezium UI
         uses: actions/checkout@v2

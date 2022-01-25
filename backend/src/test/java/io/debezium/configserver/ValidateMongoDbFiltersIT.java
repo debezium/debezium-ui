@@ -40,14 +40,12 @@ public class ValidateMongoDbFiltersIT {
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
                 .body("propertyValidationResults.size()", is(0))
-                .body("matchedCollections.size()", is(5))
+                .body("matchedCollections.size()", is(3))
                 .body("matchedCollections",
                     hasItems(
                         Map.of("namespace", "rs0.inventory", "name", "customers"),
                         Map.of("namespace", "rs0.inventory", "name", "orders"),
-                        Map.of("namespace", "rs0.inventory", "name", "products"),
-                        Map.of("namespace", "rs0.config", "name", "system.sessions"),
-                        Map.of("namespace", "rs0.config", "name", "transactions")
+                        Map.of("namespace", "rs0.inventory", "name", "products")
                     ));
     }
 

@@ -16,11 +16,6 @@
   <properties>
     <quarkus.package.type>uber-jar</quarkus.package.type>
     <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
-    <!-- For now this is separate from debezium.base.version, as we're migrating
-      from embedding the connectors into the backend into obtaining solely their JSON schema
-      files at build time of this backend; ultimately, there'll only be a single Debezium
-      version to be considered here -->
-    <debezium.backend.version>1.9.0-SNAPSHOT</debezium.backend.version>
   </properties>
 
   <repositories>
@@ -202,7 +197,7 @@
                   <artifactId>debezium-connector-postgres</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -222,7 +217,7 @@
                   <artifactId>debezium-connector-mysql</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -242,7 +237,7 @@
                   <artifactId>debezium-connector-mongodb</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -262,7 +257,7 @@
                   <artifactId>debezium-connector-oracle</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -282,7 +277,7 @@
                   <artifactId>debezium-connector-sqlserver</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -329,7 +324,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
-          <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit</argLine>
+          <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit -Dmaven.surefire.debug</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
@@ -343,7 +338,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit</argLine>
+              <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit -Dmaven.surefire.debug</argLine>
               <systemProperties>
                 <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
                 <maven.home>${maven.home}</maven.home>
@@ -364,7 +359,7 @@
               <goal>verify</goal>
             </goals>
             <configuration>
-              <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit</argLine>
+              <argLine>-XX:MaxRAMPercentage=75 --illegal-access=permit -Dmaven.surefire.debug</argLine>
               <skipTests>${skipITs}</skipTests>
               <enableAssertions>true</enableAssertions>
               <systemPropertyVariables>

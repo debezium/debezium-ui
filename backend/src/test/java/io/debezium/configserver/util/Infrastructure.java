@@ -33,7 +33,7 @@ public class Infrastructure {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, NONE
     }
 
-    private static final String DEBEZIUM_CONTAINER_VERSION = "1.6";
+    private static final String DEBEZIUM_CONTAINER_VERSION = "1.8";
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
@@ -54,12 +54,15 @@ public class Infrastructure {
                     .withUsername("mysqluser")
                     .withPassword("mysqlpw")
                     .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+                    //
+                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+                    //
                     .withNetworkAliases("mysql");
 
     private static final MongoDBContainer MONGODB_CONTAINER =
             new MongoDbContainer(DockerImageName.parse("mongo:3.6"))
                     .withNetwork(NETWORK)
-                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+//                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                     .withNetworkAliases("mongodb");
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =

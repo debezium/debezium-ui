@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,13 +109,13 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
 
     protected <T extends DataCollectionId> Stream<T> determineDataCollectionsToBeSnapshotted(
             CommonConnectorConfig connectorConfig, final Collection<T> allDataCollections) {
-        final Set<String> snapshotAllowedDataCollections = connectorConfig.getDataCollectionsToBeSnapshotted();
+        final Set<Pattern> snapshotAllowedDataCollections = connectorConfig.getDataCollectionsToBeSnapshotted();
         if (snapshotAllowedDataCollections.size() == 0) {
             return allDataCollections.stream();
         }
         else {
             return allDataCollections.stream()
-                    .filter(dataCollectionId -> snapshotAllowedDataCollections.stream().anyMatch(s -> dataCollectionId.identifier().matches(s)));
+                    .filter(dataCollectionId -> snapshotAllowedDataCollections.stream().anyMatch(s -> dataCollectionId.identifier().matches(s.pattern())));
         }
     }
 
@@ -138,7 +139,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         }
 
         List<DataCollection> matchingTables = collections.stream()
-                .map(collectionId -> new DataCollection( (collectionId.replicaSetName() != null ? (collectionId.replicaSetName() + ".") : "") + collectionId.dbName(), collectionId.name()))
+                .map(collectionId -> new DataCollection(collectionId.replicaSetName() + "." + collectionId.dbName(), collectionId.name()))
                 .collect(Collectors.toList());
 
         return FilterValidationResult.valid(matchingTables);
