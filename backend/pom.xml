@@ -13,6 +13,11 @@
 
   <properties>
     <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
+    <!-- For now this is separate from debezium.base.version, as we're migrating
+      from embedding the connectors into the backend into obtaining solely their JSON schema
+      files at build time of this backend; ultimately, there'll only be a single Debezium
+      version to be considered here -->
+    <debezium.backend.version>1.9.0-SNAPSHOT</debezium.backend.version>
   </properties>
 
   <dependencyManagement>
@@ -188,7 +193,7 @@
                   <artifactId>debezium-connector-postgres</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>1.9.0-SNAPSHOT</version>
+                  <version>${debezium.backend.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -208,7 +213,7 @@
                   <artifactId>debezium-connector-mysql</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>1.9.0-SNAPSHOT</version>
+                  <version>${debezium.backend.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -228,7 +233,7 @@
                   <artifactId>debezium-connector-mongodb</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>1.9.0-SNAPSHOT</version>
+                  <version>${debezium.backend.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -248,7 +253,7 @@
                   <artifactId>debezium-connector-oracle</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>1.9.0-SNAPSHOT</version>
+                  <version>${debezium.backend.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -268,7 +273,7 @@
                   <artifactId>debezium-connector-sqlserver</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>1.9.0-SNAPSHOT</version>
+                  <version>${debezium.backend.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
