@@ -54,15 +54,11 @@ public class Infrastructure {
                     .withUsername("mysqluser")
                     .withPassword("mysqlpw")
                     .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
-                    //
-                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
-                    //
                     .withNetworkAliases("mysql");
 
     private static final MongoDBContainer MONGODB_CONTAINER =
             new MongoDbContainer(DockerImageName.parse("mongo:3.6"))
                     .withNetwork(NETWORK)
-//                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                     .withNetworkAliases("mongodb");
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
@@ -81,6 +77,10 @@ public class Infrastructure {
     }
 
     public static void startContainers(DATABASE database) {
+        POSTGRES_CONTAINER.stop();
+        MYSQL_CONTAINER.stop();
+        MONGODB_CONTAINER.stop();
+        DEBEZIUM_CONTAINER.stop();
         final GenericContainer<?> dbContainer;
         switch (database) {
             case POSTGRES:
