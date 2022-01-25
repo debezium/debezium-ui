@@ -33,7 +33,7 @@ public class Infrastructure {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, NONE
     }
 
-    private static final String DEBEZIUM_CONTAINER_VERSION = "1.6";
+    private static final String DEBEZIUM_CONTAINER_VERSION = "1.8";
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
@@ -74,7 +74,7 @@ public class Infrastructure {
         return NETWORK;
     }
 
-    public static void startContainers(DATABASE database) {
+    private static Supplier<Stream<GenericContainer<?>>> getContainers(DATABASE database) {
         final GenericContainer<?> dbContainer;
         switch (database) {
             case POSTGRES:
@@ -94,11 +94,21 @@ public class Infrastructure {
 
         final Supplier<Stream<GenericContainer<?>>> containers;
         if (null != dbContainer) {
-           containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
+            containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
         }
         else {
             containers = () -> Stream.of(KAFKA_CONTAINER, DEBEZIUM_CONTAINER);
         }
+        return containers;
+    }
+
+    public static void stopContainers(DATABASE database) {
+        getContainers(database).get().forEach(GenericContainer::stop);
+    }
+
+    public static void startContainers(DATABASE database) {
+        final Supplier<Stream<GenericContainer<?>>> containers = getContainers(database);
+
         if ("true".equals(System.getenv("CI"))) {
             containers.get().forEach(container -> container.withStartupTimeout(Duration.ofSeconds(90)));
         }

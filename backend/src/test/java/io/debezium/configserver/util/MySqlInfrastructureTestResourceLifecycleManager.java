@@ -15,5 +15,10 @@ public class MySqlInfrastructureTestResourceLifecycleManager extends AbstractInf
         return super.start();
     }
 
+    @Override
+    public void stop() {
+        Infrastructure.stopContainers(Infrastructure.DATABASE.MYSQL);
+        super.stop();
+    }
 }
 

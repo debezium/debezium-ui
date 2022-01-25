@@ -15,5 +15,10 @@ public class PostgresInfrastructureTestResourceLifecycleManager extends Abstract
         return super.start();
     }
 
+    @Override
+    public void stop() {
+        Infrastructure.stopContainers(Infrastructure.DATABASE.POSTGRES);
+        super.stop();
+    }
 }
 
