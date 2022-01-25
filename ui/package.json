@@ -60,7 +60,7 @@
     "identity-obj-proxy": "3.0.0",
     "imagemin": "6.1.0",
     "jest": "26.6.3",
-    "keycloak-js": "9.0.0",
+    "keycloak-js": "9.0.3",
     "lerna": "3.21.0",
     "mini-css-extract-plugin": "1.6.2",
     "null-loader": "4.0.1",
