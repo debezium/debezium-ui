@@ -38,7 +38,7 @@
     "@testing-library/user-event": "13.5.0",
     "@types/enzyme": "3.10.11",
     "@types/enzyme-adapter-react-16": "1.0.6",
-    "@types/jest": "^26.0.22",
+    "@types/jest": "26.0.24",
     "@types/lodash": "4.14.178",
     "@types/node": "11.15.54",
     "@types/react": "17.0.1",
