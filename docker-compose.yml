@@ -3,7 +3,7 @@ version: '3'
 services:
   dbzui-zookeeper:
     container_name: dbzui-zookeeper
-    image: debezium/zookeeper:1.6
+    image: debezium/zookeeper:1.8
     networks:
       - dbzui-network
   dbzui-kafka:
