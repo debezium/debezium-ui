@@ -29,7 +29,7 @@ services:
       - dbzui-network
   dbzui-db-mysql:
     container_name: dbzui-db-mysql
-    image: debezium/example-mysql:1.6
+    image: debezium/example-mysql:1.8
     ports:
       - "63306:3306"
     environment:
