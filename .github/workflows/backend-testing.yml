@@ -60,4 +60,4 @@ jobs:
       - name: Build debezium-checkstyle
         run: mvn clean install -f debezium/pom.xml -pl support/checkstyle -DskipTests -DskipITs
       - name: Test Debezium UI Backend
-        run: cd dbzui && MAVEN_OPTS="-XX:MaxRAMPercentage=75" ./mvnw clean install -am -pl backend -B -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: cd dbzui && MAVEN_OPTS="-XX:MaxRAMPercentage=50" ./mvnw clean install -am -pl backend -B -Dformat.formatter.goal=validate -Dformat.imports.goal=check -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.surefire.debug
