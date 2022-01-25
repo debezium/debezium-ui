@@ -56,8 +56,7 @@ jobs:
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
         with:
-          install-command: npm install
-          useLockFile: false
+          install-command: npm install --save --legacy-peer-deps
           working-directory: ./ui
 
       - name: Test Debezium UI Frontend

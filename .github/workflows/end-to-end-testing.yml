@@ -66,8 +66,7 @@ jobs:
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
         with:
-          useLockFile: false
-          install-command: npm install
+          install-command: npm install --save --legacy-peer-deps
           working-directory: ./ui
       - name: End-to-End Test Debezium UI
         uses: cypress-io/github-action@v2

@@ -324,7 +324,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
-          <argLine>-XX:MaxRAMPercentage=50 --illegal-access=permit</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
@@ -338,7 +337,6 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <argLine>-XX:MaxRAMPercentage=50 --illegal-access=permit</argLine>
               <systemProperties>
                 <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
                 <maven.home>${maven.home}</maven.home>
@@ -359,7 +357,6 @@
               <goal>verify</goal>
             </goals>
             <configuration>
-              <argLine>-XX:MaxRAMPercentage=50 --illegal-access=permit</argLine>
               <skipTests>${skipITs}</skipTests>
               <enableAssertions>true</enableAssertions>
               <systemPropertyVariables>
