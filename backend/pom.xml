@@ -2,23 +2,49 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>io.debezium</groupId>
     <artifactId>debezium-ui-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+
   <artifactId>debezium-ui-backend</artifactId>
   <name>Debezium UI Backend</name>
 
   <properties>
     <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
-    <!-- For now this is separate from debezium.base.version, as we're migrating
-      from embedding the connectors into the backend into obtaining solely their JSON schema
-      files at build time of this backend; ultimately, there'll only be a single Debezium
-      version to be considered here -->
-    <debezium.backend.version>1.9.0-SNAPSHOT</debezium.backend.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>sonatype-oss-snapshots</id>
+      <name>Sonatype OSS SNAPSHOT Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <!--// repository in order to enable Debezium SNAPSHOT nightly builds //-->
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>sonatype-oss-snapshots</id>
+      <name>Sonatype OSS SNAPSHOT Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <dependencyManagement>
     <dependencies>
@@ -40,6 +66,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.debezium</groupId>
+      <artifactId>debezium-ui-frontend</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
@@ -129,14 +160,6 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>ossrh</id>
-      <name>OSS Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
-
   <build>
     <plugins>
       <plugin>
@@ -157,6 +180,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven.dependency.plugin.version}</version>
         <executions>
           <execution>
             <id>unpack-ui</id>
@@ -193,7 +217,7 @@
                   <artifactId>debezium-connector-postgres</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -213,7 +237,7 @@
                   <artifactId>debezium-connector-mysql</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -233,7 +257,7 @@
                   <artifactId>debezium-connector-mongodb</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -253,7 +277,7 @@
                   <artifactId>debezium-connector-oracle</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -273,7 +297,7 @@
                   <artifactId>debezium-connector-sqlserver</artifactId>
                   <classifier>plugin</classifier>
                   <type>zip</type>
-                  <version>${debezium.backend.version}</version>
+                  <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.outputDirectory}/META-INF/resources/connector-types/</outputDirectory>
@@ -289,7 +313,7 @@
           <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-checkstyle</artifactId>
-            <version>[${debezium.base.version}],[1.6.0-SNAPSHOT],[1.6.1-SNAPSHOT],[1.6.2-SNAPSHOT],[1.7.0-SNAPSHOT],[1.8.0-SNAPSHOT]</version>
+            <version>${debezium.base.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -320,7 +344,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
-          <argLine>--illegal-access=permit</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
@@ -354,7 +377,6 @@
               <goal>verify</goal>
             </goals>
             <configuration>
-              <argLine>--illegal-access=permit</argLine>
               <skipTests>${skipITs}</skipTests>
               <enableAssertions>true</enableAssertions>
               <systemPropertyVariables>
@@ -409,6 +431,7 @@
         <quarkus.package.type>native</quarkus.package.type>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
       </properties>
     </profile>
     <profile>

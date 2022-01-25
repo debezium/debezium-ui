@@ -12,6 +12,7 @@ import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MongoDBContainer;
 
@@ -23,6 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 @TestProfile(MongoDbInfrastructureTestProfile.class)
 public class CreateAndDeleteMongoDbConnectorIT {
+
+    @BeforeEach
+    public void resetRunningConnectors() {
+        Infrastructure.getDebeziumContainer().deleteAllConnectors();
+    }
 
     @Test
     public void testMongoDbClustersEndpoint() {
@@ -61,7 +67,6 @@ public class CreateAndDeleteMongoDbConnectorIT {
 
     @Test
     public void testMongoDbDeleteConnectorFailed() {
-        Infrastructure.getDebeziumContainer().deleteAllConnectors();
         given()
                 .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
                 .then().log().all()

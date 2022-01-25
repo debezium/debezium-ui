@@ -15,5 +15,10 @@ public class MongoDbInfrastructureTestResourceLifecycleManager extends AbstractI
         return super.start();
     }
 
+    @Override
+    public void stop() {
+        Infrastructure.stopContainers(Infrastructure.DATABASE.MONGODB);
+        super.stop();
+    }
 }
 

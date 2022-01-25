@@ -12,6 +12,7 @@ import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,6 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 @TestProfile(PostgresInfrastructureTestProfile.class)
 public class CreateAndDeletePostgresConnectorIT {
+
+    @BeforeEach
+    public void resetRunningConnectors() {
+        Infrastructure.getDebeziumContainer().deleteAllConnectors();
+    }
 
     @Test
     public void testPostgresClustersEndpoint() {
@@ -40,7 +46,6 @@ public class CreateAndDeletePostgresConnectorIT {
 
     @Test
     public void testPostgresCreateConnectorEndpoint() {
-        Infrastructure.getDebeziumContainer().deleteAllConnectors();
         Connector connector = Connector.from(
                 "my-postgres-connector",
                 Infrastructure.getPostgresConnectorConfiguration(1)
@@ -59,7 +64,6 @@ public class CreateAndDeletePostgresConnectorIT {
 
     @Test
     public void testPostgresDeleteConnectorFailed() {
-        Infrastructure.getDebeziumContainer().deleteAllConnectors();
         given()
                 .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, "wrong-connector-name-123")
                 .then().log().all()
@@ -71,7 +75,6 @@ public class CreateAndDeletePostgresConnectorIT {
 
     @Test
     public void testPostgresDeleteConnectorSuccessful() {
-        Infrastructure.getDebeziumContainer().deleteAllConnectors();
         final var deletePostgresConnectorName = "delete-connector-postgres";
         Infrastructure.getDebeziumContainer().registerConnector(
                 deletePostgresConnectorName,

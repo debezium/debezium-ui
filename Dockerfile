@@ -6,7 +6,7 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_HOME="/usr/lib/jvm/jre-11"
 ENV NPM_CONFIG_CACHE="/.cache/npm"
 
-RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
+RUN microdnf install ca-certificates ${JAVA_PACKAGE} java-11-openjdk-devel git \
     && microdnf update \
     && microdnf clean all \
     && mkdir -p /javabuild/backend \
@@ -22,17 +22,19 @@ RUN microdnf install ca-certificates ${JAVA_PACKAGE} maven git \
 
 USER 1001
 
+COPY --chown=1001:root mvnw /javabuild/mvnw
+COPY --chown=1001:root .mvn/ /javabuild/.mvn/
 COPY --chown=1001:root pom.xml /javabuild/
 COPY --chown=1001:root backend/pom.xml /javabuild/backend/pom.xml
 COPY --chown=1001:root ui/pom.xml /javabuild/ui/pom.xml
 
 WORKDIR /javabuild
 
-RUN mvn -am clean dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN ./mvnw dependency:go-offline -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 COPY --chown=1001:root . /javabuild/
 
-RUN mvn -am package -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+RUN ./mvnw clean package -am -pl backend -Dquarkus.package.type=fast-jar -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
