@@ -23,7 +23,7 @@
     <frontend.maven.plugin.version>1.11.2</frontend.maven.plugin.version>
     <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-    <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
+    <maven.jar.plugin.version>3.2.2</maven.jar.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
     <quarkus.plugin.version>1.12.1.Final</quarkus.plugin.version>
