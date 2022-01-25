@@ -29,13 +29,13 @@
     "@patternfly/react-icons": "^4.7.11",
     "@patternfly/react-styles": "^4.7.8",
     "@patternfly/react-table": "^4.24.1",
-    "i18next": "^19.9.1",
+    "i18next": "19.0.0",
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.2.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-i18next": "^11.8.8",
-    "react-router-dom": "^5.2.0"
+    "react-i18next": "^11.15.3",
+    "react-router-dom": "5.2.0"
   },
   "dependencies": {
     "@debezium/ui-models": "^1.0.0",
@@ -43,7 +43,7 @@
     "@trivago/prettier-plugin-sort-imports": "3.1.1",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
-    "prettier": "1.19.1",
+    "prettier": "2.5.1",
     "tslib": "2.3.1"
   }
 }
