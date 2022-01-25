@@ -8,7 +8,7 @@ services:
       - dbzui-network
   dbzui-kafka:
     container_name: dbzui-kafka
-    image: debezium/kafka:1.6
+    image: debezium/kafka:1.8
     ports:
       - "9092:9092"
     depends_on:
