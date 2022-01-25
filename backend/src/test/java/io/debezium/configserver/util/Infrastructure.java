@@ -76,11 +76,7 @@ public class Infrastructure {
         return NETWORK;
     }
 
-    public static void startContainers(DATABASE database) {
-        POSTGRES_CONTAINER.stop();
-        MYSQL_CONTAINER.stop();
-        MONGODB_CONTAINER.stop();
-        DEBEZIUM_CONTAINER.stop();
+    private static Supplier<Stream<GenericContainer<?>>> getContainers(DATABASE database) {
         final GenericContainer<?> dbContainer;
         switch (database) {
             case POSTGRES:
@@ -100,11 +96,21 @@ public class Infrastructure {
 
         final Supplier<Stream<GenericContainer<?>>> containers;
         if (null != dbContainer) {
-           containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
+            containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
         }
         else {
             containers = () -> Stream.of(KAFKA_CONTAINER, DEBEZIUM_CONTAINER);
         }
+        return containers;
+    }
+
+    public static void stopContainers(DATABASE database) {
+        getContainers(database).get().forEach(GenericContainer::stop);
+    }
+
+    public static void startContainers(DATABASE database) {
+        final Supplier<Stream<GenericContainer<?>>> containers = getContainers(database);
+
         if ("true".equals(System.getenv("CI"))) {
             containers.get().forEach(container -> container.withStartupTimeout(Duration.ofSeconds(90)));
         }
