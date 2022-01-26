@@ -34,7 +34,7 @@
   "devDependencies": {
     "@redhat-cloud-services/frontend-components-config": "4.5.11",
     "@testing-library/jest-dom": "5.16.1",
-    "@testing-library/react": "11.2.7",
+    "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
     "@types/enzyme": "3.10.11",
     "@types/enzyme-adapter-react-16": "1.0.6",
