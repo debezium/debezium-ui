@@ -1,5 +1,17 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    ":pinAllExceptPeerDependencies"
+  ],
+  "includePaths": [
+    "**/ui/**"
+  ],
+  "packageRules": [
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true
+    }
   ]
 }
