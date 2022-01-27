@@ -75,7 +75,7 @@
     "react-multi-ref": "1.0.0",
     "regenerator-runtime": "0.13.9",
     "rimraf": "3.0.2",
-    "serve": "11.3.2",
+    "serve": "13.0.2",
     "style-loader": "2.0.0",
     "svg-url-loader": "6.0.0",
     "ts-jest": "26.5.6",
