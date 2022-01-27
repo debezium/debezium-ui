@@ -1,3 +1,4 @@
+import { ConnectorDrawer } from './ConnectorDrawer';
 import { ConnectorOverview } from './ConnectorOverview';
 import { ConnectorStatus } from './ConnectorStatus';
 import { ConnectorTask } from './ConnectorTask';
@@ -75,6 +76,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     PAUSE = 'PAUSE',
     RESUME = 'RESUME',
     RESTART = 'RESTART',
+    VIEW = 'VIEW',
     RESTART_TASK = 'RESTART_TASK',
     NONE = 'NONE',
   }
@@ -95,6 +97,8 @@ export const ConnectorsTableComponent: React.FunctionComponent<
   const [connectorTaskToRestart, setConnectorTaskToRestart] = React.useState<
     any[]
   >([]);
+
+  const [selectedConnector, setSelectedConnector] = React.useState<Connector>();
 
   const { t } = useTranslation();
   const [isSortingDropdownOpen, setIsSortingDropdownOpen] =
@@ -126,9 +130,23 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     setCurrentActionConnector('');
   };
 
-  const setCurrentActionAndName = (action: Action, connName: string) => {
-    setCurrentAction(action);
-    setCurrentActionConnector(connName);
+  const setCurrentActionAndName = (
+    action: Action,
+    connName: string,
+    connector?: any
+  ) => {
+    if (action === Action.VIEW) {
+      setSelectedConnector({
+        connectorStatus: connector.connStatus,
+        connectorType: '',
+        name: connector.connName,
+        taskStates: {},
+      });
+      console.log(connector);
+    } else {
+      setCurrentAction(action);
+      setCurrentActionConnector(connName);
+    }
   };
 
   const doPerformCurrentAction = () => {
@@ -140,48 +158,76 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         connectorService
           .deleteConnector(appLayoutContext.clusterId, connName)
           .then((cConnectors: Connector[]) => {
-            addAlert('success', t('connectorDeletedSuccess', {connectorName: connName}));
+            addAlert(
+              'success',
+              t('connectorDeletedSuccess', { connectorName: connName })
+            );
             // Remove connName and reset connectors - if successful
-            const newConnectors = connectors.filter(function( conn ) {
+            const newConnectors = connectors.filter(function (conn) {
               return conn.name !== connName;
             });
             setConnectors(newConnectors);
           })
           .catch((err) => {
-            addAlert('danger', t('connectorDeletionFailed', {connectorName: connName}), err?.message);
+            addAlert(
+              'danger',
+              t('connectorDeletionFailed', { connectorName: connName }),
+              err?.message
+            );
           });
         break;
-        case Action.PAUSE:
+      case Action.PAUSE:
         connectorService
           .pauseConnector(appLayoutContext.clusterId, connName, {})
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorPausedSuccess', {connectorName: connName}));
+            addAlert(
+              'success',
+              t('connectorPausedSuccess', { connectorName: connName })
+            );
             setConnectorStatus(connName, 'PAUSED');
           })
           .catch((err) => {
-            addAlert('danger', t('connectorPauseFailed', {connectorName: connName}), err?.message);
+            addAlert(
+              'danger',
+              t('connectorPauseFailed', { connectorName: connName }),
+              err?.message
+            );
           });
         break;
       case Action.RESUME:
         connectorService
           .resumeConnector(appLayoutContext.clusterId, connName, {})
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorResumedSuccess', {connectorName: connName}));
+            addAlert(
+              'success',
+              t('connectorResumedSuccess', { connectorName: connName })
+            );
             setConnectorStatus(connName, 'RUNNING');
           })
           .catch((err) => {
-            addAlert('danger', t('connectorResumeFailed', {connectorName: connName}), err?.message);
+            addAlert(
+              'danger',
+              t('connectorResumeFailed', { connectorName: connName }),
+              err?.message
+            );
           });
         break;
       case Action.RESTART:
         connectorService
           .restartConnector(appLayoutContext.clusterId, connName, {})
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorRestartSuccess', {connectorName: connName}));
+            addAlert(
+              'success',
+              t('connectorRestartSuccess', { connectorName: connName })
+            );
             setConnectorStatus(connName, 'RUNNING');
           })
           .catch((err) => {
-            addAlert('danger', t('connectorRestartFailed', {connectorName: connName}), err?.message);
+            addAlert(
+              'danger',
+              t('connectorRestartFailed', { connectorName: connName }),
+              err?.message
+            );
           });
         break;
       case Action.RESTART_TASK:
@@ -194,10 +240,17 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             {}
           )
           .then((cConnectors: any) => {
-            addAlert('success', t('connectorTaskRestartSuccess', {connectorName: connName}));
+            addAlert(
+              'success',
+              t('connectorTaskRestartSuccess', { connectorName: connName })
+            );
           })
           .catch((err) => {
-            addAlert('danger', t('connectorTaskRestartFailed', {connectorName: connName}), err?.message);
+            addAlert(
+              'danger',
+              t('connectorTaskRestartFailed', { connectorName: connName }),
+              err?.message
+            );
           });
         break;
       default:
@@ -269,6 +322,15 @@ export const ConnectorsTableComponent: React.FunctionComponent<
       );
     });
     return taskElements;
+  };
+
+  const onConnectorDrawer = (c: Connector) => {
+    console.log(c);
+    setSelectedConnector(c);
+  };
+
+  const deselectConnector = () => {
+    setSelectedConnector(undefined);
   };
 
   /**
@@ -401,7 +463,16 @@ export const ConnectorsTableComponent: React.FunctionComponent<
           },
 
           {
-            title: <b data-testid={'connector-name'}>{conn.name}</b>,
+            title: (
+              <a>
+                <b
+                  data-testid={'connector-name'}
+                  onClick={() => onConnectorDrawer(conn)}
+                >
+                  {conn.name}
+                </b>
+              </a>
+            ),
           },
           {
             title: <ConnectorStatus currentStatus={conn.connectorStatus} />,
@@ -482,6 +553,16 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         title: t('restart'),
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.RESTART, rowData.connName);
+        },
+        isDisabled:
+          row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
+            ? true
+            : false,
+      },
+      {
+        title: t('view'),
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
+          setCurrentActionAndName(Action.VIEW, rowData.connName, rowData);
         },
         isDisabled:
           row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
@@ -652,41 +733,46 @@ export const ConnectorsTableComponent: React.FunctionComponent<
                 removeAlert={removeAlert}
                 i18nDetails={t('details')}
               />
-              <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
-                <FlexItem>
-                  {props.title ? (
-                    <Title headingLevel={'h1'}>{t('connectors')}</Title>
-                  ) : (
-                    ''
-                  )}
-                  <p>{t('connectorPageHeadingText')}</p>
-                </FlexItem>
-              </Flex>
-              <Flex className="connectors-page_toolbarFlex">
-                <FlexItem>
-                  <Toolbar>{toolbarItems}</Toolbar>
-                </FlexItem>
-                <FlexItem>
-                  <Button
-                    variant="primary"
-                    onClick={createConnector}
-                    className="connectors-page_toolbarCreateButton"
-                  >
-                    {t('createAConnector')}
-                  </Button>
-                </FlexItem>
-              </Flex>
-              <Table
-                aria-label="Connector Table"
-                className="connectors-page_dataTable"
-                cells={columns}
-                rows={tableRows}
-                actionResolver={tableActionResolver}
-                onCollapse={onCollapse}
+              <ConnectorDrawer
+                connector={selectedConnector}
+                onClose={deselectConnector}
               >
-                <TableHeader />
-                <TableBody />
-              </Table>
+                <Flex className="connectors-page_toolbarFlex flexCol pf-u-box-shadow-sm">
+                  <FlexItem>
+                    {props.title ? (
+                      <Title headingLevel={'h1'}>{t('connectors')}</Title>
+                    ) : (
+                      ''
+                    )}
+                    <p>{t('connectorPageHeadingText')}</p>
+                  </FlexItem>
+                </Flex>
+                <Flex className="connectors-page_toolbarFlex">
+                  <FlexItem>
+                    <Toolbar>{toolbarItems}</Toolbar>
+                  </FlexItem>
+                  <FlexItem>
+                    <Button
+                      variant="primary"
+                      onClick={createConnector}
+                      className="connectors-page_toolbarCreateButton"
+                    >
+                      {t('createAConnector')}
+                    </Button>
+                  </FlexItem>
+                </Flex>
+                <Table
+                  aria-label="Connector Table"
+                  className="connectors-page_dataTable"
+                  cells={columns}
+                  rows={tableRows}
+                  actionResolver={tableActionResolver}
+                  onCollapse={onCollapse}
+                >
+                  <TableHeader />
+                  <TableBody />
+                </Table>
+              </ConnectorDrawer>
             </>
           ) : (
             <EmptyState variant={EmptyStateVariant.large}>
