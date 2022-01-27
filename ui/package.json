@@ -63,7 +63,7 @@
     "keycloak-js": "16.1.1",
     "lerna": "3.22.1",
     "lint-staged": "12.3.2",
-    "mini-css-extract-plugin": "1.6.2",
+    "mini-css-extract-plugin": "2.5.3",
     "null-loader": "4.0.1",
     "postcss-css-variables": "0.18.0",
     "postcss-loader": "3.0.0",
