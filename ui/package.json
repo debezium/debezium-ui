@@ -67,7 +67,7 @@
     "null-loader": "4.0.1",
     "postcss-css-variables": "0.18.0",
     "postcss-loader": "3.0.0",
-    "postcss-nested": "4.2.3",
+    "postcss-nested": "5.0.6",
     "prettier": "2.5.1",
     "prop-types": "15.8.1",
     "raw-loader": "4.0.2",
