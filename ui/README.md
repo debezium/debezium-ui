@@ -6,7 +6,7 @@ This monorepo uses Lerna and npm Workspaces.
 React-based Single Page Application code based on Patternfly 4 in present inside [ui](./packages/ui) folder.
 
 ## Requirements
-* node (version 10.13.0 or higher) and npm version 6.x.x.  
+* node (version 16.x.x or higher) and npm (version 8.x.x or higher).
 
 ## Development workflow
 
