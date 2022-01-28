@@ -96,7 +96,7 @@
   "dependencies": {
     "@patternfly/patternfly": "4.164.2",
     "@patternfly/react-core": "4.181.1",
-    "@patternfly/react-icons": "4.32.1",
+    "@patternfly/react-icons": "4.43.15",
     "@patternfly/react-styles": "4.31.1",
     "@patternfly/react-table": "4.50.1",
     "@testing-library/cypress": "8.0.2",
