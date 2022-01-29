@@ -98,7 +98,7 @@
     "@patternfly/react-core": "4.181.1",
     "@patternfly/react-icons": "4.32.1",
     "@patternfly/react-styles": "4.31.1",
-    "@patternfly/react-table": "4.50.1",
+    "@patternfly/react-table": "4.61.15",
     "@testing-library/cypress": "8.0.2",
     "formik": "2.2.9",
     "i18next": "21.6.10",
