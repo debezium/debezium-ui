@@ -95,7 +95,7 @@
   },
   "dependencies": {
     "@patternfly/patternfly": "4.171.1",
-    "@patternfly/react-core": "4.181.1",
+    "@patternfly/react-core": "4.192.15",
     "@patternfly/react-icons": "4.43.15",
     "@patternfly/react-styles": "4.31.1",
     "@patternfly/react-table": "4.61.15",
