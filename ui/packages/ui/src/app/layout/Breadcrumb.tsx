@@ -2,16 +2,15 @@ import { AppBreadcrumb } from './AppBreadcrumb';
 import {
   Breadcrumb as PFBreadcrumb,
   BreadcrumbItem,
-  BreadcrumbItemProps,
   Level,
   LevelItem,
 } from '@patternfly/react-core';
 import * as React from 'react';
 
-export { BreadcrumbItem, BreadcrumbItemProps };
+export { BreadcrumbItem };
 
 export interface IBreadcrumbProps {
-  items?: Array<React.ReactElement<BreadcrumbItemProps>>;
+  items?: Array<React.ReactElement<any>>;
   actions?: React.ReactNode;
 }
 

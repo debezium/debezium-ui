@@ -125,6 +125,7 @@ module.exports = (argv) => {
       new MiniCssExtractPlugin({
         filename: '[name].[contenthash:8].css',
         chunkFilename: '[contenthash:8].css',
+        ignoreOrder: true
       }),
       new ChunkMapper({
         modules: [federatedModuleName],
