@@ -23,18 +23,22 @@ module.exports = merge(common("development"), {
       : `http://localhost:${PORT}/`
   },
   devServer: {
-    contentBase: "./dist",
+    static: {
+      directory: './dist',
+    },
+    client: {
+      overlay: true,
+    },
     host: HOST,
     port: PORT,
-    compress: true,
-    inline: true,
+    hot: "only",
     historyApiFallback: true,
-    hot: true,
-    overlay: true,
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
-    }
-  }
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
+    },
+    allowedHosts: 'all',
+  },
 });
