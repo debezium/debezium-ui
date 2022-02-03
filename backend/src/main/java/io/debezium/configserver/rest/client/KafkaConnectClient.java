@@ -46,6 +46,11 @@ public interface KafkaConnectClient {
     @Produces("application/json")
     ConnectConnectorStatusResponse getConnectorStatus(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
 
+    @GET
+    @Path("/connectors/{connector-name}/config")
+    @Produces("application/json")
+    Response getConnectorConfig(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
+
     @DELETE
     @Path("/connectors/{connector-name}")
     Response deleteConnector(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;

@@ -447,4 +447,50 @@ public class ConnectorResource {
         }
         return deleteResponse;
     }
+
+    @Path(ConnectorURIs.CONNECTOR_CONFIG_ENDPOINT)
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "204",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @APIResponse(
+            responseCode = "404",
+            description = "Connector with specified name not found")
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    @APIResponse(
+            responseCode = "503",
+            description = "Exception while trying to connect to the selected Kafka Connect cluster",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    public Response getConnectorConfig(
+            @PathParam("cluster") int cluster,
+            @PathParam("connector-name") String connectorName
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
+
+        Response connectorConfigResponse;
+        try {
+            Response originalConfigResponse = kafkaConnectClient.getConnectorConfig(connectorName);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Kafka Connect response: " + originalConfigResponse.readEntity(String.class));
+            }
+            connectorConfigResponse = Response.fromResponse(originalConfigResponse).type(MediaType.APPLICATION_JSON).build();
+        }
+        catch (ProcessingException | IOException e) {
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
+        }
+        return connectorConfigResponse;
+    }
+
 }
