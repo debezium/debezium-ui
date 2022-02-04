@@ -87,7 +87,7 @@ Removing network debezium-ui_dbzui-network
 The entire application (UI and backend) can be built via Maven:
 
 ```
-mvn clean install
+./mvnw clean install
 ```
 
 The UI part is an single-page application (SPA) based on the React framework. It is packaged as JAR,
@@ -99,19 +99,10 @@ The UI backend is a Quarkus application located under _backend_.
 You can run it in development mode like so:
 
 ```
-mvn -pl backend compile quarkus:dev
+./mvnw -am -pl backend package quarkus:dev
 ```
 
 Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
-
-**NOTE:**
-Launching the backend via the mvn command above will utilize the existing frontend UI jar.  
-The UI will be available at: [http://localhost:8080/](http://localhost:8080/).  
-If you have local frontend changes which need to be included, you can rebuild just the frontend first like so: 
-
-```
-mvn -pl ui install
-```
 
 ### UI Development
 

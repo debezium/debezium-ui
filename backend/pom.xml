@@ -216,7 +216,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>debezium-connector-postgres</artifactId>
                   <classifier>plugin</classifier>
-                  <type>zip</type>
+                  <type>tar.gz</type>
                   <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
@@ -236,7 +236,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>debezium-connector-mysql</artifactId>
                   <classifier>plugin</classifier>
-                  <type>zip</type>
+                  <type>tar.gz</type>
                   <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
@@ -256,7 +256,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>debezium-connector-mongodb</artifactId>
                   <classifier>plugin</classifier>
-                  <type>zip</type>
+                  <type>tar.gz</type>
                   <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
@@ -276,7 +276,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>debezium-connector-oracle</artifactId>
                   <classifier>plugin</classifier>
-                  <type>zip</type>
+                  <type>tar.gz</type>
                   <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
@@ -296,7 +296,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>debezium-connector-sqlserver</artifactId>
                   <classifier>plugin</classifier>
-                  <type>zip</type>
+                  <type>tar.gz</type>
                   <version>${debezium.base.version}</version>
                 </artifactItem>
               </artifactItems>
