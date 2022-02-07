@@ -144,7 +144,7 @@ export class ConnectorService extends BaseService {
      public getConnectorConfig(clusterId: number, connectorName: string): Promise<any> {
         this.logger?.info("[ConnectorService] Fetch the connector");
 
-        const endpoint: string = this.endpoint("/api/connectors/:clusterId/:connectorName/config", { clusterId, connectorName });
+        const endpoint: string = this.endpoint("/connectors/:clusterId/:connectorName/config", { clusterId, connectorName });
         return this.httpGet<any>(endpoint);
     }
 
