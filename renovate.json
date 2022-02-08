@@ -1,17 +1,4 @@
 {
-  "extends": [
-    "config:base",
-    ":pinAllExceptPeerDependencies"
-  ],
-  "includePaths": [
-    "**/ui/**"
-  ],
-  "packageRules": [
-    {
-      "matchDepTypes": [
-        "devDependencies"
-      ],
-      "automerge": true
-    }
-  ]
+  "extends": [ "github>redhat-developer/app-services-renovate-config" ],
+  "includePaths": ["**/ui/**"]
 }
