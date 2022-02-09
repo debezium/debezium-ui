@@ -16,11 +16,11 @@ jobs:
           pull_request_number: ${{ github.event.pull_request.number }}
         run: |
           AUTHOR=$(curl --silent -X "GET" https://api.github.com/repos/debezium/debezium-ui/pulls/$pull_request_number/commits | jq '.[] | {author: .commit.author.name}' | jq -r '.author')
-          if [[ $AUTHOR =~ Renovate Bot ]]; then
+          if [[ $AUTHOR =~ 'Renovate Bot' ]]; then
             echo "::set-output name=BOT-COMMIT::true"
           fi
       - name: Commit messages in format DBZ-xxx
-        if: ${{ steps.bot-check.outputs.BOT-COMMIT == 'false' }}
+        if: ${{ steps.bot-check.outputs.BOT-COMMIT != 'true' }}
         id: check
         env:
           pull_request_number: ${{ github.event.pull_request.number }}
