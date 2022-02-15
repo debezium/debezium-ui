@@ -156,29 +156,34 @@ const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   for (const propKey of Object.keys(schemaProperties)) {
     const prop = schemaProperties[propKey];
     // tslint:disable: no-string-literal
-    const name =
-      prop['x-name'] === 'column.mask.hash.([^.]+).with.salt.(.+)'
-        ? 'column.mask.hash'
-        : prop['x-name'];
-    const nullable = prop['nullable'];
-    const connProp = {
-      category: prop['x-category'],
-      description: prop['description'],
-      displayName: prop['title'],
-      name,
-      isMandatory: getMandatory(nullable),
-    } as ConnectorProperty;
 
-    connProp.type = getType(prop);
+      if(prop.type !== 'object'){
+        const name =
+        prop['x-name'] === 'column.mask.hash.([^.]+).with.salt.(.+)'
+          ? 'column.mask.hash'
+          : prop['x-name'];
+      const nullable = prop['nullable'];
+      const connProp = {
+        category: prop['x-category'],
+        description: prop['description'],
+        displayName: prop['title'],
+        name,
+        isMandatory: getMandatory(nullable),
+      } as ConnectorProperty;
+  
+      connProp.type = getType(prop);
+  
+      if (prop['default']) {
+        connProp.defaultValue = prop['default'];
+      }
+      if (prop['enum']) {
+        connProp.allowedValues = prop['enum'];
+      }
+      // tslint:enable: no-string-literal
+      connProperties.push(connProp);
+      }
 
-    if (prop['default']) {
-      connProp.defaultValue = prop['default'];
-    }
-    if (prop['enum']) {
-      connProp.allowedValues = prop['enum'];
-    }
-    // tslint:enable: no-string-literal
-    connProperties.push(connProp);
+    
   }
   return formatPropertyDefinitions(
     getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
