@@ -71,7 +71,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>install --save --legacy-peer-deps</arguments>
+              <arguments>install</arguments>
             </configuration>
           </execution>
           <!-- Build the app -->
