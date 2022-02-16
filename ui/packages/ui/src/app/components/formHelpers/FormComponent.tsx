@@ -18,7 +18,7 @@ export interface IFormComponentProps {
   invalidMsg: PropertyValidationResult[];
   validated?: 'default' | 'success' | 'warning' | 'error' | undefined;
   propertyChange: (name: string, selection: any) => void;
-  clearValidationError: () => void;
+  clearValidationError?: () => void;
   setFieldValue: (
     field: string,
     value: any,
@@ -187,7 +187,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         }
         infoText={props.propertyDefinition.description}
         validated={getValidate()}
-        clearValidationError={props.clearValidationError}
+        clearValidationError={props.clearValidationError!}
       />
     );
   }

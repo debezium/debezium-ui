@@ -15,3 +15,7 @@ export const resolveRef = (obj, schema) => {
         })
       );
   };
+
+export const getObject = (obj, schema, value) =>{
+  pointer.set(obj, schema, value)
+}

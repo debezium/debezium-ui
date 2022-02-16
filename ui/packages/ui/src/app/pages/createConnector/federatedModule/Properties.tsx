@@ -11,6 +11,7 @@ import { Form, Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
 import { PropertyCategory } from 'shared';
+import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IPropertiesProps {
   connectorType: string;
@@ -27,7 +28,12 @@ export interface IPropertiesProps {
 const getInitialObject = (propertyList: ConnectorProperty[]) => {
   const returnObj = {};
   propertyList.forEach((property) => {
-    returnObj[property.name] = property.defaultValue || '';
+    if (!property.name.includes('.')) {
+      returnObj[property.name] = property.defaultValue || '';
+    } else {
+      const schema = '/' + property.name.replace('.', '/');
+      getObject(returnObj, schema, property.defaultValue || '');
+    }
   });
   return returnObj;
 };
@@ -255,152 +261,156 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                       )}
                     </Grid>
                   </ExpandableSection>
-                  <ExpandableSection
-                    toggleText={
-                      advancedExpanded
-                        ? props.i18nAdvancedPropertiesText
-                        : props.i18nAdvancedPropertiesText
-                    }
-                    onToggle={onToggleAdvanced}
-                    isExpanded={advancedExpanded}
-                  >
-                    <GridItem span={9}>
-                      <Grid
-                        hasGutter={true}
-                        className={'properties-step-expansion-content'}
-                      >
-                        {advancedGeneralPropertyDefinitions.map(
-                          (
-                            propertyDefinition: ConnectorProperty,
-                            index: any
-                          ) => {
-                            return (
-                              <GridItem
-                                key={index}
-                                lg={propertyDefinition.gridWidthLg}
-                                sm={propertyDefinition.gridWidthSm}
-                              >
-                                <FormComponent
-                                  propertyDefinition={propertyDefinition}
-                                  propertyChange={handlePropertyChange}
-                                  setFieldValue={setFieldValue}
-                                  helperTextInvalid={
-                                    errors[propertyDefinition.name]
-                                  }
-                                  invalidMsg={[]}
-                                  validated={
-                                    errors[propertyDefinition.name] &&
-                                    touched[propertyDefinition.name] &&
-                                    errors[propertyDefinition.name]
-                                      ? 'error'
-                                      : 'default'
-                                  }
-                                />
-                              </GridItem>
-                            );
-                          }
-                        )}
-                      </Grid>
-                    </GridItem>
-                    {advancedReplicationPropertyDefinitions.length > 0 ? (
-                      <Title
-                        headingLevel="h2"
-                        className="properties-step-grouping"
-                      >
-                        {props.i18nAdvancedReplicationPropertiesText}
-                      </Title>
-                    ) : null}
-                    <GridItem span={9}>
-                      <Grid
-                        hasGutter={true}
-                        className={'properties-step-expansion-content'}
-                      >
-                        {advancedReplicationPropertyDefinitions.map(
-                          (
-                            propertyDefinition: ConnectorProperty,
-                            index: any
-                          ) => {
-                            return (
-                              <GridItem
-                                key={index}
-                                lg={propertyDefinition.gridWidthLg}
-                                sm={propertyDefinition.gridWidthSm}
-                              >
-                                <FormComponent
-                                  propertyDefinition={propertyDefinition}
-                                  propertyChange={handlePropertyChange}
-                                  setFieldValue={setFieldValue}
-                                  helperTextInvalid={
-                                    errors[propertyDefinition.name]
-                                  }
-                                  invalidMsg={[]}
-                                  validated={
-                                    errors[propertyDefinition.name] &&
-                                    touched[propertyDefinition.name] &&
-                                    errors[propertyDefinition.name]
-                                      ? 'error'
-                                      : 'default'
-                                  }
-                                />
-                              </GridItem>
-                            );
-                          }
-                        )}
-                      </Grid>
-                    </GridItem>
-                    {/* TODO: handle correctly*/}
-                    {/* {showPublication && ( */}
-                    {true && (
-                      <>
-                        {advancedPublicationPropertyDefinitions.length > 0 ? (
-                          <Title
-                            headingLevel="h2"
-                            className="properties-step-grouping"
-                          >
-                            {props.i18nAdvancedPublicationPropertiesText}
-                          </Title>
-                        ) : null}
-                        <GridItem span={9}>
-                          <Grid
-                            hasGutter={true}
-                            className={'properties-step-expansion-content'}
-                          >
-                            {advancedPublicationPropertyDefinitions.map(
-                              (
-                                propertyDefinition: ConnectorProperty,
-                                index: any
-                              ) => {
-                                return (
-                                  <GridItem
-                                    key={index}
-                                    lg={propertyDefinition.gridWidthLg}
-                                    sm={propertyDefinition.gridWidthSm}
-                                  >
-                                    <FormComponent
-                                      propertyDefinition={propertyDefinition}
-                                      propertyChange={handlePropertyChange}
-                                      setFieldValue={setFieldValue}
-                                      helperTextInvalid={
-                                        errors[propertyDefinition.name]
-                                      }
-                                      invalidMsg={[]}
-                                      validated={
-                                        errors[propertyDefinition.name] &&
-                                        touched[propertyDefinition.name] &&
-                                        errors[propertyDefinition.name]
-                                          ? 'error'
-                                          : 'default'
-                                      }
-                                    />
-                                  </GridItem>
-                                );
-                              }
-                            )}
-                          </Grid>
-                        </GridItem>
-                      </>
-                    )}
-                  </ExpandableSection>
+                  {(advancedGeneralPropertyDefinitions.length > 0 ||
+                    advancedReplicationPropertyDefinitions.length > 0 ||
+                    advancedPublicationPropertyDefinitions.length > 0) && (
+                    <ExpandableSection
+                      toggleText={
+                        advancedExpanded
+                          ? props.i18nAdvancedPropertiesText
+                          : props.i18nAdvancedPropertiesText
+                      }
+                      onToggle={onToggleAdvanced}
+                      isExpanded={advancedExpanded}
+                    >
+                      <GridItem span={9}>
+                        <Grid
+                          hasGutter={true}
+                          className={'properties-step-expansion-content'}
+                        >
+                          {advancedGeneralPropertyDefinitions.map(
+                            (
+                              propertyDefinition: ConnectorProperty,
+                              index: any
+                            ) => {
+                              return (
+                                <GridItem
+                                  key={index}
+                                  lg={propertyDefinition.gridWidthLg}
+                                  sm={propertyDefinition.gridWidthSm}
+                                >
+                                  <FormComponent
+                                    propertyDefinition={propertyDefinition}
+                                    propertyChange={handlePropertyChange}
+                                    setFieldValue={setFieldValue}
+                                    helperTextInvalid={
+                                      errors[propertyDefinition.name]
+                                    }
+                                    invalidMsg={[]}
+                                    validated={
+                                      errors[propertyDefinition.name] &&
+                                      touched[propertyDefinition.name] &&
+                                      errors[propertyDefinition.name]
+                                        ? 'error'
+                                        : 'default'
+                                    }
+                                  />
+                                </GridItem>
+                              );
+                            }
+                          )}
+                        </Grid>
+                      </GridItem>
+                      {advancedReplicationPropertyDefinitions.length > 0 ? (
+                        <Title
+                          headingLevel="h2"
+                          className="properties-step-grouping"
+                        >
+                          {props.i18nAdvancedReplicationPropertiesText}
+                        </Title>
+                      ) : null}
+                      <GridItem span={9}>
+                        <Grid
+                          hasGutter={true}
+                          className={'properties-step-expansion-content'}
+                        >
+                          {advancedReplicationPropertyDefinitions.map(
+                            (
+                              propertyDefinition: ConnectorProperty,
+                              index: any
+                            ) => {
+                              return (
+                                <GridItem
+                                  key={index}
+                                  lg={propertyDefinition.gridWidthLg}
+                                  sm={propertyDefinition.gridWidthSm}
+                                >
+                                  <FormComponent
+                                    propertyDefinition={propertyDefinition}
+                                    propertyChange={handlePropertyChange}
+                                    setFieldValue={setFieldValue}
+                                    helperTextInvalid={
+                                      errors[propertyDefinition.name]
+                                    }
+                                    invalidMsg={[]}
+                                    validated={
+                                      errors[propertyDefinition.name] &&
+                                      touched[propertyDefinition.name] &&
+                                      errors[propertyDefinition.name]
+                                        ? 'error'
+                                        : 'default'
+                                    }
+                                  />
+                                </GridItem>
+                              );
+                            }
+                          )}
+                        </Grid>
+                      </GridItem>
+                      {/* TODO: handle correctly*/}
+                      {/* {showPublication && ( */}
+                      {true && (
+                        <>
+                          {advancedPublicationPropertyDefinitions.length > 0 ? (
+                            <Title
+                              headingLevel="h2"
+                              className="properties-step-grouping"
+                            >
+                              {props.i18nAdvancedPublicationPropertiesText}
+                            </Title>
+                          ) : null}
+                          <GridItem span={9}>
+                            <Grid
+                              hasGutter={true}
+                              className={'properties-step-expansion-content'}
+                            >
+                              {advancedPublicationPropertyDefinitions.map(
+                                (
+                                  propertyDefinition: ConnectorProperty,
+                                  index: any
+                                ) => {
+                                  return (
+                                    <GridItem
+                                      key={index}
+                                      lg={propertyDefinition.gridWidthLg}
+                                      sm={propertyDefinition.gridWidthSm}
+                                    >
+                                      <FormComponent
+                                        propertyDefinition={propertyDefinition}
+                                        propertyChange={handlePropertyChange}
+                                        setFieldValue={setFieldValue}
+                                        helperTextInvalid={
+                                          errors[propertyDefinition.name]
+                                        }
+                                        invalidMsg={[]}
+                                        validated={
+                                          errors[propertyDefinition.name] &&
+                                          touched[propertyDefinition.name] &&
+                                          errors[propertyDefinition.name]
+                                            ? 'error'
+                                            : 'default'
+                                        }
+                                      />
+                                    </GridItem>
+                                  );
+                                }
+                              )}
+                            </Grid>
+                          </GridItem>
+                        </>
+                      )}
+                    </ExpandableSection>
+                  )}
                 </GridItem>
               </Grid>
             </>

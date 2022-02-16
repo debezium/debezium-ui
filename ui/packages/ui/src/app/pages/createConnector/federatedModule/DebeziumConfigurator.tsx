@@ -12,12 +12,10 @@ import {
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
-  getFormattedProperties,
   getFilterConfigurationPageContent,
-  ConnectorTypeId,
-  formatPropertyDefinitions,
+
 } from 'shared';
-import { resolveRef } from 'src/app/utils/ResolveSchemaRef';
+import { getPropertiesData } from 'src/app/utils/FormatCosProperties';
 
 /**
  * Represents a connector type supported by the API
@@ -76,123 +74,6 @@ export interface IDebeziumConfiguratorProps {
   configuration: Map<string, unknown>;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
-
-const getType = (prop: any) => {
-  // tslint:disable: no-string-literal
-  let type = prop['type'];
-  let format = prop['format'];
-
-  // handle passwords, which have 'oneOf' attributes
-  const oneOf = prop['oneOf'];
-  if (oneOf && oneOf !== null) {
-    for (const oneOfElem of oneOf) {
-      const oneOfType = oneOfElem['type'];
-      const oneOfFormat = oneOfElem['format'];
-      if (oneOfFormat && oneOfFormat === 'password') {
-        type = oneOfType;
-        format = oneOfFormat;
-        break;
-      }
-    }
-  }
-  // tslint:enable: no-string-literal
-
-  if (type === 'string') {
-    if (!format) {
-      return 'STRING';
-    } else if (format === 'password') {
-      return 'PASSWORD';
-    } else if (format === 'class') {
-      return 'CLASS';
-    } else if (format.indexOf('list') !== -1) {
-      return 'LIST';
-    } else {
-      return 'STRING';
-    }
-  } else if (type === 'boolean') {
-    return 'BOOLEAN';
-  } else if (type === 'integer') {
-    if (!format) {
-      return 'INT';
-    } else if (format === 'int32') {
-      return 'INT';
-    } else if (format === 'int64') {
-      return 'LONG';
-    } else {
-      return 'INT';
-    }
-  }
-  return 'STRING';
-};
-
-const getMandatory = (nullable: any) => {
-  if (nullable === undefined || nullable === true) {
-    return false;
-  } else {
-    return true;
-  }
-};
-
-/**
- * Format the Connector properties passed via connector prop
- * @param connectorData
- * @returns ConnectorProperty[]
- */
-const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
-  const connProperties: ConnectorProperty[] = [];
-
-  console.log(resolveRef(connectorData.schema, connectorData.schema));
-
-  const schema = resolveRef(connectorData.schema, connectorData.schema);
-  const schemaProperties = schema.properties;
-
-  for (const propKey of Object.keys(schemaProperties)) {
-    const prop = schemaProperties[propKey];
-    // tslint:disable: no-string-literal
-    if (prop['type'] === 'object') {
-      for (const propertiesKey of Object.keys(prop.properties)) {
-        const property = prop.properties[propertiesKey];
-        
-        connProperties.push(setProperties(property));
-      }
-    }else{
-      connProperties.push(setProperties(prop));
-    }
-  }
-  return formatPropertyDefinitions(
-    getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
-  );
-};
-
-const setProperties = (property, parentObj?) => {
-  // tslint:disable: no-string-literal
-  const name =
-    property['x-name'] === 'column.mask.hash.([^.]+).with.salt.(.+)'
-      ? 'column.mask.hash'
-      : property['x-name'];
-  const nullable = property['nullable'];
-  const connProp = {
-    category: property['x-category'],
-    description: property['description'],
-    displayName: property['title'],
-    name,
-    isMandatory: getMandatory(nullable),
-  } as ConnectorProperty;
-
-  if(parentObj){
-    connProp['parentObj'] = parentObj
-  }
-
-  connProp.type = getType(property);
-
-  if (property['default']) {
-    connProp.defaultValue = property['default'];
-  }
-  if (property['enum']) {
-    connProp.allowedValues = property['enum'];
-  }
-  return connProp;
-};
 
 /**
  * Get the filter properties passed via connector prop

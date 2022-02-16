@@ -245,7 +245,7 @@ export function formatPropertyDefinitions(
   propertyValues: ConnectorProperty[]
 ): ConnectorProperty[] {
   return propertyValues.map((value: ConnectorProperty) => {
-    value.name = value.name.replace(/\./g, '&');
+    value.name = value.name.includes('data_shape') ? value.name : value.name.replace(/\./g, '&');
     return value;
   });
 }
