@@ -517,7 +517,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
             setConnectionPropsValidMsg([genericValidation]);
           } else {
             for (const connectionValue of connectorPropertyDefns) {
-              const propertyName = connectionValue.name.replace(/_/g, '.');
+              const propertyName = connectionValue.name.replace(/&/g, '.');
               for (const msg in result.propertyValidationResults) {
                 if (
                   result.propertyValidationResults[msg].property ===
@@ -564,7 +564,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
               selectedConnectorPropertyDefns
             );
             for (const connectionValue of connectorPropertyDefns) {
-              const propertyName = connectionValue.name.replace(/_/g, '.');
+              const propertyName = connectionValue.name.replace(/&/g, '.');
               for (const msg in result.propertyValidationResults) {
                 if (
                   result.propertyValidationResults[msg].property ===
@@ -580,7 +580,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
               selectedConnectorPropertyDefns
             );
             for (const connectionValue of connectorPropertyDefns) {
-              const propertyName = connectionValue.name.replace(/_/g, '.');
+              const propertyName = connectionValue.name.replace(/&/g, '.');
               for (const msg in result.propertyValidationResults) {
                 if (
                   result.propertyValidationResults[msg].property ===

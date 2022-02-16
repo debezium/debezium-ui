@@ -96,7 +96,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
                 : (combinedValue[key.name] = key.defaultValue);
             } else {
               combinedValue[key.name] = userValues.get(
-                key.name.replace(/_/g, '.')
+                key.name.replace(/&/g, '.')
               );
             }
           }
@@ -114,7 +114,7 @@ export const RuntimeOptionsStep: React.FC<any> = React.forwardRef(
       const runtimeValueMap: Map<string, string> = new Map();
       for (const runtimeValue of props.propertyDefinitions) {
         runtimeValueMap.set(
-          runtimeValue.name.replace(/_/g, '.'),
+          runtimeValue.name.replace(/&/g, '.'),
           valueMap[runtimeValue.name]
         );
       }

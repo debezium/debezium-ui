@@ -105,7 +105,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
     ]);
     const finalConfiguration = new Map();
     updatedConfiguration.forEach((value: any, key: any) => {
-      finalConfiguration.set(key.replace(/_/g, '.'), value);
+      finalConfiguration.set(key.replace(/&/g, '.'), value);
     });
     props.onChange(
       finalConfiguration,

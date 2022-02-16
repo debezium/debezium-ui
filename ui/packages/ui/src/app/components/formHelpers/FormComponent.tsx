@@ -32,7 +32,7 @@ const getInvalidFilterMsg = (
 ) => {
   let returnVal = '';
   errorMsg?.forEach((val) => {
-    if (val.property === filter.replace(/_/g, '.')) {
+    if (val.property === filter.replace(/&/g, '.')) {
       returnVal = val.message;
     }
   });

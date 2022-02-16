@@ -59,7 +59,7 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>(
               : (combinedValue[config.name] = config.defaultValue);
           } else {
             combinedValue[config.name] =
-              userValues[config.name.replace(/_/g, '.')];
+              userValues[config.name.replace(/&/g, '.')];
           }
         }
       }
@@ -88,7 +88,7 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>(
     const handleSubmit = (value: any) => {
       const basicValue = {};
       for (const basicVal of props.transformConfigOptions) {
-        basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
+        basicValue[basicVal.name.replace(/&/g, '.')] = value[basicVal.name];
       }
       props.updateTransform(props.transformNo, 'config', basicValue);
     };
