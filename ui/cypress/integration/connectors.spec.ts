@@ -23,20 +23,20 @@ describe("Connectors page", () => {
     cy.findByRole("button", { name: "Next" }).click();
   });
   it("Fill the form to configure connector", () => {
-    cy.get('input[name="connector_name"]', { timeout: 50000 }).type(
+    cy.get('input[name="connector&name"]', { timeout: 50000 }).type(
       "dbz-pg-conn"
     );
-    cy.get('input[name="database_server_name"]', { timeout: 50000 }).type(
+    cy.get('input[name="database&server&name"]', { timeout: 50000 }).type(
       "fulfillment"
     );
-    cy.get('input[name="database_hostname"]', { timeout: 50000 }).type(
+    cy.get('input[name="database&hostname"]', { timeout: 50000 }).type(
       "dbzui-postgres"
     );
-    cy.get('input[name="database_user"]', { timeout: 50000 }).type("postgres");
-    cy.get('input[name="database_password"]', { timeout: 50000 }).type(
+    cy.get('input[name="database&user"]', { timeout: 50000 }).type("postgres");
+    cy.get('input[name="database&password"]', { timeout: 50000 }).type(
       "postgres"
     );
-    cy.get('input[name="database_dbname"]', { timeout: 50000 }).type(
+    cy.get('input[name="database&dbname"]', { timeout: 50000 }).type(
       "postgres"
     );
     cy.findByRole("button", { name: "Validate" }).click();
