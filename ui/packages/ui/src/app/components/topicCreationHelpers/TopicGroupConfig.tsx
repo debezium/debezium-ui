@@ -166,7 +166,7 @@ export const TopicGroupConfig: React.FunctionComponent<any> = React.forwardRef(
     const handleSubmit = (value: any) => {
       const basicValue = {};
       for (const basicVal of props.topicGroupConfigProperties) {
-        basicValue[basicVal.name.replace(/_/g, '.')] = value[basicVal.name];
+        basicValue[basicVal.name.replace(/&/g, '.')] = value[basicVal.name];
       }
       for (const option of topicGroupOptions) {
         if (option.name) {

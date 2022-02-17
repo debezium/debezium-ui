@@ -101,7 +101,7 @@ export const PropertiesStepsComponent: React.FC<IPropertiesStepProps> =
                 : (combinedValue[key.name] = key.defaultValue);
             } else {
               combinedValue[key.name] = userValues.get(
-                key.name.replace(/_/g, '.')
+                key.name.replace(/&/g, '.')
               );
             }
           }

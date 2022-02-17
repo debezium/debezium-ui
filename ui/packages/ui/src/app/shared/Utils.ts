@@ -245,7 +245,7 @@ export function formatPropertyDefinitions(
   propertyValues: ConnectorProperty[]
 ): ConnectorProperty[] {
   return propertyValues.map((value: ConnectorProperty) => {
-    value.name = value.name.replace(/\./g, '_');
+    value.name = value.name.includes('data_shape') ? value.name : value.name.replace(/\./g, '&');
     return value;
   });
 }
@@ -367,7 +367,7 @@ export function minimizePropertyValues(
   propertyValues.forEach((value: string, key: string) => {
     // Get the corresponding property definition
     const propDefn = propertyDefns.find(
-      (prop) => prop?.name.replace(/_/g, '.') === key
+      (prop) => prop?.name.replace(/&/g, '.') === key
     );
     if (propDefn) {
       // Include mandatory values
@@ -435,7 +435,7 @@ export function getFormattedProperties(
   if (connectorTypeId === ConnectorTypeId.POSTGRES) {
     for (const propDefn of formattedPropertyDefns) {
       propDefn.gridWidthSm = 12;
-      const propName = propDefn.name.replace(/_/g, '.'); // Ensure dotted version of name
+      const propName = propDefn.name.replace(/&/g, '.'); // Ensure dotted version of name
       switch (propName) {
         case PropertyName.BINARY_HANDLING_MODE:
         case PropertyName.DECIMAL_HANDLING_MODE:
@@ -513,7 +513,7 @@ export function getFormattedProperties(
   } else if (connectorTypeId === ConnectorTypeId.MONGO) {
     for (const propDefn of formattedPropertyDefns) {
       propDefn.gridWidthSm = 12;
-      const propName = propDefn.name.replace(/_/g, '.'); // Ensure dotted version of name
+      const propName = propDefn.name.replace(/&/g, '.'); // Ensure dotted version of name
       switch (propName) {
         case PropertyName.MONGODB_MEMBERS_AUTO_DISCOVER:
         case PropertyName.TOMBSTONES_ON_DELETE:
@@ -572,7 +572,7 @@ export function getFormattedProperties(
     for (const propDefn of formattedPropertyDefns) {
       if (propDefn) {
         propDefn.gridWidthSm = 12;
-        const propName = propDefn.name.replace(/_/g, '.'); // Ensure dotted version of name
+        const propName = propDefn.name.replace(/&/g, '.'); // Ensure dotted version of name
         switch (propName) {
           case PropertyName.EVENT_DESERIALIZATION_FAILURE_HANDLING_MODE:
           case PropertyName.DECIMAL_HANDLING_MODE:
@@ -653,7 +653,7 @@ export function getFormattedProperties(
   } else if (connectorTypeId === ConnectorTypeId.SQLSERVER) {
     for (const propDefn of formattedPropertyDefns) {
       propDefn.gridWidthSm = 12;
-      const propName = propDefn.name.replace(/_/g, '.'); // Ensure dotted version of name
+      const propName = propDefn.name.replace(/&/g, '.'); // Ensure dotted version of name
       switch (propName) {
         case PropertyName.BINARY_HANDLING_MODE:
         case PropertyName.DECIMAL_HANDLING_MODE:
@@ -749,7 +749,7 @@ export function getFormattedConfig(
     transConfig.name = transConfig['x-name'];
     transConfig.displayName = transConfig.title;
     transConfig.allowedValues = transConfig?.enum;
-    const propName = transConfig.name.replace(/\./g, '_'); // Ensure dotted version of name
+    const propName = transConfig.name.replace(/\./g, '&'); // Ensure dotted version of name
     transConfig.name = propName;
     if (
       transformTypeId === 'io.debezium.transforms.Filter' ||
@@ -840,7 +840,7 @@ export function getFormattedTopicCreationProperties(
 
   for (const topicGroupProp of formattedTopicCreationProperties) {
     topicGroupProp.gridWidthSm = 12;
-    const propName = topicGroupProp.name.replace(/_/g, '.'); // Ensure dotted version of name
+    const propName = topicGroupProp.name.replace(/&/g, '.'); // Ensure dotted version of name
 
     switch (propName) {
       case PropertyName.TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR.replace(

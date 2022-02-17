@@ -75,7 +75,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
               : (combinedValue[key.name] = key.defaultValue);
           } else {
             combinedValue[key.name] = userValues.get(
-              key.name.replace(/_/g, '.')
+              key.name.replace(/&/g, '.')
             );
           }
         }
@@ -97,7 +97,7 @@ export const DataOptionsStep: React.FC<any> = React.forwardRef((props, ref) => {
     const dataValueMap: Map<string, string> = new Map();
     for (const dataValue of props.propertyDefinitions) {
       dataValueMap.set(
-        dataValue.name.replace(/_/g, '.'),
+        dataValue.name.replace(/&/g, '.'),
         valueMap[dataValue.name]
       );
     }

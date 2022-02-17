@@ -120,7 +120,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
               : (combinedValue[key.name] = key.defaultValue);
           } else {
             combinedValue[key.name] = userValues.get(
-              key.name.replace(/_/g, '.')
+              key.name.replace(/&/g, '.')
             );
           }
         }
@@ -143,7 +143,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
     const basicValueMap: Map<string, string> = new Map();
     for (const basicVal of props.basicPropertyDefinitions) {
       basicValueMap.set(
-        basicVal.name.replace(/_/g, '.'),
+        basicVal.name.replace(/&/g, '.'),
         valueMap[basicVal.name]
       );
     }
@@ -151,7 +151,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
     const advancedValueMap: Map<string, string> = new Map();
     for (const advancedValue of props.advancedPropertyDefinitions) {
       advancedValueMap.set(
-        advancedValue.name.replace(/_/g, '.'),
+        advancedValue.name.replace(/&/g, '.'),
         valueMap[advancedValue.name]
       );
     }

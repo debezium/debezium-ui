@@ -12,6 +12,7 @@ import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
 import { PropertyCategory } from 'shared';
+import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
@@ -25,7 +26,12 @@ export interface IDataOptionsProps {
 const getInitialObject = (propertyList: ConnectorProperty[]) => {
   const returnObj = {};
   propertyList.forEach((property) => {
-    returnObj[property.name] = property.defaultValue || '';
+    if (!property.name.includes('.')) {
+      returnObj[property.name] = property.defaultValue || '';
+    } else {
+      const schema = '/' + property.name.replace('.', '/');
+      getObject(returnObj, schema, property.defaultValue || '');
+    }
   });
   return returnObj;
 };
@@ -75,9 +81,11 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   const [mappingGeneralPropertyDefinitions] = React.useState<
     ConnectorProperty[]
   >(getMappingGeneralProperty(props.propertyDefinitions));
+
   const [mappingAdvancedPropertyDefinitions] = React.useState<
     ConnectorProperty[]
   >(getMappingAdvanceProperty(props.propertyDefinitions));
+
   const [snapshotPropertyDefinitions] = React.useState<ConnectorProperty[]>(
     getSnapshotProperty(props.propertyDefinitions)
   );
@@ -105,7 +113,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
     ]);
     const finalConfiguration = new Map();
     updatedConfiguration.forEach((value: any, key: any) => {
-      finalConfiguration.set(key.replace(/_/g, '.'), value);
+      finalConfiguration.set(key.replace(/&/g, '.'), value);
     });
     props.onChange(
       finalConfiguration,
@@ -177,104 +185,119 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
             <>
               <Grid>
                 <GridItem lg={9} sm={12}>
-                  <ExpandableSection
-                    toggleText={
-                      snapshotExpanded
-                        ? props.i18nSnapshotPropertiesText
-                        : props.i18nSnapshotPropertiesText
-                    }
-                    onToggle={onToggleSnapshot}
-                    isExpanded={snapshotExpanded}
-                  >
-                    <Grid
-                      hasGutter={true}
-                      className={'data-options-component-expansion-content'}
+                  {snapshotPropertyDefinitions.length > 0 && (
+                    <ExpandableSection
+                      toggleText={
+                        snapshotExpanded
+                          ? props.i18nSnapshotPropertiesText
+                          : props.i18nSnapshotPropertiesText
+                      }
+                      onToggle={onToggleSnapshot}
+                      isExpanded={snapshotExpanded}
                     >
-                      {snapshotPropertyDefinitions.map(
-                        (propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem
-                              key={index}
-                              lg={propertyDefinition.gridWidthLg}
-                              sm={propertyDefinition.gridWidthSm}
-                            >
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                propertyChange={handlePropertyChange}
-                                setFieldValue={setFieldValue}
-                                invalidMsg={[]}
-                                validated={'default'}
-                              />
-                            </GridItem>
-                          );
-                        }
+                      <Grid
+                        hasGutter={true}
+                        className={'data-options-component-expansion-content'}
+                      >
+                        {snapshotPropertyDefinitions.map(
+                          (propertyDefinition: ConnectorProperty, index) => {
+                            return (
+                              <GridItem
+                                key={index}
+                                lg={propertyDefinition.gridWidthLg}
+                                sm={propertyDefinition.gridWidthSm}
+                              >
+                                <FormComponent
+                                  propertyDefinition={propertyDefinition}
+                                  propertyChange={handlePropertyChange}
+                                  setFieldValue={setFieldValue}
+                                  invalidMsg={[]}
+                                  validated={'default'}
+                                />
+                              </GridItem>
+                            );
+                          }
+                        )}
+                      </Grid>
+                    </ExpandableSection>
+                  )}
+
+                  {(mappingGeneralPropertyDefinitions.length > 0 ||
+                    mappingAdvancedPropertyDefinitions.length > 0) && (
+                    <ExpandableSection
+                      toggleText={
+                        mappingExpanded
+                          ? props.i18nMappingPropertiesText
+                          : props.i18nMappingPropertiesText
+                      }
+                      onToggle={onToggleMapping}
+                      isExpanded={mappingExpanded}
+                    >
+                      <Grid
+                        hasGutter={true}
+                        className={'data-options-component-expansion-content'}
+                      >
+                        {mappingGeneralPropertyDefinitions.map(
+                          (propertyDefinition: ConnectorProperty, index) => {
+                            return (
+                              <GridItem
+                                key={index}
+                                lg={propertyDefinition.gridWidthLg}
+                                sm={propertyDefinition.gridWidthSm}
+                              >
+                                <FormComponent
+                                  propertyDefinition={propertyDefinition}
+                                  propertyChange={handlePropertyChange}
+                                  setFieldValue={setFieldValue}
+                                  invalidMsg={[]}
+                                  validated={'default'}
+                                />
+                              </GridItem>
+                            );
+                          }
+                        )}
+                      </Grid>
+                      {mappingAdvancedPropertyDefinitions.length > 0 && (
+                        <>
+                          <Title
+                            headingLevel="h3"
+                            className={'data-options-component-grouping'}
+                          >
+                            {props.i18nAdvancedMappingPropertiesText}
+                          </Title>
+                          <Grid
+                            hasGutter={true}
+                            className={
+                              'data-options-component-expansion-content'
+                            }
+                          >
+                            {mappingAdvancedPropertyDefinitions.map(
+                              (
+                                propertyDefinition: ConnectorProperty,
+                                index
+                              ) => {
+                                return (
+                                  <GridItem
+                                    key={index}
+                                    lg={propertyDefinition.gridWidthLg}
+                                    sm={propertyDefinition.gridWidthSm}
+                                  >
+                                    <FormComponent
+                                      propertyDefinition={propertyDefinition}
+                                      propertyChange={handlePropertyChange}
+                                      setFieldValue={setFieldValue}
+                                      invalidMsg={[]}
+                                      validated={'default'}
+                                    />
+                                  </GridItem>
+                                );
+                              }
+                            )}
+                          </Grid>
+                        </>
                       )}
-                    </Grid>
-                  </ExpandableSection>
-                  <ExpandableSection
-                    toggleText={
-                      mappingExpanded
-                        ? props.i18nMappingPropertiesText
-                        : props.i18nMappingPropertiesText
-                    }
-                    onToggle={onToggleMapping}
-                    isExpanded={mappingExpanded}
-                  >
-                    <Grid
-                      hasGutter={true}
-                      className={'data-options-component-expansion-content'}
-                    >
-                      {mappingGeneralPropertyDefinitions.map(
-                        (propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem
-                              key={index}
-                              lg={propertyDefinition.gridWidthLg}
-                              sm={propertyDefinition.gridWidthSm}
-                            >
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                propertyChange={handlePropertyChange}
-                                setFieldValue={setFieldValue}
-                                invalidMsg={[]}
-                                validated={'default'}
-                              />
-                            </GridItem>
-                          );
-                        }
-                      )}
-                    </Grid>
-                    <Title
-                      headingLevel="h3"
-                      className={'data-options-component-grouping'}
-                    >
-                      {props.i18nAdvancedMappingPropertiesText}
-                    </Title>
-                    <Grid
-                      hasGutter={true}
-                      className={'data-options-component-expansion-content'}
-                    >
-                      {mappingAdvancedPropertyDefinitions.map(
-                        (propertyDefinition: ConnectorProperty, index) => {
-                          return (
-                            <GridItem
-                              key={index}
-                              lg={propertyDefinition.gridWidthLg}
-                              sm={propertyDefinition.gridWidthSm}
-                            >
-                              <FormComponent
-                                propertyDefinition={propertyDefinition}
-                                propertyChange={handlePropertyChange}
-                                setFieldValue={setFieldValue}
-                                invalidMsg={[]}
-                                validated={'default'}
-                              />
-                            </GridItem>
-                          );
-                        }
-                      )}
-                    </Grid>
-                  </ExpandableSection>
+                    </ExpandableSection>
+                  )}
                 </GridItem>
               </Grid>
             </>
