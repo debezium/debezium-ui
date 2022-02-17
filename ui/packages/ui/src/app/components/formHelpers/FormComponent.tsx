@@ -39,6 +39,8 @@ const getInvalidFilterMsg = (
   return returnVal;
 };
 
+const clearValidation = () => null
+
 export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   props
 ) => {
@@ -187,7 +189,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         }
         infoText={props.propertyDefinition.description}
         validated={getValidate()}
-        clearValidationError={props.clearValidationError!}
+        clearValidationError={props.clearValidationError || clearValidation}
       />
     );
   }
