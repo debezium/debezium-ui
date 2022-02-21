@@ -12,3 +12,4 @@ export * from './BasicSelectInput';
 export * from './NameInputField';
 export * from './transformHelpers';
 export * from './topicCreationHelpers';
+export * from './JsonViewer';

@@ -60,7 +60,7 @@ describe("Connectors page", () => {
   });
   it("Delete connector", () => {
     cy.get("ul>li")
-      .eq(4)
+      .eq(5)
       .findByRole("button", { name: "Delete" })
       .click();
   });
