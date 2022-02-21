@@ -7,11 +7,15 @@ package io.debezium.configserver;
 
 import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.rest.ConnectorURIs;
+import io.debezium.configserver.util.Infrastructure;
+import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
+import io.debezium.testing.testcontainers.Connector;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.connector.mysql.MySqlConnectorConfig;
 import io.debezium.connector.postgresql.PostgresConnectorConfig;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -20,6 +24,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
+@TestProfile(PostgresInfrastructureTestProfile.class)
 public class ConnectorResourceIT {
 
     @Test
@@ -90,6 +95,38 @@ public class ConnectorResourceIT {
              .statusCode(200)
              .body("size()", is(1))
              .and().body("[0]", equalTo("http://localhost:8083"));
+    }
+
+    @Test
+    public void testGetPostgresConnectorConfigNotFound() {
+        final var connectorName = "not-found-postgres-connector-get-config";
+
+        given()
+                .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_CONFIG_ENDPOINT, 1, connectorName)
+                .then().log().all()
+                .statusCode(404)
+                .body("error_code", is(404))
+                .body("message", is("Connector " + connectorName + " not found"));
+    }
+
+    @Test
+    public void testGetPostgresConnectorConfig() {
+        final var connectorName = "postgres-connector-get-config";
+        Infrastructure.getDebeziumContainer().registerConnector(
+                connectorName,
+                Infrastructure.getPostgresConnectorConfiguration(1));
+
+        Infrastructure.getDebeziumContainer().ensureConnectorState(connectorName, Connector.State.RUNNING);
+
+        given()
+                .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_CONFIG_ENDPOINT, 1, connectorName)
+                .then().log().all()
+                .statusCode(200)
+                .body("name", equalTo("postgres-connector-get-config"))
+                .body("'connector.class'", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
+                .body("'database.server.name'", equalTo("dbserver1"))
+                .body("'database.dbname'", equalTo("test"))
+                .body("'database.user'", equalTo("test"));
     }
 
 }

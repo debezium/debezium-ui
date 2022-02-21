@@ -20,6 +20,7 @@ public final class ConnectorURIs {
     public static final String CONNECTOR_RESUME_ENDPOINT = "/connector/{cluster}/{connectorname}/resume";
     public static final String CONNECTOR_RESTART_ENDPOINT = "/connector/{cluster}/{connectorname}/restart";
     public static final String CONNECTOR_TASK_RESTART_ENDPOINT = "/connector/{cluster}/{connectorname}/task/{tasknumber}/restart";
+    public static final String CONNECTOR_CONFIG_ENDPOINT = "/connectors/{cluster}/{connector-name}/config";
     public static final String TRANSFORMS_LIST = "/{cluster}/transforms.json";
     public static final String TOPIC_CREATION_ENABLED = "/{cluster}/topic-creation-enabled";
 }
