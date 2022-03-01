@@ -1,4 +1,5 @@
 import './DataOption.css';
+import { RuntimeOptions } from './RuntimeOptions';
 import { ConnectorProperty } from '@debezium/ui-models';
 import {
   ExpandableSection,
@@ -11,15 +12,14 @@ import { FormComponent } from 'components';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
-  i18nAdvancedMappingPropertiesText: string;
-  i18nMappingPropertiesText: string;
-  i18nSnapshotPropertiesText: string;
+  runtimePropertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
@@ -72,10 +72,12 @@ const getSnapshotProperty = (
 };
 
 export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
+  const { t } = useTranslation();
+
   const [initialValues, setInitialValues] = React.useState(
     getInitialObject(props.propertyDefinitions)
   );
-  const [mappingExpanded, setMappingExpanded] = React.useState<boolean>(false);
+  const [mappingExpanded, setMappingExpanded] = React.useState<boolean>(true);
   const [snapshotExpanded, setSnapshotExpanded] = React.useState<boolean>(true);
 
   const [mappingGeneralPropertyDefinitions] = React.useState<
@@ -187,11 +189,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                 <GridItem lg={9} sm={12}>
                   {snapshotPropertyDefinitions.length > 0 && (
                     <ExpandableSection
-                      toggleText={
-                        snapshotExpanded
-                          ? props.i18nSnapshotPropertiesText
-                          : props.i18nSnapshotPropertiesText
-                      }
+                      toggleText={t('snapshotPropertiesText')}
                       onToggle={onToggleSnapshot}
                       isExpanded={snapshotExpanded}
                     >
@@ -225,11 +223,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                   {(mappingGeneralPropertyDefinitions.length > 0 ||
                     mappingAdvancedPropertyDefinitions.length > 0) && (
                     <ExpandableSection
-                      toggleText={
-                        mappingExpanded
-                          ? props.i18nMappingPropertiesText
-                          : props.i18nMappingPropertiesText
-                      }
+                      toggleText={t('mappingPropertiesText')}
                       onToggle={onToggleMapping}
                       isExpanded={mappingExpanded}
                     >
@@ -263,7 +257,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                             headingLevel="h3"
                             className={'data-options-component-grouping'}
                           >
-                            {props.i18nAdvancedMappingPropertiesText}
+                            {t('advancedMappingPropertiesText')}
                           </Title>
                           <Grid
                             hasGutter={true}
@@ -304,6 +298,13 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
           </Form>
         )}
       </Formik>
+      <RuntimeOptions
+        configuration={props.configuration}
+        onChange={(conf: Map<string, unknown>, status: boolean) =>
+          props.onChange(conf, status)
+        }
+        propertyDefinitions={props.runtimePropertyDefinitions}
+      />
     </div>
   );
 };

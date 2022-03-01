@@ -12,12 +12,11 @@ import _ from 'lodash';
 import React from 'react';
 import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
+import { useTranslation } from 'react-i18next';
 
 export interface IRuntimeOptionsProps {
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
-  i18nEngineProperties: string;
-  i18nHeartbeatProperties: string;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
@@ -61,12 +60,14 @@ const getHeartbeatProperty = (
 };
 
 export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
+  const { t } = useTranslation();
+
   const [initialValues, setInitialValues] = React.useState(
     getInitialObject(props.propertyDefinitions)
   );
-  const [engineExpanded, setEngineExpanded] = React.useState<boolean>(true);
+  const [engineExpanded, setEngineExpanded] = React.useState<boolean>(false);
   const [heartbeatExpanded, setHeartbeatExpanded] =
-    React.useState<boolean>(true);
+    React.useState<boolean>(false);
 
   const [enginePropertyDefinitions] = React.useState<ConnectorProperty[]>(
     getEngineProperty(props.propertyDefinitions)
@@ -155,103 +156,91 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
   }, []);
 
   return (
-    <div className={'runtime-options-component-page pf-c-card'}>
-      <Formik
-        validateOnChange={true}
-        enableReinitialize={true}
-        initialValues={initialValues}
-        validate={validateForm}
-        onSubmit={() => {
-          //
-        }}
-      >
-        {({ setFieldValue }) => (
-          <Form className="pf-c-form">
-            <>
-              <Grid>
-                <GridItem lg={9} sm={12}>
-                  {enginePropertyDefinitions.length > 0 && (
-                    <ExpandableSection
-                      toggleText={
-                        engineExpanded
-                          ? props.i18nEngineProperties
-                          : props.i18nEngineProperties
-                      }
-                      onToggle={onToggleEngine}
-                      isExpanded={engineExpanded}
+    // <div className={'runtime-options-component-page pf-c-card'}>
+    <Formik
+      validateOnChange={true}
+      enableReinitialize={true}
+      initialValues={initialValues}
+      validate={validateForm}
+      onSubmit={() => {
+        //
+      }}
+    >
+      {({ setFieldValue }) => (
+        <Form className="pf-c-form">
+          <>
+            <Grid>
+              <GridItem lg={9} sm={12}>
+                {enginePropertyDefinitions.length > 0 && (
+                  <ExpandableSection
+                    toggleText={t('engineProperties')}
+                    onToggle={onToggleEngine}
+                    isExpanded={engineExpanded}
+                  >
+                    <Grid
+                      hasGutter={true}
+                      className={'runtime-options-component-expansion-content'}
                     >
-                      <Grid
-                        hasGutter={true}
-                        className={
-                          'runtime-options-component-expansion-content'
+                      {enginePropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem
+                              key={index}
+                              lg={propertyDefinition.gridWidthLg}
+                              sm={propertyDefinition.gridWidthSm}
+                            >
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                propertyChange={handlePropertyChange}
+                                setFieldValue={setFieldValue}
+                                invalidMsg={[]}
+                                validated={'default'}
+                              />
+                            </GridItem>
+                          );
                         }
-                      >
-                        {enginePropertyDefinitions.map(
-                          (propertyDefinition: ConnectorProperty, index) => {
-                            return (
-                              <GridItem
-                                key={index}
-                                lg={propertyDefinition.gridWidthLg}
-                                sm={propertyDefinition.gridWidthSm}
-                              >
-                                <FormComponent
-                                  propertyDefinition={propertyDefinition}
-                                  propertyChange={handlePropertyChange}
-                                  setFieldValue={setFieldValue}
-                                  invalidMsg={[]}
-                                  validated={'default'}
-                                />
-                              </GridItem>
-                            );
-                          }
-                        )}
-                      </Grid>
-                    </ExpandableSection>
-                  )}
-                  {heartbeatPropertyDefinitions.length > 0 && (
-                    <ExpandableSection
-                      toggleText={
-                        heartbeatExpanded
-                          ? props.i18nHeartbeatProperties
-                          : props.i18nHeartbeatProperties
-                      }
-                      onToggle={onToggleHeartbeat}
-                      isExpanded={heartbeatExpanded}
+                      )}
+                    </Grid>
+                  </ExpandableSection>
+                )}
+                {heartbeatPropertyDefinitions.length > 0 && (
+                  <ExpandableSection
+                    toggleText={t('heartbeatProperties')}
+                    onToggle={onToggleHeartbeat}
+                    isExpanded={heartbeatExpanded}
+                  >
+                    <Grid
+                      hasGutter={true}
+                      className={'runtime-options-component-expansion-content'}
                     >
-                      <Grid
-                        hasGutter={true}
-                        className={
-                          'runtime-options-component-expansion-content'
+                      {heartbeatPropertyDefinitions.map(
+                        (propertyDefinition: ConnectorProperty, index) => {
+                          return (
+                            <GridItem
+                              key={index}
+                              lg={propertyDefinition.gridWidthLg}
+                              sm={propertyDefinition.gridWidthSm}
+                            >
+                              <FormComponent
+                                propertyDefinition={propertyDefinition}
+                                propertyChange={handlePropertyChange}
+                                setFieldValue={setFieldValue}
+                                invalidMsg={[]}
+                                validated={'default'}
+                              />
+                            </GridItem>
+                          );
                         }
-                      >
-                        {heartbeatPropertyDefinitions.map(
-                          (propertyDefinition: ConnectorProperty, index) => {
-                            return (
-                              <GridItem
-                                key={index}
-                                lg={propertyDefinition.gridWidthLg}
-                                sm={propertyDefinition.gridWidthSm}
-                              >
-                                <FormComponent
-                                  propertyDefinition={propertyDefinition}
-                                  propertyChange={handlePropertyChange}
-                                  setFieldValue={setFieldValue}
-                                  invalidMsg={[]}
-                                  validated={'default'}
-                                />
-                              </GridItem>
-                            );
-                          }
-                        )}
-                      </Grid>
-                    </ExpandableSection>
-                  )}
-                </GridItem>
-              </Grid>
-            </>
-          </Form>
-        )}
-      </Formik>
-    </div>
+                      )}
+                    </Grid>
+                  </ExpandableSection>
+                )}
+              </GridItem>
+            </Grid>
+          </>
+        </Form>
+      )}
+    </Formik>
+    // </div>
   );
 };
