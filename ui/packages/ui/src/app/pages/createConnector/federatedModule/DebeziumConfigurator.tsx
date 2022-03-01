@@ -1,7 +1,7 @@
 import { DataOptions } from './DataOptions';
 import { FilterConfig } from './FilterConfig';
 import { Properties } from './Properties';
-import { RuntimeOptions } from './RuntimeOptions';
+// import { RuntimeOptions } from './RuntimeOptions';
 import { ConnectorProperty } from '@debezium/ui-models';
 import i18n from 'i18n';
 import * as React from 'react';
@@ -13,7 +13,6 @@ import {
   getDataOptionsPropertyDefinitions,
   getRuntimeOptionsPropertyDefinitions,
   getFilterConfigurationPageContent,
-
 } from 'shared';
 import { getPropertiesData } from 'src/app/utils/FormatCosProperties';
 
@@ -112,7 +111,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   const PROPERTIES_STEP_ID = 0;
   const FILTER_CONFIGURATION_STEP_ID = 1;
   const DATA_OPTIONS_STEP_ID = 2;
-  const RUNTIME_OPTIONS_STEP_ID = 3;
+  // const RUNTIME_OPTIONS_STEP_ID = 3;
 
   const [connectorProperties] = React.useState<ConnectorProperty[]>(
     getPropertiesData(props.connector)
@@ -210,27 +209,23 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
             propertyDefinitions={getDataOptionsPropertyDefinitions(
               connectorProperties
             )}
-            i18nAdvancedMappingPropertiesText={t(
-              'advancedMappingPropertiesText'
-            )}
-            i18nMappingPropertiesText={t('mappingPropertiesText')}
-            i18nSnapshotPropertiesText={t('snapshotPropertiesText')}
-          />
-        );
-      case RUNTIME_OPTIONS_STEP_ID:
-        return (
-          <RuntimeOptions
-            configuration={props.configuration}
-            onChange={(conf: Map<string, unknown>, status: boolean) =>
-              props.onChange(conf, status)
-            }
-            propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
+            runtimePropertyDefinitions={getRuntimeOptionsPropertyDefinitions(
               connectorProperties
             )}
-            i18nEngineProperties={t('engineProperties')}
-            i18nHeartbeatProperties={t('heartbeatProperties')}
           />
         );
+      // case RUNTIME_OPTIONS_STEP_ID:
+      //   return (
+      //     <RuntimeOptions
+      //       configuration={props.configuration}
+      //       onChange={(conf: Map<string, unknown>, status: boolean) =>
+      //         props.onChange(conf, status)
+      //       }
+      //       propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
+      //         connectorProperties
+      //       )}
+      //     />
+      //   );
       default:
         return <></>;
     }
