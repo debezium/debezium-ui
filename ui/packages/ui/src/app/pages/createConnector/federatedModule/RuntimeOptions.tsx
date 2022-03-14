@@ -138,14 +138,14 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
       });
     }
     Object.keys(initialValues).forEach((key: string) => {
-      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+      if (updatedConfiguration.get(key.replace(/[&]/g, '.'))) {
         initialValuesCopy[key] = updatedConfiguration.get(
-          key.replace(/[_]/g, '.')
+          key.replace(/[&]/g, '.')
         );
       } else if (checkIfRequired(props.propertyDefinitions, key)) {
         initialValues[key]
           ? updatedConfiguration.set(
-              key.replace(/[_]/g, '.'),
+              key.replace(/[&]/g, '.'),
               initialValues[key]
             )
           : (isValid = false);

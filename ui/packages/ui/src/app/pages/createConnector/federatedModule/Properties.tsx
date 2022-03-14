@@ -185,14 +185,14 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       });
     }
     Object.keys(initialValues).forEach((key: string) => {
-      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+      if (updatedConfiguration.get(key.replace(/[&]/g, '.'))) {
         initialValuesCopy[key] = updatedConfiguration.get(
-          key.replace(/[_]/g, '.')
+          key.replace(/[&]/g, '.')
         );
       } else if (checkIfRequired(props.propertyDefinitions, key)) {
         initialValues[key]
           ? updatedConfiguration.set(
-              key.replace(/[_]/g, '.'),
+              key.replace(/[&]/g, '.'),
               initialValues[key]
             )
           : (isValid = false);
@@ -203,7 +203,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   }, []);
 
   return (
-    <div className={'properties-step-page pf-c-card'}>
+    <div className={'properties-step-page'}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}

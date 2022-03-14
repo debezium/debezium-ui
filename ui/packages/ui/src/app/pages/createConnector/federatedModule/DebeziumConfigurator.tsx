@@ -83,20 +83,23 @@ const getFilterInitialValues = (
   connectorData: Map<string, unknown>,
   selectedConnector: string
 ): Map<string, string> => {
+  const configCopy = connectorData
+      ? new Map<string, unknown>(connectorData)
+      : new Map<string, unknown>();
   const returnVal = new Map<string, string>();
-  if (connectorData && connectorData.size !== 0) {
+  if (configCopy && configCopy.size !== 0) {
     const filterConfigurationPageContentObj: any =
       getFilterConfigurationPageContent(selectedConnector || '');
     filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
-      connectorData.get(`${fieldObj.field}.include.list`) &&
+      configCopy.get(`${fieldObj.field}.include.list`) &&
         returnVal.set(
           `${fieldObj.field}.include.list`,
-          connectorData.get(`${fieldObj.field}.include.list`) as string
+          configCopy.get(`${fieldObj.field}.include.list`) as string
         );
-      connectorData.get(`${fieldObj.field}.exclude.list`) &&
+        configCopy.get(`${fieldObj.field}.exclude.list`) &&
         returnVal.set(
           `${fieldObj.field}.exclude.list`,
-          connectorData.get(`${fieldObj.field}.exclude.list`) as string
+          configCopy.get(`${fieldObj.field}.exclude.list`) as string
         );
     });
   }
@@ -186,7 +189,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
         );
       case FILTER_CONFIGURATION_STEP_ID:
         return (
-          <div style={{ padding: '20px' }}>
+         
             <FilterConfig
               filterValues={filterValues}
               updateFilterValues={handleFilterUpdate}
@@ -197,7 +200,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               }
               setIsValidFilter={setIsValidFilter}
             />
-          </div>
+        
         );
       case DATA_OPTIONS_STEP_ID:
         return (

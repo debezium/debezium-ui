@@ -6,7 +6,6 @@ import {
   Form,
   Text,
   TextVariants,
-  Title,
 } from '@patternfly/react-core';
 import {
   FilterExcludeFieldComponent,
@@ -69,10 +68,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
     getFilterConfigurationPageContent(props.connectorType || '');
 
   return (
-    <div className="filter-config-page pf-c-card">
-      <Title headingLevel="h2" size="3xl">
-        {t('filterConfiguration')}
-      </Title>
+    <div className="filter-config-page">
       <Text component={TextVariants.h2}>
         {t('filterPageHeadingText', {
           parent: filterConfigurationPageContentObj.fieldArray[0].field,
