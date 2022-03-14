@@ -18,6 +18,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
+  isViewMode: boolean;
   propertyDefinitions: ConnectorProperty[];
   runtimePropertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -206,6 +207,8 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
+                                  isViewMode={props.isViewMode}
+                                  initialValues={initialValues}
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
                                   setFieldValue={setFieldValue}
@@ -240,6 +243,8 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
+                                  isViewMode={props.isViewMode}
+                                  initialValues={initialValues}
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
                                   setFieldValue={setFieldValue}
@@ -277,6 +282,8 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                     sm={propertyDefinition.gridWidthSm}
                                   >
                                     <FormComponent
+                                      isViewMode={props.isViewMode}
+                                      initialValues={initialValues}
                                       propertyDefinition={propertyDefinition}
                                       propertyChange={handlePropertyChange}
                                       setFieldValue={setFieldValue}
@@ -299,6 +306,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
         )}
       </Formik>
       <RuntimeOptions
+        isViewMode={props?.isViewMode || false}
         configuration={props.configuration}
         onChange={(conf: Map<string, unknown>, status: boolean) =>
           props.onChange(conf, status)

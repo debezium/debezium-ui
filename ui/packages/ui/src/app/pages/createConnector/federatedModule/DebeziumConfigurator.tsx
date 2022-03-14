@@ -5,7 +5,7 @@ import { Properties } from './Properties';
 import { ConnectorProperty } from '@debezium/ui-models';
 import i18n from 'i18n';
 import * as React from 'react';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 import {
   getAdvancedPropertyDefinitions,
@@ -69,7 +69,7 @@ export interface IConnectorType {
 export interface IDebeziumConfiguratorProps {
   activeStep: number;
   connector: IConnectorType;
-  // internalState: unknown; // ???
+  isViewMode?: boolean;
   configuration: Map<string, unknown>;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
@@ -84,8 +84,8 @@ const getFilterInitialValues = (
   selectedConnector: string
 ): Map<string, string> => {
   const configCopy = connectorData
-      ? new Map<string, unknown>(connectorData)
-      : new Map<string, unknown>();
+    ? new Map<string, unknown>(connectorData)
+    : new Map<string, unknown>();
   const returnVal = new Map<string, string>();
   if (configCopy && configCopy.size !== 0) {
     const filterConfigurationPageContentObj: any =
@@ -96,7 +96,7 @@ const getFilterInitialValues = (
           `${fieldObj.field}.include.list`,
           configCopy.get(`${fieldObj.field}.include.list`) as string
         );
-        configCopy.get(`${fieldObj.field}.exclude.list`) &&
+      configCopy.get(`${fieldObj.field}.exclude.list`) &&
         returnVal.set(
           `${fieldObj.field}.exclude.list`,
           configCopy.get(`${fieldObj.field}.exclude.list`) as string
@@ -109,8 +109,6 @@ const getFilterInitialValues = (
 export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   props
 ) => {
-  const { t } = useTranslation();
-
   const PROPERTIES_STEP_ID = 0;
   const FILTER_CONFIGURATION_STEP_ID = 1;
   const DATA_OPTIONS_STEP_ID = 2;
@@ -168,6 +166,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
                 ? props.connector?.schema['x-connector-id']
                 : ''
             }
+            isViewMode={props?.isViewMode || false}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -176,35 +175,26 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
               ...getBasicPropertyDefinitions(connectorProperties, true),
               ...getAdvancedPropertyDefinitions(connectorProperties),
             ]}
-            i18nIsRequiredText={t('isRequired')}
-            i18nAdvancedPropertiesText={t('advancedPropertiesText')}
-            i18nAdvancedPublicationPropertiesText={t(
-              'advancedPublicationPropertiesText'
-            )}
-            i18nAdvancedReplicationPropertiesText={t(
-              'advancedReplicationPropertiesText'
-            )}
-            i18nBasicPropertiesText={t('basicPropertiesText')}
           />
         );
       case FILTER_CONFIGURATION_STEP_ID:
         return (
-         
-            <FilterConfig
-              filterValues={filterValues}
-              updateFilterValues={handleFilterUpdate}
-              connectorType={
-                props.connector?.schema
-                  ? props.connector?.schema['x-connector-id']
-                  : ''
-              }
-              setIsValidFilter={setIsValidFilter}
-            />
-        
+          <FilterConfig
+            isViewMode={props?.isViewMode || false}
+            filterValues={filterValues}
+            updateFilterValues={handleFilterUpdate}
+            connectorType={
+              props.connector?.schema
+                ? props.connector?.schema['x-connector-id']
+                : ''
+            }
+            setIsValidFilter={setIsValidFilter}
+          />
         );
       case DATA_OPTIONS_STEP_ID:
         return (
           <DataOptions
+            isViewMode={props?.isViewMode || false}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)

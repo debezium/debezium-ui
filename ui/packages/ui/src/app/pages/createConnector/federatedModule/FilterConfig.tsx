@@ -4,6 +4,8 @@ import {
   Button,
   Divider,
   Form,
+  FormGroup,
+  Popover,
   Text,
   TextVariants,
 } from '@patternfly/react-core';
@@ -20,12 +22,24 @@ import {
   ConfirmationDialog,
   getFilterConfigurationPageContent,
 } from 'shared';
+import { HelpIcon } from '@patternfly/react-icons';
 
 export interface IFilterConfigProps {
+  isViewMode: boolean;
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
+}
+
+const getPropertyValue = (config: Map<string, string>, filter: string ) =>{
+  let key = '';
+  [...config.keys()].forEach( k =>{
+    if(k.includes(filter)){
+      key = k
+    }
+  })
+  return config.get(key);
 }
 
 export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
@@ -76,89 +90,148 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
         })}
       </Text>
       <Form className="child-selection-step_form">
-        {filterConfigurationPageContentObj.fieldArray.map((fieldFilter: any) =>
-          fieldFilter.preview ? (
-            <FilterInputFieldComponent
-              key={fieldFilter.field}
-              fieldName={fieldFilter.field}
-              filterValues={props.filterValues}
-              setFormData={setFormData}
-              formData={formData}
-              invalidMsg={invalidMsg}
-              fieldExcludeList={`${fieldFilter.field}.exclude.list`}
-              fieldIncludeList={`${fieldFilter.field}.include.list`}
-              fieldPlaceholder={fieldFilter.valueSample}
-              i18nFilterFieldLabel={t('filterFieldLabel', {
-                field: _.capitalize(fieldFilter.field),
-              })}
-              i18nFilterFieldHelperText={t('filterFieldHelperText', {
-                field: fieldFilter.field,
-              })}
-              i18nInclude={t('include')}
-              i18nExclude={t('exclude')}
-              i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
-                field: fieldFilter.field,
-                sampleVal: fieldFilter.valueSample,
-              })}
-            />
-          ) : (
-            <NoPreviewFilterField
-              key={fieldFilter.field}
-              i18nShowFilter={t('showFilter', { field: fieldFilter.field })}
-              i18nHideFilter={t('hideFilter', { field: fieldFilter.field })}
-            >
-              {fieldFilter.excludeFilter ? (
-                <FilterExcludeFieldComponent
-                  fieldName={fieldFilter.field}
-                  filterValues={props.filterValues}
-                  setFormData={setFormData}
-                  formData={formData}
-                  invalidMsg={invalidMsg}
-                  fieldExcludeList={`${fieldFilter.field}.exclude.list`}
-                  fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterExcludeFieldLabel={t('filterExcludeFieldLabel', {
+        {props.isViewMode ? (
+          <>
+          {filterConfigurationPageContentObj.fieldArray.map(
+              (fieldFilter: any) => {
+                return (<FormGroup
+                  key={fieldFilter.field}
+                  label={t('filterFieldLabel', {
                     field: _.capitalize(fieldFilter.field),
                   })}
-                  i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
-                    field: `${fieldFilter.field} exclude`,
-                    sampleVal: fieldFilter.valueSample,
-                  })}
-                />
-              ) : (
-                <FilterInputFieldComponent
-                  fieldName={fieldFilter.field}
-                  filterValues={props.filterValues}
-                  setFormData={setFormData}
-                  formData={formData}
-                  invalidMsg={invalidMsg}
-                  fieldExcludeList={`${fieldFilter.field}.exclude.list`}
-                  fieldIncludeList={`${fieldFilter.field}.include.list`}
-                  fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterFieldLabel={t('filterFieldLabel', {
-                    field: _.capitalize(fieldFilter.field),
-                  })}
-                  i18nFilterFieldHelperText={t('filterFieldHelperText', {
-                    field: fieldFilter.field,
-                  })}
-                  i18nInclude={t('include')}
-                  i18nExclude={t('exclude')}
-                  i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
-                    field: fieldFilter.field,
-                    sampleVal: fieldFilter.valueSample,
-                  })}
-                />
-              )}
-            </NoPreviewFilterField>
-          )
+                  fieldId={'field_filter'}
+                  isRequired={false}
+                  labelIcon={
+                    <Popover
+                      bodyContent={
+                        <div>
+                          {t('filterFieldInfoMsg', {
+                      field: fieldFilter.field,
+                      sampleVal: fieldFilter.valueSample,
+                    })}
+                          <br />
+                          <a
+                            href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
+                            target="_blank"
+                          >
+                            More Info
+                          </a>
+                        </div>
+                      }
+                    >
+                      <button
+                        aria-label="More info for filter field"
+                        onClick={(e) => e.preventDefault()}
+                        aria-describedby="simple-form-filter"
+                        className="pf-c-form__group-label-help"
+                      >
+                        <HelpIcon noVerticalAlign={true} />
+                      </button>
+                    </Popover>
+                  }
+                >
+                  <Text component={TextVariants.p}>
+                    {getPropertyValue(props.filterValues, fieldFilter.field)}
+                  
+                  </Text>
+                </FormGroup>)
+              })}
+          </>
+        ) : (
+          <>
+            {filterConfigurationPageContentObj.fieldArray.map(
+              (fieldFilter: any) =>
+                fieldFilter.preview ? (
+                  <FilterInputFieldComponent
+                    key={fieldFilter.field}
+                    fieldName={fieldFilter.field}
+                    filterValues={props.filterValues}
+                    setFormData={setFormData}
+                    formData={formData}
+                    invalidMsg={invalidMsg}
+                    fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+                    fieldIncludeList={`${fieldFilter.field}.include.list`}
+                    fieldPlaceholder={fieldFilter.valueSample}
+                    i18nFilterFieldLabel={t('filterFieldLabel', {
+                      field: _.capitalize(fieldFilter.field),
+                    })}
+                    i18nFilterFieldHelperText={t('filterFieldHelperText', {
+                      field: fieldFilter.field,
+                    })}
+                    i18nInclude={t('include')}
+                    i18nExclude={t('exclude')}
+                    i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
+                      field: fieldFilter.field,
+                      sampleVal: fieldFilter.valueSample,
+                    })}
+                  />
+                ) : (
+                  <NoPreviewFilterField
+                    key={fieldFilter.field}
+                    i18nShowFilter={t('showFilter', {
+                      field: fieldFilter.field,
+                    })}
+                    i18nHideFilter={t('hideFilter', {
+                      field: fieldFilter.field,
+                    })}
+                  >
+                    {fieldFilter.excludeFilter ? (
+                      <FilterExcludeFieldComponent
+                        fieldName={fieldFilter.field}
+                        filterValues={props.filterValues}
+                        setFormData={setFormData}
+                        formData={formData}
+                        invalidMsg={invalidMsg}
+                        fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+                        fieldPlaceholder={fieldFilter.valueSample}
+                        i18nFilterExcludeFieldLabel={t(
+                          'filterExcludeFieldLabel',
+                          {
+                            field: _.capitalize(fieldFilter.field),
+                          }
+                        )}
+                        i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
+                          field: `${fieldFilter.field} exclude`,
+                          sampleVal: fieldFilter.valueSample,
+                        })}
+                      />
+                    ) : (
+                      <FilterInputFieldComponent
+                        fieldName={fieldFilter.field}
+                        filterValues={props.filterValues}
+                        setFormData={setFormData}
+                        formData={formData}
+                        invalidMsg={invalidMsg}
+                        fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+                        fieldIncludeList={`${fieldFilter.field}.include.list`}
+                        fieldPlaceholder={fieldFilter.valueSample}
+                        i18nFilterFieldLabel={t('filterFieldLabel', {
+                          field: _.capitalize(fieldFilter.field),
+                        })}
+                        i18nFilterFieldHelperText={t('filterFieldHelperText', {
+                          field: fieldFilter.field,
+                        })}
+                        i18nInclude={t('include')}
+                        i18nExclude={t('exclude')}
+                        i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
+                          field: fieldFilter.field,
+                          sampleVal: fieldFilter.valueSample,
+                        })}
+                      />
+                    )}
+                  </NoPreviewFilterField>
+                )
+            )}
+            <ActionGroup>
+              <Button variant="secondary" onClick={applyFilter}>
+                {t('apply')}
+              </Button>
+              <Button variant="link" isInline={true} onClick={clearFilter}>
+                {t('clearFilters')}
+              </Button>
+            </ActionGroup>
+          </>
         )}
-        <ActionGroup>
-          <Button variant="secondary" onClick={applyFilter}>
-            {t('apply')}
-          </Button>
-          <Button variant="link" isInline={true} onClick={clearFilter}>
-            {t('clearFilters')}
-          </Button>
-        </ActionGroup>
       </Form>
       <Divider />
       <ConfirmationDialog

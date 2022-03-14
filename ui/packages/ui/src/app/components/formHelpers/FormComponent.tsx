@@ -11,8 +11,11 @@ import {
 } from '@debezium/ui-models';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { FormTextComponent } from './FormTextComponent';
 
 export interface IFormComponentProps {
+  isViewMode?:boolean;
+  initialValues?: any;
   propertyDefinition: ConnectorProperty;
   helperTextInvalid?: any;
   invalidMsg: PropertyValidationResult[];
@@ -53,8 +56,19 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         : 'default'
       : 'error';
   };
-
-  // Has allowed values - Select component
+  if(props.isViewMode){
+    return (
+      <FormTextComponent
+        description={props.propertyDefinition.description}
+        isRequired={props.propertyDefinition.isMandatory}
+        fieldId={props.propertyDefinition.name}
+        name={props.propertyDefinition.name}
+        label={props.propertyDefinition.displayName}
+        initialValues={props.initialValues}
+      />
+    );
+  }else{
+      // Has allowed values - Select component
   if (props.propertyDefinition.allowedValues) {
     return (
       <FormSelectComponent
@@ -193,4 +207,6 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
       />
     );
   }
+  }
+
 };

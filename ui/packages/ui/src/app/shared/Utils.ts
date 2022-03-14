@@ -172,6 +172,9 @@ export enum PropertyName {
   TOPIC_CREATION_GROUP_CLEANUP_POLICY = 'topic.creation.(.+).cleanup.policy',
   TOPIC_CREATION_GROUP_COMPRESSION_TYPE = 'topic.creation.(.+).compression.type',
   XMIN_FETCH_INTERVAL_MS = 'xmin.fetch.interval.ms',
+  DATA_SHAPE = 'data_shape',
+  DATA_SHAPE_KEY = 'data_shape.key',
+  DATA_SHAPE_VALUE = 'data_shape.value',
 }
 
 export enum PropertyCategory {
@@ -245,7 +248,9 @@ export function formatPropertyDefinitions(
   propertyValues: ConnectorProperty[]
 ): ConnectorProperty[] {
   return propertyValues.map((value: ConnectorProperty) => {
-    value.name = value.name.includes('data_shape') ? value.name : value.name.replace(/\./g, '&');
+    value.name = value.name.includes('data_shape')
+      ? value.name
+      : value.name.replace(/\./g, '&');
     return value;
   });
 }
@@ -448,6 +453,11 @@ export function getFormattedProperties(
         case PropertyName.SCHEMA_REFRESH_MODE:
           propDefn.gridWidthLg = 4;
           break;
+        case PropertyName.DATA_SHAPE:
+        case PropertyName.DATA_SHAPE_KEY:
+        case PropertyName.DATA_SHAPE_VALUE:
+          propDefn.gridWidthLg = 6;
+          break;
         case PropertyName.SLOT_MAX_RETRIES:
           propDefn.gridWidthLg = 6;
           propDefn.type = 'NON-NEG-INT';
@@ -528,6 +538,11 @@ export function getFormattedProperties(
         case PropertyName.SNAPSHOT_MODE:
           propDefn.gridWidthLg = 9;
           break;
+        case PropertyName.DATA_SHAPE:
+        case PropertyName.DATA_SHAPE_KEY:
+        case PropertyName.DATA_SHAPE_VALUE:
+          propDefn.gridWidthLg = 6;
+          break;
         case PropertyName.MONGODB_POLL_INTERVAL_MS:
         case PropertyName.MONGODB_CONNECT_TIMEOUT_MS:
         case PropertyName.CONNECT_BACKOFF_INITIAL_DELAY_MS:
@@ -589,6 +604,9 @@ export function getFormattedProperties(
           case PropertyName.DATABASE_SERVER_ID_OFFSET:
           case PropertyName.GTID_SOURCE_INCLUDES:
           case PropertyName.GTID_SOURCE_EXCLUDES:
+          case PropertyName.DATA_SHAPE:
+          case PropertyName.DATA_SHAPE_KEY:
+          case PropertyName.DATA_SHAPE_VALUE:
             propDefn.gridWidthLg = 6;
             break;
           case PropertyName.DATABASE_HOSTNAME:
@@ -662,6 +680,11 @@ export function getFormattedProperties(
         case PropertyName.SNAPSHOT_MODE:
         case PropertyName.SNAPSHOT_ISOLATION_MODE:
           propDefn.gridWidthLg = 4;
+          break;
+        case PropertyName.DATA_SHAPE:
+        case PropertyName.DATA_SHAPE_KEY:
+        case PropertyName.DATA_SHAPE_VALUE:
+          propDefn.gridWidthLg = 6;
           break;
         case PropertyName.QUERY_FETCH_SIZE:
         case PropertyName.SNAPSHOT_MAX_THREADS:
