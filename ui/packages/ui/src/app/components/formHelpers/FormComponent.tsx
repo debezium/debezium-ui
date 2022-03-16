@@ -1,20 +1,21 @@
 import { FormCheckboxComponent } from './FormCheckboxComponent';
+import { FormDisabledComponent } from './FormDisabledComponent';
 import { FormDurationComponent } from './FormDurationComponent';
 import { FormInputComponent } from './FormInputComponent';
 import { FormMaskHashSaltComponent } from './FormMaskHashSaltComponent';
 import { FormMaskOrTruncateComponent } from './FormMaskOrTruncateComponent';
 import { FormSelectComponent } from './FormSelectComponent';
 import { FormSwitchComponent } from './FormSwitchComponent';
+import { FormTextComponent } from './FormTextComponent';
 import {
   ConnectorProperty,
   PropertyValidationResult,
 } from '@debezium/ui-models';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormTextComponent } from './FormTextComponent';
 
 export interface IFormComponentProps {
-  isViewMode?:boolean;
+  isViewMode?: boolean;
   initialValues?: any;
   propertyDefinition: ConnectorProperty;
   helperTextInvalid?: any;
@@ -42,7 +43,7 @@ const getInvalidFilterMsg = (
   return returnVal;
 };
 
-const clearValidation = () => null
+const clearValidation = () => null;
 
 export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
   props
@@ -56,7 +57,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         : 'default'
       : 'error';
   };
-  if(props.isViewMode){
+  if (props.isViewMode) {
     return (
       <FormTextComponent
         description={props.propertyDefinition.description}
@@ -67,146 +68,163 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         initialValues={props.initialValues}
       />
     );
-  }else{
-      // Has allowed values - Select component
-  if (props.propertyDefinition.allowedValues) {
-    return (
-      <FormSelectComponent
-        helperTextInvalid={props.helperTextInvalid}
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        isRequired={props.propertyDefinition.isMandatory}
-        description={props.propertyDefinition.description}
-        label={props.propertyDefinition.displayName}
-        propertyChange={props.propertyChange}
-        setFieldValue={props.setFieldValue}
-        options={props.propertyDefinition.allowedValues}
-        validated={getValidate()}
-      />
-    );
-    // Boolean - checkbox
-  } else if (props.propertyDefinition.type === 'BOOLEAN') {
-    return (
-      <FormCheckboxComponent
-        isChecked={
-          typeof props.propertyDefinition.defaultValue !== 'undefined' &&
-          props.propertyDefinition.defaultValue === true
-        }
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        label={props.propertyDefinition.displayName}
-        description={props.propertyDefinition.description}
-        propertyChange={props.propertyChange}
-        setFieldValue={props.setFieldValue}
-      />
-    );
-    // Boolean - switch
-  } else if (props.propertyDefinition.type === 'BOOLEAN-SWITCH') {
-    return (
-      <FormSwitchComponent
-        isChecked={
-          typeof props.propertyDefinition.defaultValue !== 'undefined' &&
-          props.propertyDefinition.defaultValue === true
-        }
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        label={props.propertyDefinition.displayName}
-        description={props.propertyDefinition.description}
-        propertyChange={props.propertyChange}
-        setFieldValue={props.setFieldValue}
-      />
-    );
-    // Duration
-  } else if (props.propertyDefinition.type === 'DURATION') {
-    return (
-      <FormDurationComponent
-        description={props.propertyDefinition.description}
-        isRequired={props.propertyDefinition.isMandatory}
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        helperTextInvalid={
-          getInvalidFilterMsg(
-            props.propertyDefinition.name,
-            props.invalidMsg
-          ) || props.helperTextInvalid
-        }
-        label={props.propertyDefinition.displayName}
-        propertyChange={props.propertyChange}
-        setFieldValue={props.setFieldValue}
-        validated={getValidate()}
-      />
-    );
-    // Column Mask or Column Truncate
-  } else if (props.propertyDefinition.type === 'COL_MASK_OR_TRUNCATE') {
-    return (
-      <FormMaskOrTruncateComponent
-        description={props.propertyDefinition.description}
-        isRequired={props.propertyDefinition.isMandatory}
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        helperTextInvalid={
-          getInvalidFilterMsg(
-            props.propertyDefinition.name,
-            props.invalidMsg
-          ) || props.helperTextInvalid
-        }
-        label={props.propertyDefinition.displayName}
-        i18nAddDefinitionText={t('addDefinition')}
-        i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
-        i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
-        propertyChange={props.propertyChange}
-        setFieldValue={props.setFieldValue}
-        validated={getValidate()}
-      />
-    );
-    // Column Mask Hash and Salt
-  } else if (props.propertyDefinition.type === 'COL_MASK_HASH_SALT') {
-    return (
-      <FormMaskHashSaltComponent
-        description={props.propertyDefinition.description}
-        isRequired={props.propertyDefinition.isMandatory}
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        helperTextInvalid={
-          getInvalidFilterMsg(
-            props.propertyDefinition.name,
-            props.invalidMsg
-          ) || props.helperTextInvalid
-        }
-        label={props.propertyDefinition.displayName}
-        i18nAddDefinitionText={t('addDefinition')}
-        i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
-        i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
-        propertyChange={props.propertyChange}
-        setFieldValue={props.setFieldValue}
-        validated={getValidate()}
-      />
-    );
-
-    // Any other - Text input
   } else {
-    return (
-      <FormInputComponent
-        isRequired={props.propertyDefinition.isMandatory}
-        fieldId={props.propertyDefinition.name}
-        name={props.propertyDefinition.name}
-        label={props.propertyDefinition.displayName}
-        type={props.propertyDefinition.type}
-        helperTextInvalid={
-          getInvalidFilterMsg(
-            props.propertyDefinition.name,
-            props.invalidMsg
-          ) || props.helperTextInvalid
-        }
-        infoTitle={
-          props.propertyDefinition.displayName || props.propertyDefinition.name
-        }
-        infoText={props.propertyDefinition.description}
-        validated={getValidate()}
-        clearValidationError={props.clearValidationError || clearValidation}
-      />
-    );
-  }
-  }
+    // Has allowed values - Select component
+    if (props.propertyDefinition.allowedValues) {
+      return (
+        <FormSelectComponent
+          helperTextInvalid={props.helperTextInvalid}
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          isRequired={props.propertyDefinition.isMandatory}
+          description={props.propertyDefinition.description}
+          label={props.propertyDefinition.displayName}
+          propertyChange={props.propertyChange}
+          setFieldValue={props.setFieldValue}
+          options={props.propertyDefinition.allowedValues}
+          validated={getValidate()}
+        />
+      );
+      // Boolean - checkbox
+    } else if (props.propertyDefinition.type === 'BOOLEAN') {
+      return (
+        <FormCheckboxComponent
+          isChecked={
+            typeof props.propertyDefinition.defaultValue !== 'undefined' &&
+            props.propertyDefinition.defaultValue === true
+          }
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          label={props.propertyDefinition.displayName}
+          description={props.propertyDefinition.description}
+          propertyChange={props.propertyChange}
+          setFieldValue={props.setFieldValue}
+        />
+      );
+      // Boolean - switch
+    } else if (props.propertyDefinition.type === 'BOOLEAN-SWITCH') {
+      return (
+        <FormSwitchComponent
+          isChecked={
+            typeof props.propertyDefinition.defaultValue !== 'undefined' &&
+            props.propertyDefinition.defaultValue === true
+          }
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          label={props.propertyDefinition.displayName}
+          description={props.propertyDefinition.description}
+          propertyChange={props.propertyChange}
+          setFieldValue={props.setFieldValue}
+        />
+      );
+      // Duration
+    } else if (props.propertyDefinition.type === 'DURATION') {
+      return (
+        <FormDurationComponent
+          description={props.propertyDefinition.description}
+          isRequired={props.propertyDefinition.isMandatory}
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          helperTextInvalid={
+            getInvalidFilterMsg(
+              props.propertyDefinition.name,
+              props.invalidMsg
+            ) || props.helperTextInvalid
+          }
+          label={props.propertyDefinition.displayName}
+          propertyChange={props.propertyChange}
+          setFieldValue={props.setFieldValue}
+          validated={getValidate()}
+        />
+      );
+      // Column Mask or Column Truncate
+    } else if (props.propertyDefinition.type === 'COL_MASK_OR_TRUNCATE') {
+      return (
+        <FormMaskOrTruncateComponent
+          description={props.propertyDefinition.description}
+          isRequired={props.propertyDefinition.isMandatory}
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          helperTextInvalid={
+            getInvalidFilterMsg(
+              props.propertyDefinition.name,
+              props.invalidMsg
+            ) || props.helperTextInvalid
+          }
+          label={props.propertyDefinition.displayName}
+          i18nAddDefinitionText={t('addDefinition')}
+          i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
+          i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
+          propertyChange={props.propertyChange}
+          setFieldValue={props.setFieldValue}
+          validated={getValidate()}
+        />
+      );
+      // Column Mask Hash and Salt
+    } else if (props.propertyDefinition.type === 'COL_MASK_HASH_SALT') {
+      return (
+        <FormMaskHashSaltComponent
+          description={props.propertyDefinition.description}
+          isRequired={props.propertyDefinition.isMandatory}
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          helperTextInvalid={
+            getInvalidFilterMsg(
+              props.propertyDefinition.name,
+              props.invalidMsg
+            ) || props.helperTextInvalid
+          }
+          label={props.propertyDefinition.displayName}
+          i18nAddDefinitionText={t('addDefinition')}
+          i18nAddDefinitionTooltip={t('addDefinitionTooltip')}
+          i18nRemoveDefinitionTooltip={t('removeDefinitionTooltip')}
+          propertyChange={props.propertyChange}
+          setFieldValue={props.setFieldValue}
+          validated={getValidate()}
+        />
+      );
 
+      // Any other - Text input
+    } else {
+      if (
+        // check if in Edit flow
+        props.isViewMode !== undefined &&
+        props.propertyDefinition.type === 'PASSWORD'
+      ) {
+        return (
+          <FormDisabledComponent
+            description={props.propertyDefinition.description}
+            isRequired={props.propertyDefinition.isMandatory}
+            fieldId={props.propertyDefinition.name}
+            name={props.propertyDefinition.name}
+            label={props.propertyDefinition.displayName}
+            initialValues={props.initialValues}
+          />
+        );
+      } else {
+        return (
+          <FormInputComponent
+            isRequired={props.propertyDefinition.isMandatory}
+            fieldId={props.propertyDefinition.name}
+            name={props.propertyDefinition.name}
+            label={props.propertyDefinition.displayName}
+            type={props.propertyDefinition.type}
+            helperTextInvalid={
+              getInvalidFilterMsg(
+                props.propertyDefinition.name,
+                props.invalidMsg
+              ) || props.helperTextInvalid
+            }
+            infoTitle={
+              props.propertyDefinition.displayName ||
+              props.propertyDefinition.name
+            }
+            infoText={props.propertyDefinition.description}
+            validated={getValidate()}
+            clearValidationError={props.clearValidationError || clearValidation}
+          />
+        );
+      }
+    }
+  }
 };

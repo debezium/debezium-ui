@@ -166,7 +166,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
                 ? props.connector?.schema['x-connector-id']
                 : ''
             }
-            isViewMode={props?.isViewMode || false}
+            isViewMode={props?.isViewMode}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -180,7 +180,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case FILTER_CONFIGURATION_STEP_ID:
         return (
           <FilterConfig
-            isViewMode={props?.isViewMode || false}
+            isViewMode={props?.isViewMode}
             filterValues={filterValues}
             updateFilterValues={handleFilterUpdate}
             connectorType={
@@ -194,7 +194,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case DATA_OPTIONS_STEP_ID:
         return (
           <DataOptions
-            isViewMode={props?.isViewMode || false}
+            isViewMode={props?.isViewMode}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)

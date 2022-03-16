@@ -15,7 +15,7 @@ import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IRuntimeOptionsProps {
-  isViewMode: boolean;
+  isViewMode: boolean | undefined;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;

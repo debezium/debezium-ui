@@ -1,9 +1,9 @@
-import { FormGroup, Text, TextVariants } from '@patternfly/react-core';
+import { FormGroup, TextInput } from '@patternfly/react-core';
 import { HelpInfoIcon } from 'components';
 import _ from 'lodash';
 import React, { FC } from 'react';
 
-export interface IFormTextComponentProps {
+export interface IFormDisabledComponentProps {
   label: string;
   description: string | '';
   fieldId: string;
@@ -11,7 +11,9 @@ export interface IFormTextComponentProps {
   isRequired: boolean;
   initialValues: any;
 }
-export const FormTextComponent: FC<IFormTextComponentProps> = (props) => {
+export const FormDisabledComponent: FC<IFormDisabledComponentProps> = (
+  props
+) => {
   return (
     <FormGroup
       label={props.label}
@@ -21,9 +23,12 @@ export const FormTextComponent: FC<IFormTextComponentProps> = (props) => {
       }
       fieldId={props.label}
     >
-      <Text component={TextVariants.p}>
-        {props.initialValues[props.name] || ''}
-      </Text>
+      <TextInput
+        name={props.label}
+        isDisabled
+        value={''}
+        aria-label={props.label}
+      />
     </FormGroup>
   );
 };

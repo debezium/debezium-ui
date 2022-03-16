@@ -25,7 +25,7 @@ import {
 import { HelpIcon } from '@patternfly/react-icons';
 
 export interface IFilterConfigProps {
-  isViewMode: boolean;
+  isViewMode: boolean | undefined;
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
