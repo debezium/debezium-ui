@@ -7,6 +7,7 @@ package io.debezium.configserver.service.sqlserver;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,23 +118,25 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
         }
 
         final SqlServerConnectorConfig sqlServerConfig = new SqlServerConnectorConfig(Configuration.from(properties));
-        final String databaseName = sqlServerConfig.getDatabaseName();
+        final List<String> databaseNames = sqlServerConfig.getDatabaseNames();
         
         try (SqlServerConnection connection = connect(sqlServerConfig)) {
-            Set<TableId> tables;
-            try {
-                tables = connection.readTableNames(databaseName, null, null, new String[]{ "TABLE" });
+            Set<TableId> tables = new HashSet<>();
+            databaseNames.forEach(databaseName -> {
+                try {
+                    tables.addAll(connection.readTableNames(databaseName, null, null, new String[]{ "TABLE" }));
+                }
+                catch (SQLException e) {
+                    throw new DebeziumException(e);
+                }
+            });
 
-                List<DataCollection> matchingTables = tables.stream()
-                        .filter(tableId -> sqlServerConfig.getTableFilters().dataCollectionFilter().isIncluded(tableId))
-                        .map(tableId -> new DataCollection(tableId.schema(), tableId.table()))
-                        .collect(Collectors.toList());
+            List<DataCollection> matchingTables = tables.stream()
+                    .filter(tableId -> sqlServerConfig.getTableFilters().dataCollectionFilter().isIncluded(tableId))
+                    .map(tableId -> new DataCollection(tableId.catalog() + "." + tableId.schema(), tableId.table()))
+                    .collect(Collectors.toList());
 
-                return FilterValidationResult.valid(matchingTables);
-            }
-            catch (SQLException e) {
-                throw new DebeziumException(e);
-            }
+            return FilterValidationResult.valid(matchingTables);
         }
         catch (SQLException e) {
             throw new RuntimeException("Could not retrieve real database name", e);
