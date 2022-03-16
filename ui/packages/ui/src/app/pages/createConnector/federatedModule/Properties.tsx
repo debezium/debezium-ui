@@ -10,18 +10,15 @@ import { FormComponent } from 'components';
 import { Form, Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IPropertiesProps {
   connectorType: string;
+  isViewMode: boolean | undefined;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
-  i18nIsRequiredText: string;
-  i18nAdvancedPropertiesText: string;
-  i18nAdvancedPublicationPropertiesText: string;
-  i18nAdvancedReplicationPropertiesText: string;
-  i18nBasicPropertiesText: string;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
 
@@ -96,12 +93,13 @@ const getAdvancePublicationProperty = (
 };
 
 export const Properties: React.FC<IPropertiesProps> = (props) => {
+  const { t } = useTranslation();
+
   const [initialValues, setInitialValues] = React.useState(
     getInitialObject(props.propertyDefinitions)
   );
   const [basicExpanded, setBasicExpanded] = React.useState<boolean>(true);
-  const [advancedExpanded, setAdvancedExpanded] =
-    React.useState<boolean>(false);
+  const [advancedExpanded, setAdvancedExpanded] = React.useState<boolean>(true);
 
   const [basicPropertyDefinitions] = React.useState<ConnectorProperty[]>(
     getBasicProperty(props.propertyDefinitions)
@@ -139,11 +137,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       finalConfiguration,
       isFormValid(new Map(Object.entries(values)))
     );
-    return setValidation(
-      values,
-      props.propertyDefinitions,
-      props.i18nIsRequiredText
-    );
+    return setValidation(values, props.propertyDefinitions, t('isRequired'));
   };
 
   const isFormValid = (formData: Map<string, unknown>): boolean => {
@@ -185,14 +179,14 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
       });
     }
     Object.keys(initialValues).forEach((key: string) => {
-      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+      if (updatedConfiguration.get(key.replace(/[&]/g, '.'))) {
         initialValuesCopy[key] = updatedConfiguration.get(
-          key.replace(/[_]/g, '.')
+          key.replace(/[&]/g, '.')
         );
       } else if (checkIfRequired(props.propertyDefinitions, key)) {
         initialValues[key]
           ? updatedConfiguration.set(
-              key.replace(/[_]/g, '.'),
+              key.replace(/[&]/g, '.'),
               initialValues[key]
             )
           : (isValid = false);
@@ -203,7 +197,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
   }, []);
 
   return (
-    <div className={'properties-step-page pf-c-card'}>
+    <div className={'properties-step-page'}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
@@ -219,11 +213,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
               <Grid>
                 <GridItem lg={9} sm={12}>
                   <ExpandableSection
-                    toggleText={
-                      basicExpanded
-                        ? props.i18nBasicPropertiesText
-                        : props.i18nBasicPropertiesText
-                    }
+                    toggleText={t('basicPropertiesText')}
                     onToggle={onToggleBasic}
                     isExpanded={basicExpanded}
                   >
@@ -240,6 +230,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
+                                isViewMode={props.isViewMode}
+                                initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
@@ -265,11 +257,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                     advancedReplicationPropertyDefinitions.length > 0 ||
                     advancedPublicationPropertyDefinitions.length > 0) && (
                     <ExpandableSection
-                      toggleText={
-                        advancedExpanded
-                          ? props.i18nAdvancedPropertiesText
-                          : props.i18nAdvancedPropertiesText
-                      }
+                      toggleText={t('advancedPropertiesText')}
                       onToggle={onToggleAdvanced}
                       isExpanded={advancedExpanded}
                     >
@@ -290,6 +278,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                   sm={propertyDefinition.gridWidthSm}
                                 >
                                   <FormComponent
+                                    isViewMode={props.isViewMode}
+                                    initialValues={initialValues}
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
                                     setFieldValue={setFieldValue}
@@ -316,7 +306,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                           headingLevel="h2"
                           className="properties-step-grouping"
                         >
-                          {props.i18nAdvancedReplicationPropertiesText}
+                          {t('advancedReplicationPropertiesText')}
                         </Title>
                       ) : null}
                       <GridItem span={9}>
@@ -336,6 +326,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                   sm={propertyDefinition.gridWidthSm}
                                 >
                                   <FormComponent
+                                    isViewMode={props.isViewMode}
+                                    initialValues={initialValues}
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
                                     setFieldValue={setFieldValue}
@@ -366,7 +358,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                               headingLevel="h2"
                               className="properties-step-grouping"
                             >
-                              {props.i18nAdvancedPublicationPropertiesText}
+                              {t('advancedPublicationPropertiesText')}
                             </Title>
                           ) : null}
                           <GridItem span={9}>
@@ -386,6 +378,8 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                       sm={propertyDefinition.gridWidthSm}
                                     >
                                       <FormComponent
+                                        isViewMode={props.isViewMode}
+                                        initialValues={initialValues}
                                         propertyDefinition={propertyDefinition}
                                         propertyChange={handlePropertyChange}
                                         setFieldValue={setFieldValue}

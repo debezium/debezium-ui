@@ -10,11 +10,12 @@ import { FormComponent } from 'components';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
-import { useTranslation } from 'react-i18next';
 
 export interface IRuntimeOptionsProps {
+  isViewMode: boolean | undefined;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -65,9 +66,9 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
   const [initialValues, setInitialValues] = React.useState(
     getInitialObject(props.propertyDefinitions)
   );
-  const [engineExpanded, setEngineExpanded] = React.useState<boolean>(false);
+  const [engineExpanded, setEngineExpanded] = React.useState<boolean>(true);
   const [heartbeatExpanded, setHeartbeatExpanded] =
-    React.useState<boolean>(false);
+    React.useState<boolean>(true);
 
   const [enginePropertyDefinitions] = React.useState<ConnectorProperty[]>(
     getEngineProperty(props.propertyDefinitions)
@@ -138,14 +139,14 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
       });
     }
     Object.keys(initialValues).forEach((key: string) => {
-      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+      if (updatedConfiguration.get(key.replace(/[&]/g, '.'))) {
         initialValuesCopy[key] = updatedConfiguration.get(
-          key.replace(/[_]/g, '.')
+          key.replace(/[&]/g, '.')
         );
       } else if (checkIfRequired(props.propertyDefinitions, key)) {
         initialValues[key]
           ? updatedConfiguration.set(
-              key.replace(/[_]/g, '.'),
+              key.replace(/[&]/g, '.'),
               initialValues[key]
             )
           : (isValid = false);
@@ -190,6 +191,8 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
+                                isViewMode={props.isViewMode}
+                                initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}
@@ -222,6 +225,8 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
+                                isViewMode={props.isViewMode}
+                                initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
                                 setFieldValue={setFieldValue}

@@ -18,6 +18,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
+  isViewMode: boolean | undefined;
   propertyDefinitions: ConnectorProperty[];
   runtimePropertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -154,14 +155,14 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
       });
     }
     Object.keys(initialValues).forEach((key: string) => {
-      if (updatedConfiguration.get(key.replace(/[_]/g, '.'))) {
+      if (updatedConfiguration.get(key.replace(/[&]/g, '.'))) {
         initialValuesCopy[key] = updatedConfiguration.get(
-          key.replace(/[_]/g, '.')
+          key.replace(/[&]/g, '.')
         );
       } else if (checkIfRequired(props.propertyDefinitions, key)) {
         initialValues[key]
           ? updatedConfiguration.set(
-              key.replace(/[_]/g, '.'),
+              key.replace(/[&]/g, '.'),
               initialValues[key]
             )
           : (isValid = false);
@@ -172,7 +173,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
   }, []);
 
   return (
-    <div className={'data-options-component-page pf-c-card'}>
+    <div className={'data-options-component-page '}>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
@@ -206,6 +207,8 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
+                                  isViewMode={props.isViewMode}
+                                  initialValues={initialValues}
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
                                   setFieldValue={setFieldValue}
@@ -240,6 +243,8 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
+                                  isViewMode={props.isViewMode}
+                                  initialValues={initialValues}
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
                                   setFieldValue={setFieldValue}
@@ -277,6 +282,8 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                     sm={propertyDefinition.gridWidthSm}
                                   >
                                     <FormComponent
+                                      isViewMode={props.isViewMode}
+                                      initialValues={initialValues}
                                       propertyDefinition={propertyDefinition}
                                       propertyChange={handlePropertyChange}
                                       setFieldValue={setFieldValue}
@@ -299,6 +306,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
         )}
       </Formik>
       <RuntimeOptions
+        isViewMode={props?.isViewMode}
         configuration={props.configuration}
         onChange={(conf: Map<string, unknown>, status: boolean) =>
           props.onChange(conf, status)
