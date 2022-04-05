@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@redhat-cloud-services/frontend-components-config": "4.6.7",
-    "@testing-library/jest-dom": "5.16.3",
+    "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.4",
     "@testing-library/user-event": "13.5.0",
     "@types/enzyme": "3.10.11",
@@ -90,7 +90,7 @@
     "webpack": "5.71.0",
     "webpack-bundle-analyzer": "4.5.0",
     "webpack-cli": "4.9.2",
-    "webpack-dev-server": "4.7.4",
+    "webpack-dev-server": "4.8.0",
     "webpack-merge": "5.8.0"
   },
   "dependencies": {
