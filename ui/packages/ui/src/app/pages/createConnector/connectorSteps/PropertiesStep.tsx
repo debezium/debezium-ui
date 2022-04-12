@@ -66,7 +66,7 @@ export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
   );
   const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(
     props.advancedPropertyDefinitions.filter(
-      (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL
+      (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL || defn.category === PropertyCategory.ADVANCED_SSL
     )
   );
   const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(
