@@ -267,7 +267,8 @@ export function getAdvancedPropertyDefinitions(
     if (
       propDefn?.category === PropertyCategory.ADVANCED_GENERAL ||
       propDefn?.category === PropertyCategory.ADVANCED_PUBLICATION ||
-      propDefn?.category === PropertyCategory.ADVANCED_REPLICATION
+      propDefn?.category === PropertyCategory.ADVANCED_REPLICATION ||
+      propDefn?.category === PropertyCategory.ADVANCED_SSL
     ) {
       connProperties.push(propDefn);
     }
@@ -996,7 +997,7 @@ export function mapToObject(inputMap: Map<string, string>): {
 
 export function maskPropertyValues(inputObj: { key: string; value: any }) {
   for (const [key, value] of Object.entries(inputObj)) {
-    if (key.includes('password')) {
+    if (key.includes('password') && !!inputObj[key]) {
       inputObj[key] = '*'.repeat(value.length);
     }
   }

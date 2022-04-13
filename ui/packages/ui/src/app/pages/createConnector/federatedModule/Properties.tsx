@@ -72,7 +72,7 @@ const getAdvanceGeneralProperty = (
 ): ConnectorProperty[] => {
   const propertyDefinitionsCopy = _.cloneDeep(propertyList);
   return propertyDefinitionsCopy.filter(
-    (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL
+    (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL || defn.category === PropertyCategory.ADVANCED_SSL
   );
 };
 const getAdvanceReplicationProperty = (

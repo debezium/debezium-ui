@@ -56,7 +56,7 @@ describe("Utils", () => {
   });
 
   it("test getAdvancedPropertyDefinitions", () => {
-    expect(getAdvancedPropertyDefinitions(CONNECTOR_PROPERTIES)).toHaveLength(3);
+    expect(getAdvancedPropertyDefinitions(CONNECTOR_PROPERTIES)).toHaveLength(4);
   });
 
   it("test getFilterPropertyDefinitions", () => {
