@@ -112,7 +112,7 @@
     "react-dom": "16.14.0",
     "react-fast-compare": "3.2.0",
     "react-i18next": "11.16.6",
-    "react-router": "5.2.1",
+    "react-router": "5.3.1",
     "react-router-dom": "5.3.0",
     "terser-webpack-plugin": "5.3.1",
     "tslib": "2.3.1",
