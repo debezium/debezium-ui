@@ -3,6 +3,7 @@ import { FormGroup, TextInput } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface IFormInputComponentProps {
   label: string;
@@ -11,6 +12,7 @@ export interface IFormInputComponentProps {
   name: string;
   infoTitle: string | '';
   helperTextInvalid?: any;
+  helperText: boolean;
   type: any;
   isRequired: boolean;
   validated?: 'default' | 'success' | 'warning' | 'error' | undefined;
@@ -19,6 +21,7 @@ export interface IFormInputComponentProps {
 export const FormInputComponent: React.FunctionComponent<
   IFormInputComponentProps
 > = (props) => {
+  const { t } = useTranslation();
   const [field] = useField(props);
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
@@ -63,6 +66,7 @@ export const FormInputComponent: React.FunctionComponent<
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       fieldId={field.name}
       validated={props.validated}
+      helperText={props.helperText ? t("editPasswordHelperText") : ""}
     >
       <TextInput
         name={field.name}

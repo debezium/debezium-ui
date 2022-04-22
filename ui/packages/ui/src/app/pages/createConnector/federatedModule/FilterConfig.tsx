@@ -9,6 +9,7 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
+import { HelpIcon } from '@patternfly/react-icons';
 import {
   FilterExcludeFieldComponent,
   FilterInputFieldComponent,
@@ -22,7 +23,6 @@ import {
   ConfirmationDialog,
   getFilterConfigurationPageContent,
 } from 'shared';
-import { HelpIcon } from '@patternfly/react-icons';
 
 export interface IFilterConfigProps {
   isViewMode: boolean | undefined;
@@ -32,15 +32,15 @@ export interface IFilterConfigProps {
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
 }
 
-const getPropertyValue = (config: Map<string, string>, filter: string ) =>{
+const getPropertyValue = (config: Map<string, string>, filter: string) => {
   let key = '';
-  [...config.keys()].forEach( k =>{
-    if(k.includes(filter)){
-      key = k
+  [...config.keys()].forEach((k) => {
+    if (k.includes(filter)) {
+      key = k;
     }
-  })
+  });
   return config.get(key);
-}
+};
 
 export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   props
@@ -64,6 +64,12 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   const doCancel = () => {
     setShowClearDialog(false);
   };
+
+  const noPropertySet = (name: string) => (
+    <Text className={'form-text-component_no-property'}>
+      {t('propertyNotConfigured', { name })}
+    </Text>
+  );
 
   const doClear = () => {
     props.setIsValidFilter(true);
@@ -92,50 +98,63 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
       <Form className="child-selection-step_form">
         {props.isViewMode ? (
           <>
-          {filterConfigurationPageContentObj.fieldArray.map(
+            {filterConfigurationPageContentObj.fieldArray.map(
               (fieldFilter: any) => {
-                return (<FormGroup
-                  key={fieldFilter.field}
-                  label={t('filterFieldLabel', {
-                    field: _.capitalize(fieldFilter.field),
-                  })}
-                  fieldId={'field_filter'}
-                  isRequired={false}
-                  labelIcon={
-                    <Popover
-                      bodyContent={
-                        <div>
-                          {t('filterFieldInfoMsg', {
-                      field: fieldFilter.field,
-                      sampleVal: fieldFilter.valueSample,
+                return (
+                  <FormGroup
+                    key={fieldFilter.field}
+                    label={t('filterFieldLabel', {
+                      field: _.capitalize(fieldFilter.field),
                     })}
-                          <br />
-                          <a
-                            href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                            target="_blank"
-                          >
-                            More Info
-                          </a>
-                        </div>
-                      }
-                    >
-                      <button
-                        aria-label="More info for filter field"
-                        onClick={(e) => e.preventDefault()}
-                        aria-describedby="simple-form-filter"
-                        className="pf-c-form__group-label-help"
+                    fieldId={'field_filter'}
+                    isRequired={false}
+                    labelIcon={
+                      <Popover
+                        bodyContent={
+                          <div>
+                            {t('filterFieldInfoMsg', {
+                              field: fieldFilter.field,
+                              sampleVal: fieldFilter.valueSample,
+                            })}
+                            <br />
+                            <a
+                              href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
+                              target="_blank"
+                            >
+                              More Info
+                            </a>
+                          </div>
+                        }
                       >
-                        <HelpIcon noVerticalAlign={true} />
-                      </button>
-                    </Popover>
-                  }
-                >
-                  <Text component={TextVariants.p}>
-                    {getPropertyValue(props.filterValues, fieldFilter.field)}
-                  
-                  </Text>
-                </FormGroup>)
-              })}
+                        <button
+                          aria-label="More info for filter field"
+                          onClick={(e) => e.preventDefault()}
+                          aria-describedby="simple-form-filter"
+                          className="pf-c-form__group-label-help"
+                        >
+                          <HelpIcon noVerticalAlign={true} />
+                        </button>
+                      </Popover>
+                    }
+                  >
+                    {getPropertyValue(props.filterValues, fieldFilter.field) ? (
+                      <Text component={TextVariants.p}>
+                        {getPropertyValue(
+                          props.filterValues,
+                          fieldFilter.field
+                        )}
+                      </Text>
+                    ) : (
+                      noPropertySet(
+                        t('filterFieldLabel', {
+                          field: _.capitalize(fieldFilter.field),
+                        })
+                      )
+                    )}
+                  </FormGroup>
+                );
+              }
+            )}
           </>
         ) : (
           <>

@@ -1,7 +1,11 @@
+import './FormTextComponent.css';
 import { FormGroup, Text, TextVariants } from '@patternfly/react-core';
 import { HelpInfoIcon } from 'components';
 import _ from 'lodash';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
+const pointer = require('json-pointer');
 
 export interface IFormTextComponentProps {
   label: string;
@@ -12,6 +16,18 @@ export interface IFormTextComponentProps {
   initialValues: any;
 }
 export const FormTextComponent: FC<IFormTextComponentProps> = (props) => {
+  const { t } = useTranslation();
+
+  const noPropertySet = (name: string) => (
+    <Text className={'form-text-component_no-property'}>
+      {t('propertyNotConfigured', { name })}
+    </Text>
+  );
+
+  const propertyValue = pointer.get(
+    props.initialValues,
+    '/' + props.name.replaceAll('.', '/')
+  );
   return (
     <FormGroup
       label={props.label}
@@ -21,9 +37,11 @@ export const FormTextComponent: FC<IFormTextComponentProps> = (props) => {
       }
       fieldId={props.label}
     >
-      <Text component={TextVariants.p}>
-        {props.initialValues[props.name] || ''}
-      </Text>
+      {propertyValue ? (
+        <Text component={TextVariants.p}>{propertyValue}</Text>
+      ) : (
+        noPropertySet(props.label)
+      )}
     </FormGroup>
   );
 };
