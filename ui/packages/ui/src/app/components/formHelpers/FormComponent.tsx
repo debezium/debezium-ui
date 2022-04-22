@@ -1,5 +1,4 @@
 import { FormCheckboxComponent } from './FormCheckboxComponent';
-import { FormDisabledComponent } from './FormDisabledComponent';
 import { FormDurationComponent } from './FormDurationComponent';
 import { FormInputComponent } from './FormInputComponent';
 import { FormMaskHashSaltComponent } from './FormMaskHashSaltComponent';
@@ -186,22 +185,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
 
       // Any other - Text input
     } else {
-      if (
-        // check if in Edit flow
-        props.isViewMode !== undefined &&
-        props.propertyDefinition.type === 'PASSWORD'
-      ) {
-        return (
-          <FormDisabledComponent
-            description={props.propertyDefinition.description}
-            isRequired={props.propertyDefinition.isMandatory}
-            fieldId={props.propertyDefinition.name}
-            name={props.propertyDefinition.name}
-            label={props.propertyDefinition.displayName}
-            initialValues={props.initialValues}
-          />
-        );
-      } else {
+      
         return (
           <FormInputComponent
             isRequired={props.propertyDefinition.isMandatory}
@@ -219,12 +203,14 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
               props.propertyDefinition.displayName ||
               props.propertyDefinition.name
             }
+            helperText={props.isViewMode !== undefined &&
+              props.propertyDefinition.type === 'PASSWORD'}
             infoText={props.propertyDefinition.description}
             validated={getValidate()}
             clearValidationError={props.clearValidationError || clearValidation}
           />
         );
-      }
+      
     }
   }
 };

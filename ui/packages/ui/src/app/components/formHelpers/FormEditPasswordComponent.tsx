@@ -1,9 +1,10 @@
 import { FormGroup, TextInput } from '@patternfly/react-core';
 import { HelpInfoIcon } from 'components';
+import { t } from 'i18next';
 import _ from 'lodash';
 import React, { FC } from 'react';
 
-export interface IFormDisabledComponentProps {
+export interface IFormEditPasswordComponentProps {
   label: string;
   description: string | '';
   fieldId: string;
@@ -11,7 +12,7 @@ export interface IFormDisabledComponentProps {
   isRequired: boolean;
   initialValues: any;
 }
-export const FormDisabledComponent: FC<IFormDisabledComponentProps> = (
+export const FormEditPasswordComponent: FC<IFormEditPasswordComponentProps> = (
   props
 ) => {
   return (
@@ -22,10 +23,10 @@ export const FormDisabledComponent: FC<IFormDisabledComponentProps> = (
         <HelpInfoIcon label={props.label} description={props.description} />
       }
       fieldId={props.label}
+      helperText={t("editPasswordHelperText")}
     >
       <TextInput
         name={props.label}
-        isDisabled
         value={''}
         aria-label={props.label}
       />
