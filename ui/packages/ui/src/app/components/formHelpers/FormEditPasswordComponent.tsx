@@ -1,6 +1,6 @@
 import { FormGroup, TextInput } from '@patternfly/react-core';
 import { HelpInfoIcon } from 'components';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import React, { FC } from 'react';
 
@@ -15,6 +15,7 @@ export interface IFormEditPasswordComponentProps {
 export const FormEditPasswordComponent: FC<IFormEditPasswordComponentProps> = (
   props
 ) => {
+  const { t } = useTranslation();
   return (
     <FormGroup
       label={props.label}
