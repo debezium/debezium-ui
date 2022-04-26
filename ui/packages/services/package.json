@@ -16,6 +16,6 @@
   "dependencies": {
     "@debezium/ui-models": "1.0.0",
     "yaml": "1.10.2",
-    "axios": "0.26.1"
+    "axios": "0.27.1"
   }
 }
