@@ -1,0 +1,9 @@
+.my-class {
+  [aria-label='minus'] {
+    display: none;
+  }
+
+  [aria-label='plus'] {
+    display: none;
+  }
+}

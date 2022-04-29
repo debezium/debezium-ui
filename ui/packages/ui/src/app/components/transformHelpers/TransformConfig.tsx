@@ -75,8 +75,14 @@ export const TransformConfig = React.forwardRef<any, ITransformConfigProps>(
         basicValidationSchema[key.name] = Yup.string();
       } else if (key.type === 'PASSWORD') {
         basicValidationSchema[key.name] = Yup.string();
-      } else if (key.type === 'INT') {
-        basicValidationSchema[key.name] = Yup.string();
+      } else if (
+        key.type === 'INT' ||
+        key.type === 'LONG' ||
+        key.type === 'NON-NEG-INT' ||
+        key.type === 'NON-NEG-LONG' ||
+        key.type === 'POS-INT'
+      ) {
+        basicValidationSchema[key.name] = Yup.number().strict();
       }
       // TODO: isMandatory is missing in backend response
       // if (key.isMandatory) {

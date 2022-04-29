@@ -117,8 +117,14 @@ export const TopicGroupConfig: React.FunctionComponent<any> = React.forwardRef(
         basicValidationSchema[key.name] = Yup.string();
       } else if (key.type === 'PASSWORD') {
         basicValidationSchema[key.name] = Yup.string();
-      } else if (key.type === 'INT') {
-        basicValidationSchema[key.name] = Yup.string();
+      } else if (
+        key.type === 'INT' ||
+        key.type === 'LONG' ||
+        key.type === 'NON-NEG-INT' ||
+        key.type === 'NON-NEG-LONG' ||
+        key.type === 'POS-INT'
+      ) {
+        basicValidationSchema[key.name] = Yup.number().strict();
       }
       if (key.isMandatory) {
         basicValidationSchema[key.name] = basicValidationSchema[
