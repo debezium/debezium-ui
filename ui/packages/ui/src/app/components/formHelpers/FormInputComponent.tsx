@@ -84,8 +84,8 @@ export const FormInputComponent: React.FunctionComponent<
           }}
           inputName={props.label}
           inputAriaLabel={props.label}
-          minusBtnAriaLabel="minus"
-          plusBtnAriaLabel="plus"
+          minusBtnAriaLabel="dbz_port_minus"
+          plusBtnAriaLabel="dbz_port_plus"
           min={minValue(props.type)}
           onKeyPress={(event) => handleKeyPress(event as any)}
         />
