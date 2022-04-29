@@ -66,7 +66,9 @@ export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
   );
   const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(
     props.advancedPropertyDefinitions.filter(
-      (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL || defn.category === PropertyCategory.ADVANCED_SSL
+      (defn: any) =>
+        defn.category === PropertyCategory.ADVANCED_GENERAL ||
+        defn.category === PropertyCategory.ADVANCED_SSL
     )
   );
   const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(
@@ -89,8 +91,14 @@ export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
       basicValidationSchema[key.name] = Yup.string();
     } else if (key.type === 'PASSWORD') {
       basicValidationSchema[key.name] = Yup.string();
-    } else if (key.type === 'INT') {
-      basicValidationSchema[key.name] = Yup.string();
+    } else if (
+      key.type === 'INT' ||
+      key.type === 'LONG' ||
+      key.type === 'NON-NEG-INT' ||
+      key.type === 'NON-NEG-LONG' ||
+      key.type === 'POS-INT'
+    ) {
+      basicValidationSchema[key.name] = Yup.number().strict();
     } else if (key.type === 'LIST') {
       basicValidationSchema[key.name] = Yup.string();
     }

@@ -1,5 +1,6 @@
+import './FormInputComponent.css';
 import { HelpInfoIcon } from './HelpInfoIcon';
-import { FormGroup, TextInput } from '@patternfly/react-core';
+import { FormGroup, NumberInput, TextInput } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import * as React from 'react';
@@ -66,34 +67,49 @@ export const FormInputComponent: React.FunctionComponent<
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       fieldId={field.name}
       validated={props.validated}
-      helperText={props.helperText ? t("editPasswordHelperText") : ""}
+      helperText={props.helperText ? t('editPasswordHelperText') : ''}
     >
-      <TextInput
-        name={field.name}
-        onChange={(e) => {
-          field.onChange(field.name)(e);
-          props.clearValidationError();
-        }}
-        value={field.value || ''}
-        onBlur={(e) => {
-          field.onBlur(field.name)(e);
-        }}
-        aria-label={field.name}
-        validated={props.validated}
-        type={
-          props.type === 'INT' ||
-          props.type === 'LONG' ||
-          props.type === 'NON-NEG-INT' ||
-          props.type === 'NON-NEG-LONG' ||
-          props.type === 'POS-INT'
-            ? 'number'
-            : props.type === 'PASSWORD'
-            ? 'password'
-            : 'text'
-        }
-        min={minValue(props.type)}
-        onKeyPress={(event) => handleKeyPress(event as any)}
-      />
+      {props.type === 'INT' ||
+      props.type === 'LONG' ||
+      props.type === 'NON-NEG-INT' ||
+      props.type === 'NON-NEG-LONG' ||
+      props.type === 'POS-INT' ? (
+        <NumberInput
+          className="my-class"
+          value={field.value}
+          widthChars={10}
+          onChange={(e) => {
+            field.onChange(field.name)(e);
+            props.clearValidationError();
+          }}
+          inputName={props.label}
+          inputAriaLabel={props.label}
+          minusBtnAriaLabel="dbz_port_minus"
+          plusBtnAriaLabel="dbz_port_plus"
+          min={minValue(props.type)}
+          onKeyPress={(event) => handleKeyPress(event as any)}
+        />
+      ) : (
+        <TextInput
+          name={field.name}
+          onChange={(e) => {
+            field.onChange(field.name)(e);
+            props.clearValidationError();
+          }}
+          value={field.value}
+          onBlur={(e) => {
+            field.onBlur(field.name)(e);
+          }}
+          aria-label={field.name}
+          validated={props.validated}
+          type={
+            props.type === 'PASSWORD'
+              ? 'password'
+              : 'text'
+          }
+          onKeyPress={(event) => handleKeyPress(event as any)}
+        />
+      )}
     </FormGroup>
   );
 };
