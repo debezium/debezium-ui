@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -64,6 +65,12 @@ public class Infrastructure {
                     .withNetwork(NETWORK)
                     .withNetworkAliases("mongodb");
 
+    private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
+            new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2017-latest"))
+                    .withNetwork(NETWORK)
+                    .withNetworkAliases("sqlserver")
+                    .acceptLicense();
+
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
             new DebeziumContainer(DockerImageName.parse("debezium/connect:nightly"))
                     .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
@@ -88,6 +95,9 @@ public class Infrastructure {
                 break;
             case MONGODB:
                 dbContainer = MONGODB_CONTAINER;
+                break;
+            case SQLSERVER:
+                dbContainer = SQL_SERVER_CONTAINER;
                 break;
             case NONE:
             default:
@@ -136,6 +146,10 @@ public class Infrastructure {
 
     public static MongoDBContainer getMongoDbContainer() {
         return MONGODB_CONTAINER;
+    }
+
+    public static MSSQLServerContainer<?> getSqlServerContainer() {
+        return SQL_SERVER_CONTAINER;
     }
 
     public static ConnectorConfiguration getPostgresConnectorConfiguration(int id, String... options) {
@@ -193,5 +207,20 @@ public class Infrastructure {
                 // this is necessary until upgrading to Debezium 2.0, see DBZ-5159 changes in main repo
                 .ignoreException(NullPointerException.class)
                 .until(() -> Infrastructure.getDebeziumContainer().getConnectorTaskState(connectorName, taskNumber) == state);
+    }
+
+    public static ConnectorConfiguration getSqlServerConnectorConfiguration(int id, String... options) {
+        final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(SQL_SERVER_CONTAINER)
+                .with("database.user", "sa")
+                .with("database.password", "Password!")
+                .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
+                .with("database.server.name", "dbserver" + id);
+
+        if (options != null && options.length > 0) {
+            for (int i = 0; i < options.length; i += 2) {
+                config.with(options[i], options[i + 1]);
+            }
+        }
+        return config;
     }
 }
