@@ -32,7 +32,7 @@
     ]
   },
   "devDependencies": {
-    "@redhat-cloud-services/frontend-components-config": "4.6.12",
+    "@redhat-cloud-services/frontend-components-config": "4.6.13",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.5",
     "@testing-library/user-event": "13.5.0",
