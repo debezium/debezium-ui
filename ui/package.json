@@ -45,7 +45,7 @@
     "@types/react-dom": "17.0.17",
     "@types/react-router": "5.1.18",
     "@types/react-router-dom": "5.3.3",
-    "@types/yup": "0.29.13",
+    "@types/yup": "0.29.14",
     "autoprefixer": "10.4.7",
     "copy-webpack-plugin": "10.2.4",
     "css-loader": "6.7.1",
