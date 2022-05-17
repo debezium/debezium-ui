@@ -8,12 +8,14 @@ package io.debezium.configserver.util;
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.testing.testcontainers.Connector;
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
+import io.debezium.testing.testcontainers.ConnectorResolver;
 import io.debezium.testing.testcontainers.DebeziumContainer;
 
 import org.awaitility.Awaitility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.MSSQLServerContainer;
@@ -26,6 +28,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -66,7 +69,7 @@ public class Infrastructure {
                     .withNetworkAliases("mongodb");
 
     private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
-            new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2017-latest"))
+            new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-latest"))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("sqlserver")
                     .acceptLicense();
@@ -210,7 +213,7 @@ public class Infrastructure {
     }
 
     public static ConnectorConfiguration getSqlServerConnectorConfiguration(int id, String... options) {
-        final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(SQL_SERVER_CONTAINER)
+        final ConnectorConfiguration config = forJdbcContainerWithNoDatabaseNameSupport(SQL_SERVER_CONTAINER)
                 .with("database.user", "sa")
                 .with("database.password", "Password!")
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
@@ -222,5 +225,37 @@ public class Infrastructure {
             }
         }
         return config;
+    }
+
+    private static final String HOSTNAME = "database.hostname";
+    private static final String PORT = "database.port";
+    private static final String USER = "database.user";
+    private static final String PASSWORD = "database.password";
+    private static final String CONNECTOR = "connector.class";
+
+    /**
+     * Creates a {@link ConnectorConfiguration} object for databases where test containers does not support
+     * the call to {@link JdbcDatabaseContainer#getDatabaseName()}.
+     *
+     * todo: this can be replaced with debezium-testing-testcontainers:2.0.0
+     *
+     * @param jdbcDatabaseContainer the container
+     * @return the connector configuration
+     */
+    private static ConnectorConfiguration forJdbcContainerWithNoDatabaseNameSupport(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {
+        final ConnectorConfiguration configuration = ConnectorConfiguration.create();
+
+        configuration.with(HOSTNAME, jdbcDatabaseContainer.getContainerInfo().getConfig().getHostName());
+
+        final List<Integer> exposedPorts = jdbcDatabaseContainer.getExposedPorts();
+        configuration.with(PORT, exposedPorts.get(0));
+
+        configuration.with(USER, jdbcDatabaseContainer.getUsername());
+        configuration.with(PASSWORD, jdbcDatabaseContainer.getPassword());
+
+        final String driverClassName = jdbcDatabaseContainer.getDriverClassName();
+        configuration.with(CONNECTOR, ConnectorResolver.getConnectorByJdbcDriver(driverClassName));
+
+        return configuration;
     }
 }
