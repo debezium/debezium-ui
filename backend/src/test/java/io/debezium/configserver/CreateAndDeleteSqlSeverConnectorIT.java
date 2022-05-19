@@ -9,6 +9,7 @@ import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.SqlServerInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
+import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
@@ -40,7 +41,10 @@ public class CreateAndDeleteSqlSeverConnectorIT {
 
     @Test
     public void testSqlServerCreateConnectorEndpoint() {
-        Connector connector = Connector.from("my-sqlsever-connector", Infrastructure.getSqlServerConnectorConfiguration(1));
+        ConnectorConfiguration config = Infrastructure.getSqlServerConnectorConfiguration(1)
+                .with("database.dbname", "testdb");
+
+        Connector connector = Connector.from("my-sqlserver-connector", config);
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
                 .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CREATE_CONNECTOR_ENDPOINT, 1, "sqlserver")
@@ -65,11 +69,14 @@ public class CreateAndDeleteSqlSeverConnectorIT {
 
     @Test
     public void testSqlServerDeleteConnectorSuccessful() {
+        ConnectorConfiguration config = Infrastructure.getSqlServerConnectorConfiguration(1)
+                .with("database.dbname", "testdb");
+
         final var deleteSqlServerConnectorName = "delete-connector-sqlsever";
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
         Infrastructure.getDebeziumContainer().registerConnector(
                 deleteSqlServerConnectorName,
-                Infrastructure.getSqlServerConnectorConfiguration(1)
+                config
         );
         Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
                 deleteSqlServerConnectorName, 0, Connector.State.RUNNING);

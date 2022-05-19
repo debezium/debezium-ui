@@ -32,7 +32,7 @@ public class ValidateSqlSeverDatabasesIT {
                 Infrastructure.getSqlServerConnectorConfiguration(1)
                         .with("database.hostname", "localhost")
                         .with("database.port", Infrastructure.getSqlServerContainer().getMappedPort(1433))
-                        .with("database.names", "sqlserver-db1,sqlserver-db2")
+                        .with("database.dbname", "sqlserver-db1,sqlserver-db2")
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
