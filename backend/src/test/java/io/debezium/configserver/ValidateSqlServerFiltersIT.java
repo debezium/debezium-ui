@@ -32,6 +32,7 @@ public class ValidateSqlServerFiltersIT {
                 Infrastructure.getSqlServerConnectorConfiguration(1)
                         .with("database.hostname", "localhost")
                         .with("database.port", Infrastructure.getSqlServerContainer().getMappedPort(1433))
+                        .with("database.dbname", "testdb")
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
@@ -59,6 +60,7 @@ public class ValidateSqlServerFiltersIT {
                         .with("database.hostname", "localhost")
                         .with("database.port", Infrastructure.getSqlServerContainer().getMappedPort(1433))
                         .with("table.include.list", "inventory\\.product.*")
+                        .with("database.dbname", "testdb")
         );
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())

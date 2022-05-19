@@ -216,7 +216,9 @@ public class Infrastructure {
         final ConnectorConfiguration config = forJdbcContainerWithNoDatabaseNameSupport(SQL_SERVER_CONTAINER)
                 .with("database.user", "sa")
                 .with("database.password", "Password!")
-                .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
+                .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
+                .with("database.history.kafka.topic", "dbhistory.inventory")
+                .with("snapshot.mode", "initial")
                 .with("database.server.name", "dbserver" + id);
 
         if (options != null && options.length > 0) {
