@@ -5,6 +5,8 @@
  */
 package io.debezium.configserver;
 
+import java.util.concurrent.TimeUnit;
+
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.SqlServerInfrastructureTestProfile;
@@ -13,6 +15,8 @@ import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
+
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -52,7 +56,7 @@ public class CreateAndDeleteSqlSeverConnectorIT {
                 .statusCode(200)
                 .assertThat().body("name", equalTo("my-sqlserver-connector"))
                 .and().rootPath("config")
-                .body("['connector.class']", equalTo("io.debezium.connector.sqlserver.SQLServerConnector"))
+                .body("['connector.class']", equalTo("io.debezium.connector.sqlserver.SqlServerConnector"))
                 .and().body("['database.hostname']", equalTo(Infrastructure.getSqlServerContainer().getContainerInfo().getConfig().getHostName()));
     }
 
@@ -78,8 +82,17 @@ public class CreateAndDeleteSqlSeverConnectorIT {
                 deleteSqlServerConnectorName,
                 config
         );
-        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
-                deleteSqlServerConnectorName, 0, Connector.State.RUNNING);
+
+        // It is possible the connector has not fully started and the tasks array returns
+        // no running tasks, leading to a potential NPE with this call.
+        Awaitility.await()
+                .atMost(60, TimeUnit.SECONDS)
+                .ignoreException(NullPointerException.class)
+                .until(() -> {
+                           Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
+                                   deleteSqlServerConnectorName, 0, Connector.State.RUNNING);
+                           return true;
+                       });
 
         given()
                 .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, deleteSqlServerConnectorName)

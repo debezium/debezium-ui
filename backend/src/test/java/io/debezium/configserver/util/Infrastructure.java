@@ -72,6 +72,11 @@ public class Infrastructure {
             new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-latest"))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("sqlserver")
+                    .withEnv("SA_PASSWORD", "Password!")
+                    .withEnv("MSSQL_PID", "Standard")
+                    .withEnv("MSSQL_AGENT_ENABLED", "true")
+                    .withPassword("Password!")
+                    .withInitScript("/initialize-sqlserver-database.sql")
                     .acceptLicense();
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
