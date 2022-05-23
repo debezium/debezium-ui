@@ -41,15 +41,13 @@ public class ValidateSqlServerFiltersIT {
                 .statusCode(200)
                 .assertThat().body("status", equalTo("VALID"))
                 .body("propertyValidationResults.size()", is(0))
-                .body("matchedCollections.size()", is(6))
+                .body("matchedCollections.size()", is(4))
                 .body("matchedCollections",
                         hasItems(
-                                Map.of("namespace", "inventory", "name", "geom"),
-                                Map.of("namespace", "inventory", "name", "products_on_hand"),
-                                Map.of("namespace", "inventory", "name", "customers"),
-                                Map.of("namespace", "inventory", "name", "addresses"),
-                                Map.of("namespace", "inventory", "name", "orders"),
-                                Map.of("namespace", "inventory", "name", "products")
+                                Map.of("namespace", "testDB.inventory", "name", "products_on_hand"),
+                                Map.of("namespace", "testDB.inventory", "name", "customers"),
+                                Map.of("namespace", "testDB.inventory", "name", "orders"),
+                                Map.of("namespace", "testDB.inventory", "name", "products")
                         ));
     }
 
@@ -72,8 +70,8 @@ public class ValidateSqlServerFiltersIT {
                 .body("matchedCollections.size()", is(2))
                 .body("matchedCollections",
                         hasItems(
-                                Map.of("namespace", "inventory", "name", "products_on_hand"),
-                                Map.of("namespace", "inventory", "name", "products")
+                                Map.of("namespace", "testDB.inventory", "name", "products_on_hand"),
+                                Map.of("namespace", "testDB.inventory", "name", "products")
                         ));
     }
 }
