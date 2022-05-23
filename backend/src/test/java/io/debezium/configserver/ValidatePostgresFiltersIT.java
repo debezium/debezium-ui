@@ -40,10 +40,9 @@ public class ValidatePostgresFiltersIT {
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
                 .body("propertyValidationResults.size()", is(0))
-                .body("matchedCollections.size()", is(6))
+                .body("matchedCollections.size()", is(5))
                 .body("matchedCollections",
                     hasItems(
-                        Map.of("namespace", "inventory", "name", "spatial_ref_sys"),
                         Map.of("namespace", "inventory", "name", "geom"),
                         Map.of("namespace", "inventory", "name", "products_on_hand"),
                         Map.of("namespace", "inventory", "name", "customers"),
@@ -90,10 +89,9 @@ public class ValidatePostgresFiltersIT {
             .statusCode(200)
             .assertThat().body("status", equalTo("VALID"))
                 .body("propertyValidationResults.size()", is(0))
-                .body("matchedCollections.size()", is(6))
+                .body("matchedCollections.size()", is(5))
                 .body("matchedCollections",
                     hasItems(
-                        Map.of("namespace", "inventory", "name", "spatial_ref_sys"),
                         Map.of("namespace", "inventory", "name", "geom"),
                         Map.of("namespace", "inventory", "name", "products_on_hand"),
                         Map.of("namespace", "inventory", "name", "customers"),
