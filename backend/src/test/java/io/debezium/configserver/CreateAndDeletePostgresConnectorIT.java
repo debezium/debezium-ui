@@ -12,8 +12,11 @@ import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
@@ -79,8 +82,17 @@ public class CreateAndDeletePostgresConnectorIT {
         Infrastructure.getDebeziumContainer().registerConnector(
                 deletePostgresConnectorName,
                 Infrastructure.getPostgresConnectorConfiguration(1));
-        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
-                deletePostgresConnectorName, 0, Connector.State.RUNNING);
+
+        // It is possible the connector has not fully started and the tasks array returns
+        // no running tasks, leading to a potential NPE with this call.
+        Awaitility.await()
+                .atMost(60, TimeUnit.SECONDS)
+                .ignoreException(NullPointerException.class)
+                .until(() -> {
+                    Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
+                            deletePostgresConnectorName, 0, Connector.State.RUNNING);
+                    return true;
+                });
 
         given()
                 .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, deletePostgresConnectorName)
