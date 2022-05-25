@@ -103,7 +103,7 @@
     "formik": "2.2.9",
     "i18next": "21.8.4",
     "i18next-browser-languagedetector": "6.1.4",
-    "i18next-http-backend": "1.4.0",
+    "i18next-http-backend": "1.4.1",
     "i18next-parser": "5.4.0",
     "json-pointer": "0.6.2",
     "lodash": "4.17.21",
