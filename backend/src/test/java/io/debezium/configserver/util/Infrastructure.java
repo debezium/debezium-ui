@@ -6,9 +6,11 @@
 package io.debezium.configserver.util;
 
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
+import io.debezium.testing.testcontainers.Connector;
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.debezium.testing.testcontainers.DebeziumContainer;
 
+import org.awaitility.Awaitility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -22,6 +24,7 @@ import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -157,7 +160,7 @@ public class Infrastructure {
                 .with("database.server.name", "dbserver" + id)
                 .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
                 .with("database.history.kafka.topic", "dbhistory.inventory")
-                .with("server.id", "debezium_" + (5555 + id - 1));
+                .with("database.server.id", Long.valueOf(5555 + id - 1));
 
         if (options != null && options.length > 0) {
             for (int i = 0; i < options.length; i += 2) {
@@ -182,4 +185,13 @@ public class Infrastructure {
         return config;
     }
 
+    public static void waitForConnectorTaskStatus(String connectorName, int taskNumber, Connector.State state) {
+        Awaitility.await()
+                // this needs to be set to at least a minimum of ~65-70 seconds because PostgreSQL now
+                // retries on certain failure conditions with a 10s between them.
+                .atMost(120, TimeUnit.SECONDS)
+                // this is necessary until upgrading to Debezium 2.0, see DBZ-5159 changes in main repo
+                .ignoreException(NullPointerException.class)
+                .until(() -> Infrastructure.getDebeziumContainer().getConnectorTaskState(connectorName, taskNumber) == state);
+    }
 }
