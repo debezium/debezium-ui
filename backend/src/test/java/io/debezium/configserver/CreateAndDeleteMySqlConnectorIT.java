@@ -72,8 +72,7 @@ public class CreateAndDeleteMySqlConnectorIT {
                 deleteMySqlConnectorName,
                 Infrastructure.getMySqlConnectorConfiguration(1)
         );
-        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
-                deleteMySqlConnectorName, 0, Connector.State.RUNNING);
+        Infrastructure.waitForConnectorTaskStatus(deleteMySqlConnectorName, 0, Connector.State.RUNNING);
 
         given()
                 .when().delete(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, deleteMySqlConnectorName)

@@ -12,13 +12,10 @@ import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
-import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -131,7 +128,7 @@ public class LifecycleResourceIT {
                 Infrastructure.getPostgresConnectorConfiguration(1));
 
         Infrastructure.getDebeziumContainer().ensureConnectorState(connectorName, Connector.State.RUNNING);
-        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(connectorName, 0, Connector.State.RUNNING);
+        Infrastructure.waitForConnectorTaskStatus(connectorName, 0, Connector.State.RUNNING);
 
         given()
                 .when().log().all()
@@ -141,7 +138,7 @@ public class LifecycleResourceIT {
                 .statusCode(204)
                 .body(is(""));
 
-        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(connectorName, 0, Connector.State.RUNNING);
+        Infrastructure.waitForConnectorTaskStatus(connectorName, 0, Connector.State.RUNNING);
         Assertions.assertEquals(Connector.State.RUNNING, Infrastructure.getDebeziumContainer().getConnectorTaskState(connectorName, 0));
     }
 
@@ -170,14 +167,7 @@ public class LifecycleResourceIT {
 
         // It is possible the connector has not fully started and the tasks array returns
         // no running tasks, leading to a potential NPE with this call.
-        Awaitility.await()
-                .atMost(60, TimeUnit.SECONDS)
-                .ignoreException(NullPointerException.class)
-                .until(() -> {
-                    Infrastructure.getDebeziumContainer().ensureConnectorTaskState(
-                            connectorName, 0, Connector.State.RUNNING);
-                    return true;
-                });
+        Infrastructure.waitForConnectorTaskStatus(connectorName, 0, Connector.State.RUNNING);
 
         given()
                 .when().log().all()
