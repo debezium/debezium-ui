@@ -399,6 +399,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
         .then((cDetails: any) => {
           setLoading(false);
           // TODO: Find the solution to this issue.
+          console.log(cDetails);
           if (
             cDetails?.properties.find(
               (obj: { name: string }) =>
@@ -687,20 +688,21 @@ export const CreateConnectorComponent: React.FunctionComponent<
         .then((cDetails: any) => {
           setLoading(false);
           // TODO: Find the solution to this issue.
-          if (
-            cDetails?.properties.find(
-              (obj: { name: string }) =>
-                obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
-            )?.name
-          ) {
-            cDetails.properties.find(
-              (obj: { name: string }) =>
-                obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
-            ).name = 'column.mask.hash';
-          }
-          setSelectedConnectorPropertyDefns(
-            getFormattedProperties(cDetails.properties, cDetails.id)
-          );
+          console.log(cDetails);
+          // if (
+          //   cDetails?.properties.find(
+          //     (obj: { name: string }) =>
+          //       obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+          //   )?.name
+          // ) {
+          //   cDetails.properties.find(
+          //     (obj: { name: string }) =>
+          //       obj.name === 'column.mask.hash.([^.]+).with.salt.(.+)'
+          //   ).name = 'column.mask.hash';
+          // }
+          // setSelectedConnectorPropertyDefns(
+          //   getFormattedProperties(cDetails.properties, cDetails.id)
+          // );
         })
         .catch((err: React.SetStateAction<Error>) => {
           setApiError(true);

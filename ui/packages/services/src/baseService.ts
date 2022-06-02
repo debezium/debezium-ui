@@ -38,13 +38,20 @@ export abstract class BaseService implements Service {
     protected config: ConfigService | null = null;
 
     private apiBaseHref: string;
+    private newApiBaseHref: string;
+
 
     public init(): void {
         this.apiBaseHref = this.config?.artifactsUrl() || '';
+        this.newApiBaseHref = this.config?.newArtifactsUrl() || '';
         if (this.apiBaseHref.endsWith("/")) {
             this.apiBaseHref = this.apiBaseHref.substring(0, this.apiBaseHref.length - 1);
         }
+        if (this.newApiBaseHref.endsWith("/")) {
+            this.newApiBaseHref = this.newApiBaseHref.substring(0, this.newApiBaseHref.length - 1);
+        }
         this.logger?.debug("[BaseService] Base HREF of REST API: ", this.apiBaseHref);
+        this.logger?.debug("[BaseService] Base HREF of Connectors REST API: ", this.newApiBaseHref);
     }
 
     /**
@@ -53,14 +60,14 @@ export abstract class BaseService implements Service {
      * @param params
      * @param queryParams
      */
-    protected endpoint(path: string, params?: any, queryParams?: any): string {
+    protected endpoint(path: string, newEndpoint = false, params?: any, queryParams?: any): string {
         if (params) {
             Object.keys(params).forEach(key => {
                 const value: string = encodeURIComponent(params[key]);
                 path = path.replace(":" + key, value);
             });
         }
-        let rval: string = this.apiBaseHref + path;
+        let rval: string = (newEndpoint ? this.newApiBaseHref : this.apiBaseHref) + path;
         if (queryParams) {
             let first: boolean = true;
             for (const key in queryParams) {
