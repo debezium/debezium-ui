@@ -27,7 +27,8 @@ export class ConfigService implements Service {
     private config: ConfigType = {
         artifacts: {
             type: "rest",
-            url: "http://localhost:8080/api/"
+            url: "http://localhost:8080/api/",
+            newUrl: "http://localhost:8080/"
         },
         "deployment.mode": "",
         features: {
@@ -48,6 +49,7 @@ export class ConfigService implements Service {
               artifacts: {
                 type: "rest",
                 url: `${__webpack_public_path__}/api`,
+                newUrl: `${__webpack_public_path__}`
               },
             });
             console.info("[ConfigService] Applied UI_CONFIG:");
@@ -71,6 +73,13 @@ export class ConfigService implements Service {
             return null;
         }
         return this.config.artifacts.url;
+    }
+
+    public newArtifactsUrl(): string | null {
+        if (!this.config.artifacts) {
+            return null;
+        }
+        return this.config.artifacts.newUrl;
     }
 
     public deploymentMode(): string {

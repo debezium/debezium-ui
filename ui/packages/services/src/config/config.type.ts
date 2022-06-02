@@ -21,6 +21,7 @@ export interface FeaturesConfig {
 
 export interface ArtifactsConfig {
     url: string;
+    newUrl: string;
     type: string;
 }
 
