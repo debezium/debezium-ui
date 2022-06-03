@@ -1,3 +1,4 @@
+import { ConfigurationMode } from './DebeziumConfigurator';
 import './FilterConfig.css';
 import {
   ActionGroup,
@@ -25,7 +26,7 @@ import {
 } from 'shared';
 
 export interface IFilterConfigProps {
-  isViewMode: boolean | undefined;
+  uiPath: ConfigurationMode;
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
@@ -96,7 +97,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
         })}
       </Text>
       <Form className="child-selection-step_form">
-        {props.isViewMode ? (
+        {props.uiPath === ConfigurationMode.VIEW ? (
           <>
             {filterConfigurationPageContentObj.fieldArray.map(
               (fieldFilter: any) => {

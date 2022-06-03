@@ -1,3 +1,4 @@
+import { ConfigurationMode } from './DebeziumConfigurator';
 import './Properties.css';
 import { ConnectorProperty } from '@debezium/ui-models';
 import {
@@ -16,7 +17,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IPropertiesProps {
   connectorType: string;
-  isViewMode: boolean | undefined;
+  uiPath: ConfigurationMode;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -72,7 +73,9 @@ const getAdvanceGeneralProperty = (
 ): ConnectorProperty[] => {
   const propertyDefinitionsCopy = _.cloneDeep(propertyList);
   return propertyDefinitionsCopy.filter(
-    (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL || defn.category === PropertyCategory.ADVANCED_SSL
+    (defn: any) =>
+      defn.category === PropertyCategory.ADVANCED_GENERAL ||
+      defn.category === PropertyCategory.ADVANCED_SSL
   );
 };
 const getAdvanceReplicationProperty = (
@@ -230,7 +233,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
-                                isViewMode={props.isViewMode}
+                                uiPath={props.uiPath}
                                 initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
@@ -278,7 +281,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                   sm={propertyDefinition.gridWidthSm}
                                 >
                                   <FormComponent
-                                    isViewMode={props.isViewMode}
+                                    uiPath={props.uiPath}
                                     initialValues={initialValues}
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
@@ -326,7 +329,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                   sm={propertyDefinition.gridWidthSm}
                                 >
                                   <FormComponent
-                                    isViewMode={props.isViewMode}
+                                    uiPath={props.uiPath}
                                     initialValues={initialValues}
                                     propertyDefinition={propertyDefinition}
                                     propertyChange={handlePropertyChange}
@@ -378,7 +381,7 @@ export const Properties: React.FC<IPropertiesProps> = (props) => {
                                       sm={propertyDefinition.gridWidthSm}
                                     >
                                       <FormComponent
-                                        isViewMode={props.isViewMode}
+                                        uiPath={props.uiPath}
                                         initialValues={initialValues}
                                         propertyDefinition={propertyDefinition}
                                         propertyChange={handlePropertyChange}

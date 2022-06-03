@@ -66,10 +66,17 @@ export interface IConnectorType {
   schema?: object;
 }
 
+export enum ConfigurationMode {
+  CREATE = 'create',
+  VIEW = 'view',
+  EDIT = 'edit',
+  DUPLICATE = 'duplicate',
+}
+
 export interface IDebeziumConfiguratorProps {
   activeStep: number;
   connector: IConnectorType;
-  isViewMode?: boolean;
+  uiPath: ConfigurationMode;
   configuration: Map<string, unknown>;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
@@ -166,7 +173,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
                 ? props.connector?.schema['x-connector-id']
                 : ''
             }
-            isViewMode={props?.isViewMode}
+            uiPath={props.uiPath}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)
@@ -180,7 +187,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case FILTER_CONFIGURATION_STEP_ID:
         return (
           <FilterConfig
-            isViewMode={props?.isViewMode}
+            uiPath={props?.uiPath}
             filterValues={filterValues}
             updateFilterValues={handleFilterUpdate}
             connectorType={
@@ -194,7 +201,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
       case DATA_OPTIONS_STEP_ID:
         return (
           <DataOptions
-            isViewMode={props?.isViewMode}
+            uiPath={props?.uiPath}
             configuration={props.configuration}
             onChange={(conf: Map<string, unknown>, status: boolean) =>
               props.onChange(conf, status)

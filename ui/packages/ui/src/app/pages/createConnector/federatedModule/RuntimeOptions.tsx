@@ -1,3 +1,4 @@
+import { ConfigurationMode } from './DebeziumConfigurator';
 import './RuntimeOptions.css';
 import { ConnectorProperty } from '@debezium/ui-models';
 import {
@@ -15,7 +16,7 @@ import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IRuntimeOptionsProps {
-  isViewMode: boolean | undefined;
+  uiPath: ConfigurationMode;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -191,7 +192,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
-                                isViewMode={props.isViewMode}
+                                uiPath={props.uiPath}
                                 initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
@@ -225,7 +226,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
-                                isViewMode={props.isViewMode}
+                                uiPath={props.uiPath}
                                 initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}

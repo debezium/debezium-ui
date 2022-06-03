@@ -13,7 +13,7 @@ export interface IFormInputComponentProps {
   name: string;
   infoTitle: string | '';
   helperTextInvalid?: any;
-  helperText: boolean;
+  helperText: string;
   type: any;
   isRequired: boolean;
   validated?: 'default' | 'success' | 'warning' | 'error' | undefined;
@@ -67,7 +67,7 @@ export const FormInputComponent: React.FunctionComponent<
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       fieldId={field.name}
       validated={props.validated}
-      helperText={props.helperText ? t('editPasswordHelperText') : ''}
+      helperText={props.helperText}
     >
       {props.type === 'INT' ||
       props.type === 'LONG' ||
