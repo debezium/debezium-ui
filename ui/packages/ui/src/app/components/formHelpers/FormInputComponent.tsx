@@ -4,7 +4,6 @@ import { FormGroup, NumberInput, TextInput } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 
 export interface IFormInputComponentProps {
   label: string;
@@ -22,7 +21,6 @@ export interface IFormInputComponentProps {
 export const FormInputComponent: React.FunctionComponent<
   IFormInputComponentProps
 > = (props) => {
-  const { t } = useTranslation();
   const [field] = useField(props);
 
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
