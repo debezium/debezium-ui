@@ -1,4 +1,3 @@
-import { ConfigurationMode } from './DebeziumConfigurator';
 import './FilterConfig.css';
 import {
   ActionGroup,
@@ -12,6 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 import {
+  ConfigurationMode,
   FilterExcludeFieldComponent,
   FilterInputFieldComponent,
   NoPreviewFilterField,
@@ -26,7 +26,7 @@ import {
 } from 'shared';
 
 export interface IFilterConfigProps {
-  uiPath: ConfigurationMode | undefined;
+  uiPath: ConfigurationMode;
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;

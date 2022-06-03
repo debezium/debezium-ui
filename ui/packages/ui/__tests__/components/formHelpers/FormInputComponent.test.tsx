@@ -29,7 +29,7 @@ describe("<FormInputComponent />", () => {
       fieldId: "InputComp",
       name: "InputComp",
       infoTitle: "InfoTitle",
-      helperText: false,
+      helperText: '',
       type: "STRING",
       isRequired: true,
       clearValidationError: clearValidationErrorMock,

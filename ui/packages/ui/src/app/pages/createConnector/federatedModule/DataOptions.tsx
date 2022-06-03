@@ -1,5 +1,4 @@
 import './DataOption.css';
-import { ConfigurationMode } from './DebeziumConfigurator';
 import { RuntimeOptions } from './RuntimeOptions';
 import { ConnectorProperty } from '@debezium/ui-models';
 import {
@@ -9,7 +8,7 @@ import {
   GridItem,
   Title,
 } from '@patternfly/react-core';
-import { FormComponent } from 'components';
+import { ConfigurationMode, FormComponent } from 'components';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
@@ -19,7 +18,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
-  uiPath: ConfigurationMode | undefined;
+  uiPath: ConfigurationMode;
   propertyDefinitions: ConnectorProperty[];
   runtimePropertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;

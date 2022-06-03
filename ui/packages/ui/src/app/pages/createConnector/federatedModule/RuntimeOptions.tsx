@@ -1,4 +1,3 @@
-import { ConfigurationMode } from './DebeziumConfigurator';
 import './RuntimeOptions.css';
 import { ConnectorProperty } from '@debezium/ui-models';
 import {
@@ -7,7 +6,7 @@ import {
   Grid,
   GridItem,
 } from '@patternfly/react-core';
-import { FormComponent } from 'components';
+import { ConfigurationMode, FormComponent } from 'components';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
@@ -16,7 +15,7 @@ import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IRuntimeOptionsProps {
-  uiPath: ConfigurationMode | undefined;
+  uiPath: ConfigurationMode;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;

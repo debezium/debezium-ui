@@ -12,8 +12,13 @@ import {
 } from '@debezium/ui-models';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfigurationMode } from 'src/app/pages/createConnector/federatedModule/DebeziumConfigurator';
 
+export enum ConfigurationMode {
+  CREATE = 'create',
+  VIEW = 'view',
+  EDIT = 'edit',
+  DUPLICATE = 'duplicate',
+}
 export interface IFormComponentProps {
   uiPath?: ConfigurationMode;
   initialValues?: any;

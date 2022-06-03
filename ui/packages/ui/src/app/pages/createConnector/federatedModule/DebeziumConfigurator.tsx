@@ -15,6 +15,7 @@ import {
   getFilterConfigurationPageContent,
 } from 'shared';
 import { getPropertiesData } from 'src/app/utils/FormatCosProperties';
+import { ConfigurationMode } from 'components';
 
 /**
  * Represents a connector type supported by the API
@@ -66,17 +67,10 @@ export interface IConnectorType {
   schema?: object;
 }
 
-export enum ConfigurationMode {
-  CREATE = 'create',
-  VIEW = 'view',
-  EDIT = 'edit',
-  DUPLICATE = 'duplicate',
-}
-
 export interface IDebeziumConfiguratorProps {
   activeStep: number;
   connector: IConnectorType;
-  uiPath: ConfigurationMode | undefined;
+  uiPath: ConfigurationMode;
   configuration: Map<string, unknown>;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }
