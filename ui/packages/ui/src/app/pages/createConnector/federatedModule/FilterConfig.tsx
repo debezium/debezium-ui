@@ -26,7 +26,7 @@ import {
 } from 'shared';
 
 export interface IFilterConfigProps {
-  uiPath: ConfigurationMode;
+  uiPath: ConfigurationMode | undefined;
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;

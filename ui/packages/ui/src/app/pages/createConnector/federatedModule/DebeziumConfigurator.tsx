@@ -76,7 +76,7 @@ export enum ConfigurationMode {
 export interface IDebeziumConfiguratorProps {
   activeStep: number;
   connector: IConnectorType;
-  uiPath: ConfigurationMode;
+  uiPath: ConfigurationMode | undefined;
   configuration: Map<string, unknown>;
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
 }

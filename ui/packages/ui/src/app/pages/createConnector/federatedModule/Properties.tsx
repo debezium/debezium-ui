@@ -17,7 +17,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IPropertiesProps {
   connectorType: string;
-  uiPath: ConfigurationMode;
+  uiPath: ConfigurationMode | undefined;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;

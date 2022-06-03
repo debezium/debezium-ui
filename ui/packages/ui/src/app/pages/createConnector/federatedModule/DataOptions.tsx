@@ -19,7 +19,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
-  uiPath: ConfigurationMode;
+  uiPath: ConfigurationMode | undefined;
   propertyDefinitions: ConnectorProperty[];
   runtimePropertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;

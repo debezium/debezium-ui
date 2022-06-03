@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationMode } from 'src/app/pages/createConnector/federatedModule/DebeziumConfigurator';
 
 export interface IFormComponentProps {
-  uiPath: ConfigurationMode;
+  uiPath?: ConfigurationMode;
   initialValues?: any;
   propertyDefinition: ConnectorProperty;
   helperTextInvalid?: any;
@@ -50,7 +50,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
 ) => {
   const { t } = useTranslation();
 
-  const getHelperText = (mode: ConfigurationMode): string => {
+  const getHelperText = (mode: ConfigurationMode | undefined): string => {
     switch (mode) {
       case ConfigurationMode.EDIT:
         return t('editPasswordHelperText');
@@ -214,7 +214,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           }
           helperText={
             props.propertyDefinition.type === 'PASSWORD'
-              ? getHelperText(props.uiPath)
+              ? getHelperText(props?.uiPath)
               : ''
           }
           infoText={props.propertyDefinition.description}
