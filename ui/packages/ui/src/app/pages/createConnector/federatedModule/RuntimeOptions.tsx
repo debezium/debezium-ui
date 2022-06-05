@@ -6,7 +6,7 @@ import {
   Grid,
   GridItem,
 } from '@patternfly/react-core';
-import { FormComponent } from 'components';
+import { ConfigurationMode, FormComponent } from 'components';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
@@ -15,7 +15,7 @@ import { PropertyCategory } from 'shared';
 import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IRuntimeOptionsProps {
-  isViewMode: boolean | undefined;
+  uiPath: ConfigurationMode;
   configuration: Map<string, unknown>;
   propertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -191,7 +191,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
-                                isViewMode={props.isViewMode}
+                                uiPath={props.uiPath}
                                 initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}
@@ -225,7 +225,7 @@ export const RuntimeOptions: React.FC<IRuntimeOptionsProps> = (props) => {
                               sm={propertyDefinition.gridWidthSm}
                             >
                               <FormComponent
-                                isViewMode={props.isViewMode}
+                                uiPath={props.uiPath}
                                 initialValues={initialValues}
                                 propertyDefinition={propertyDefinition}
                                 propertyChange={handlePropertyChange}

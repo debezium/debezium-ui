@@ -8,7 +8,7 @@ import {
   GridItem,
   Title,
 } from '@patternfly/react-core';
-import { FormComponent } from 'components';
+import { ConfigurationMode, FormComponent } from 'components';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import React from 'react';
@@ -18,7 +18,7 @@ import { getObject } from 'src/app/utils/ResolveSchemaRef';
 
 export interface IDataOptionsProps {
   configuration: Map<string, unknown>;
-  isViewMode: boolean | undefined;
+  uiPath: ConfigurationMode;
   propertyDefinitions: ConnectorProperty[];
   runtimePropertyDefinitions: ConnectorProperty[];
   onChange: (configuration: Map<string, unknown>, isValid: boolean) => void;
@@ -207,7 +207,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
-                                  isViewMode={props.isViewMode}
+                                  uiPath={props.uiPath}
                                   initialValues={initialValues}
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
@@ -243,7 +243,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                 sm={propertyDefinition.gridWidthSm}
                               >
                                 <FormComponent
-                                  isViewMode={props.isViewMode}
+                                  uiPath={props.uiPath}
                                   initialValues={initialValues}
                                   propertyDefinition={propertyDefinition}
                                   propertyChange={handlePropertyChange}
@@ -282,7 +282,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
                                     sm={propertyDefinition.gridWidthSm}
                                   >
                                     <FormComponent
-                                      isViewMode={props.isViewMode}
+                                      uiPath={props.uiPath}
                                       initialValues={initialValues}
                                       propertyDefinition={propertyDefinition}
                                       propertyChange={handlePropertyChange}
@@ -306,7 +306,7 @@ export const DataOptions: React.FC<IDataOptionsProps> = (props) => {
         )}
       </Formik>
       <RuntimeOptions
-        isViewMode={props?.isViewMode}
+        uiPath={props?.uiPath}
         configuration={props.configuration}
         onChange={(conf: Map<string, unknown>, status: boolean) =>
           props.onChange(conf, status)

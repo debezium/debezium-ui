@@ -13,8 +13,14 @@ import {
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+export enum ConfigurationMode {
+  CREATE = 'create',
+  VIEW = 'view',
+  EDIT = 'edit',
+  DUPLICATE = 'duplicate',
+}
 export interface IFormComponentProps {
-  isViewMode?: boolean;
+  uiPath?: ConfigurationMode;
   initialValues?: any;
   propertyDefinition: ConnectorProperty;
   helperTextInvalid?: any;
@@ -49,6 +55,15 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
 ) => {
   const { t } = useTranslation();
 
+  const getHelperText = (mode: ConfigurationMode | undefined): string => {
+    switch (mode) {
+      case ConfigurationMode.EDIT:
+        return t('editPasswordHelperText');
+      case ConfigurationMode.DUPLICATE:
+        return t('duplicateSecretHelperText');
+    }
+    return '';
+  };
   const getValidate = () => {
     return props.validated === 'default'
       ? getInvalidFilterMsg(props.propertyDefinition.name, props.invalidMsg)
@@ -56,7 +71,7 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
         : 'default'
       : 'error';
   };
-  if (props.isViewMode) {
+  if (props.uiPath === ConfigurationMode.VIEW) {
     return (
       <FormTextComponent
         description={props.propertyDefinition.description}
@@ -185,32 +200,33 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
 
       // Any other - Text input
     } else {
-      
-        return (
-          <FormInputComponent
-            isRequired={props.propertyDefinition.isMandatory}
-            fieldId={props.propertyDefinition.name}
-            name={props.propertyDefinition.name}
-            label={props.propertyDefinition.displayName}
-            type={props.propertyDefinition.type}
-            helperTextInvalid={
-              getInvalidFilterMsg(
-                props.propertyDefinition.name,
-                props.invalidMsg
-              ) || props.helperTextInvalid
-            }
-            infoTitle={
-              props.propertyDefinition.displayName ||
-              props.propertyDefinition.name
-            }
-            helperText={props.isViewMode !== undefined &&
-              props.propertyDefinition.type === 'PASSWORD'}
-            infoText={props.propertyDefinition.description}
-            validated={getValidate()}
-            clearValidationError={props.clearValidationError || clearValidation}
-          />
-        );
-      
+      return (
+        <FormInputComponent
+          isRequired={props.propertyDefinition.isMandatory}
+          fieldId={props.propertyDefinition.name}
+          name={props.propertyDefinition.name}
+          label={props.propertyDefinition.displayName}
+          type={props.propertyDefinition.type}
+          helperTextInvalid={
+            getInvalidFilterMsg(
+              props.propertyDefinition.name,
+              props.invalidMsg
+            ) || props.helperTextInvalid
+          }
+          infoTitle={
+            props.propertyDefinition.displayName ||
+            props.propertyDefinition.name
+          }
+          helperText={
+            props.propertyDefinition.type === 'PASSWORD'
+              ? getHelperText(props?.uiPath)
+              : ''
+          }
+          infoText={props.propertyDefinition.description}
+          validated={getValidate()}
+          clearValidationError={props.clearValidationError || clearValidation}
+        />
+      );
     }
   }
 };
