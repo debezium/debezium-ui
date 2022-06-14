@@ -911,7 +911,7 @@ export function getFormattedTopicCreationProperties(
  */
 export function getFilterConfigurationPageContent(connectorType: string): any {
   let returnObj;
-  if (connectorType === ConnectorTypeId.MONGO) {
+  if (connectorType.includes(ConnectorTypeId.MONGO)) {
     returnObj = {
       fieldArray: [
         {
@@ -934,7 +934,7 @@ export function getFilterConfigurationPageContent(connectorType: string): any {
         },
       ],
     };
-  } else if (connectorType === ConnectorTypeId.MYSQL) {
+  } else if (connectorType.includes(ConnectorTypeId.MYSQL)) {
     returnObj = {
       fieldArray: [
         {

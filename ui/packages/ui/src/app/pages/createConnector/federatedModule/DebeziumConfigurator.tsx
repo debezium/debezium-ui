@@ -120,7 +120,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   );
 
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
-    getFilterInitialValues(props.configuration, '')
+    getFilterInitialValues(props.configuration, props.connector.name.toLowerCase())
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
@@ -128,7 +128,7 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
     configObj: Map<string, unknown>
   ): Map<string, unknown> => {
     const filterConfigurationPageContentObj: any =
-      getFilterConfigurationPageContent(props.connector.name || '');
+      getFilterConfigurationPageContent(props.connector.name.toLowerCase());
     filterConfigurationPageContentObj.fieldArray.forEach((fieldObj: any) => {
       configObj.delete(`${fieldObj.field}.include.list`) ||
         configObj.delete(`${fieldObj.field}.exclude.list`);
