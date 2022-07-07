@@ -37,6 +37,8 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WithLoader, ApiError, fetch_retry } from 'shared';
+import { AppLayoutContext } from 'layout';
+
 
 export interface ConnectorDrawerProps {
   children: ReactNode;
@@ -49,12 +51,14 @@ export const ConnectorDrawer: FunctionComponent<ConnectorDrawerProps> = ({
   connector,
   onClose,
 }) => {
+  const appLayoutContext = React.useContext(AppLayoutContext);
   return (
     <Drawer isExpanded={connector !== undefined}>
       <DrawerContent
         panelContent={
           connector ? (
             <ConnectorDrawerPanelContent
+              clusterID={appLayoutContext.clusterId}
               name={connector.name}
               status={connector.connectorStatus}
               onClose={onClose}
@@ -69,6 +73,7 @@ export const ConnectorDrawer: FunctionComponent<ConnectorDrawerProps> = ({
 };
 
 export interface ConnectorDrawerPanelContentProps {
+  clusterID: number;
   name: string;
   status: string;
   onClose: () => void;
@@ -77,6 +82,7 @@ export interface ConnectorDrawerPanelContentProps {
 export const ConnectorDrawerPanelContent: FunctionComponent<
   ConnectorDrawerPanelContentProps
 > = ({
+  clusterID: clusterID,
   name,
 
   status,
@@ -114,7 +120,7 @@ export const ConnectorDrawerPanelContent: FunctionComponent<
     setLoading(true);
     const connectorService = Services.getConnectorService();
     fetch_retry(connectorService.getConnectorConfig, connectorService, [
-      1,
+      clusterID,
       name,
     ])
       .then((cConnector) => {
@@ -126,7 +132,7 @@ export const ConnectorDrawerPanelContent: FunctionComponent<
         setApiError(true);
         setErrorMsg(err);
       });
-  }, [name]);
+  }, [clusterID, name]);
 
   return (
     <DrawerPanelContent widths={{ default: 'width_50' }}>
