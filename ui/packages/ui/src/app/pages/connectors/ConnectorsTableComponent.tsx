@@ -751,15 +751,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<
                   <FlexItem>
                     <Toolbar>{toolbarItems}</Toolbar>
                   </FlexItem>
-                  <FlexItem>
-                    <Button
-                      variant="primary"
-                      onClick={createConnector}
-                      className="connectors-page_toolbarCreateButton"
-                    >
-                      {t('createAConnector')}
-                    </Button>
-                  </FlexItem>
                 </Flex>
                 <Table
                   aria-label="Connector Table"
