@@ -87,6 +87,7 @@ public class KafkaConnectClientFactory {
         try {
             kafkaConnectURI = getKafkaConnectURIforCluster(cluster);
             kafkaConnectClient = RestClientBuilder.newBuilder()
+                    .register(BasicRequestFilter.class)
                     .baseUri(kafkaConnectURI)
                     .build(KafkaConnectClient.class);
         }
