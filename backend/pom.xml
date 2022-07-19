@@ -102,6 +102,15 @@
       <artifactId>debezium-connector-oracle</artifactId>
       <version>${debezium.base.version}</version>
     </dependency>
+    <!--
+      This dependency is added to satisfy Quarkus build-time dependencies in jar classpath manifests.
+      This dependency must be deleted from the final image due to redistribution restrictions.
+    -->
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>21.6.0.0</version>
+    </dependency>
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-storage-kafka</artifactId>
@@ -167,12 +176,6 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc8</artifactId>
-      <version>21.1.0.0</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
