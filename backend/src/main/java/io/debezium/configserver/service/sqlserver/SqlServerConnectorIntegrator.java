@@ -104,7 +104,6 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(SqlServerConnectorConfig.MAX_QUEUE_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.RETRIABLE_RESTART_WAIT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
-        additionalMetadata.put(SqlServerConnectorConfig.SOURCE_STRUCT_MAKER_VERSION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.SIGNAL_DATA_COLLECTION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
 
         SQLSERVER_PROPERTIES = Collections.unmodifiableMap(additionalMetadata);
