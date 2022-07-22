@@ -13,7 +13,11 @@
 
   <properties>
     <revision>1.9.0-SNAPSHOT</revision>
-    <debezium.base.version>${revision}</debezium.base.version>
+    <!--
+    For now lets explicitly lock into Debezium 1.9.5
+    Do not forget to adjust .github/workflows/end-to-end-testing.yaml to align with this version
+    -->
+    <debezium.base.version>1.9.5.Final</debezium.base.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
