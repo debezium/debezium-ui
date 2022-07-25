@@ -95,7 +95,6 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MongoDbConnectorConfig.MAX_QUEUE_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(MongoDbConnectorConfig.POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(MongoDbConnectorConfig.RETRIABLE_RESTART_WAIT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
-        additionalMetadata.put(MongoDbConnectorConfig.SOURCE_STRUCT_MAKER_VERSION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
 
         MONGODB_PROPERTIES =  Collections.unmodifiableMap(additionalMetadata);
     }

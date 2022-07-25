@@ -80,7 +80,7 @@ public class Infrastructure {
                     .acceptLicense();
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER =
-            new DebeziumContainer(DockerImageName.parse("debezium/connect:nightly"))
+            new DebeziumContainer(DockerImageName.parse("debezium/connect:1.9"))
                     .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                     .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                     .withNetwork(NETWORK)
