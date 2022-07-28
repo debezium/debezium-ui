@@ -32,6 +32,7 @@ import io.debezium.configserver.model.PropertiesValidationResult.Status;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
 import io.debezium.connector.oracle.OracleConnection;
 import io.debezium.connector.oracle.OracleConnector;
+import io.debezium.util.Strings;
 
 // TODO: This will live in the actual connector module eventually
 public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
@@ -128,11 +129,16 @@ public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
         }
 
         final OracleConnectorConfig oracleConfig = new OracleConnectorConfig(Configuration.from(properties));
-        final String databaseName = oracleConfig.getDatabaseName();
-        
+        final String databaseName = oracleConfig.getCatalogName();
+
         try (OracleConnection connection = connect(oracleConfig)) {
+            if (!Strings.isNullOrBlank(oracleConfig.getPdbName())) {
+                connection.setSessionToPdb(oracleConfig.getPdbName());
+            }
             Set<TableId> tables;
             try {
+                // todo: we need to expose a better method from the connector, particularly getAllTableIds
+                //          the following's performance is acceptable when using PDBs but not as ideal with non-PDB
                 tables = connection.readTableNames(databaseName, null, null, new String[]{ "TABLE" });
 
                 List<DataCollection> matchingTables = tables.stream()
