@@ -23,6 +23,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
@@ -79,14 +80,25 @@ public class Infrastructure {
                     .withInitScript("/initialize-sqlserver-database.sql")
                     .acceptLicense();
 
-    private static final DebeziumContainer DEBEZIUM_CONTAINER =
-            new DebeziumContainer(DockerImageName.parse("debezium/connect:1.9"))
-                    .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
-                    .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
-                    .withNetwork(NETWORK)
-                    .withKafka(KAFKA_CONTAINER.getNetwork(), KAFKA_HOSTNAME + ":9092")
-                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
-                    .dependsOn(KAFKA_CONTAINER);
+    private static final DebeziumContainer DEBEZIUM_CONTAINER;
+    static {
+        // This has to be broken into two steps as "setImage" is not chainable.
+        // We use "setImage" to override the base image with some extra Dockerfile steps to build the image on-the-fly
+        DEBEZIUM_CONTAINER = new DebeziumContainer("debezium/connect:1.9")
+                .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
+                .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
+                .withNetwork(NETWORK)
+                .withKafka(KAFKA_CONTAINER.getNetwork(), KAFKA_HOSTNAME + ":9092")
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER))
+                .dependsOn(KAFKA_CONTAINER);
+
+        DEBEZIUM_CONTAINER.setImage(new ImageFromDockerfile()
+                .withDockerfileFromBuilder(builder ->
+                       builder.from("debezium/connect:1.9")
+                               .user("kafka")
+                               .run("docker-maven-download central \"io/debezium\" debezium-connect-rest-extension \"1.9.5.Final\" \"192e9a0a5485e1d3e08d129662d5efb2\"")
+                               .build()));
+    }
 
     public static Network getNetwork() {
         return NETWORK;
