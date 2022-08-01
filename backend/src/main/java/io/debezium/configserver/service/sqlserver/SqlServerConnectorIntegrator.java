@@ -26,7 +26,7 @@ import io.debezium.configserver.model.DataCollection;
 import io.debezium.heartbeat.Heartbeat;
 import io.debezium.jdbc.TemporalPrecisionMode;
 import io.debezium.relational.TableId;
-import io.debezium.relational.history.KafkaDatabaseHistory;
+import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult.Status;
