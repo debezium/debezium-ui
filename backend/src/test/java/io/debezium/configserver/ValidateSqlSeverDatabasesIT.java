@@ -14,7 +14,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import static org.hamcrest.CoreMatchers.hasItems;
 public class ValidateSqlSeverDatabasesIT {
 
     @Test
-    @Disabled("Requires upgrading to latest Debezium 1.9 to fix bugs with newly added database.names property")
     public void testMultipleDatabases() {
         ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
                 Infrastructure.getSqlServerConnectorConfiguration(1)
