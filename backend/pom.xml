@@ -98,6 +98,11 @@
       <version>${debezium.base.version}</version>
     </dependency>
     <dependency>
+      <groupId>io.debezium</groupId>
+      <artifactId>debezium-storage-kafka</artifactId>
+      <version>${debezium.base.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>connect-api</artifactId>
       <version>2.5.0</version>

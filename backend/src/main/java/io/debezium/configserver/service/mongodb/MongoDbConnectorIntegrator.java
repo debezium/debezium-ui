@@ -29,7 +29,7 @@ import io.debezium.connector.mongodb.MongoDbConnectorConfig;
 import io.debezium.connector.mongodb.MongoDbTaskContext;
 import io.debezium.connector.mongodb.ReplicaSet;
 import io.debezium.heartbeat.Heartbeat;
-import io.debezium.schema.DataCollectionId;
+import io.debezium.spi.schema.DataCollectionId;
 import org.apache.kafka.connect.source.SourceConnector;
 
 import io.debezium.configserver.model.FilterValidationResult;

@@ -46,7 +46,7 @@ public class CreateAndDeleteSqlSeverConnectorIT {
     @Test
     public void testSqlServerCreateConnectorEndpoint() {
         ConnectorConfiguration config = Infrastructure.getSqlServerConnectorConfiguration(1)
-                .with("database.dbname", "testdb");
+                .with("database.names", "testdb");
 
         Connector connector = Connector.from("my-sqlserver-connector", config);
 
@@ -74,7 +74,7 @@ public class CreateAndDeleteSqlSeverConnectorIT {
     @Test
     public void testSqlServerDeleteConnectorSuccessful() {
         ConnectorConfiguration config = Infrastructure.getSqlServerConnectorConfiguration(1)
-                .with("database.dbname", "testdb");
+                .with("database.names", "testdb");
 
         final var deleteSqlServerConnectorName = "delete-connector-sqlsever";
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
