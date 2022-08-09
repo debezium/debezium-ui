@@ -82,7 +82,6 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
 
         // Data type mapping properties - Advanced:
         // additional property added to UI Requirements document section for "Data type mapping properties"-advanced section:
-        additionalMetadata.put(SqlServerConnectorConfig.SOURCE_TIMESTAMP_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.MAX_TRANSACTIONS_PER_ITERATION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.CUSTOM_CONVERTERS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.TRUNCATE_COLUMN.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
@@ -143,10 +142,8 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
     }
     
     private SqlServerConnection connect(SqlServerConnectorConfig sqlServerConfig) {
-        return new SqlServerConnection(sqlServerConfig.getJdbcConfig(),
-                sqlServerConfig.getSourceTimestampMode(), null,
-                () -> getClass().getClassLoader(),
-                Collections.emptySet(), false);
+        return new SqlServerConnection(sqlServerConfig.getJdbcConfig(), null,
+                () -> getClass().getClassLoader(), Collections.emptySet());
     }
 
     @Override
