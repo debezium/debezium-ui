@@ -59,10 +59,7 @@ describe("Connectors page", () => {
       .click();
   });
   it("Delete connector", () => {
-    cy.get("ul>li")
-      .eq(5)
-      .findByRole("button", { name: "Delete" })
-      .click();
+    cy.get("ul>li").eq(5).scrollIntoView().findByText("Delete").click();
   });
   it("Confirm delete connector", () => {
     cy.get("body", { timeout: 50000 })
