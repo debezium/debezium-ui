@@ -25,13 +25,13 @@ import io.debezium.configserver.model.DataCollection;
 import io.debezium.heartbeat.Heartbeat;
 import io.debezium.jdbc.TemporalPrecisionMode;
 import io.debezium.relational.TableId;
-import io.debezium.relational.history.KafkaDatabaseHistory;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult.Status;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
 import io.debezium.connector.oracle.OracleConnection;
 import io.debezium.connector.oracle.OracleConnector;
+import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
 import io.debezium.util.Strings;
 
 // TODO: This will live in the actual connector module eventually
@@ -115,7 +115,6 @@ public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(OracleConnectorConfig.MAX_QUEUE_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(OracleConnectorConfig.POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(OracleConnectorConfig.RETRIABLE_RESTART_WAIT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
-        additionalMetadata.put(OracleConnectorConfig.SOURCE_STRUCT_MAKER_VERSION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(OracleConnectorConfig.SIGNAL_DATA_COLLECTION.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
 
         ORACLE_PROPERTIES = Collections.unmodifiableMap(additionalMetadata);
