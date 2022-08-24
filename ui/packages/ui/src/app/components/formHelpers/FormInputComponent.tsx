@@ -80,8 +80,8 @@ export const FormInputComponent: React.FunctionComponent<
             field.onChange(field.name)(e);
             props.clearValidationError();
           }}
-          inputName={props.label}
-          inputAriaLabel={props.label}
+          inputName={field.name}
+          inputAriaLabel={field.name}
           minusBtnAriaLabel="dbz_port_minus"
           plusBtnAriaLabel="dbz_port_plus"
           min={minValue(props.type)}
