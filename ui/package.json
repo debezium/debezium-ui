@@ -45,7 +45,7 @@
     "@types/react-router": "5.1.18",
     "@types/react-router-dom": "5.3.3",
     "@types/yup": "0.29.14",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
+    "@wojtekmaj/enzyme-adapter-react-17": "0.6.7",
     "autoprefixer": "10.4.7",
     "copy-webpack-plugin": "10.2.4",
     "css-loader": "6.7.1",
