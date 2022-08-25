@@ -60,7 +60,7 @@
     "imagemin": "8.0.1",
     "jest": "27.5.1",
     "keycloak-js": "16.1.1",
-    "lerna": "4.0.0",
+    "lerna": "5.4.3",
     "lint-staged": "12.5.0",
     "mini-css-extract-plugin": "2.6.1",
     "null-loader": "4.0.1",
