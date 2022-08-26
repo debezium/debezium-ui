@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.debezium.config.ConfigDefinition;
 import io.debezium.config.EnumeratedValue;
 import io.debezium.configserver.model.AdditionalPropertyMetadata;
 import org.apache.kafka.common.config.Config;
@@ -29,6 +30,8 @@ import io.debezium.configserver.model.ConnectorType;
 import io.debezium.configserver.model.GenericValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertyValidationResult;
+import io.debezium.relational.HistorizedRelationalDatabaseConnectorConfig;
+import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
 
 public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
 
@@ -78,6 +81,20 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
             .filter(property -> !property.name.startsWith("internal"))
             .map(this::toConnectorProperty)
             .collect(Collectors.toMap(connectorProperty -> connectorProperty.name, connectorProperty -> connectorProperty));
+
+        if (instance.config().configKeys().containsKey(HistorizedRelationalDatabaseConnectorConfig.DATABASE_HISTORY.name())) {
+            // todo: how to support non-Kafka storage modules?
+            properties.putAll(ConfigDefinition.editor()
+                .history(KafkaDatabaseHistory.ALL_FIELDS.asArray())
+                .create()
+                .configDef()
+                .configKeys()
+                .values()
+                .stream()
+                .filter(property -> !property.name.startsWith("internal"))
+                .map(this::toConnectorProperty)
+                .collect(Collectors.toMap(connectorProperty -> connectorProperty.name, connectorProperty -> connectorProperty)));
+        }
 
         // apply sorting of properties provided by {@link #allPropertiesWithAdditionalMetadata()}
         ArrayList<ConnectorProperty> sortedProperties = allPropertiesWithAdditionalMetadata()
