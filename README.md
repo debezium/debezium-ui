@@ -108,6 +108,16 @@ Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://loc
 
 The UI frontend code is located under the _ui_ folder.  See the [UI README](./ui/README.md) for more information about UI development.
 
+## Run the UI as a federated module consumed by the cos-ui app
+
+```sh
+cd ui
+npm install
+npm run start:federate
+```
+
+This will run a dev server on http://localhost:3000 that will serve a federated module named `debezium_ui`.
+
 ## Contributing
 
 The Debezium community welcomes anyone that wants to help out in any way, whether that includes

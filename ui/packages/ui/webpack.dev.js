@@ -1,11 +1,6 @@
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 const CopyPlugin = require('copy-webpack-plugin');
-const { port } = require("./package.json");
-
-const HOST = process.env.HOST || "localhost";
-const PORT = process.env.PORT || port;
-
 
 module.exports = merge(common("development"), {
   mode: "development",
@@ -17,11 +12,6 @@ module.exports = merge(common("development"), {
       ],
     }),
   ],
-  output: {
-    publicPath: (false && isProd && remoteSuffix)
-      ? `http://debeziumui${remoteSuffix}/`
-      : `http://localhost:${PORT}/`
-  },
   devServer: {
     static: {
       directory: './dist',
@@ -29,8 +19,6 @@ module.exports = merge(common("development"), {
     client: {
       overlay: true,
     },
-    host: HOST,
-    port: PORT,
     hot: "only",
     historyApiFallback: true,
     headers: {
