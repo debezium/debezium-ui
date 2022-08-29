@@ -104,11 +104,11 @@ You can run it in development mode like so:
 
 Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
 
-### UI Development
+## UI Development
 
 The UI frontend code is located under the _ui_ folder.  See the [UI README](./ui/README.md) for more information about UI development.
 
-## Run the UI as a federated module consumed by the cos-ui app
+### Run the UI as a federated module consumed by the cos-ui app
 
 ```sh
 cd ui
