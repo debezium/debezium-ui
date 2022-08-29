@@ -10,7 +10,8 @@
   "private": true,
   "scripts": {
     "build": "webpack --progress --config webpack.prod.js",
-    "start": "webpack serve --color --progress --config webpack.dev.js",
+    "start": "webpack serve --color --progress --host localhost --port 8888 --config webpack.dev.js",
+    "start:federate": "webpack serve --color --progress --host localhost --port 3000 --config webpack.dev.js",
     "start:prod": "node scripts/serve",
     "lint": "tslint -c ./tslint.json --project .",
     "lint:fix": "npm run lint --fix",

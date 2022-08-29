@@ -13,6 +13,7 @@
     "clean": "lerna run clean",
     "build": "lerna run build",
     "start": "lerna run start --scope=@debezium/ui",
+    "start:federate": "lerna run start:federate --scope=@debezium/ui",
     "start:prod": "lerna run start:prod --scope=@debezium/ui",
     "cypress:open": "cypress open",
     "cypress": "cypress run --headless --browser chrome",
