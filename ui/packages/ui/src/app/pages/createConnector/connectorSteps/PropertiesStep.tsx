@@ -54,6 +54,8 @@ const FormSubmit: React.FunctionComponent<any> = React.forwardRef(
 export const PropertiesStep: React.FC<any> = React.forwardRef((props, ref) => {
   const basicValidationSchema = {};
 
+  console.log('PropertiesStep props', props.basicPropertyDefinitions);
+
   const namePropertyDefinitions = formatPropertyDefinitions(
     props.basicPropertyDefinitions.filter(
       (defn: any) => defn.category === PropertyCategory.CONNECTOR_NAME

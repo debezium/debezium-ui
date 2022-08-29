@@ -6,6 +6,7 @@ import {
   getFormattedProperties,
   ConnectorTypeId,
 } from 'shared';
+import { object } from 'prop-types';
 
 const getType = (prop: any) => {
   let type = prop['type'];
@@ -99,6 +100,35 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   const connProperties: ConnectorProperty[] = [];
   const schema = resolveRef(connectorData.schema, connectorData.schema);
   const schemaProperties = schema.properties;
+
+  for (const propKey of Object.keys(schemaProperties)) {
+    const prop = schemaProperties[propKey];
+    if (prop['type'] === 'object') {
+      for (const propertiesKey of Object.keys(prop.properties)) {
+        const property = prop.properties[propertiesKey];
+
+        connProperties.push(setProperties(property));
+      }
+    } else {
+      connProperties.push(setProperties(prop));
+    }
+  }
+  return formatPropertyDefinitions(
+    getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
+  );
+};
+
+/**
+ * Format the Connector properties passed via connector prop
+ * @param connectorData
+ * @returns ConnectorProperty[]
+ */
+ export const getPropertiesData1 = (connectorData: any): ConnectorProperty[] => {
+  const connProperties: ConnectorProperty[] = [];
+  const schema = connectorData.components.schemas;
+  const schemaDefinition = schema[Object.keys(schema)[0]];
+  console.log(schema)
+  const schemaProperties = schemaDefinition.properties;
 
   for (const propKey of Object.keys(schemaProperties)) {
     const prop = schemaProperties[propKey];
