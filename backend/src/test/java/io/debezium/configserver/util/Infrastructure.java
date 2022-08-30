@@ -226,7 +226,8 @@ public class Infrastructure {
                 .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
                 .with("database.history.kafka.topic", "dbhistory.inventory")
                 .with("snapshot.mode", "initial")
-                .with("database.server.name", "dbserver" + id);
+                .with("database.server.name", "dbserver" + id)
+                .with("database.encrypt", false);
 
         if (options != null && options.length > 0) {
             for (int i = 0; i < options.length; i += 2) {
