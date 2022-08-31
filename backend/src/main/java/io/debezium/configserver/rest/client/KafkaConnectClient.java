@@ -56,6 +56,10 @@ public interface KafkaConnectClient {
     Response deleteConnector(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
 
     @PUT
+    @Path("/connectors/{connector-name}/config")
+    Response updateConnectorConfig(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
+
+    @PUT
     @Path("/connectors/{connector-name}/pause")
     @Produces("application/json")
     Response pauseConnector(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;

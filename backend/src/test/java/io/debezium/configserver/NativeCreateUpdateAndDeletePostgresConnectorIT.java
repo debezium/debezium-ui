@@ -8,7 +8,7 @@ package io.debezium.configserver;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeCreateAndDeletePostgresConnectorIT extends CreateAndDeletePostgresConnectorIT {
+public class NativeCreateUpdateAndDeletePostgresConnectorIT extends CreateUpdateAndDeletePostgresConnectorIT {
 
     // Execute the same tests but in native mode.
 }

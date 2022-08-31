@@ -32,6 +32,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.ProcessingException;
@@ -447,6 +448,53 @@ public class ConnectorResource {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
         return deleteResponse;
+    }
+
+
+    @Path(ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT)
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "204",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @APIResponse(
+            responseCode = "404",
+            description = "Connector with specified name not found")
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    @APIResponse(
+            responseCode = "503",
+            description = "Exception while trying to connect to the selected Kafka Connect cluster",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    public Response updateConnectorConfig(
+            @PathParam("cluster") int cluster,
+            @PathParam("connector-name") String connectorName
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
+
+        Response updateResponse;
+        try {
+            Response originalKafkaConnectResponse = kafkaConnectClient.updateConnectorConfig(connectorName);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Kafka Connect response: " + originalKafkaConnectResponse.readEntity(String.class));
+            }
+            updateResponse = Response.fromResponse(originalKafkaConnectResponse).type(MediaType.APPLICATION_JSON).build();
+            originalKafkaConnectResponse.close();
+        }
+        catch (ProcessingException | IOException e) {
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
+        }
+        return updateResponse;
     }
 
     @Path(ConnectorURIs.CONNECTOR_CONFIG_ENDPOINT)

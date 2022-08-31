@@ -47,7 +47,7 @@ public class Infrastructure {
     private static final Network NETWORK = Network.newNetwork();
 
     private static final KafkaContainer KAFKA_CONTAINER =
-            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.5"))
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.2.3"))
                     .withNetworkAliases(KAFKA_HOSTNAME)
                     .withNetwork(NETWORK);
 
@@ -83,7 +83,7 @@ public class Infrastructure {
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER;
     static {
-        DEBEZIUM_CONTAINER = new DebeziumContainer("debezium/connect:nightly")
+        DEBEZIUM_CONTAINER = new DebeziumContainer("debezium/connect:1.9.7.Final ")
                 .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                 .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                 .withNetwork(NETWORK)
