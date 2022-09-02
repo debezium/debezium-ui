@@ -124,7 +124,7 @@ public class ConnectorResourceIT {
                 .statusCode(200)
                 .body("name", equalTo("postgres-connector-get-config"))
                 .body("'connector.class'", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
-                .body("'database.server.name'", equalTo("dbserver1"))
+                .body("'topic.prefix'", equalTo("dbserver1"))
                 .body("'database.dbname'", equalTo("test"))
                 .body("'database.user'", equalTo("test"));
     }

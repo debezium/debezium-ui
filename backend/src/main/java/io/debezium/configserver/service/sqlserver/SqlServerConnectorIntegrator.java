@@ -41,7 +41,7 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
     static {
         Map<String, AdditionalPropertyMetadata> additionalMetadata = new LinkedHashMap<>();
         // Connection properties
-        additionalMetadata.put(SqlServerConnectorConfig.SERVER_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(SqlServerConnectorConfig.TOPIC_PREFIX.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(SqlServerConnectorConfig.HOSTNAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(SqlServerConnectorConfig.PORT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(SqlServerConnectorConfig.USER.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));

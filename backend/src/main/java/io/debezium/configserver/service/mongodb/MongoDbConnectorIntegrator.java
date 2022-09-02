@@ -48,7 +48,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MongoDbConnectorConfig.MONGODB_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MongoDbConnectorConfig.USER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MongoDbConnectorConfig.PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(MongoDbConnectorConfig.LOGICAL_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(MongoDbConnectorConfig.TOPIC_PREFIX.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
 
         // Connection properties - advanced section incl SSL subcategory
         additionalMetadata.put(MongoDbConnectorConfig.SSL_ENABLED.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED_SSL));

@@ -165,7 +165,7 @@ public class Infrastructure {
     public static ConnectorConfiguration getPostgresConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forJdbcContainer(POSTGRES_CONTAINER)
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
-                .with("database.server.name", "dbserver" + id)
+                .with("topic.prefix", "dbserver" + id)
                 .with("slot.name", "debezium_" + id);
 
         if (options != null && options.length > 0) {
@@ -181,7 +181,7 @@ public class Infrastructure {
                 .with("database.user", "debezium")
                 .with("database.password", "dbz")
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
-                .with("database.server.name", "dbserver" + id)
+                .with("topic.prefix", "dbserver" + id)
                 .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
                 .with("database.history.kafka.topic", "dbhistory.inventory")
                 .with("database.server.id", Long.valueOf(5555 + id - 1));
@@ -199,7 +199,7 @@ public class Infrastructure {
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
                 .with(MongoDbConnectorConfig.USER.name(), "debezium")
                 .with(MongoDbConnectorConfig.PASSWORD.name(), "dbz")
-                .with(MongoDbConnectorConfig.LOGICAL_NAME.name(), "mongo" + id);
+                .with(MongoDbConnectorConfig.TOPIC_PREFIX.name(), "mongo" + id);
 
         if (options != null && options.length > 0) {
             for (int i = 0; i < options.length; i += 2) {
@@ -226,7 +226,7 @@ public class Infrastructure {
                 .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
                 .with("database.history.kafka.topic", "dbhistory.inventory")
                 .with("snapshot.mode", "initial")
-                .with("database.server.name", "dbserver" + id)
+                .with("topic.prefix", "dbserver" + id)
                 .with("database.encrypt", false);
 
         if (options != null && options.length > 0) {

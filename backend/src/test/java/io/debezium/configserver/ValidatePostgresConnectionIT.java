@@ -77,7 +77,7 @@ public class ValidatePostgresConnectionIT {
                     hasItems(
                         Map.of("property", "database.user", "message", "The 'database.user' value is invalid: A value is required"),
                         Map.of("property", "database.dbname", "message", "The 'database.dbname' value is invalid: A value is required"),
-                        Map.of("property", "database.server.name", "message", "The 'database.server.name' value is invalid: A value is required"),
+                        Map.of("property", "topic.prefix", "message", "The 'database.server.name' value is invalid: A value is required"),
                         Map.of("property", "database.hostname", "message", "The 'database.hostname' value is invalid: A value is required")
                     ));
     }
