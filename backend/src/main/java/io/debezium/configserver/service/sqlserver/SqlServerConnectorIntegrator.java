@@ -26,13 +26,13 @@ import io.debezium.configserver.model.DataCollection;
 import io.debezium.heartbeat.Heartbeat;
 import io.debezium.jdbc.TemporalPrecisionMode;
 import io.debezium.relational.TableId;
-import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult.Status;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
 import io.debezium.connector.sqlserver.SqlServerConnection;
 import io.debezium.connector.sqlserver.SqlServerConnector;
+import io.debezium.storage.kafka.history.KafkaSchemaHistory;
 
 // TODO: This will live in the actual connector module eventually
 public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
@@ -48,8 +48,8 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(SqlServerConnectorConfig.PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(SqlServerConnectorConfig.DATABASE_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(SqlServerConnectorConfig.INSTANCE.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(KafkaDatabaseHistory.BOOTSTRAP_SERVERS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(KafkaDatabaseHistory.TOPIC.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(KafkaSchemaHistory.BOOTSTRAP_SERVERS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(KafkaSchemaHistory.TOPIC.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
 
         // Filter properties
         additionalMetadata.put(SqlServerConnectorConfig.TABLE_INCLUDE_LIST.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.FILTERS));
@@ -94,8 +94,8 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(SqlServerConnectorConfig.SANITIZE_FIELD_NAMES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
 
         // Advanced configs (aka Runtime configs based on the PoC Requirements document
-        additionalMetadata.put(KafkaDatabaseHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
-        additionalMetadata.put(KafkaDatabaseHistory.RECOVERY_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
+        additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
+        additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.SKIPPED_OPERATIONS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.EVENT_PROCESSING_FAILURE_HANDLING_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED, enumArrayToList(SqlServerConnectorConfig.EventProcessingFailureHandlingMode.values())));
         additionalMetadata.put(SqlServerConnectorConfig.QUERY_FETCH_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));

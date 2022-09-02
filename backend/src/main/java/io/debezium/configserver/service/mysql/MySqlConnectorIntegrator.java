@@ -21,7 +21,7 @@ import io.debezium.connector.mysql.MySqlConnectorConfig;
 import io.debezium.heartbeat.Heartbeat;
 import io.debezium.jdbc.TemporalPrecisionMode;
 import io.debezium.relational.TableId;
-import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
+import io.debezium.storage.kafka.history.KafkaSchemaHistory;
 import org.apache.kafka.connect.source.SourceConnector;
 import org.jboss.logging.Logger;
 
@@ -49,8 +49,8 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MySqlConnectorConfig.PORT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MySqlConnectorConfig.USER.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MySqlConnectorConfig.PASSWORD.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(KafkaDatabaseHistory.BOOTSTRAP_SERVERS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(KafkaDatabaseHistory.TOPIC.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(KafkaSchemaHistory.BOOTSTRAP_SERVERS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(KafkaSchemaHistory.TOPIC.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MySqlConnectorConfig.JDBC_DRIVER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
 
         // Connection properties - advanced section incl SSL subcategory
@@ -102,7 +102,7 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
         // additional property added to UI Requirements document section for "Data type mapping properties"-advanced section:
         additionalMetadata.put(MySqlConnectorConfig.INCLUDE_SCHEMA_CHANGES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.INCLUDE_SQL_QUERY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
-        additionalMetadata.put(MySqlConnectorConfig.DATABASE_HISTORY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
+        additionalMetadata.put(MySqlConnectorConfig.SCHEMA_HISTORY.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.ROW_COUNT_FOR_STREAMING_RESULT_SETS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.BUFFER_SIZE_FOR_BINLOG_READER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.TRUNCATE_COLUMN.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
@@ -111,8 +111,8 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(MySqlConnectorConfig.MSG_KEY_COLUMNS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
 
         // Advanced configs (aka Runtime configs based on the PoC Requirements document
-        additionalMetadata.put(KafkaDatabaseHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
-        additionalMetadata.put(KafkaDatabaseHistory.RECOVERY_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
+        additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
+        additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.SKIPPED_OPERATIONS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(MySqlConnectorConfig.EVENT_PROCESSING_FAILURE_HANDLING_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED, enumArrayToList(MySqlConnectorConfig.EventProcessingFailureHandlingMode.values())));
         additionalMetadata.put(MySqlConnectorConfig.INCONSISTENT_SCHEMA_HANDLING_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED, enumArrayToList(MySqlConnectorConfig.EventProcessingFailureHandlingMode.values())));

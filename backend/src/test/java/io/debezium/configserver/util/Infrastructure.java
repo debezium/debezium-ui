@@ -182,8 +182,8 @@ public class Infrastructure {
                 .with("database.password", "dbz")
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
                 .with("topic.prefix", "dbserver" + id)
-                .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
-                .with("database.history.kafka.topic", "dbhistory.inventory")
+                .with("schema.history.internal.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
+                .with("schema.history.internal.kafka.topic", "dbhistory.inventory")
                 .with("database.server.id", Long.valueOf(5555 + id - 1));
 
         if (options != null && options.length > 0) {
@@ -223,8 +223,8 @@ public class Infrastructure {
         final ConnectorConfiguration config = forJdbcContainerWithNoDatabaseNameSupport(SQL_SERVER_CONTAINER)
                 .with("database.user", "sa")
                 .with("database.password", "Password!")
-                .with("database.history.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
-                .with("database.history.kafka.topic", "dbhistory.inventory")
+                .with("schema.history.internal.kafka.bootstrap.servers", KAFKA_HOSTNAME + ":9092")
+                .with("schema.history.internal.kafka.topic", "dbhistory.inventory")
                 .with("snapshot.mode", "initial")
                 .with("topic.prefix", "dbserver" + id)
                 .with("database.encrypt", false);
