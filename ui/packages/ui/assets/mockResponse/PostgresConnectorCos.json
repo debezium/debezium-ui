@@ -10,15 +10,15 @@
     "labels": ["source", "debezium", "postgres", "1.5.0.Final"],
     "json_schema" : {
       "title" : "Debezium PostgreSQL Connector",
-      "required" : [ "database.server.name", "database.hostname", "database.user", "database.dbname" ],
+      "required" : [ "topic.prefix", "database.hostname", "database.user", "database.dbname" ],
       "type" : "object",
       "properties" : {
-        "database.server.name" : {
+        "topic.prefix" : {
           "title" : "Namespace",
-          "description" : "Unique name that identifies the database server and all recorded offsets, and that is used as a prefix for all schemas and topics. Each distinct installation should have a separate namespace and be monitored by at most one Debezium connector.",
+          "description" : "Unique topic prefix that is used as a prefix for all schemas and topics. Each distinct installation should have a separate namespace and be monitored by at most one Debezium connector.",
           "type" : "string",
           "nullable" : false,
-          "x-name" : "database.server.name",
+          "x-name" : "topic.prefix",
           "x-category" : "CONNECTION"
         },
         "database.hostname" : {

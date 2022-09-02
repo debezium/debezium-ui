@@ -100,21 +100,21 @@ describe("Utils", () => {
     expect(getFormattedProperties(CONNECTOR_PROPERIES, ConnectorTypeId.POSTGRES).length).toBe(11);
     expect(getFormattedProperties(CONNECTOR_PROPERIES, ConnectorTypeId.POSTGRES)).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({name: "database.server.name", gridWidthLg: 12, gridWidthSm: 12}),
+        expect.objectContaining({name: "topic.prefix", gridWidthLg: 12, gridWidthSm: 12}),
         expect.objectContaining({name: "heartbeat.interval.ms", gridWidthLg: 4, gridWidthSm: 12})
       ])
     );
     expect(getFormattedProperties(CONNECTOR_PROPERIES, ConnectorTypeId.MYSQL).length).toBe(11);
     expect(getFormattedProperties(CONNECTOR_PROPERIES, ConnectorTypeId.MYSQL)).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({name: "database.server.name", gridWidthLg: 12, gridWidthSm: 12}),
+        expect.objectContaining({name: "topic.prefix", gridWidthLg: 12, gridWidthSm: 12}),
         expect.objectContaining({name: "heartbeat.interval.ms", gridWidthLg: 4, gridWidthSm: 12})
       ])
     );
     expect(getFormattedProperties(CONNECTOR_PROPERIES, ConnectorTypeId.MONGO).length).toBe(11);
     expect(getFormattedProperties(CONNECTOR_PROPERIES, ConnectorTypeId.MONGO)).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({name: "database.server.name", gridWidthLg: 12, gridWidthSm: 12}),
+        expect.objectContaining({name: "topic.prefix", gridWidthLg: 12, gridWidthSm: 12}),
         expect.objectContaining({name: "heartbeat.interval.ms", gridWidthLg: 4, gridWidthSm: 12})
       ])
     );

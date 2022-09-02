@@ -43,7 +43,7 @@ public class MySqlConnectorIntegrator extends ConnectorIntegratorBase {
     static {
         Map<String, AdditionalPropertyMetadata> additionalMetadata = new LinkedHashMap<>();
         // Connection properties
-        additionalMetadata.put(MySqlConnectorConfig.SERVER_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(MySqlConnectorConfig.TOPIC_PREFIX.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MySqlConnectorConfig.SERVER_ID.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MySqlConnectorConfig.HOSTNAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(MySqlConnectorConfig.PORT.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));

@@ -26,7 +26,7 @@ describe("Connectors page", () => {
     cy.get('input[name="connector&name"]', { timeout: 50000 }).type(
       "dbz-pg-conn"
     );
-    cy.get('input[name="database&server&name"]', { timeout: 50000 }).type(
+    cy.get('input[name="topic&prefix"]', { timeout: 50000 }).type(
       "fulfillment"
     );
     cy.get('input[name="database&hostname"]', { timeout: 50000 }).type(
