@@ -31,7 +31,7 @@ import io.debezium.configserver.model.GenericValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
 import io.debezium.configserver.model.PropertyValidationResult;
 import io.debezium.relational.HistorizedRelationalDatabaseConnectorConfig;
-import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
+import io.debezium.storage.kafka.history.KafkaSchemaHistory;
 
 public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
 
@@ -82,10 +82,10 @@ public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
             .map(this::toConnectorProperty)
             .collect(Collectors.toMap(connectorProperty -> connectorProperty.name, connectorProperty -> connectorProperty));
 
-        if (instance.config().configKeys().containsKey(HistorizedRelationalDatabaseConnectorConfig.DATABASE_HISTORY.name())) {
+        if (instance.config().configKeys().containsKey(HistorizedRelationalDatabaseConnectorConfig.SCHEMA_HISTORY.name())) {
             // todo: how to support non-Kafka storage modules?
             properties.putAll(ConfigDefinition.editor()
-                .history(KafkaDatabaseHistory.ALL_FIELDS.asArray())
+                .history(KafkaSchemaHistory.ALL_FIELDS.asArray())
                 .create()
                 .configDef()
                 .configKeys()
