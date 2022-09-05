@@ -1,7 +1,6 @@
 /* tslint:disable: no-string-literal */
 import { resolveRef } from './ResolveSchemaRef';
 import { ConnectorProperty } from '@debezium/ui-models';
-import { object } from 'prop-types';
 import {
   formatPropertyDefinitions,
   getFormattedProperties,
