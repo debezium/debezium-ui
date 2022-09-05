@@ -1,12 +1,12 @@
 /* tslint:disable: no-string-literal */
 import { resolveRef } from './ResolveSchemaRef';
 import { ConnectorProperty } from '@debezium/ui-models';
+import { object } from 'prop-types';
 import {
   formatPropertyDefinitions,
   getFormattedProperties,
   ConnectorTypeId,
 } from 'shared';
-import { object } from 'prop-types';
 
 const getType = (prop: any) => {
   let type = prop['type'];
@@ -82,7 +82,7 @@ const setProperties = (property, parentObj?) => {
 
   connProp.type = getType(property);
 
-  if (property['default'] !==`undefined`) {
+  if (property['default'] !== `undefined`) {
     connProp.defaultValue = property['default'];
   }
   if (property['enum']) {
@@ -123,19 +123,15 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
  * @param connectorData
  * @returns ConnectorProperty[]
  */
- export const getPropertiesData1 = (connectorData: any): ConnectorProperty[] => {
+ export const getPropertiesDataDownstream = (connectorData: any): ConnectorProperty[] => {
   const connProperties: ConnectorProperty[] = [];
   const schema = connectorData.components.schemas;
   const schemaDefinition = schema[Object.keys(schema)[0]];
-  console.log(schema)
+  console.log(schema);
   const schemaProperties = schemaDefinition.properties;
 
   for (const propKey of Object.keys(schemaProperties)) {
-   
     const prop = schemaProperties[propKey];
-    if(propKey === 'snapshot.delay.ms'){
-      console.log('---------------------------------------------->',prop);
-    }
     if (prop['type'] === 'object') {
       for (const propertiesKey of Object.keys(prop.properties)) {
         const property = prop.properties[propertiesKey];
@@ -143,16 +139,11 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
         connProperties.push(setProperties(property));
       }
     } else {
-      if(propKey === 'snapshot.delay.ms'){
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++>',setProperties(prop));
-      }
       connProperties.push(setProperties(prop));
-    }
-    if(propKey === 'snapshot.delay.ms'){
-      console.log('========================================================>',connProperties);
     }
   }
   return formatPropertyDefinitions(
     getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
   );
 };
+
