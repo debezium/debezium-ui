@@ -82,7 +82,7 @@ const setProperties = (property, parentObj?) => {
 
   connProp.type = getType(property);
 
-  if (property['default']) {
+  if (property['default'] !==`undefined`) {
     connProp.defaultValue = property['default'];
   }
   if (property['enum']) {
@@ -131,7 +131,11 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   const schemaProperties = schemaDefinition.properties;
 
   for (const propKey of Object.keys(schemaProperties)) {
+   
     const prop = schemaProperties[propKey];
+    if(propKey === 'snapshot.delay.ms'){
+      console.log('---------------------------------------------->',prop);
+    }
     if (prop['type'] === 'object') {
       for (const propertiesKey of Object.keys(prop.properties)) {
         const property = prop.properties[propertiesKey];
@@ -139,7 +143,13 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
         connProperties.push(setProperties(property));
       }
     } else {
+      if(propKey === 'snapshot.delay.ms'){
+        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++>',setProperties(prop));
+      }
       connProperties.push(setProperties(prop));
+    }
+    if(propKey === 'snapshot.delay.ms'){
+      console.log('========================================================>',connProperties);
     }
   }
   return formatPropertyDefinitions(

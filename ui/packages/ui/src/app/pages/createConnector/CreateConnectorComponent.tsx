@@ -42,7 +42,6 @@ import {
   getAdvancedPropertyDefinitions,
   getBasicPropertyDefinitions,
   getDataOptionsPropertyDefinitions,
-  getFormattedProperties,
   getRuntimeOptionsPropertyDefinitions,
   isDataOptions,
   isRuntimeOptions,
@@ -51,7 +50,7 @@ import {
   PropertyCategory,
   PropertyName,
 } from 'shared';
-import { getPropertiesData1 } from 'src/app/utils/FormatCosProperties';
+import { getPropertiesDataDownstream } from 'src/app/utils/FormatCosProperties';
 
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
@@ -400,7 +399,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
         .then((cDetails: any) => {
           setLoading(false);
           // TODO: Find the solution to this issue.
-          console.log(cDetails);
+          
           // if (
           //   cDetails?.properties.find(
           //     (obj: { name: string }) =>
@@ -413,7 +412,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
           //   ).name = 'column.mask.hash';
           // }
           setSelectedConnectorPropertyDefns(
-            getPropertiesData1(cDetails)
+            getPropertiesDataDownstream(cDetails)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
@@ -689,7 +688,6 @@ export const CreateConnectorComponent: React.FunctionComponent<
         .then((cDetails: any) => {
           setLoading(false);
           // TODO: Find the solution to this issue.
-          console.log(cDetails);
           // if (
           //   cDetails?.properties.find(
           //     (obj: { name: string }) =>
@@ -702,8 +700,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
           //   ).name = 'column.mask.hash';
           // }
           setSelectedConnectorPropertyDefns(
-            getPropertiesData1(cDetails)
-            // getFormattedProperties(cDetails.properties, cDetails.id)
+            getPropertiesDataDownstream(cDetails)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
