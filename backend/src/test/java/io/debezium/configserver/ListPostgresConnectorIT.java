@@ -5,6 +5,15 @@
  */
 package io.debezium.configserver;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import io.debezium.configserver.model.ConnectorStatus;
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
@@ -12,18 +21,6 @@ import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @TestProfile(PostgresInfrastructureTestProfile.class)
@@ -59,20 +56,11 @@ public class ListPostgresConnectorIT {
         Infrastructure.getDebeziumContainer().pauseConnector(pausedConnectorName);
         Infrastructure.waitForConnectorTaskStatus(pausedConnectorName, 0, Connector.State.PAUSED);
 
-        // TODO When a stable version with DBZ-4517 is released and used the parameter name should be
-        // changed to 'slot.max.retries'
-        Infrastructure.getDebeziumContainer().registerConnector(
-                failedConnectorName,
-                Infrastructure.getPostgresConnectorConfiguration(1)
-                        .with("database.server.name", "dbserver1_failing")
-                        .with("database.slot.max.retries", "0"));
-        Infrastructure.waitForConnectorTaskStatus(failedConnectorName, 0, Connector.State.FAILED);
-
         given()
                 .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.LIST_CONNECTORS_ENDPOINT, "1")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(3))
+                .body("size()", is(2))
                 .rootPath("find { it.name == '"+ runningConnectorName + "' }")
                     .body("connectorStatus", equalTo(ConnectorStatus.State.RUNNING.toString()))
                     .body("connectorType", equalTo("postgres"))
@@ -84,17 +72,7 @@ public class ListPostgresConnectorIT {
                     .body("connectorType", equalTo("postgres"))
                     .body("databaseName", equalTo("PostgreSQL"))
                     .body("taskStates", equalTo(Map.of("0", Map.of("taskStatus", ConnectorStatus.State.PAUSED.toString()))))
-                    .body("name", equalTo(pausedConnectorName))
-                .rootPath("find { it.name == '"+ failedConnectorName + "' }")
-                    .body("connectorStatus", equalTo(ConnectorStatus.State.RUNNING.toString()))
-                    .body("connectorType", equalTo("postgres"))
-                    .body("databaseName", equalTo("PostgreSQL"))
-                    .body("taskStates[\"0\"].taskStatus", equalTo(ConnectorStatus.State.FAILED.toString()))
-                    .body("taskStates[\"0\"].errors", hasItem(allOf(
-                            startsWith("Caused by: io.debezium.DebeziumException: Failed to start replication stream at LSN{"),
-                            endsWith("}; when setting up multiple connectors for the same database host, please make sure to use a distinct replication slot name for each."))))
-                    .body("taskStates[\"0\"].errors", hasItem(startsWith("Caused by: org.postgresql.util.PSQLException: ERROR: replication slot \"debezium_1\" is active for PID ")))
-                    .body("name", equalTo(failedConnectorName));
+                    .body("name", equalTo(pausedConnectorName));
     }
 
 }
