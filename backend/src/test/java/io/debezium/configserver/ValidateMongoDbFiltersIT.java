@@ -110,7 +110,7 @@ public class ValidateMongoDbFiltersIT {
                 .body("matchedCollections.size()", is(0))
                 .rootPath("propertyValidationResults[0]")
                 .body("property", equalTo(MongoDbConnectorConfig.DATABASE_INCLUDE_LIST.name()))
-                .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
+                .body("message", equalTo("The 'database.include.list' value is invalid: A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ValidateMongoDbFiltersIT {
                 .body("matchedCollections.size()", is(0))
                 .rootPath("propertyValidationResults[0]")
                 .body("property", equalTo(MongoDbConnectorConfig.DATABASE_EXCLUDE_LIST.name()))
-                .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
+                .body("message", equalTo("The 'database.exclude.list' value is invalid: A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
     }
 
 }
