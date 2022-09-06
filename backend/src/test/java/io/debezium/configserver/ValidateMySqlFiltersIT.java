@@ -120,7 +120,7 @@ public class ValidateMySqlFiltersIT {
                 .body("matchedCollections.size()", is(0))
                 .rootPath("propertyValidationResults[0]")
                 .body("property", equalTo("database.include.list"))
-                .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
+                .body("message", equalTo("The 'database.include.list' value is invalid: A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class ValidateMySqlFiltersIT {
                 .body("matchedCollections.size()", is(0))
                 .rootPath("propertyValidationResults[0]")
                 .body("property", equalTo("database.exclude.list"))
-                .body("message", equalTo("A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
+                .body("message", equalTo("The 'database.exclude.list' value is invalid: A comma-separated list of valid regular expressions is expected, but Dangling meta character '+' near index 0\n+\n^"));
     }
 
 }
