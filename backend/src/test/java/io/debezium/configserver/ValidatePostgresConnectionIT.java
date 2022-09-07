@@ -72,12 +72,11 @@ public class ValidatePostgresConnectionIT {
             .statusCode(200)
             .assertThat().body("status", equalTo("INVALID"))
                 .body("genericValidationResults.size()", is(0))
-                .body("propertyValidationResults.size()", is(4))
+                .body("propertyValidationResults.size()", is(3))
                 .body("propertyValidationResults",
                     hasItems(
                         Map.of("property", "database.user", "message", "The 'database.user' value is invalid: A value is required"),
                         Map.of("property", "database.dbname", "message", "The 'database.dbname' value is invalid: A value is required"),
-                        Map.of("property", "topic.prefix", "message", "The 'database.server.name' value is invalid: A value is required"),
                         Map.of("property", "database.hostname", "message", "The 'database.hostname' value is invalid: A value is required")
                     ));
     }
