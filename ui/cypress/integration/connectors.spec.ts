@@ -27,7 +27,7 @@ describe("Connectors page", () => {
       "dbz-pg-conn"
     );
     cy.get('input[name="topic&prefix"]', { timeout: 50000 }).type(
-      "fulfillment"
+      "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}fulfillment"
     );
     cy.get('input[name="database&hostname"]', { timeout: 50000 }).type(
       "dbzui-postgres"
