@@ -62,7 +62,9 @@ export const PropertiesStepsComponent: React.FC<IPropertiesStepProps> =
     );
     const advancedGeneralPropertyDefinitions = formatPropertyDefinitions(
       props.advancedPropertyDefinitions.filter(
-        (defn: any) => defn.category === PropertyCategory.ADVANCED_GENERAL || defn.category === PropertyCategory.ADVANCED_SSL
+        (defn: any) =>
+          defn.category === PropertyCategory.ADVANCED_GENERAL ||
+          defn.category === PropertyCategory.ADVANCED_SSL
       )
     );
     const advancedReplicationPropertyDefinitions = formatPropertyDefinitions(

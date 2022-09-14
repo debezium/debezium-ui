@@ -31,7 +31,7 @@ export const RuntimeOptionsComponent: React.FC<IRuntimeOptionsComponentProps> =
   React.forwardRef((props, ref) => {
     const [engineExpanded, setEngineExpanded] = React.useState<boolean>(true);
     const [heartbeatExpanded, setHeartbeatExpanded] =
-      React.useState<boolean>(true);
+      React.useState<boolean>(false);
 
     const basicValidationSchema = {};
 
