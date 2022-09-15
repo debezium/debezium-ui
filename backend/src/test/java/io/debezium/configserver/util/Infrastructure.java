@@ -23,6 +23,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupCheckStrategy;
 import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
@@ -76,6 +77,7 @@ public class Infrastructure {
                     .withEnv("MSSQL_PID", "Standard")
                     .withEnv("MSSQL_AGENT_ENABLED", "true")
                     .withPassword("Password!")
+                    .withStartupCheckStrategy(new MinimumDurationRunningStartupCheckStrategy(Duration.ofSeconds(5)))
                     .withInitScript("/initialize-sqlserver-database.sql")
                     .acceptLicense();
 
