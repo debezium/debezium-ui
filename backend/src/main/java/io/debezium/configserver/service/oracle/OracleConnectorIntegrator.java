@@ -31,7 +31,7 @@ import io.debezium.configserver.model.PropertiesValidationResult.Status;
 import io.debezium.configserver.service.ConnectorIntegratorBase;
 import io.debezium.connector.oracle.OracleConnection;
 import io.debezium.connector.oracle.OracleConnector;
-import io.debezium.storage.kafka.history.KafkaDatabaseHistory;
+import io.debezium.storage.kafka.history.KafkaSchemaHistory;
 import io.debezium.util.Strings;
 
 // TODO: This will live in the actual connector module eventually
@@ -41,7 +41,7 @@ public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
     static {
         Map<String, AdditionalPropertyMetadata> additionalMetadata = new LinkedHashMap<>();
         // Connection properties
-        additionalMetadata.put(OracleConnectorConfig.SERVER_NAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(OracleConnectorConfig.TOPIC_PREFIX.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(OracleConnectorConfig.HOSTNAME.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(OracleConnectorConfig.PORT.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(OracleConnectorConfig.USER.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
@@ -50,8 +50,8 @@ public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(OracleConnectorConfig.PDB_NAME.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(OracleConnectorConfig.URL.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
         additionalMetadata.put(OracleConnectorConfig.RAC_NODES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(KafkaDatabaseHistory.BOOTSTRAP_SERVERS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
-        additionalMetadata.put(KafkaDatabaseHistory.TOPIC.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(KafkaSchemaHistory.BOOTSTRAP_SERVERS.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
+        additionalMetadata.put(KafkaSchemaHistory.TOPIC.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION));
 
         additionalMetadata.put(OracleConnectorConfig.LOG_MINING_STRATEGY.name(), new AdditionalPropertyMetadata(true, ConnectorProperty.Category.CONNECTION_ADVANCED));
         additionalMetadata.put(OracleConnectorConfig.LOG_MINING_ARCHIVE_LOG_ONLY_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTION_ADVANCED));
@@ -107,8 +107,8 @@ public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(OracleConnectorConfig.LOB_ENABLED.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
 
         // Advanced configs (aka Runtime configs based on the PoC Requirements document
-        additionalMetadata.put(KafkaDatabaseHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
-        additionalMetadata.put(KafkaDatabaseHistory.RECOVERY_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
+        additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
+        additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_INTERVAL_MS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(OracleConnectorConfig.SKIPPED_OPERATIONS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
         additionalMetadata.put(OracleConnectorConfig.EVENT_PROCESSING_FAILURE_HANDLING_MODE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED, enumArrayToList(OracleConnectorConfig.EventProcessingFailureHandlingMode.values())));
         additionalMetadata.put(OracleConnectorConfig.QUERY_FETCH_SIZE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));
@@ -157,7 +157,7 @@ public class OracleConnectorIntegrator extends ConnectorIntegratorBase {
     }
     
     private OracleConnection connect(OracleConnectorConfig oracleConfig) {
-        return new OracleConnection(oracleConfig.getJdbcConfig(), () -> getClass().getClassLoader());
+        return new OracleConnection(oracleConfig.getJdbcConfig(), false);
     }
 
     @Override
