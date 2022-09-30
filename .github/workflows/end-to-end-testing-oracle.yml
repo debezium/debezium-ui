@@ -1,4 +1,4 @@
-name: End-to-End Tests
+name: End-to-End Tests Oracle
 
 on:
   push:
@@ -6,19 +6,19 @@ on:
       - main
     paths:
       - "pom.xml"
-      - "Dockerfile"
+      - "Dockerfile.oracle"
       - "backend/**"
       - "ui/**"
-      - ".github/workflows/end-to-end-testing.yml"
+      - ".github/workflows/end-to-end-testing-oracle.yml"
   pull_request:
     branches:
       - main
     paths:
       - "pom.xml"
-      - "Dockerfile"
+      - "Dockerfile.oracle"
       - "backend/**"
       - "ui/**"
-      - ".github/workflows/end-to-end-testing.yml"
+      - ".github/workflows/end-to-end-testing-oracle.yml"
 
 jobs:
   e2e-test:
@@ -60,7 +60,7 @@ jobs:
       - name: Checkout Debezium UI
         uses: actions/checkout@v2
       - name: Build Debezium UI container
-        run: DOCKER_BUILDKIT=1 docker build --cache-from debezium/debezium-ui --file ./Dockerfile --tag dbzui-backend:${GITHUB_SHA} .
+        run: DOCKER_BUILDKIT=1 docker build --cache-from debezium/debezium-ui --file ./Dockerfile.oracle --tag dbzui-backend:${GITHUB_SHA} .
       - name: Run Debezium UI container
         run: docker run --rm --name dbzui-container -d -p 8080:8080 --network=$(docker network ls -f name=^github_network_ --format "{{.Name}}") -e KAFKA_CONNECT_URIS=http://dbzui-connect:8083 dbzui-backend:${GITHUB_SHA}
       - name: Install deps and build (with cache)
