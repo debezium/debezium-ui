@@ -69,7 +69,7 @@ COPY --from=builder --chown=1001 /javabuild/backend/target/quarkus-app/quarkus/ 
 
 # We explicitly remove the Oracle OJDBC8 dependency from the base image.
 # The Dockerfile.oracle leaves this in place for the time being for test.
-RUN rm /deployments/lib/main/ojdbc8*.jar
+RUN rm -f /deployments/lib/main/ojdbc8*.jar
 
 EXPOSE 8080
 USER 1001
