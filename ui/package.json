@@ -102,7 +102,6 @@
     "@testing-library/cypress": "8.0.3",
     "formik": "2.2.9",
     "i18next": "21.9.1",
-    "i18next-browser-languagedetector": "6.1.5",
     "i18next-http-backend": "1.4.1",
     "i18next-parser": "5.4.0",
     "json-pointer": "0.6.2",
