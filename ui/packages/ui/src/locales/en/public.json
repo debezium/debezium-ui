@@ -61,6 +61,7 @@
   "taskStatusDetail": "Task Status Detail",
   "taskErrorTitle": "The task was",
   "moreInformation": "Click for more information",
+  "missingProperties": "Missing properties",
   "name": "Name",
   "status": "Status",
   "tasks": "Tasks",

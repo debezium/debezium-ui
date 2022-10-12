@@ -52,6 +52,8 @@ import {
   PropertyName,
 } from 'shared';
 import { getPropertiesDataDownstream } from 'src/app/utils/FormatCosProperties';
+import { ConfigureMissingProperties } from 'src/app/components/ConfigureMissingProperties';
+import { MissingPropertiesStep } from './connectorSteps/MissingPropertiesStep';
 
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
@@ -109,6 +111,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
   const TOPIC_CREATION_STEP = t('topicCreation');
   const DATA_OPTIONS_STEP = t('dataOptions');
   const RUNTIME_OPTIONS_STEP = t('runtimeOptions');
+  const MISSING_PROPERTIES_STEP = t('missingProperties');
   const REVIEW_STEP = t('review');
 
   const CONNECTOR_TYPE_STEP_ID = 1;
@@ -118,17 +121,20 @@ export const CreateConnectorComponent: React.FunctionComponent<
   const TOPIC_CREATION_STEP_ID = 5;
   const DATA_OPTIONS_STEP_ID = 6;
   const RUNTIME_OPTIONS_STEP_ID = 7;
-  const REVIEW_STEP_ID = 8;
+  const MISSING_PROPERTIES_STEP_ID = 8;
+  const REVIEW_STEP_ID = 9;
 
   const [stepIdReached, setStepIdReached] = React.useState(1);
   const [selectedConnectorType, setSelectedConnectorType] = React.useState<
     string | undefined
   >();
   const [finishStepId, setFinishStepId] = React.useState<number>(
-    RUNTIME_OPTIONS_STEP_ID
+    MISSING_PROPERTIES_STEP_ID
   );
   const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
   const [isTransformDirty, setIsTransformDirty] =
+    React.useState<boolean>(false);
+    const [isMissingPropertiesDirty, setIsMissingPropertiesDirty] =
     React.useState<boolean>(false);
   const [isTopicCreationDirty, setIsTopicCreationDirty] =
     React.useState<boolean>(false);
@@ -143,6 +149,9 @@ export const CreateConnectorComponent: React.FunctionComponent<
   const [transformsValues, setTransformsValues] = React.useState<
     Map<string, any>
   >(new Map<string, any>());
+  const [missingPropertiesValues, setMissingPropertiesValues] = React.useState<
+  { [key: string]: string }
+  >({});
   const [topicCreationPropValues, setTopicCreationPropValues] = React.useState<
     Map<string, any>
   >(new Map<string, any>());
@@ -277,6 +286,17 @@ export const CreateConnectorComponent: React.FunctionComponent<
         topicCreationPropValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         break;
+      case RUNTIME_OPTIONS_STEP_ID:
+        basicValuesTemp.forEach((v, k) => {
+          allPropValues.set(k, v);
+        });
+        advancedPropValues.forEach((v, k) => allPropValues.set(k, v));
+        filterValues.forEach((v, k) => allPropValues.set(k, v));
+        transformsValues.forEach((v, k) => allPropValues.set(k, v));
+        topicCreationPropValues.forEach((v, k) => allPropValues.set(k, v));
+        dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+        runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+        break;
       default:
         basicValuesTemp.forEach((v, k) => {
           allPropValues.set(k, v);
@@ -287,6 +307,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
         topicCreationPropValues.forEach((v, k) => allPropValues.set(k, v));
         dataOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
         runtimeOptionsPropValues.forEach((v, k) => allPropValues.set(k, v));
+        new Map(Object.entries(missingPropertiesValues)).forEach((v, k) => allPropValues.set(k, v));
         break;
     }
 
@@ -299,6 +320,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
           ),
           ...transformsValues,
           ...topicCreationPropValues,
+          ...new Map(Object.entries(missingPropertiesValues)),
         ]);
   };
 
@@ -436,6 +458,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
     setAdvancedPropValues(new Map<string, string>());
     setDataOptionsPropValues(new Map<string, string>());
     setRuntimeOptionsPropValues(new Map<string, string>());
+    setMissingPropertiesValues({});
   };
 
   const handleValidateConnectionProperties = (
@@ -611,7 +634,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
     setFilterValues(new Map(filterValue));
   };
 
-  // Update the filter values
+  // Update the transform values
   const handleTransformsUpdate = (transformsValue: Map<string, string>) => {
     setTransformsValues(new Map(transformsValue));
   };
@@ -623,6 +646,11 @@ export const CreateConnectorComponent: React.FunctionComponent<
     // The properties are maintained with keys in 'dotted' form.
     const dottedProperties = convertPropertyKeys(topicCreationValues, '_', '.');
     setTopicCreationPropValues(dottedProperties);
+  };
+
+  // Update the Missing properties values
+  const handleMissingPropertiesUpdate = (missingPropertiesValue: { [key: string]: string }) => {
+    setMissingPropertiesValues(missingPropertiesValue);
   };
 
   // Allows conversion of map keys, e.g. between dotted and underscore delimited forms
@@ -721,6 +749,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
       setTopicCreationPropValues(new Map<string, any>());
       setDataOptionsPropValues(new Map<string, string>());
       setRuntimeOptionsPropValues(new Map<string, string>());
+      setMissingPropertiesValues({});
     }
   }, [connectionPropsValid]);
 
@@ -987,6 +1016,27 @@ export const CreateConnectorComponent: React.FunctionComponent<
           </>
         ),
         canJumpTo: stepIdReached >= RUNTIME_OPTIONS_STEP_ID,
+      },
+      {
+        id: MISSING_PROPERTIES_STEP_ID,
+        name: MISSING_PROPERTIES_STEP,
+        component: (
+          <>
+            <ConnectorNameTypeHeader
+              connectorName={getConnectorName()}
+              connectorType={selectedConnectorType}
+              showIcon={false}
+            />
+            <MissingPropertiesStep 
+             missingProperties={missingPropertiesValues}
+            updateMissingPropertiesValues={handleMissingPropertiesUpdate}
+            setIsMissingPropertiesDirty={setIsMissingPropertiesDirty}
+              selectedConnectorType={selectedConnectorType || ''}
+              clusterId={props.clusterId}
+              />
+          </>
+        ),
+        canJumpTo: stepIdReached >= MISSING_PROPERTIES_STEP_ID,
       },
     ],
   };

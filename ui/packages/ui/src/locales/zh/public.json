@@ -61,6 +61,7 @@
   "taskStatusDetail": "任务状态详情",
   "taskErrorTitle": "任务错误",
   "moreInformation": "更多信息",
+  "missingProperties": "Missing properties",
   "name": "名称",
   "status": "状态",
   "tasks": "任务",

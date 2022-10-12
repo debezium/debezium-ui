@@ -61,6 +61,7 @@
   "taskStatusDetail": "Dettagli sullo stato dell'attività",
   "taskErrorTitle": "Il compito era",
   "moreInformation": "Fare clic per ulteriori informazioni",
+  "missingProperties": "Missing properties",
   "name": "Nome",
   "status": "Stato",
   "tasks": "Compiti",

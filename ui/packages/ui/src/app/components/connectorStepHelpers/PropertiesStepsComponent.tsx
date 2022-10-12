@@ -372,20 +372,6 @@ export const PropertiesStepsComponent: React.FC<IPropertiesStepProps> =
                   )}
                 </ExpandableSection>
               )}
-            <ExpandableSection
-              toggleText={'Configure missing properties'}
-              onToggle={onToggleBasic}
-              isExpanded={basicExpanded}
-            >
-              <Grid
-                hasGutter={true}
-                className={'properties-step-expansion-content'}
-              >
-                <GridItem>
-                  <ConfigureMissingProperties />
-                </GridItem>
-              </Grid>
-            </ExpandableSection>
           </GridItem>
         </Grid>
       </>
