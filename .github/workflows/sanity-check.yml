@@ -17,7 +17,7 @@ jobs:
         run: |
           AUTHOR=$(curl --silent -X "GET" https://api.github.com/repos/debezium/debezium-ui/pulls/$pull_request_number/commits | jq '.[] | {author: .commit.author.name}' | jq -r '.author')
           if [[ $AUTHOR =~ 'Renovate Bot' ]]; then
-            echo "::set-output name=BOT-COMMIT::true"
+            echo "name=BOT-COMMIT::true" >> $GITHUB_OUTPUT
           fi
       - name: Commit messages in format DBZ-xxx
         if: ${{ steps.bot-check.outputs.BOT-COMMIT != 'true' }}
@@ -41,7 +41,7 @@ jobs:
             echo "              COMMIT MESSAGES WITH MISSING \"DBZ\" PREFIX"
             echo "========================================================================"
             echo -e "$NON_PREFIX_COMMITS"
-            echo "::set-output name=PREFIX::false"
+            echo "name=PREFIX::false" >> $GITHUB_OUTPUT
           fi
       - name: Create Comment
         if: ${{ steps.check.outputs.PREFIX == 'false' }}
