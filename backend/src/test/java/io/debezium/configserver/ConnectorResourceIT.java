@@ -126,7 +126,9 @@ public class ConnectorResourceIT {
                 .body("'connector.class'", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
                 .body("'topic.prefix'", equalTo("dbserver1"))
                 .body("'database.dbname'", equalTo("test"))
-                .body("'database.user'", equalTo("test"));
+                .body("'database.user'", equalTo("test"))
+                .body("'connector.displayName'", equalTo("PostgreSQL"))
+                .body("'connector.id'", equalTo("postgres"));
     }
 
 }
