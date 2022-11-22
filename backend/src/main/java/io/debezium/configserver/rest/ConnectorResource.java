@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 import io.debezium.configserver.model.ConnectConnectorConfigResponse;
@@ -485,7 +486,19 @@ public class ConnectorResource {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Kafka Connect response: " + originalConfigResponse.readEntity(String.class));
             }
-            connectorConfigResponse = Response.fromResponse(originalConfigResponse).type(MediaType.APPLICATION_JSON).build();
+
+            final Map configResponse = originalConfigResponse.readEntity(Map.class);
+            if (!configResponse.containsKey("connector.class")) {
+                throw new ProcessingException("Failed to locate connector.class in response");
+            }
+
+            Optional<ConnectorDefinition> definition = getConnectorDefinition((String) configResponse.get("connector.class"));
+            if (definition.isPresent()) {
+                configResponse.put("connector.displayName", definition.get().displayName);
+                configResponse.put("connector.id", definition.get().id);
+            }
+
+            connectorConfigResponse = Response.ok().entity(configResponse).type(MediaType.APPLICATION_JSON).build();
         }
         catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
@@ -493,4 +506,12 @@ public class ConnectorResource {
         return connectorConfigResponse;
     }
 
+    private Optional<ConnectorDefinition> getConnectorDefinition(String className) {
+        for (ConnectorDefinition definition : getConnectorTypes()) {
+            if (definition.className.equals(className)) {
+                return Optional.of(definition);
+            }
+        }
+        return Optional.empty();
+    }
 }
