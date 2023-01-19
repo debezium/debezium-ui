@@ -15,7 +15,7 @@ import {
   SelectOption,
   Title,
 } from '@patternfly/react-core';
-import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { CubesIcon, ExternalLinkSquareAltIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { PageLoader, TransformCard } from 'components';
 import _ from 'lodash';
 import React, { FC } from 'react';
@@ -48,6 +48,7 @@ const TransformAlert: FC = () => {
         target="_blank"
       >
         {t('documentation')}
+        <ExternalLinkSquareAltIcon />
       </a>{' '}
       {t('moreDetails')}
     </>

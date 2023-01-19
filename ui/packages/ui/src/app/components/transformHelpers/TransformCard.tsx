@@ -1,6 +1,10 @@
 import './TransformCard.css';
 import {
   Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownToggle,
@@ -8,14 +12,20 @@ import {
   Form,
   Grid,
   GridItem,
+  Modal,
+  ModalVariant,
   Split,
   SplitItem,
+  Text,
+  TextContent,
+  TextVariants,
   Title,
   Tooltip,
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
+  ExternalLinkSquareAltIcon,
   GripVerticalIcon,
   TrashIcon,
 } from '@patternfly/react-icons';
@@ -25,9 +35,10 @@ import {
   TransformConfig,
 } from 'components';
 import _ from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getFormattedConfig } from 'shared';
+import { transforms } from 'src/app/utils/Constants';
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -61,6 +72,8 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
 
     const [submitted, setSubmitted] = React.useState<boolean>(false);
     const [configComplete, setConfigComplete] = React.useState<boolean>(false);
+
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
 
     const onToggle = (isExpandedVal: boolean) => {
       setIsExpanded(isExpandedVal);
@@ -170,118 +183,215 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
     }, [props.transformType]);
 
     return (
-      <Grid>
-        <GridItem span={12}>
-          <div
-            className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'}
-            id="transform-parent"
-          >
-            <Split>
-              <SplitItem className={'pf-u-pr-sm'}>
-                <Tooltip content={<div>{t('reorderTransform')}</div>}>
-                  <Dropdown
-                    className={'position_toggle'}
-                    onSelect={onPositionSelect}
-                    isOpen={isOpen}
-                    isPlain={true}
-                    dropdownItems={dropdownItems}
-                    toggle={
-                      <DropdownToggle
-                        toggleIndicator={null}
-                        onToggle={onPositionToggle}
-                        aria-label="Applications"
-                        id="transform-order-toggle"
-                      >
-                        <GripVerticalIcon />
-                      </DropdownToggle>
-                    }
-                  />
-                </Tooltip>
-              </SplitItem>
-              <SplitItem isFilled={true}>
-                <Title headingLevel="h2">
-                  Transformation # {props.transformNo} &nbsp;
-                  {configComplete && (
-                    <CheckCircleIcon style={{ color: '#3E8635' }} />
-                  )}
-                  {submitted && !configComplete && (
-                    <ExclamationCircleIcon style={{ color: '#C9190B' }} />
-                  )}
-                </Title>
-                <Form>
-                  <Grid hasGutter={true}>
-                    <GridItem span={4}>
-                      <NameInputField
-                        label="Name"
-                        description={t('transformNameDescription')}
-                        fieldId="transform_name"
-                        isRequired={true}
-                        name="transform_name"
-                        placeholder="Name"
-                        inputType="text"
-                        value={props.transformName}
-                        setFieldValue={updateNameType}
-                        isInvalid={!nameIsValid}
-                        invalidText={
-                          props.transformName
-                            ? t('uniqueName')
-                            : t('nameRequired')
-                        }
-                      />
-                    </GridItem>
-
-                    <GridItem span={8}>
-                      <TypeSelectorComponent
-                        label="Type"
-                        description={t('transformTypeDescription')}
-                        fieldId="transform_type"
-                        isRequired={true}
-                        isDisabled={props.transformName === ''}
-                        options={props.transformsOptions}
-                        value={props.transformType}
-                        setFieldValue={updateNameType}
-                        isInvalid={!typeIsThere}
-                        invalidText={t('typeRequired')}
-                      />
-                    </GridItem>
-                  </Grid>
-                </Form>
-                {props.transformType && (
-                  <ExpandableSection
-                    toggleText={isExpanded ? t('hideConfig') : t('showConfig')}
-                    onToggle={onToggle}
-                    isExpanded={isExpanded}
-                  >
-                    <TransformConfig
-                      ref={configRef}
-                      transformConfigOptions={getFormattedConfig(
-                        props.transformsData,
-                        props.transformType
-                      )}
-                      transformConfigValues={props.transformConfig}
-                      updateTransform={props.updateTransform}
-                      transformNo={props.transformNo}
-                      setIsTransformDirty={props.setIsTransformDirty}
-                      transformType={props.transformType}
-                      setConfigComplete={isConfigComplete}
+      <>
+        <Grid>
+          <GridItem span={12}>
+            <div
+              className={'transform-block pf-u-mt-lg pf-u-p-sm pf-u-pb-lg'}
+              id="transform-parent"
+            >
+              <Split>
+                <SplitItem className={'pf-u-pr-sm'}>
+                  <Tooltip content={<div>{t('reorderTransform')}</div>}>
+                    <Dropdown
+                      className={'position_toggle'}
+                      onSelect={onPositionSelect}
+                      isOpen={isOpen}
+                      isPlain={true}
+                      dropdownItems={dropdownItems}
+                      toggle={
+                        <DropdownToggle
+                          toggleIndicator={null}
+                          onToggle={onPositionToggle}
+                          aria-label="Applications"
+                          id="transform-order-toggle"
+                        >
+                          <GripVerticalIcon />
+                        </DropdownToggle>
+                      }
                     />
-                  </ExpandableSection>
-                )}
-              </SplitItem>
-              <SplitItem>
-                <Tooltip content={<div>{t('deleteTransform')}</div>}>
-                  <Button
-                    variant="link"
-                    icon={<TrashIcon />}
-                    onClick={deleteCard}
-                    id="tooltip-selector"
-                  />
-                </Tooltip>
-              </SplitItem>
-            </Split>
-          </div>
-        </GridItem>
-      </Grid>
+                  </Tooltip>
+                </SplitItem>
+                <SplitItem isFilled={true}>
+                  <Split>
+                    <SplitItem>
+                      <Title headingLevel="h2">
+                        Transformation # {props.transformNo} &nbsp;
+                        {configComplete && (
+                          <CheckCircleIcon style={{ color: '#3E8635' }} />
+                        )}
+                        {submitted && !configComplete && (
+                          <ExclamationCircleIcon style={{ color: '#C9190B' }} />
+                        )}
+                      </Title>
+                    </SplitItem>
+                    <SplitItem isFilled></SplitItem>
+
+                    <SplitItem className={'pf-u-pr-lg'}>
+                      {props.transformType && (
+                        <TextContent>
+                          <Text component={TextVariants.small}>
+                            Know more about&nbsp;
+                            <Button
+                              variant="link"
+                              isInline
+                              onClick={() => setIsDetailModalOpen(true)}
+                            >
+                              <i>
+                                {
+                                  props.transformType.split('.')[
+                                    props.transformType.split('.').length - 1
+                                  ]
+                                }
+                              </i>
+                            </Button>
+                            &nbsp;transform.
+                          </Text>
+                        </TextContent>
+                      )}
+                    </SplitItem>
+                  </Split>
+
+                  <Form>
+                    <Grid hasGutter={true}>
+                      <GridItem span={4}>
+                        <NameInputField
+                          label="Name"
+                          description={t('transformNameDescription')}
+                          fieldId="transform_name"
+                          isRequired={true}
+                          name="transform_name"
+                          placeholder="Name"
+                          inputType="text"
+                          value={props.transformName}
+                          setFieldValue={updateNameType}
+                          isInvalid={!nameIsValid}
+                          invalidText={
+                            props.transformName
+                              ? t('uniqueName')
+                              : t('nameRequired')
+                          }
+                        />
+                      </GridItem>
+
+                      <GridItem span={8}>
+                        <TypeSelectorComponent
+                          label="Type"
+                          description={t('transformTypeDescription')}
+                          fieldId="transform_type"
+                          isRequired={true}
+                          isDisabled={props.transformName === ''}
+                          options={props.transformsOptions}
+                          value={props.transformType}
+                          setFieldValue={updateNameType}
+                          isInvalid={!typeIsThere}
+                          invalidText={t('typeRequired')}
+                        />
+                      </GridItem>
+                    </Grid>
+                  </Form>
+                  {props.transformType && (
+                    <ExpandableSection
+                      toggleText={
+                        isExpanded ? t('hideConfig') : t('showConfig')
+                      }
+                      onToggle={onToggle}
+                      isExpanded={isExpanded}
+                    >
+                      <TransformConfig
+                        ref={configRef}
+                        transformConfigOptions={getFormattedConfig(
+                          props.transformsData,
+                          props.transformType
+                        )}
+                        transformConfigValues={props.transformConfig}
+                        updateTransform={props.updateTransform}
+                        transformNo={props.transformNo}
+                        setIsTransformDirty={props.setIsTransformDirty}
+                        transformType={props.transformType}
+                        setConfigComplete={isConfigComplete}
+                      />
+                    </ExpandableSection>
+                  )}
+                </SplitItem>
+                <SplitItem>
+                  <Tooltip content={<div>{t('deleteTransform')}</div>}>
+                    <Button
+                      variant="link"
+                      icon={<TrashIcon />}
+                      onClick={deleteCard}
+                      id="tooltip-selector"
+                    />
+                  </Tooltip>
+                </SplitItem>
+              </Split>
+            </div>
+          </GridItem>
+        </Grid>
+        <Modal
+          variant={ModalVariant.large}
+          title={_.startCase(
+            transforms[
+              props.transformType.split('.')[
+                props.transformType.split('.').length - 1
+              ]
+            ]
+          )}
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+        >
+          {props.transformType &&
+          props.transformType.split('.')[
+            props.transformType.split('.').length - 1
+          ] === 'Filter'
+            ? 'Debezium provides the filter single message transform (SMT), To enable you to process only the records that are relevant to you. for eg. In many cases, you might be interested in only a subset of the events emitted by the producer.'
+            : props.transformType.split('.')[
+                props.transformType.split('.').length - 1
+              ] === 'ValueToKey'
+            ? 'Replace the record key with a new key formed from a subset of fields in the record value'
+            : 'Each Kafka record that contains a data change event has a default destination topic. If you need to, you can re-route records to topics that you specify before the records reach the Kafka Connect converter. To do this, Debezium provides the topic routing single message transformation (SMT)'}
+          <a
+            href={
+              props.transformType.split('.')[0] === 'io'
+                ? `https://debezium.io/documentation/reference/transformations/${
+                    transforms[
+                      props.transformType.split('.')[
+                        props.transformType.split('.').length - 1
+                      ]
+                    ]
+                  }.html`
+                : `https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.${
+                    transforms[
+                      props.transformType.split('.')[
+                        props.transformType.split('.').length - 1
+                      ]
+                    ]
+                  }`
+            }
+            target="_blank"
+          >
+            &nbsp;read more&nbsp;
+            <ExternalLinkSquareAltIcon />
+          </a>{' '}
+          <br />
+          <Card className="pf-u-mt-lg">
+            <h2>
+              <strong>
+                <i>For example</i>
+              </strong>
+            </h2>
+            <Card>
+              <CardTitle>Before payload</CardTitle>
+              <CardBody>Payload block </CardBody>
+            </Card>
+            <Divider />
+            <Card>
+              <CardTitle>After payload</CardTitle>
+              <CardBody>Payload block </CardBody>
+            </Card>
+          </Card>
+        </Modal>
+      </>
     );
   }
 );
