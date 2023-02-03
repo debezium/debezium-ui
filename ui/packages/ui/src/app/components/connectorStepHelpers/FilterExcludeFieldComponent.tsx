@@ -9,7 +9,7 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import React from 'react';
 
@@ -47,6 +47,7 @@ const getFieldExpression = (
 export const FilterExcludeFieldComponent: React.FunctionComponent<
   IFilterExcludeFieldComponentProps
 > = (props) => {
+  const { t } = useTranslation();
   const [filterField, setFilterField] = React.useState<string>(
     getFieldExpression(props.filterValues, props.fieldExcludeList)
   );
@@ -71,7 +72,7 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
 
   return (
     <FormGroup
-      label={t('filterExcludeFieldLabel', {
+      label={t('filterFieldLabel', {
         field: _.capitalize(props.fieldName),
       })}
       fieldId="field_filter"

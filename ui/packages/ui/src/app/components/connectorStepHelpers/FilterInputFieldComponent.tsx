@@ -118,7 +118,7 @@ export const FilterInputFieldComponent: React.FunctionComponent<
 
   return (
     <FormGroup
-      label={t('filterExcludeFieldLabel', {
+      label={t('filterFieldLabel', {
         field: _.capitalize(props.fieldName),
       })}
       fieldId="field_filter"
