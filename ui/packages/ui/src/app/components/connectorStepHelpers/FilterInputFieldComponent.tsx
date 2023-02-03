@@ -123,7 +123,7 @@ export const FilterInputFieldComponent: React.FunctionComponent<
       })}
       fieldId="field_filter"
       helperText={
-        !!filterField &&
+        !!filterField ?
         (fieldSelected === FIELD_EXCLUDE ? (
           <Text
             component={TextVariants.h4}
@@ -142,7 +142,7 @@ export const FilterInputFieldComponent: React.FunctionComponent<
               field: props.fieldName,
             })}
           </Text>
-        ))
+        )) : `No ${props.fieldName} filter configured.`
       }
       labelIcon={
         <Popover
