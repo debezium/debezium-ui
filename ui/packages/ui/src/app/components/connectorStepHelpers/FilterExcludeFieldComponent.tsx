@@ -4,9 +4,13 @@ import {
   FlexItem,
   FormGroup,
   Popover,
+  Text,
   TextInput,
+  TextVariants,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import { t } from 'i18next';
+import _ from 'lodash';
 import React from 'react';
 
 export interface IFilterExcludeFieldComponentProps {
@@ -17,7 +21,6 @@ export interface IFilterExcludeFieldComponentProps {
   invalidMsg: Map<string, string>;
   fieldExcludeList: string;
   fieldPlaceholder: string;
-  i18nFilterExcludeFieldLabel: string;
   i18nFilterFieldInfoMsg: string;
 }
 
@@ -68,7 +71,9 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
 
   return (
     <FormGroup
-      label={props.i18nFilterExcludeFieldLabel}
+      label={t('filterExcludeFieldLabel', {
+        field: _.capitalize(props.fieldName),
+      })}
       fieldId="field_filter"
       labelIcon={
         <Popover
@@ -94,6 +99,13 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
             <HelpIcon noVerticalAlign={true} />
           </button>
         </Popover>
+      }
+      helperText={
+        <Text component={TextVariants.h4} className="child-selection-step_info">
+          {t('filterExcludeOnlyHelperText', {
+            field: props.fieldName,
+          })}
+        </Text>
       }
       helperTextInvalid={
         props.invalidMsg?.size !== 0

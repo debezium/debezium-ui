@@ -1,4 +1,3 @@
-import './NoPreviewFilterField.css';
 import { ExpandableSection } from '@patternfly/react-core';
 import React from 'react';
 
@@ -19,7 +18,6 @@ export const NoPreviewFilterField: React.FunctionComponent<
       toggleText={isExpanded ? props.i18nHideFilter : props.i18nShowFilter}
       onToggle={onToggle}
       isExpanded={isExpanded}
-      className={'no-preview-filter-field_expandable'}
     >
       {props.children}
     </ExpandableSection>
