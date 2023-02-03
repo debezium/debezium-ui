@@ -1,12 +1,17 @@
 import './FilterExcludeFieldComponent.css';
 import {
+  Button,
   Flex,
   FlexItem,
   FormGroup,
   Popover,
+  Text,
   TextInput,
+  TextVariants,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
+import _ from 'lodash';
 import React from 'react';
 
 export interface IFilterExcludeFieldComponentProps {
@@ -17,7 +22,6 @@ export interface IFilterExcludeFieldComponentProps {
   invalidMsg: Map<string, string>;
   fieldExcludeList: string;
   fieldPlaceholder: string;
-  i18nFilterExcludeFieldLabel: string;
   i18nFilterFieldInfoMsg: string;
 }
 
@@ -44,6 +48,7 @@ const getFieldExpression = (
 export const FilterExcludeFieldComponent: React.FunctionComponent<
   IFilterExcludeFieldComponentProps
 > = (props) => {
+  const { t } = useTranslation();
   const [filterField, setFilterField] = React.useState<string>(
     getFieldExpression(props.filterValues, props.fieldExcludeList)
   );
@@ -68,20 +73,25 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
 
   return (
     <FormGroup
-      label={props.i18nFilterExcludeFieldLabel}
+      label={t('filterFieldLabel', {
+        field: _.capitalize(props.fieldName),
+      })}
       fieldId="field_filter"
       labelIcon={
         <Popover
           bodyContent={
-            <div>
+            <div style={{ whiteSpace: 'pre-line' }}>
               {props.i18nFilterFieldInfoMsg}
-              <br />
-              <a
+              <Button
+                variant="link"
+                isInline
+                target={'_blank'}
+                component="a"
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                target="_blank"
               >
-                More Info
-              </a>
+                Learn more
+              </Button>
+              &nbsp;about regular expressions.
             </div>
           }
         >
@@ -94,6 +104,13 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
             <HelpIcon noVerticalAlign={true} />
           </button>
         </Popover>
+      }
+      helperText={
+        <Text component={TextVariants.h4} className="child-selection-step_info">
+          {t('filterExcludeOnlyHelperText', {
+            field: props.fieldName,
+          })}
+        </Text>
       }
       helperTextInvalid={
         props.invalidMsg?.size !== 0

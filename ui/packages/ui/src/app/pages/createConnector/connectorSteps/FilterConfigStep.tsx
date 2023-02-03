@@ -172,8 +172,9 @@ export const FilterConfigStep: React.FunctionComponent<
 
   return (
     <>
-      <Text component={TextVariants.h2}>
-        {t('filterPageHeadingText', {
+      <Text component={TextVariants.h2} style={{ whiteSpace: 'pre-line' }}>
+        {t('filterPageHeading', {
+          connector: props.connectorType,
           parent: filterConfigurationPageContentObj.fieldArray[0].field,
           child: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
@@ -191,14 +192,6 @@ export const FilterConfigStep: React.FunctionComponent<
               fieldExcludeList={`${fieldFilter.field}.exclude.list`}
               fieldIncludeList={`${fieldFilter.field}.include.list`}
               fieldPlaceholder={fieldFilter.valueSample}
-              i18nFilterFieldLabel={t('filterFieldLabel', {
-                field: _.capitalize(fieldFilter.field),
-              })}
-              i18nFilterFieldHelperText={t('filterFieldHelperText', {
-                field: fieldFilter.field,
-              })}
-              i18nInclude={t('include')}
-              i18nExclude={t('exclude')}
               i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                 field: fieldFilter.field,
                 sampleVal: fieldFilter.valueSample,
@@ -219,9 +212,6 @@ export const FilterConfigStep: React.FunctionComponent<
                   invalidMsg={invalidMsg}
                   fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                   fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterExcludeFieldLabel={t('filterExcludeFieldLabel', {
-                    field: _.capitalize(fieldFilter.field),
-                  })}
                   i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                     field: `${fieldFilter.field} exclude`,
                     sampleVal: fieldFilter.valueSample,
@@ -237,14 +227,6 @@ export const FilterConfigStep: React.FunctionComponent<
                   fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                   fieldIncludeList={`${fieldFilter.field}.include.list`}
                   fieldPlaceholder={fieldFilter.valueSample}
-                  i18nFilterFieldLabel={t('filterFieldLabel', {
-                    field: _.capitalize(fieldFilter.field),
-                  })}
-                  i18nFilterFieldHelperText={t('filterFieldHelperText', {
-                    field: fieldFilter.field,
-                  })}
-                  i18nInclude={t('include')}
-                  i18nExclude={t('exclude')}
                   i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                     field: fieldFilter.field,
                     sampleVal: fieldFilter.valueSample,

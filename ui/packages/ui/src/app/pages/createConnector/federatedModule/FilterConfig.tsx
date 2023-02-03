@@ -2,9 +2,11 @@ import './FilterConfig.css';
 import {
   ActionGroup,
   Button,
-  Divider,
+  Flex,
+  FlexItem,
   Form,
   FormGroup,
+  Label,
   Popover,
   Text,
   TextVariants,
@@ -14,7 +16,6 @@ import {
   ConfigurationMode,
   FilterExcludeFieldComponent,
   FilterInputFieldComponent,
-  NoPreviewFilterField,
 } from 'components';
 import _ from 'lodash';
 import React, { SetStateAction } from 'react';
@@ -41,6 +42,16 @@ const getPropertyValue = (config: Map<string, string>, filter: string) => {
     }
   });
   return config.get(key);
+};
+
+const getPropertyFilterType = (config: Map<string, string>, filter: string) => {
+  let key = '';
+  [...config.keys()].forEach((k) => {
+    if (k.includes(filter)) {
+      key = k;
+    }
+  });
+  return key.split('.')[1];
 };
 
 export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
@@ -89,13 +100,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
     getFilterConfigurationPageContent(props.connectorType || '');
 
   return (
-    <div className="filter-config-page">
-      <Text component={TextVariants.h2}>
-        {t('filterPageHeadingText', {
-          parent: filterConfigurationPageContentObj.fieldArray[0].field,
-          child: filterConfigurationPageContentObj.fieldArray[1].field,
-        })}
-      </Text>
+    <>
       <Form className="child-selection-step_form">
         {props.uiPath === ConfigurationMode.VIEW ? (
           <>
@@ -109,21 +114,40 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                     })}
                     fieldId={'field_filter'}
                     isRequired={false}
+                    helperText={
+                      !!getPropertyValue(
+                        props.filterValues,
+                        fieldFilter.field
+                      ) &&
+                      (getPropertyFilterType(
+                        props.filterValues,
+                        fieldFilter.field
+                      ) === 'exclude'
+                        ? t('filterExcludeFieldHelperText', {
+                            field: fieldFilter.field,
+                          })
+                        : t('filterIncludeFieldHelperText', {
+                            field: fieldFilter.field,
+                          }))
+                    }
                     labelIcon={
                       <Popover
                         bodyContent={
-                          <div>
+                          <div style={{ whiteSpace: 'pre-line' }}>
                             {t('filterFieldInfoMsg', {
-                              field: fieldFilter.field,
+                              field: `${fieldFilter.field} exclude`,
                               sampleVal: fieldFilter.valueSample,
                             })}
-                            <br />
-                            <a
+                            <Button
+                              variant="link"
+                              isInline
+                              target={'_blank'}
+                              component="a"
                               href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                              target="_blank"
                             >
-                              More Info
-                            </a>
+                              Learn more
+                            </Button>
+                            &nbsp;about regular expressions.
                           </div>
                         }
                       >
@@ -139,12 +163,26 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                     }
                   >
                     {getPropertyValue(props.filterValues, fieldFilter.field) ? (
-                      <Text component={TextVariants.p}>
-                        {getPropertyValue(
-                          props.filterValues,
-                          fieldFilter.field
-                        )}
-                      </Text>
+                      <Flex className="pf-u-pt-xs">
+                        <FlexItem>
+                          <Label variant="outline">
+                            {_.capitalize(
+                              getPropertyFilterType(
+                                props.filterValues,
+                                fieldFilter.field
+                              )
+                            )}
+                          </Label>
+                        </FlexItem>
+                        <FlexItem>
+                          <Text component={TextVariants.p}>
+                            {getPropertyValue(
+                              props.filterValues,
+                              fieldFilter.field
+                            )}
+                          </Text>
+                        </FlexItem>
+                      </Flex>
                     ) : (
                       noPropertySet(
                         t('filterFieldLabel', {
@@ -161,7 +199,21 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
           <>
             {filterConfigurationPageContentObj.fieldArray.map(
               (fieldFilter: any) =>
-                fieldFilter.preview ? (
+                fieldFilter.excludeFilter ? (
+                  <FilterExcludeFieldComponent
+                    fieldName={fieldFilter.field}
+                    filterValues={props.filterValues}
+                    setFormData={setFormData}
+                    formData={formData}
+                    invalidMsg={invalidMsg}
+                    fieldExcludeList={`${fieldFilter.field}.exclude.list`}
+                    fieldPlaceholder={fieldFilter.valueSample}
+                    i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
+                      field: `${fieldFilter.field} exclude`,
+                      sampleVal: fieldFilter.valueSample,
+                    })}
+                  />
+                ) : (
                   <FilterInputFieldComponent
                     key={fieldFilter.field}
                     fieldName={fieldFilter.field}
@@ -172,74 +224,11 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                     fieldExcludeList={`${fieldFilter.field}.exclude.list`}
                     fieldIncludeList={`${fieldFilter.field}.include.list`}
                     fieldPlaceholder={fieldFilter.valueSample}
-                    i18nFilterFieldLabel={t('filterFieldLabel', {
-                      field: _.capitalize(fieldFilter.field),
-                    })}
-                    i18nFilterFieldHelperText={t('filterFieldHelperText', {
-                      field: fieldFilter.field,
-                    })}
-                    i18nInclude={t('include')}
-                    i18nExclude={t('exclude')}
                     i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
                       field: fieldFilter.field,
                       sampleVal: fieldFilter.valueSample,
                     })}
                   />
-                ) : (
-                  <NoPreviewFilterField
-                    key={fieldFilter.field}
-                    i18nShowFilter={t('showFilter', {
-                      field: fieldFilter.field,
-                    })}
-                    i18nHideFilter={t('hideFilter', {
-                      field: fieldFilter.field,
-                    })}
-                  >
-                    {fieldFilter.excludeFilter ? (
-                      <FilterExcludeFieldComponent
-                        fieldName={fieldFilter.field}
-                        filterValues={props.filterValues}
-                        setFormData={setFormData}
-                        formData={formData}
-                        invalidMsg={invalidMsg}
-                        fieldExcludeList={`${fieldFilter.field}.exclude.list`}
-                        fieldPlaceholder={fieldFilter.valueSample}
-                        i18nFilterExcludeFieldLabel={t(
-                          'filterExcludeFieldLabel',
-                          {
-                            field: _.capitalize(fieldFilter.field),
-                          }
-                        )}
-                        i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
-                          field: `${fieldFilter.field} exclude`,
-                          sampleVal: fieldFilter.valueSample,
-                        })}
-                      />
-                    ) : (
-                      <FilterInputFieldComponent
-                        fieldName={fieldFilter.field}
-                        filterValues={props.filterValues}
-                        setFormData={setFormData}
-                        formData={formData}
-                        invalidMsg={invalidMsg}
-                        fieldExcludeList={`${fieldFilter.field}.exclude.list`}
-                        fieldIncludeList={`${fieldFilter.field}.include.list`}
-                        fieldPlaceholder={fieldFilter.valueSample}
-                        i18nFilterFieldLabel={t('filterFieldLabel', {
-                          field: _.capitalize(fieldFilter.field),
-                        })}
-                        i18nFilterFieldHelperText={t('filterFieldHelperText', {
-                          field: fieldFilter.field,
-                        })}
-                        i18nInclude={t('include')}
-                        i18nExclude={t('exclude')}
-                        i18nFilterFieldInfoMsg={t('filterFieldInfoMsg', {
-                          field: fieldFilter.field,
-                          sampleVal: fieldFilter.valueSample,
-                        })}
-                      />
-                    )}
-                  </NoPreviewFilterField>
                 )
             )}
             <ActionGroup>
@@ -253,7 +242,6 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
           </>
         )}
       </Form>
-      <Divider />
       <ConfirmationDialog
         buttonStyle={ConfirmationButtonStyle.NORMAL}
         i18nCancelButtonText={t('cancel')}
@@ -264,6 +252,6 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
         onCancel={doCancel}
         onConfirm={doClear}
       />
-    </div>
+    </>
   );
 };

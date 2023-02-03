@@ -1,11 +1,10 @@
 .child-selection-step {
   &_form {
     padding: 15px 0px;
-    .pf-c-form__group {
-      &-control {
-        .pf-l-flex > div {
-          flex-grow: 1;
-        }
+    .filter-input-field {
+      flex-grow: 1;
+      .pf-c-form-control {
+        max-width: 750px;
       }
     }
     .pf-m-action {
@@ -13,9 +12,7 @@
     }
   }
   &_info {
-    color: var(--pf-global--palette--blue-600);
-    font-weight: bold;
-    font-size: 0.8em;
+    /* color: var(--pf-global--disabled-color--100); */
     & > svg {
       color: var(--pf-global--palette--blue-200);
       margin-right: 10px;

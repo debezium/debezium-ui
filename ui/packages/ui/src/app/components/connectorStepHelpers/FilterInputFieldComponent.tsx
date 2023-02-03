@@ -1,4 +1,5 @@
 import {
+  Button,
   Flex,
   FlexItem,
   FormGroup,
@@ -9,12 +10,10 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@patternfly/react-core';
-import {
-  ExclamationCircleIcon,
-  HelpIcon,
-  InfoCircleIcon,
-} from '@patternfly/react-icons';
+import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import _ from 'lodash';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface IFilterInputFieldComponentProps {
   fieldName: string;
@@ -25,10 +24,6 @@ export interface IFilterInputFieldComponentProps {
   fieldExcludeList: string;
   fieldIncludeList: string;
   fieldPlaceholder: string;
-  i18nFilterFieldLabel: string;
-  i18nFilterFieldHelperText: string;
-  i18nInclude: string;
-  i18nExclude: string;
   i18nFilterFieldInfoMsg: string;
 }
 
@@ -60,6 +55,7 @@ const getFieldExpression = (
 export const FilterInputFieldComponent: React.FunctionComponent<
   IFilterInputFieldComponentProps
 > = (props) => {
+  const { t } = useTranslation();
   const FIELD_EXCLUDE = 'fieldExclude';
   const FIELD_INCLUDE = 'fieldInclude';
 
@@ -122,33 +118,47 @@ export const FilterInputFieldComponent: React.FunctionComponent<
 
   return (
     <FormGroup
-      label={props.i18nFilterFieldLabel}
+      label={t('filterFieldLabel', {
+        field: _.capitalize(props.fieldName),
+      })}
       fieldId="field_filter"
       helperText={
-        fieldSelected === FIELD_EXCLUDE ? (
+        !!filterField &&
+        (fieldSelected === FIELD_EXCLUDE ? (
           <Text
             component={TextVariants.h4}
             className="child-selection-step_info"
           >
-            <InfoCircleIcon />
-            {props.i18nFilterFieldHelperText}
+            {t('filterExcludeFieldHelperText', {
+              field: props.fieldName,
+            })}
           </Text>
         ) : (
-          ''
-        )
+          <Text
+            component={TextVariants.h4}
+            className="child-selection-step_info"
+          >
+            {t('filterIncludeFieldHelperText', {
+              field: props.fieldName,
+            })}
+          </Text>
+        ))
       }
       labelIcon={
         <Popover
           bodyContent={
-            <div>
+            <div style={{ whiteSpace: 'pre-line' }}>
               {props.i18nFilterFieldInfoMsg}
-              <br />
-              <a
+              <Button
+                variant="link"
+                isInline
+                target={'_blank'}
+                component="a"
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                target="_blank"
               >
-                More Info
-              </a>
+                Learn more
+              </Button>
+              &nbsp;about regular expressions.
             </div>
           }
         >
@@ -177,6 +187,24 @@ export const FilterInputFieldComponent: React.FunctionComponent<
     >
       <Flex>
         <FlexItem>
+          <ToggleGroup aria-label="Include Exclude field toggle group">
+            <ToggleGroupItem
+              buttonId={FIELD_INCLUDE}
+              isSelected={!!filterField && fieldSelected === FIELD_INCLUDE}
+              onChange={handleParentToggle}
+              text={t('include')}
+              isDisabled={!filterField}
+            />
+            <ToggleGroupItem
+              buttonId={FIELD_EXCLUDE}
+              isSelected={!!filterField && fieldSelected === FIELD_EXCLUDE}
+              onChange={handleParentToggle}
+              text={t('exclude')}
+              isDisabled={!filterField}
+            />
+          </ToggleGroup>
+        </FlexItem>
+        <FlexItem className="filter-input-field">
           <TextInput
             value={filterField}
             validated={
@@ -192,26 +220,6 @@ export const FilterInputFieldComponent: React.FunctionComponent<
             onChange={handleParentFilter}
             placeholder={`e.g ${props.fieldPlaceholder}1, ${props.fieldPlaceholder}2`}
           />
-        </FlexItem>
-        <FlexItem>
-          <ToggleGroup aria-label="Include Exclude field toggle group">
-            <ToggleGroupItem
-              buttonId={FIELD_INCLUDE}
-              isSelected={!!filterField && fieldSelected === FIELD_INCLUDE}
-              onChange={handleParentToggle}
-              onClick={(e) => e.preventDefault()}
-              text={props.i18nInclude}
-              isDisabled={!filterField}
-            />
-            <ToggleGroupItem
-              buttonId={FIELD_EXCLUDE}
-              isSelected={!!filterField && fieldSelected === FIELD_EXCLUDE}
-              onChange={handleParentToggle}
-              onClick={(e) => e.preventDefault()}
-              text={props.i18nExclude}
-              isDisabled={!filterField}
-            />
-          </ToggleGroup>
         </FlexItem>
       </Flex>
     </FormGroup>
