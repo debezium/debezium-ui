@@ -44,6 +44,16 @@ const getPropertyValue = (config: Map<string, string>, filter: string) => {
   return config.get(key);
 };
 
+const getPropertyFilterType = (config: Map<string, string>, filter: string) => {
+  let key = '';
+  [...config.keys()].forEach((k) => {
+    if (k.includes(filter)) {
+      key = k;
+    }
+  });
+  return key.split('.')[1];
+};
+
 export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   props
 ) => {
@@ -109,25 +119,35 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                         props.filterValues,
                         fieldFilter.field
                       ) &&
-                      t('filterExcludeFieldHelperText', {
-                        field: fieldFilter.field,
-                      })
+                      (getPropertyFilterType(
+                        props.filterValues,
+                        fieldFilter.field
+                      ) === 'exclude'
+                        ? t('filterExcludeFieldHelperText', {
+                            field: fieldFilter.field,
+                          })
+                        : t('filterIncludeFieldHelperText', {
+                            field: fieldFilter.field,
+                          }))
                     }
                     labelIcon={
                       <Popover
                         bodyContent={
-                          <div>
+                          <div style={{ whiteSpace: 'pre-line' }}>
                             {t('filterFieldInfoMsg', {
-                              field: fieldFilter.field,
+                              field: `${fieldFilter.field} exclude`,
                               sampleVal: fieldFilter.valueSample,
                             })}
-                            <br />
-                            <a
+                            <Button
+                              variant="link"
+                              isInline
+                              target={'_blank'}
+                              component="a"
                               href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                              target="_blank"
                             >
-                              More Info
-                            </a>
+                              Learn more
+                            </Button>
+                            &nbsp;about regular expressions.
                           </div>
                         }
                       >
@@ -145,7 +165,14 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                     {getPropertyValue(props.filterValues, fieldFilter.field) ? (
                       <Flex className="pf-u-pt-xs">
                         <FlexItem>
-                          <Label variant="outline">{fieldFilter.field}</Label>
+                          <Label variant="outline">
+                            {_.capitalize(
+                              getPropertyFilterType(
+                                props.filterValues,
+                                fieldFilter.field
+                              )
+                            )}
+                          </Label>
                         </FlexItem>
                         <FlexItem>
                           <Text component={TextVariants.p}>

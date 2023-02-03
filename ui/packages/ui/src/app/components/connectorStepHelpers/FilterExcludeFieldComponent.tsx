@@ -1,5 +1,6 @@
 import './FilterExcludeFieldComponent.css';
 import {
+  Button,
   Flex,
   FlexItem,
   FormGroup,
@@ -79,15 +80,18 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
       labelIcon={
         <Popover
           bodyContent={
-            <div>
+            <div style={{ whiteSpace: 'pre-line' }}>
               {props.i18nFilterFieldInfoMsg}
-              <br />
-              <a
+              <Button
+                variant="link"
+                isInline
+                target={'_blank'}
+                component="a"
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-                target="_blank"
               >
-                More Info
-              </a>
+                Learn more
+              </Button>
+              &nbsp;about regular expressions.
             </div>
           }
         >
