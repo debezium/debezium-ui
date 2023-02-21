@@ -12,8 +12,9 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import './FilterInputFieldComponent.css';
 
 export interface IFilterInputFieldComponentProps {
   fieldName: string;
@@ -67,11 +68,7 @@ export const FilterInputFieldComponent: React.FunctionComponent<
     )
   );
 
-  const [fieldSelected, setFieldSelected] = React.useState<string>(
-    props.filterValues.has(props.fieldExcludeList)
-      ? FIELD_EXCLUDE
-      : FIELD_INCLUDE
-  );
+  const [fieldSelected, setFieldSelected] = React.useState<string>();
 
   const handleParentFilter = (val: string) => {
     setFilterField(val);
@@ -81,6 +78,12 @@ export const FilterInputFieldComponent: React.FunctionComponent<
     const id = event.currentTarget.id;
     setFieldSelected(id);
   };
+
+  useEffect(() => {
+    props.filterValues.has(props.fieldExcludeList)
+      ? FIELD_EXCLUDE
+      : FIELD_INCLUDE;
+  }, []);
 
   React.useEffect(() => {
     setFilterField(
@@ -101,12 +104,9 @@ export const FilterInputFieldComponent: React.FunctionComponent<
     const formDataCopy = new Map<string, string>(props.formData);
     if (fieldSelected === FIELD_EXCLUDE) {
       formDataCopy.delete(props.fieldIncludeList);
-      if (filterField) {
-        formDataCopy.set(props.fieldExcludeList, filterField);
-      } else {
-        formDataCopy.delete(props.fieldExcludeList);
-        setFieldSelected(FIELD_INCLUDE);
-      }
+      filterField
+        ? formDataCopy.set(props.fieldExcludeList, filterField)
+        : formDataCopy.delete(props.fieldExcludeList);
     } else {
       formDataCopy.delete(props.fieldExcludeList);
       filterField
@@ -123,26 +123,34 @@ export const FilterInputFieldComponent: React.FunctionComponent<
       })}
       fieldId="field_filter"
       helperText={
-        !!filterField ?
-        (fieldSelected === FIELD_EXCLUDE ? (
-          <Text
-            component={TextVariants.h4}
-            className="child-selection-step_info"
-          >
-            {t('filterExcludeFieldHelperText', {
-              field: props.fieldName,
-            })}
-          </Text>
+        !!filterField ? (
+          fieldSelected === FIELD_EXCLUDE ? (
+            <Text
+              component={TextVariants.h4}
+              className="child-selection-step_info"
+            >
+              {t('filterExcludeFieldHelperText', {
+                field: props.fieldName,
+              })}
+            </Text>
+          ) : (
+            <Text
+              component={TextVariants.h4}
+              className="child-selection-step_info"
+            >
+              {t('filterIncludeFieldHelperText', {
+                field: props.fieldName,
+              })}
+            </Text>
+          )
         ) : (
           <Text
-            component={TextVariants.h4}
-            className="child-selection-step_info"
-          >
-            {t('filterIncludeFieldHelperText', {
-              field: props.fieldName,
-            })}
-          </Text>
-        )) : `No ${props.fieldName} filter configured.`
+              className="no-filter-configured"
+            >
+              {`No ${props.fieldName} filter configured.`}
+            </Text>
+          
+        )
       }
       labelIcon={
         <Popover
@@ -190,17 +198,15 @@ export const FilterInputFieldComponent: React.FunctionComponent<
           <ToggleGroup aria-label="Include Exclude field toggle group">
             <ToggleGroupItem
               buttonId={FIELD_INCLUDE}
-              isSelected={!!filterField && fieldSelected === FIELD_INCLUDE}
+              isSelected={fieldSelected === FIELD_INCLUDE}
               onChange={handleParentToggle}
               text={t('include')}
-              isDisabled={!filterField}
             />
             <ToggleGroupItem
               buttonId={FIELD_EXCLUDE}
-              isSelected={!!filterField && fieldSelected === FIELD_EXCLUDE}
+              isSelected={fieldSelected === FIELD_EXCLUDE}
               onChange={handleParentToggle}
               text={t('exclude')}
-              isDisabled={!filterField}
             />
           </ToggleGroup>
         </FlexItem>

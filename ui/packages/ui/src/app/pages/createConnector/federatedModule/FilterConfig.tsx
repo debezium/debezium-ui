@@ -31,7 +31,6 @@ export interface IFilterConfigProps {
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
-  setIsValidFilter: (val: SetStateAction<boolean>) => void;
 }
 
 const getPropertyValue = (config: Map<string, string>, filter: string) => {
@@ -64,11 +63,6 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   const [invalidMsg] = React.useState<Map<string, string>>(new Map());
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
 
-  const applyFilter = () => {
-    props.updateFilterValues(formData);
-    props.setIsValidFilter(true);
-  };
-
   const clearFilter = () => {
     setShowClearDialog(true);
   };
@@ -84,16 +78,14 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   );
 
   const doClear = () => {
-    props.setIsValidFilter(true);
     setFormData(new Map());
     props.updateFilterValues(new Map());
     setShowClearDialog(false);
   };
 
   React.useEffect(() => {
-    _.isEqual(props.filterValues, formData)
-      ? props.setIsValidFilter(true)
-      : props.setIsValidFilter(false);
+    !_.isEqual(props.filterValues, formData) &&
+      props.updateFilterValues(formData);
   }, [formData]);
 
   const filterConfigurationPageContentObj: any =
@@ -232,9 +224,6 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                 )
             )}
             <ActionGroup>
-              <Button variant="secondary" onClick={applyFilter}>
-                {t('apply')}
-              </Button>
               <Button variant="link" isInline={true} onClick={clearFilter}>
                 {t('clearFilters')}
               </Button>

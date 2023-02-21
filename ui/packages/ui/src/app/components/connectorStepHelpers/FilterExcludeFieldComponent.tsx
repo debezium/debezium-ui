@@ -113,7 +113,11 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
             field: props.fieldName,
           })}
         </Text>
-        ) : `No ${props.fieldName} filter configured.`
+        ) : <Text
+        className="no-filter-configured"
+      >
+        {`No ${props.fieldName} filter configured.`}
+      </Text>
       }
       helperTextInvalid={
         props.invalidMsg?.size !== 0

@@ -3,6 +3,7 @@ import { FilterConfig } from './FilterConfig';
 import { Properties } from './Properties';
 // import { RuntimeOptions } from './RuntimeOptions';
 import { ConnectorProperty } from '@debezium/ui-models';
+import { ConfigurationMode } from 'components';
 import i18n from 'i18n';
 import * as React from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -15,7 +16,6 @@ import {
   getFilterConfigurationPageContent,
 } from 'shared';
 import { getPropertiesData } from 'src/app/utils/FormatCosProperties';
-import { ConfigurationMode } from 'components';
 
 /**
  * Represents a connector type supported by the API
@@ -120,9 +120,11 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
   );
 
   const [filterValues, setFilterValues] = React.useState<Map<string, string>>(
-    getFilterInitialValues(props.configuration, props.connector.name.toLowerCase())
+    getFilterInitialValues(
+      props.configuration,
+      props.connector.name.toLowerCase()
+    )
   );
-  const [isValidFilter, setIsValidFilter] = React.useState<boolean>(true);
 
   const clearFilterFields = (
     configObj: Map<string, unknown>
@@ -153,9 +155,8 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
 
   // Enable the filter step next button initially
   React.useEffect(() => {
-    props.activeStep === 1 &&
-      props.onChange(props.configuration, isValidFilter);
-  }, [isValidFilter, props.activeStep]);
+    props.activeStep === 1 && props.onChange(props.configuration, true);
+  }, [props.activeStep]);
 
   function chooseStep(stepId: number) {
     switch (stepId) {
@@ -189,7 +190,6 @@ export const DebeziumConfigurator: React.FC<IDebeziumConfiguratorProps> = (
                 ? props.connector?.schema['x-connector-id']
                 : ''
             }
-            setIsValidFilter={setIsValidFilter}
           />
         );
       case DATA_OPTIONS_STEP_ID:
