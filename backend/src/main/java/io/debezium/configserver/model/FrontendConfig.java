@@ -8,7 +8,7 @@ package io.debezium.configserver.model;
 import io.debezium.config.EnumeratedValue;
 import io.debezium.configserver.rest.FrontendConfigResource;
 
-import javax.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 public class FrontendConfig {
 

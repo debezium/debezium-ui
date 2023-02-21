@@ -5,8 +5,8 @@
  */
 package io.debezium.configserver.model;
 
-import javax.json.bind.annotation.JsonbCreator;
-import javax.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbCreator;
+import jakarta.json.bind.annotation.JsonbProperty;
 import java.util.Map;
 import java.util.Objects;
 

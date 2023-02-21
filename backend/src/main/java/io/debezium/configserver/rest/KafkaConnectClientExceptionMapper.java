@@ -9,9 +9,9 @@ import io.debezium.configserver.rest.model.ServerError;
 import io.debezium.configserver.service.StacktraceHelper;
 import org.jboss.logging.Logger;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class KafkaConnectClientExceptionMapper implements ExceptionMapper<KafkaConnectClientException> {

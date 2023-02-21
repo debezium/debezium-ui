@@ -8,11 +8,11 @@ package io.debezium.configserver.rest;
 import io.debezium.configserver.model.FrontendConfig;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 
 @Path("")
 public class FrontendConfigResource {
