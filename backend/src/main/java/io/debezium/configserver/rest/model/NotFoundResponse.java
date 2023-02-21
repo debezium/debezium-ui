@@ -5,7 +5,7 @@
  */
 package io.debezium.configserver.rest.model;
 
-import javax.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 public class NotFoundResponse {
 
