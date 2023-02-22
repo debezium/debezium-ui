@@ -15,14 +15,18 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestProfile(PostgresInfrastructureTestProfile.class)
-public class CreateUpdateAndDeletePostgresConnectorIT {
+public class CreateUpdateDeletePostgresConnectorIT {
 
     @BeforeEach
     public void resetRunningConnectors() {
@@ -79,33 +83,45 @@ public class CreateUpdateAndDeletePostgresConnectorIT {
             .and().rootPath("config")
                 .body("['connector.class']", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
                 .and().body("['database.hostname']", equalTo(Infrastructure.getPostgresContainer().getContainerInfo().getConfig().getHostName()))
-                .and().body("['slot.drop.on.stop']", equalTo("false"));
+                .and().body("['slot.drop.on.stop']", equalTo("false"))
+                .and().body("['snapshot.mode']", equalTo("never"));
+
+        Map<String, String> updatedConfig = new HashMap<>();
+        updatedConfig.put("connector.class", "io.debezium.connector.postgresql.PostgresConnector");
+        updatedConfig.put("database.user", "test");
+        updatedConfig.put("database.dbname", "test");
+        updatedConfig.put("slot.name", "debezium_1");
+        updatedConfig.put("slot.drop.on.stop", "true");
+        updatedConfig.put("tasks.max", "1");
+        updatedConfig.put("database.hostname", Infrastructure.getPostgresContainer().getContainerInfo().getConfig().getHostName());
+        updatedConfig.put("database.password", "test");
+        updatedConfig.put("topic.prefix", "dbserver1");
+        updatedConfig.put("database.port", "5432");
+        updatedConfig.put("snapshot.mode", "always");
 
         Infrastructure.waitForConnectorTaskStatus(connectorName, 0, Connector.State.RUNNING);
 
-        String updatedConfig = "{\n" +
-                "    \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n" +
-                "    \"database.user\": \"test\",\n" +
-                "    \"database.dbname\": \"test\",\n" +
-                "    \"slot.name\": \"debezium_1\",\n" +
-                "    \"slot.drop.on.stop\": \"true\",\n" +
-                "    \"tasks.max\": \"1\",\n" +
-                "    \"database.hostname\": \"8009ce8c77cc\",\n" +
-                "    \"database.password\": \"test\",\n" +
-                "    \"database.server.name\": \"dbserver1\",\n" +
-                "    \"database.port\": \"5432\",\n" +
-                "    \"snapshot.mode\": \"never\"\n}";
-
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON)
+        given()
+            .when()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
                 .body(updatedConfig)
                 .put(ConnectorURIs.API_PREFIX + ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT, 1, connectorName)
             .then().log().all()
-            .statusCode(200)
-            .assertThat().body("name", equalTo(connectorName))
-            .and().rootPath("config")
-                .body("['connector.class']", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
-                .and().body("['database.hostname']", equalTo(Infrastructure.getPostgresContainer().getContainerInfo().getConfig().getHostName()))
-                .and().body("['slot.drop.on.stop']", equalTo("true"));
+                .statusCode(200)
+                .assertThat().body("name", equalTo(connectorName))
+                .and().rootPath("config")
+                    .body("['connector.class']", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
+                    .and().body("['database.hostname']", equalTo(Infrastructure.getPostgresContainer().getContainerInfo().getConfig().getHostName()))
+                    .and().body("['slot.drop.on.stop']", equalTo("true"))
+                    .and().body("['topic.prefix']", equalTo("dbserver1"))
+                    .and().body("['snapshot.mode']", equalTo("always"));
+
+        Infrastructure.waitForConnectorTaskStatus(connectorName, 0, Connector.State.RUNNING);
+        Infrastructure.getDebeziumContainer().ensureConnectorRegistered(connectorName);
+        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(connectorName, 0, Connector.State.RUNNING);
+        assertEquals(Connector.State.RUNNING, Infrastructure.getDebeziumContainer().getConnectorTaskState(connectorName, 0));
+        assertEquals("true", Infrastructure.getDebeziumContainer().getConnectorConfigProperty(connectorName, "slot.drop.on.stop"));
+        assertEquals("always", Infrastructure.getDebeziumContainer().getConnectorConfigProperty(connectorName, "snapshot.mode"));
     }
 
     @Test

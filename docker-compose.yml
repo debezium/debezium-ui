@@ -3,12 +3,12 @@ version: '3'
 services:
   dbzui-zookeeper:
     container_name: dbzui-zookeeper
-    image: debezium/zookeeper:2.1
+    image: quay.io/debezium/zookeeper:2.0
     networks:
       - dbzui-network
   dbzui-kafka:
     container_name: dbzui-kafka
-    image: debezium/kafka:2.1
+    image: quay.io/debezium/kafka:2.0
     ports:
       - "9092:9092"
     depends_on:
@@ -19,7 +19,7 @@ services:
       - dbzui-network
   dbzui-db-pg:
     container_name: dbzui-db-pg
-    image: debezium/example-postgres:2.1
+    image: quay.io/debezium/example-postgres:2.0
     ports:
       - "65432:5432"
     environment:
@@ -29,7 +29,7 @@ services:
       - dbzui-network
   dbzui-db-mysql:
     container_name: dbzui-db-mysql
-    image: debezium/example-mysql:2.1
+    image: quay.io/debezium/example-mysql:2.0
     ports:
       - "63306:3306"
     environment:
@@ -45,7 +45,7 @@ services:
     ports:
       - "37017:27017"
     volumes:
-    - ./backend/src/test/resources/initialize-mongo-single.js:/docker-entrypoint-initdb.d/initialize-mongo-single.js
+      - ./backend/src/test/resources/initialize-mongo-single.js:/docker-entrypoint-initdb.d/initialize-mongo-single.js
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
@@ -81,7 +81,7 @@ services:
     command: bash -c 'sleep 60 && /opt/mssql-tools/bin/sqlcmd -S dbzui-db-sqlserver -U sa -P Password! -i inventory.sql'
   dbzui-connect:
     container_name: dbzui-connect
-    image: debezium/connect:nightly
+    image: quay.io/debezium/connect:nightly
     ports:
       - "8083:8083"
     depends_on:

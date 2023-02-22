@@ -182,7 +182,9 @@ public class LifecycleResource {
         catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-        LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Kafka Connect response: " + result.readEntity(String.class));
+        }
 
         return Response.fromResponse(result).type(MediaType.APPLICATION_JSON_TYPE).build();
     }

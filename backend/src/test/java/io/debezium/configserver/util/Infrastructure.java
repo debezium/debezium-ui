@@ -41,7 +41,8 @@ public class Infrastructure {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
 
-    private static final String DEBEZIUM_CONTAINER_VERSION = "1.8";
+    private static final String DEBEZIUM_CONTAINER_VERSION = "2.0";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
@@ -52,12 +53,12 @@ public class Infrastructure {
                     .withNetwork(NETWORK);
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
-            new PostgreSQLContainer<>(DockerImageName.parse("debezium/example-postgres:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("postgres"))
+            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("postgres"))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("postgres");
 
     private static final MySQLContainer<?> MYSQL_CONTAINER =
-            new MySQLContainer<>(DockerImageName.parse("debezium/example-mysql:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("mysql"))
+            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("mysql"))
                     .withNetwork(NETWORK)
                     .withUsername("mysqluser")
                     .withPassword("mysqlpw")
@@ -83,7 +84,7 @@ public class Infrastructure {
 
     private static final DebeziumContainer DEBEZIUM_CONTAINER;
     static {
-        DEBEZIUM_CONTAINER = new DebeziumContainer("debezium/connect:1.9.7.Final ")
+        DEBEZIUM_CONTAINER = new DebeziumContainer("quay.io/debezium/connect:nightly")
                 .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                 .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                 .withNetwork(NETWORK)
@@ -216,8 +217,6 @@ public class Infrastructure {
                 // this needs to be set to at least a minimum of ~65-70 seconds because PostgreSQL now
                 // retries on certain failure conditions with a 10s between them.
                 .atMost(120, TimeUnit.SECONDS)
-                // this is necessary until upgrading to Debezium 2.0, see DBZ-5159 changes in main repo
-                .ignoreException(NullPointerException.class)
                 .until(() -> Infrastructure.getDebeziumContainer().getConnectorTaskState(connectorName, taskNumber) == state);
     }
 

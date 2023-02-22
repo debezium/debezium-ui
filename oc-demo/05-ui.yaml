@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: dbzui-service
-        image: debezium/debezium-ui:latest
+        image: debezium/debezium-ui:2.0
         imagePullPolicy: Always
         envFrom:
         - configMapRef:

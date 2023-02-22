@@ -450,13 +450,12 @@ public class ConnectorResource {
         return deleteResponse;
     }
 
-
     @Path(ConnectorURIs.MANAGE_CONNECTORS_ENDPOINT)
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(
-            responseCode = "204",
+            responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON))
     @APIResponse(
             responseCode = "404",
@@ -477,24 +476,25 @@ public class ConnectorResource {
             ))
     public Response updateConnectorConfig(
             @PathParam("cluster") int cluster,
-            @PathParam("connector-name") String connectorName
+            @PathParam("connector-name") String connectorName,
+            Map<String, String> updatedConfig
     ) throws KafkaConnectClientException, KafkaConnectException {
         URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
         KafkaConnectClient kafkaConnectClient = KafkaConnectClientFactory.getClient(cluster);
 
-        Response updateResponse;
         try {
-            Response originalKafkaConnectResponse = kafkaConnectClient.updateConnectorConfig(connectorName);
+            Response originalKafkaConnectResponse = kafkaConnectClient.updateConnectorConfig(connectorName, updatedConfig);
+            originalKafkaConnectResponse.bufferEntity();
+            Response updateResponse = Response.fromResponse(originalKafkaConnectResponse).type(MediaType.APPLICATION_JSON).build();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Kafka Connect response: " + originalKafkaConnectResponse.readEntity(String.class));
             }
-            updateResponse = Response.fromResponse(originalKafkaConnectResponse).type(MediaType.APPLICATION_JSON).build();
             originalKafkaConnectResponse.close();
+            return updateResponse;
         }
         catch (ProcessingException | IOException e) {
             throw new KafkaConnectClientException(kafkaConnectURI, e);
         }
-        return updateResponse;
     }
 
     @Path(ConnectorURIs.CONNECTOR_CONFIG_ENDPOINT)

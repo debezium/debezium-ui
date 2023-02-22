@@ -26,7 +26,7 @@ public class PropertiesValidationResult {
         return new PropertiesValidationResult(Status.INVALID, propertyValidationResults);
     }
 
-    public static enum Status {
+    public enum Status {
         VALID, INVALID;
     }
 }

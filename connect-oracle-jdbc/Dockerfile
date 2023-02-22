@@ -1,4 +1,4 @@
-FROM debezium/connect:nightly
+FROM quay.io/debezium/connect:nightly
 
 # These should point to the driver version to be used
 ENV MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \

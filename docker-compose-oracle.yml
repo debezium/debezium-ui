@@ -3,12 +3,12 @@ version: '3'
 services:
   dbzui-zookeeper:
     container_name: dbzui-zookeeper
-    image: debezium/zookeeper:2.1
+    image: debezium/zookeeper:2.0
     networks:
       - dbzui-network
   dbzui-kafka:
     container_name: dbzui-kafka
-    image: debezium/kafka:2.1
+    image: debezium/kafka:2.0
     ports:
       - "9092:9092"
     depends_on:
@@ -19,7 +19,7 @@ services:
       - dbzui-network
   dbzui-db-pg:
     container_name: dbzui-db-pg
-    image: debezium/example-postgres:2.1
+    image: debezium/example-postgres:2.0
     ports:
       - "65432:5432"
     environment:
@@ -29,7 +29,7 @@ services:
       - dbzui-network
   dbzui-db-mysql:
     container_name: dbzui-db-mysql
-    image: debezium/example-mysql:2.1
+    image: debezium/example-mysql:2.0
     ports:
       - "63306:3306"
     environment:
@@ -61,7 +61,7 @@ services:
     networks:
       - dbzui-network
   mongo-initializer:
-    image: mongo:3.6
+    image: mongo:4.4
     networks:
       - dbzui-network
     depends_on:
