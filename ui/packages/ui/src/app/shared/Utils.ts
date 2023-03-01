@@ -1148,3 +1148,27 @@ export function fetch_retry(
     });
   }
 }
+
+export function checkForContradictingFilters(filters, connectorType): boolean {
+  const filterFields = getFilterConfigurationPageContent(
+    connectorType || ''
+  ).fieldArray.flatMap((i) => i.field);
+  const topFilter = filters.get(`${filterFields[0]}.exclude.list`);
+  const middleFilter = filters.get(`${filterFields[1]}.exclude.list`);
+  const middleIncludeFilter = filters.get(`${filterFields[1]}.include.list`);
+  const bottomIncludeFilter = filters.get(`${filterFields[2]}.include.list`);
+  if (topFilter) {
+    if (middleIncludeFilter || bottomIncludeFilter) {
+      return (
+        middleIncludeFilter?.includes(topFilter) ||
+        bottomIncludeFilter?.includes(topFilter)
+      );
+    }
+  }
+  if (middleFilter) {
+    if (bottomIncludeFilter) {
+      return bottomIncludeFilter.includes(middleFilter);
+    }
+  }
+  return false;
+}

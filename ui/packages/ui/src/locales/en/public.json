@@ -85,6 +85,7 @@
   "connectorPauseWarningMsg": "Are you sure want to pause connector '{{connectorName}}'?",
   "resumeConnector": "Resume connector",
   "connectorResumeWarningMsg": "Are you sure want to resume connector '{{connectorName}}'?",
+  "contradictingFilterMsg": "You defined an include filter that contradicts a higher-level exclude filter. The exclude filter has precedence. The contradicting include filter will be ignored.",
   "restartConnector": "Restart connector",
   "connectorRestartWarningMsg": "Are you sure want to restart connector '{{connectorName}}'?",
   "restartConnectorTask": "Restart connector task",

@@ -3,6 +3,7 @@ import { DataCollection, FilterValidationResult } from '@debezium/ui-models';
 import { Services } from '@debezium/ui-services';
 import {
   ActionGroup,
+  Alert,
   Button,
   Divider,
   Form,
@@ -19,6 +20,7 @@ import _ from 'lodash';
 import React, { SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  checkForContradictingFilters,
   ConfirmationButtonStyle,
   ConfirmationDialog,
   fetch_retry,
@@ -67,6 +69,10 @@ export const FilterConfigStep: React.FunctionComponent<
   const [formData, setFormData] = React.useState<Map<string, string>>(
     new Map()
   );
+
+  const [showContradictingFilterAlert, setShowContradictingFilterAlert] =
+  React.useState<boolean>(false);
+
   const [treeData, setTreeData] = React.useState<any[]>([]);
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
     new Map()
@@ -165,6 +171,9 @@ export const FilterConfigStep: React.FunctionComponent<
     } else {
       props.setIsValidFilter(false);
     }
+    setShowContradictingFilterAlert(
+      checkForContradictingFilters(formData, props.connectorType)
+    );
   }, [formData]);
 
   const filterConfigurationPageContentObj: any =
@@ -179,6 +188,13 @@ export const FilterConfigStep: React.FunctionComponent<
           child: filterConfigurationPageContentObj.fieldArray[1].field,
         })}
       </Text>
+      {showContradictingFilterAlert && (
+        <Alert
+          variant="info"
+          isInline
+          title={t('contradictingFilterMsg')}
+        />
+      )}
       <Form className="child-selection-step_form">
         {filterConfigurationPageContentObj.fieldArray.map((fieldFilter: any) =>
           fieldFilter.preview ? (
