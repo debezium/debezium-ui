@@ -5,11 +5,10 @@
  */
 package io.debezium.configserver;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
-import io.debezium.testing.testcontainers.ConnectorConfigurationTestingHelper;
+import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
@@ -28,13 +27,11 @@ public class ValidatePostgresFiltersIT {
 
     @Test
     public void testEmptyPostgresFilters() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getPostgresConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
-                .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
-        );
+                .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432));
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
@@ -53,14 +50,12 @@ public class ValidatePostgresFiltersIT {
 
     @Test
     public void testValidTableIncludeList() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-                Infrastructure.getPostgresConnectorConfiguration(1)
-                        .with("database.hostname", "localhost")
-                        .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
-                        .with("table.include.list", "inventory\\.product.*")
-        );
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
+                .with("database.hostname", "localhost")
+                .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
+                .with("table.include.list", "inventory\\.product.*");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
@@ -76,14 +71,12 @@ public class ValidatePostgresFiltersIT {
 
     @Test
     public void testValidSchemaIncludeList() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getPostgresConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
-                .with("schema.include.list", "inventory")
-        );
+                .with("schema.include.list", "inventory");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
@@ -102,14 +95,12 @@ public class ValidatePostgresFiltersIT {
 
     @Test
     public void testSchemaIncludeListPatternInvalid() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getPostgresConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
-                .with("schema.include.list", "+")
-        );
+                .with("schema.include.list", "+");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
@@ -123,14 +114,12 @@ public class ValidatePostgresFiltersIT {
 
     @Test
     public void testSchemaExcludeListPatternInvalid() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getPostgresConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
-                .with("schema.exclude.list", "+")
-        );
+                .with("schema.exclude.list", "+");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)

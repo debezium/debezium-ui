@@ -5,11 +5,10 @@
  */
 package io.debezium.configserver;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
-import io.debezium.testing.testcontainers.ConnectorConfigurationTestingHelper;
+import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
@@ -30,13 +29,11 @@ public class ValidatePostgresConnectionIT {
 
     @Test
     public void testValidPostgresConnection() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-                Infrastructure.getPostgresConnectorConfiguration(1)
-                    .with("database.hostname", "localhost")
-                    .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432))
-        );
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
+                .with("database.hostname", "localhost")
+                .with("database.port", Infrastructure.getPostgresContainer().getMappedPort(5432));
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTION_VALIDATION_ENDPOINT, "postgres")
             .then().log().all()
             .statusCode(200)
@@ -47,12 +44,11 @@ public class ValidatePostgresConnectionIT {
 
     @Test
     public void testInvalidHostnamePostgresConnection() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-                Infrastructure.getPostgresConnectorConfiguration(1)
-                    .with("database.hostname", "zzzzzzzzzz"));
+        ConnectorConfiguration config = Infrastructure.getPostgresConnectorConfiguration(1)
+                .with("database.hostname", "zzzzzzzzzz");
 
         Locale.setDefault(new Locale("en", "US"));
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
                 .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTION_VALIDATION_ENDPOINT, "postgres")
                 .then().log().all()
                 .statusCode(200)

@@ -12,7 +12,7 @@
   <name>Debezium UI Build Aggregator</name>
 
   <properties>
-    <revision>2.0.0-SNAPSHOT</revision>
+    <revision>2.2.0-SNAPSHOT</revision>
     <debezium.base.version>${revision}</debezium.base.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

@@ -91,7 +91,6 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(SqlServerConnectorConfig.PROPAGATE_COLUMN_SOURCE_TYPE.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.MSG_KEY_COLUMNS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(SqlServerConnectorConfig.PROVIDE_TRANSACTION_METADATA.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
-        additionalMetadata.put(SqlServerConnectorConfig.SANITIZE_FIELD_NAMES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
 
         // Advanced configs (aka Runtime configs based on the PoC Requirements document
         additionalMetadata.put(KafkaSchemaHistory.RECOVERY_POLL_ATTEMPTS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));

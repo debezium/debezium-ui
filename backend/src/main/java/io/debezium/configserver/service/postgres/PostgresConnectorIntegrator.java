@@ -115,7 +115,6 @@ public class PostgresConnectorIntegrator extends ConnectorIntegratorBase {
         additionalMetadata.put(PostgresConnectorConfig.INCLUDE_UNKNOWN_DATATYPES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.UNAVAILABLE_VALUE_PLACEHOLDER.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
         additionalMetadata.put(PostgresConnectorConfig.PROVIDE_TRANSACTION_METADATA.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
-        additionalMetadata.put(PostgresConnectorConfig.SANITIZE_FIELD_NAMES.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.CONNECTOR_ADVANCED));
 
         // Advanced configs (aka Runtime configs based on the PoC Requirements document
         additionalMetadata.put(PostgresConnectorConfig.SKIPPED_OPERATIONS.name(), new AdditionalPropertyMetadata(false, ConnectorProperty.Category.ADVANCED));

@@ -10,6 +10,7 @@ import io.debezium.testing.testcontainers.Connector;
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.debezium.testing.testcontainers.ConnectorResolver;
 import io.debezium.testing.testcontainers.DebeziumContainer;
+import io.debezium.testing.testcontainers.MongoDbContainer;
 
 import org.awaitility.Awaitility;
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
@@ -40,8 +40,7 @@ public class Infrastructure {
     public enum DATABASE {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
-
-    private static final String DEBEZIUM_CONTAINER_VERSION = "2.0";
+    private static final String DEBEZIUM_CONTAINER_VERSION = "2.2";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
@@ -65,10 +64,12 @@ public class Infrastructure {
                     .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
                     .withNetworkAliases("mysql");
 
-    private static final MongoDBContainer MONGODB_CONTAINER =
-            new MongoDbContainer(DockerImageName.parse("mongo:3.6"))
-                    .withNetwork(NETWORK)
-                    .withNetworkAliases("mongodb");
+    private static final MongoDbContainer MONGODB_CONTAINER = MongoDbContainer.node()
+            .name("mongodb")
+            .replicaSet("rs0")
+            .imageName(DockerImageName.parse("mongo:5.0"))
+            .network(NETWORK)
+            .build();
 
     private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
             new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-latest"))
@@ -157,7 +158,7 @@ public class Infrastructure {
         return MYSQL_CONTAINER;
     }
 
-    public static MongoDBContainer getMongoDbContainer() {
+    public static MongoDbContainer getMongoDbContainer() {
         return MONGODB_CONTAINER;
     }
 
@@ -200,6 +201,7 @@ public class Infrastructure {
     public static ConnectorConfiguration getMongoDbConnectorConfiguration(int id, String... options) {
         final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbContainer(MONGODB_CONTAINER)
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
+                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(), "mongodb://" +  MONGODB_CONTAINER.getNamedAddress())
                 .with(MongoDbConnectorConfig.USER.name(), "debezium")
                 .with(MongoDbConnectorConfig.PASSWORD.name(), "dbz")
                 .with(MongoDbConnectorConfig.TOPIC_PREFIX.name(), "mongo" + id);
