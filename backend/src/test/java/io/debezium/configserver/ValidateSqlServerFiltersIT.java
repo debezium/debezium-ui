@@ -5,11 +5,10 @@
  */
 package io.debezium.configserver;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.SqlServerInfrastructureTestProfile;
-import io.debezium.testing.testcontainers.ConnectorConfigurationTestingHelper;
+import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
@@ -28,14 +27,12 @@ public class ValidateSqlServerFiltersIT {
 
     @Test
     public void testEmptySqlServerFilters() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-                Infrastructure.getSqlServerConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getSqlServerConnectorConfiguration(1)
                         .with("database.hostname", "localhost")
                         .with("database.port", Infrastructure.getSqlServerContainer().getMappedPort(1433))
-                        .with("database.names", "testdb")
-        );
+                        .with("database.names", "testdb");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
                 .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "sqlserver")
                 .then().log().all()
                 .statusCode(200)
@@ -53,15 +50,13 @@ public class ValidateSqlServerFiltersIT {
 
     @Test
     public void testValidTableIncludeList() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-                Infrastructure.getSqlServerConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getSqlServerConnectorConfiguration(1)
                         .with("database.hostname", "localhost")
                         .with("database.port", Infrastructure.getSqlServerContainer().getMappedPort(1433))
                         .with("table.include.list", "inventory\\.product.*")
-                        .with("database.names", "testdb")
-        );
+                        .with("database.names", "testdb");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
                 .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "sqlserver")
                 .then().log().all()
                 .statusCode(200)

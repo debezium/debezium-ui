@@ -9,12 +9,12 @@ import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.MongoDbInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
+import io.debezium.testing.testcontainers.MongoDbContainer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.MongoDBContainer;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -52,7 +52,7 @@ public class CreateAndDeleteMongoDbConnectorIT {
                 Infrastructure.getMongoDbConnectorConfiguration(1)
             );
 
-        MongoDBContainer mongoDbContainer = Infrastructure.getMongoDbContainer();
+        MongoDbContainer mongoDbContainer = Infrastructure.getMongoDbContainer();
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
                 .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CREATE_CONNECTOR_ENDPOINT, 1, "mongodb")
             .then().log().all()
@@ -60,9 +60,8 @@ public class CreateAndDeleteMongoDbConnectorIT {
             .assertThat().body("name", equalTo("my-mongodb-connector"))
             .and().rootPath("config")
                 .body("['connector.class']", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
-                .and().body("['mongodb.hosts']",
-                equalTo("rs0/"+ mongoDbContainer.getContainerInfo().getConfig().getHostName()
-                    + ":" + mongoDbContainer.getExposedPorts().get(0)));
+                .and().body("['mongodb.connection.string']",
+                        equalTo("mongodb://"+ mongoDbContainer.getNamedAddress()));
     }
 
     @Test

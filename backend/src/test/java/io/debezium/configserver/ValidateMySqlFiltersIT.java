@@ -5,11 +5,10 @@
  */
 package io.debezium.configserver;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.MySqlInfrastructureTestProfile;
-import io.debezium.testing.testcontainers.ConnectorConfigurationTestingHelper;
+import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
@@ -28,13 +27,11 @@ public class ValidateMySqlFiltersIT {
 
     @Test
     public void testEmptyMySqlFilters() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getMySqlConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getMySqlConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
-                .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306))
-        );
+                .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306));
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mysql")
             .then().log().all()
             .statusCode(200)
@@ -54,14 +51,12 @@ public class ValidateMySqlFiltersIT {
 
     @Test
     public void testValidTableIncludeList() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-                Infrastructure.getMySqlConnectorConfiguration(1)
-                        .with("database.hostname", "localhost")
-                        .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306))
-                        .with("table.include.list", "inventory\\.product.*")
-        );
+        ConnectorConfiguration config = Infrastructure.getMySqlConnectorConfiguration(1)
+                .with("database.hostname", "localhost")
+                .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306))
+                .with("table.include.list", "inventory\\.product.*");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mysql")
             .then().log().all()
             .statusCode(200)
@@ -77,14 +72,12 @@ public class ValidateMySqlFiltersIT {
 
     @Test
     public void testValidDatabaseIncludeList() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getMySqlConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getMySqlConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306))
-                .with("database.include.list", "inventory")
-        );
+                .with("database.include.list", "inventory");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mysql")
             .then().log().all()
             .statusCode(200)
@@ -104,14 +97,12 @@ public class ValidateMySqlFiltersIT {
 
     @Test
     public void testDatabaseIncludeListPatternInvalid() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getMySqlConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getMySqlConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306))
-                .with("database.include.list", "+")
-        );
+                .with("database.include.list", "+");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mysql")
             .then().log().all()
             .statusCode(200)
@@ -125,14 +116,12 @@ public class ValidateMySqlFiltersIT {
 
     @Test
     public void testDatabaseExcludeListPatternInvalid() {
-        ObjectNode config = ConnectorConfigurationTestingHelper.getConfig(
-            Infrastructure.getMySqlConnectorConfiguration(1)
+        ConnectorConfiguration config = Infrastructure.getMySqlConnectorConfiguration(1)
                 .with("database.hostname", "localhost")
                 .with("database.port", Infrastructure.getMySqlContainer().getMappedPort(3306))
-                .with("database.exclude.list", "+")
-        );
+                .with("database.exclude.list", "+");
 
-        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toString())
+        given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mysql")
             .then().log().all()
             .statusCode(200)
