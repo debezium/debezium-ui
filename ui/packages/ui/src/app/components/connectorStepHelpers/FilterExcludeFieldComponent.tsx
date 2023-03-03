@@ -143,9 +143,9 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
                 : 'default'
             }
             type="text"
-            id="field_filter"
+            id={`${props.fieldName}-field_filter`}
             aria-describedby="field_filter-helper"
-            name="field_filter"
+            name={`${props.fieldName}-field_filter`}
             onChange={handleParentFilter}
             placeholder={`e.g ${props.fieldPlaceholder}1, ${props.fieldPlaceholder}2`}
           />
