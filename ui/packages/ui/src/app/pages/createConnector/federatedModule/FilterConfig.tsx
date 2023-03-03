@@ -1,6 +1,7 @@
 import './FilterConfig.css';
 import {
   ActionGroup,
+  Alert,
   Button,
   Flex,
   FlexItem,
@@ -18,9 +19,10 @@ import {
   FilterInputFieldComponent,
 } from 'components';
 import _ from 'lodash';
-import React, { SetStateAction } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  checkForContradictingFilters,
   ConfirmationButtonStyle,
   ConfirmationDialog,
   getFilterConfigurationPageContent,
@@ -31,7 +33,6 @@ export interface IFilterConfigProps {
   filterValues: Map<string, string>;
   connectorType: string;
   updateFilterValues: (data: Map<string, string>) => void;
-  setIsValidFilter: (val: SetStateAction<boolean>) => void;
 }
 
 const getPropertyValue = (config: Map<string, string>, filter: string) => {
@@ -63,11 +64,8 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   );
   const [invalidMsg] = React.useState<Map<string, string>>(new Map());
   const [showClearDialog, setShowClearDialog] = React.useState<boolean>(false);
-
-  const applyFilter = () => {
-    props.updateFilterValues(formData);
-    props.setIsValidFilter(true);
-  };
+  const [showContradictingFilterAlert, setShowContradictingFilterAlert] =
+    React.useState<boolean>(false);
 
   const clearFilter = () => {
     setShowClearDialog(true);
@@ -84,16 +82,17 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
   );
 
   const doClear = () => {
-    props.setIsValidFilter(true);
     setFormData(new Map());
     props.updateFilterValues(new Map());
     setShowClearDialog(false);
   };
 
   React.useEffect(() => {
-    _.isEqual(props.filterValues, formData)
-      ? props.setIsValidFilter(true)
-      : props.setIsValidFilter(false);
+    !_.isEqual(props.filterValues, formData) &&
+      props.updateFilterValues(formData);
+    setShowContradictingFilterAlert(
+      checkForContradictingFilters(formData, props.connectorType)
+    );
   }, [formData]);
 
   const filterConfigurationPageContentObj: any =
@@ -101,6 +100,13 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
 
   return (
     <>
+      {showContradictingFilterAlert && (
+        <Alert
+          variant="info"
+          isInline
+          title={t('contradictingFilterMsg')}
+        />
+      )}
       <Form className="child-selection-step_form">
         {props.uiPath === ConfigurationMode.VIEW ? (
           <>
@@ -201,6 +207,7 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
               (fieldFilter: any) =>
                 fieldFilter.excludeFilter ? (
                   <FilterExcludeFieldComponent
+                    key={fieldFilter.field}
                     fieldName={fieldFilter.field}
                     filterValues={props.filterValues}
                     setFormData={setFormData}
@@ -232,9 +239,6 @@ export const FilterConfig: React.FunctionComponent<IFilterConfigProps> = (
                 )
             )}
             <ActionGroup>
-              <Button variant="secondary" onClick={applyFilter}>
-                {t('apply')}
-              </Button>
               <Button variant="link" isInline={true} onClick={clearFilter}>
                 {t('clearFilters')}
               </Button>

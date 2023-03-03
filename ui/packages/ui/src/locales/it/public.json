@@ -92,6 +92,7 @@
   "cancel": "Annulla",
   "details": "Dettagli:",
   "connectorPageHeadingText": "Questo elenco mostra tutti i connettori che sono stati creati. Puoi creare un nuovo connettore facendo clic sul pulsante 'Crea un connettore'",
+  "contradictingFilterMsg": "Hai definito un filtro di inclusione che contraddice un filtro di esclusione di livello superiore. Il filtro di esclusione ha la precedenza. Il filtro di inclusione contraddittorio verrà ignorato.",
   "createAConnector": "Crea un connettore",
   "noConnectors": "Nessun connettore",
   "connectorEmptyStateMsg": "Fare clic su 'Crea un connettore' per creare un nuovo connettore.",

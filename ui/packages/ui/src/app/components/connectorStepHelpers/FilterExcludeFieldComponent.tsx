@@ -106,11 +106,18 @@ export const FilterExcludeFieldComponent: React.FunctionComponent<
         </Popover>
       }
       helperText={
-        <Text component={TextVariants.h4} className="child-selection-step_info">
+        !!filterField ?
+        (
+          <Text component={TextVariants.h4} className="child-selection-step_info">
           {t('filterExcludeOnlyHelperText', {
             field: props.fieldName,
           })}
         </Text>
+        ) : <Text
+        className="no-filter-configured"
+      >
+        {`No ${props.fieldName} filter configured.`}
+      </Text>
       }
       helperTextInvalid={
         props.invalidMsg?.size !== 0

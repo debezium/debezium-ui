@@ -92,6 +92,7 @@
   "cancel": "取消",
   "details": "详情：",
   "connectorPageHeadingText": "这个列表显示了所有已经创建的连接器，你可以通过点击 '创建一个连接器' 按钮来创建一个新的连接器。",
+  "contradictingFilterMsg": "您定义了一个与更高级别的排除过滤器相矛盾的包含过滤器。排除过滤器具有优先权。矛盾的包含过滤器将被忽略。",
   "createAConnector": "创建一个连接器",
   "noConnectors": "没有连接器",
   "connectorEmptyStateMsg": "请点击‘创建一个连接器’来创建一个新的连接器。",
