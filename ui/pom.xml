@@ -17,8 +17,8 @@
   <name>Debezium UI Frontend</name>
 
   <properties>
-    <node.version>16.13.2</node.version>
-    <npm.version>8.1.2</npm.version>
+    <node.version>18.14.2</node.version>
+    <npm.version>9.5.0</npm.version>
   </properties>
 
   <build>
