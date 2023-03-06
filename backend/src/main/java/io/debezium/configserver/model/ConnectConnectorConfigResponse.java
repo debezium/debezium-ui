@@ -40,5 +40,6 @@ public class ConnectConnectorConfigResponse {
     public void setConfig(Map<String, ?> config) {
         this.config = config.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
+        this.config.remove("name");
     }
 }

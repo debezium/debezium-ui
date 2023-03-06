@@ -5,10 +5,10 @@
  */
 package io.debezium.configserver;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
-public class NativeCreateAndDeletePostgresConnectorIT extends CreateAndDeletePostgresConnectorIT {
+@QuarkusIntegrationTest
+public class NativeCreateUpdateDeletePostgresConnectorIT extends CreateUpdateDeletePostgresConnectorIT {
 
     // Execute the same tests but in native mode.
 }

@@ -32,7 +32,7 @@ public class ConnectionValidationResult {
         return new ConnectionValidationResult(Status.INVALID, propertyValidationResults, genericValidationResults);
     }
 
-    public static enum Status {
+    public enum Status {
         VALID, INVALID;
     }
 }

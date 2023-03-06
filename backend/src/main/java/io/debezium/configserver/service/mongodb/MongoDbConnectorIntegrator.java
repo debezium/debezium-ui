@@ -114,7 +114,8 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
         }
         else {
             return allDataCollections.stream()
-                    .filter(dataCollectionId -> snapshotAllowedDataCollections.stream().anyMatch(s -> dataCollectionId.identifier().matches(s.pattern())));
+                    .filter(dataCollectionId -> snapshotAllowedDataCollections.stream()
+                            .anyMatch(s -> s.matcher(dataCollectionId.identifier()).matches()));
         }
     }
 

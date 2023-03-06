@@ -22,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RegisterRestClient
 public interface KafkaConnectClient {
@@ -54,6 +55,12 @@ public interface KafkaConnectClient {
     @DELETE
     @Path("/connectors/{connector-name}")
     Response deleteConnector(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
+
+    @PUT
+    @Path("/connectors/{connector-name}/config")
+    @Produces("application/json")
+    @Consumes("application/json")
+    Response updateConnectorConfig(@PathParam("connector-name") String connectorName, Map<String, String> config) throws ProcessingException, IOException;
 
     @PUT
     @Path("/connectors/{connector-name}/pause")

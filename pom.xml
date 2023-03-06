@@ -23,21 +23,21 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.release>11</maven.compiler.release>
     <!-- Plug-in versions -->
-    <frontend.maven.plugin.version>1.11.3</frontend.maven.plugin.version>
-    <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
-    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-    <maven.dependency.plugin.version>3.2.0</maven.dependency.plugin.version>
+    <frontend.maven.plugin.version>1.12.1</frontend.maven.plugin.version>
+    <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
+    <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+    <maven.dependency.plugin.version>3.5.0</maven.dependency.plugin.version>
     <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
-    <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
-    <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
-    <quarkus.plugin.version>1.12.1.Final</quarkus.plugin.version>
+    <maven.resources.plugin.version>3.3.0</maven.resources.plugin.version>
+    <maven.surefire.plugin.version>3.0.0-M9</maven.surefire.plugin.version>
+    <quarkus.plugin.version>1.13.7.Final</quarkus.plugin.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.12.1.Final</quarkus.platform.version>
-    <testcontainers.version>1.15.2</testcontainers.version>
-    <okhttp.version>4.9.3</okhttp.version>
-    <okio.version>2.10.0</okio.version>
-    <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
+    <quarkus.platform.version>1.13.7.Final</quarkus.platform.version>
+    <testcontainers.version>1.17.6</testcontainers.version>
+    <okhttp.version>4.10.0</okhttp.version>
+    <okio.version>3.3.0</okio.version>
+    <version.checkstyle.plugin>3.2.1</version.checkstyle.plugin>
     <version.checkstyle>8.32</version.checkstyle>
   </properties>
 
@@ -82,9 +82,19 @@
           <version>${version.checkstyle.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>io.quarkus</groupId>
+          <groupId>${quarkus.platform.group-id}</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${quarkus.plugin.version}</version>
+          <version>${quarkus.platform.version}</version>
+          <extensions>true</extensions>
+          <executions>
+            <execution>
+              <goals>
+                <goal>build</goal>
+                <goal>generate-code</goal>
+                <goal>generate-code-tests</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -28,7 +28,7 @@ public class FilterValidationResult {
         return new FilterValidationResult(Status.INVALID, propertyValidationResults, Collections.emptyList());
     }
 
-    public static enum Status {
+    public enum Status {
         VALID, INVALID;
     }
 }
