@@ -1,27 +1,27 @@
+import { SMTExampleModal } from './TransformsSteps/SMTExampleModal';
 import { Services } from '@debezium/ui-services';
 import {
   Alert,
   Button,
   Divider,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
   Grid,
   GridItem,
   Modal,
   ModalVariant,
   SelectGroup,
   SelectOption,
-  Title,
 } from '@patternfly/react-core';
-import { CubesIcon, ExternalLinkSquareAltIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import {
+  ExternalLinkSquareAltIcon,
+  PlusCircleIcon,
+} from '@patternfly/react-icons';
 import { PageLoader, TransformCard } from 'components';
 import _ from 'lodash';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import MultiRef from 'react-multi-ref';
 import { ApiError, fetch_retry, WithLoader } from 'shared';
+import { TransformsStepEmptyState } from 'src/app/pages/createConnector/connectorSteps/TransformsSteps/TransformsStepEmptyState';
 
 export interface ITransformData {
   key: number;
@@ -37,7 +37,7 @@ export interface ITransformStepProps {
   clusterId: string;
 }
 
-const TransformAlert: FC = () => {
+export const TransformAlert: FC = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -96,6 +96,8 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
   >(new Map<number, ITransformData>());
 
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [isExampleModalOpen, setIsExampleModalOpen] =
+    React.useState<boolean>(false);
 
   const [responseData, setResponseData] = React.useState({});
 
@@ -209,6 +211,10 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
     setIsModalOpen(!isModalOpen);
   };
 
+  const handleExampleModalToggle = () => {
+    setIsExampleModalOpen(!isExampleModalOpen);
+  };
+
   const updateTransformCallback = React.useCallback(
     (key: number, field: string, value: any) => {
       const transformsCopy = new Map(transforms);
@@ -303,23 +309,10 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
       {() => (
         <div>
           {transforms.size === 0 ? (
-            <EmptyState variant={EmptyStateVariant.small}>
-              <EmptyStateIcon icon={CubesIcon} />
-              <Title headingLevel="h4" size="lg">
-                {t('noTransformAdded')}
-              </Title>
-              <EmptyStateBody>
-                <TransformAlert />
-              </EmptyStateBody>
-              <Button
-                variant="secondary"
-                className="pf-u-mt-lg"
-                icon={<PlusCircleIcon />}
-                onClick={addTransform}
-              >
-                {t('addTransform')}
-              </Button>
-            </EmptyState>
+            <TransformsStepEmptyState
+              addTransform={addTransform}
+              handleExampleModalToggle={handleExampleModalToggle}
+            />
           ) : (
             <>
               <Alert
@@ -392,6 +385,16 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
           >
             {t('deleteTransformMsg')}
           </Modal>
+          <SMTExampleModal
+            isExampleModalOpen={isExampleModalOpen}
+            handleExampleModalToggle={handleExampleModalToggle}
+            transformsOptions={getOptions(
+              responseData,
+              props.selectedConnectorType
+            )}
+            transformType={''}
+            setFieldValue={(value: any) => undefined}
+          />
         </div>
       )}
     </WithLoader>

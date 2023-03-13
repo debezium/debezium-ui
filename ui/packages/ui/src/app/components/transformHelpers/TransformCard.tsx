@@ -1,10 +1,6 @@
 import './TransformCard.css';
 import {
   Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Divider,
   Dropdown,
   DropdownItem,
   DropdownToggle,
@@ -12,8 +8,6 @@ import {
   Form,
   Grid,
   GridItem,
-  Modal,
-  ModalVariant,
   Split,
   SplitItem,
   Text,
@@ -25,7 +19,6 @@ import {
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
-  ExternalLinkSquareAltIcon,
   GripVerticalIcon,
   TrashIcon,
 } from '@patternfly/react-icons';
@@ -38,7 +31,7 @@ import _ from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getFormattedConfig } from 'shared';
-import { transforms } from 'src/app/utils/Constants';
+import { SMTExampleModal } from 'src/app/pages/createConnector/connectorSteps/TransformsSteps/SMTExampleModal';
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -231,7 +224,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
                       {props.transformType && (
                         <TextContent>
                           <Text component={TextVariants.small}>
-                            Know more about&nbsp;
+                            See example of &nbsp;
                             <Button
                               variant="link"
                               isInline
@@ -242,10 +235,10 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
                                   props.transformType.split('.')[
                                     props.transformType.split('.').length - 1
                                   ]
-                                }
+                                }{' '}
+                                transform
                               </i>
                             </Button>
-                            &nbsp;transform.
                           </Text>
                         </TextContent>
                       )}
@@ -328,69 +321,13 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
             </div>
           </GridItem>
         </Grid>
-        <Modal
-          variant={ModalVariant.large}
-          title={_.startCase(
-            transforms[
-              props.transformType.split('.')[
-                props.transformType.split('.').length - 1
-              ]
-            ]
-          )}
-          isOpen={isDetailModalOpen}
-          onClose={() => setIsDetailModalOpen(false)}
-        >
-          {props.transformType &&
-          props.transformType.split('.')[
-            props.transformType.split('.').length - 1
-          ] === 'Filter'
-            ? 'Debezium provides the filter single message transform (SMT), To enable you to process only the records that are relevant to you. for eg. In many cases, you might be interested in only a subset of the events emitted by the producer.'
-            : props.transformType.split('.')[
-                props.transformType.split('.').length - 1
-              ] === 'ValueToKey'
-            ? 'Replace the record key with a new key formed from a subset of fields in the record value'
-            : 'Each Kafka record that contains a data change event has a default destination topic. If you need to, you can re-route records to topics that you specify before the records reach the Kafka Connect converter. To do this, Debezium provides the topic routing single message transformation (SMT)'}
-          <a
-            href={
-              props.transformType.split('.')[0] === 'io'
-                ? `https://debezium.io/documentation/reference/transformations/${
-                    transforms[
-                      props.transformType.split('.')[
-                        props.transformType.split('.').length - 1
-                      ]
-                    ]
-                  }.html`
-                : `https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.${
-                    transforms[
-                      props.transformType.split('.')[
-                        props.transformType.split('.').length - 1
-                      ]
-                    ]
-                  }`
-            }
-            target="_blank"
-          >
-            &nbsp;read more&nbsp;
-            <ExternalLinkSquareAltIcon />
-          </a>{' '}
-          <br />
-          <Card className="pf-u-mt-lg">
-            <h2>
-              <strong>
-                <i>For example</i>
-              </strong>
-            </h2>
-            <Card>
-              <CardTitle>Before payload</CardTitle>
-              <CardBody>Payload block </CardBody>
-            </Card>
-            <Divider />
-            <Card>
-              <CardTitle>After payload</CardTitle>
-              <CardBody>Payload block </CardBody>
-            </Card>
-          </Card>
-        </Modal>
+        <SMTExampleModal
+          isExampleModalOpen={isDetailModalOpen}
+          handleExampleModalToggle={() => setIsDetailModalOpen(false)}
+          transformsOptions={props.transformsOptions}
+          transformType={props.transformType}
+          setFieldValue={updateNameType}
+        />
       </>
     );
   }

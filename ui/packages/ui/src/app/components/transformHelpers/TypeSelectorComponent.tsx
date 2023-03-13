@@ -14,6 +14,7 @@ export interface ITypeSelectorComponentProps {
   setFieldValue: (value: any) => void;
   isInvalid: boolean;
   invalidText: string;
+  helperText?: React.ReactNode;
 }
 
 export const TypeSelectorComponent = ({
@@ -27,6 +28,7 @@ export const TypeSelectorComponent = ({
   setFieldValue,
   isInvalid,
   invalidText,
+  helperText,
 }: ITypeSelectorComponentProps) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
 
@@ -76,6 +78,7 @@ export const TypeSelectorComponent = ({
       isRequired={isRequired}
       fieldId={fieldId}
       labelIcon={<HelpInfoIcon label={label} description={description} />}
+      helperText={helperText || ''}
       helperTextInvalid={invalidText}
       helperTextInvalidIcon={<ExclamationCircleIcon />}
       validated={isInvalid ? 'error' : 'default'}
