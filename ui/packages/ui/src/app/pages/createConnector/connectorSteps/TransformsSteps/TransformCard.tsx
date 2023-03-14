@@ -24,14 +24,15 @@ import {
 } from '@patternfly/react-icons';
 import {
   NameInputField,
-  TypeSelectorComponent,
-  TransformConfig,
 } from 'components';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getFormattedConfig } from 'shared';
-import { SMTExampleModal } from 'src/app/pages/createConnector/connectorSteps/TransformsSteps/SMTExampleModal';
+import { TransformConfig } from './TransformConfig';
+import { TypeSelectorComponent } from './TypeSelectorComponent';
+import { SMTExampleModal } from './SMTExampleModal';
+
 
 export interface ITransformCardProps {
   transformNo: number;
@@ -327,6 +328,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
           transformsOptions={props.transformsOptions}
           transformType={props.transformType}
           setFieldValue={updateNameType}
+          withMemory={true}
         />
       </>
     );

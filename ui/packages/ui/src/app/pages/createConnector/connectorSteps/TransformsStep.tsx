@@ -1,4 +1,8 @@
-import { SMTExampleModal } from './TransformsSteps/SMTExampleModal';
+import {
+  SMTExampleModal,
+  TransformCard,
+  TransformsStepEmptyState,
+} from './TransformsSteps';
 import { Services } from '@debezium/ui-services';
 import {
   Alert,
@@ -15,13 +19,12 @@ import {
   ExternalLinkSquareAltIcon,
   PlusCircleIcon,
 } from '@patternfly/react-icons';
-import { PageLoader, TransformCard } from 'components';
+import { PageLoader } from 'components';
 import _ from 'lodash';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import MultiRef from 'react-multi-ref';
 import { ApiError, fetch_retry, WithLoader } from 'shared';
-import { TransformsStepEmptyState } from 'src/app/pages/createConnector/connectorSteps/TransformsSteps/TransformsStepEmptyState';
 
 export interface ITransformData {
   key: number;
@@ -37,12 +40,21 @@ export interface ITransformStepProps {
   clusterId: string;
 }
 
-export const TransformAlert: FC = () => {
+export interface ITransformAlertProps {
+  handleExampleModalToggle: () => void;
+}
+export const TransformAlert: FC<ITransformAlertProps> = ({
+  handleExampleModalToggle,
+}) => {
   const { t } = useTranslation();
   return (
     <>
       {t('transformAlert')}
-      {' See '}
+      {' Checkout '}
+      <a onClick={handleExampleModalToggle} target="_blank">
+        transformation example
+      </a>
+      {' or see '}
       <a
         href="https://debezium.io/documentation/reference/transformations/index.html"
         target="_blank"
@@ -319,9 +331,9 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
                 variant="info"
                 isInline={true}
                 title={
-                  <p>
-                    <TransformAlert />
-                  </p>
+                  <TransformAlert
+                    handleExampleModalToggle={handleExampleModalToggle}
+                  />
                 }
               />
               <Grid>

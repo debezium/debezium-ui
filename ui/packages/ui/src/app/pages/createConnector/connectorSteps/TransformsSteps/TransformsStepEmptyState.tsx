@@ -9,7 +9,7 @@ import {
 import { CubesIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TransformAlert } from 'src/app/pages/createConnector/connectorSteps';
+import { TransformAlert } from '../TransformsStep';
 
 interface ITransformsStepEmptyStateProps {
   addTransform: () => void;
@@ -27,7 +27,7 @@ export const TransformsStepEmptyState: React.FunctionComponent<
         {t('noTransformAdded')}
       </Title>
       <EmptyStateBody>
-        <TransformAlert />
+        <TransformAlert handleExampleModalToggle={handleExampleModalToggle}/>
       </EmptyStateBody>
       <Button
         variant="secondary"
@@ -36,14 +36,6 @@ export const TransformsStepEmptyState: React.FunctionComponent<
         onClick={addTransform}
       >
         {t('addTransform')}
-      </Button>
-      <Button
-        variant="link"
-        className="pf-u-mt-lg"
-        // icon={<PlusCircleIcon />}
-        onClick={handleExampleModalToggle}
-      >
-        Show transformation examples
       </Button>
     </EmptyState>
   );

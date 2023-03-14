@@ -27,6 +27,7 @@
 }
 .diff-area{
 margin-top: 15px;
+margin-bottom: 15px;
 }
 .smt_condition_radio{
     color: var(--pf-global--Color--100) !important;

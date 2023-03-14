@@ -159,5 +159,6 @@ export const TRANSFORMS = {
     transformedEvent: {
       key: `{ id: 12345, customerId: 2001 }`,
     },
+    note: 'This transformation does not support nested structures, so users would likely need to apply ExtractNewRecordState prior to this SMT.',
   },
 };

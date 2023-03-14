@@ -1,4 +1,4 @@
-import { TRANSFORMS as transforms } from '../TransformsSteps/transforms';
+import { TRANSFORMS as transforms } from './transforms';
 import './SMTExampleModel.css';
 import {
   Flex,
@@ -7,6 +7,8 @@ import {
   FormGroup,
   Grid,
   GridItem,
+  HelperText,
+  HelperTextItem,
   Label,
   List,
   ListItem,
@@ -21,7 +23,7 @@ import {
   AngleDoubleRightIcon,
   ExternalLinkAltIcon,
 } from '@patternfly/react-icons';
-import { TypeSelectorComponent } from 'components';
+import { TypeSelectorComponent } from './TypeSelectorComponent';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +34,7 @@ interface ISMTExampleModalProps {
   transformsOptions: any;
   transformType: string;
   setFieldValue: (value: any) => void;
+  withMemory?: boolean;
 }
 
 enum indicatorType {
@@ -76,6 +79,7 @@ export const SMTExampleModal: React.FunctionComponent<
   transformsOptions,
   transformType,
   setFieldValue,
+  withMemory = false,
 }) => {
   const { t } = useTranslation();
 
@@ -108,7 +112,7 @@ export const SMTExampleModal: React.FunctionComponent<
   };
 
   const toggleModel = () => {
-    setSelectedSMT('');
+    !withMemory && setSelectedSMT('');
     setMatchingCondition(true);
     handleExampleModalToggle();
   };
@@ -133,12 +137,11 @@ export const SMTExampleModal: React.FunctionComponent<
     setAffectedRecord([]);
     setEventType('');
     if (selectedSMT) {
-        setOriginalRecord({ ...transforms[selectedSMT]?.originalEvent });
-      }
+      setOriginalRecord({ ...transforms[selectedSMT]?.originalEvent });
+    }
   }, [selectedSMT, matchingCondition]);
 
   useEffect(() => {
-    
     setMatchingCondition(true);
   }, [selectedSMT]);
 
@@ -232,8 +235,8 @@ export const SMTExampleModal: React.FunctionComponent<
           <Text component={TextVariants.p}>
             Below we have taken a standard Debezium event/record as an example
             to understand the effect of transformation. Select a SMT from the
-            dropdown and then select the condition to see the effect of the
-            transformation. &nbsp;
+            dropdown and then based on the selected SMT if applicable you toggle
+            between the conditions to see the transformation effect. &nbsp;
           </Text>
         </TextContent>
       }
@@ -245,7 +248,7 @@ export const SMTExampleModal: React.FunctionComponent<
           description={t('transformTypeDescription')}
           fieldId="transform_type"
           isRequired={true}
-          isDisabled={transformType ? true : false}
+          isDisabled={false}
           options={transformsOptions}
           value={selectedSMT}
           setFieldValue={setSelectedSMT}
@@ -263,11 +266,7 @@ export const SMTExampleModal: React.FunctionComponent<
           }
         />
         {selectedSMT && transforms[selectedSMT]?.condition && (
-          <FormGroup
-            label={'SMT configured with:'}
-            fieldId={'condition'}
-            //   labelIcon={<HelpInfoIcon label={label} description={description} />}
-          >
+          <FormGroup label={'SMT configured with:'} fieldId={'condition'}>
             <TextContent>
               <Text className="smt_condition">
                 <code>
@@ -381,31 +380,43 @@ export const SMTExampleModal: React.FunctionComponent<
               <b>After transformation event/record</b>
             </Text>
           </TextContent>
-          <List isPlain className={eventType === 'event-drop' ? "event_box event-dropped" : "event_box"}>
-
-            { eventType !== 'event-drop' && 
-            recordProperties.map((property) => (
-              <ListItem
-                key={property}
-                className={
-                  selectedSMT && play && affectedRecord.includes(property)
-                    ? 'added'
-                    : ''
-                }
-              >
-                <pre>
-                  <code>
-                    {selectedSMT && play ? transformedRecord[property] : ''}
-                  </code>
-                </pre>
-              </ListItem>
-            ))}
+          <List
+            isPlain
+            className={
+              eventType === 'event-drop'
+                ? 'event_box event-dropped'
+                : 'event_box'
+            }
+          >
+            {eventType !== 'event-drop' &&
+              recordProperties.map((property) => (
+                <ListItem
+                  key={property}
+                  className={
+                    selectedSMT && play && affectedRecord.includes(property)
+                      ? 'added'
+                      : ''
+                  }
+                >
+                  <pre>
+                    <code>
+                      {selectedSMT && play ? transformedRecord[property] : ''}
+                    </code>
+                  </pre>
+                </ListItem>
+              ))}
             {eventType === 'event-drop' && (
-                <p className='empty-text'>Event dropped</p>
+              <p className="empty-text">Event/Record dropped</p>
             )}
           </List>
         </GridItem>
       </Grid>
+      {transforms[selectedSMT]?.note && (
+        <HelperText>
+        <HelperTextItem><b><i>{'Note: '}</i></b>{transforms[selectedSMT]?.note}</HelperTextItem>
+      </HelperText>
+      )}
+      
     </Modal>
   );
 };
