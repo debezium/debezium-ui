@@ -1,0 +1,54 @@
+.exampleForm{
+    --pf-c-form--GridGap: var(--pf-global--gutter--sm) !important;
+}
+.smt_condition{
+    line-height: 2.5em !important;
+}
+.play_button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.event_box{
+    border: 1px solid #e5e5e5;
+    text-align: left;
+}
+.event-dropped{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.event_box > li:first-of-type {
+    padding: 5px 10px;
+}
+.event_box > li + li {
+    padding: 5px 10px;
+    margin-top: 0px !important;
+}
+.diff-area{
+margin-top: 15px;
+margin-bottom: 15px;
+}
+.smt_condition_radio{
+    color: var(--pf-global--Color--100) !important;
+}
+.transformed-block{
+    text-align:center;
+    display: flex;
+    flex-direction: column;
+    & > ul{
+        height: 100%;
+    }
+}
+
+.removed{
+    background-color: var(--pf-global--palette--red-50) !important;
+}
+
+.added{
+    background-color: var(--pf-global--palette--green-100) !important;
+}
+
+.empty-text{
+    transform: rotate(-45deg);
+}
