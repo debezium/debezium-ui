@@ -44,10 +44,10 @@ export const TRANSFORMS = {
     },
     transformedEvent: {
       value: `{
-        id: 12345,
-        orderNumber: '1001',
-        customerId: 2001,
-      }`,
+  Id: 12345,
+  orderNumber: '1001',
+  customerId: 2001,
+ }`,
     },
   },
   'io.debezium.transforms.ContentBasedRouter': {
