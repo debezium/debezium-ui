@@ -325,6 +325,7 @@ export const TransformCard = React.forwardRef<any, ITransformCardProps>(
         <SMTExampleModal
           isExampleModalOpen={isDetailModalOpen}
           handleExampleModalToggle={() => setIsDetailModalOpen(false)}
+          isDetailModalOpen={isDetailModalOpen}
           transformsOptions={props.transformsOptions}
           transformType={props.transformType}
           setFieldValue={updateNameType}

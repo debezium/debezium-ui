@@ -1,5 +1,6 @@
-import { TRANSFORMS as transforms } from './transforms';
 import './SMTExampleModel.css';
+import { TypeSelectorComponent } from './TypeSelectorComponent';
+import { TRANSFORMS as transforms } from './transforms';
 import {
   Flex,
   FlexItem,
@@ -23,7 +24,6 @@ import {
   AngleDoubleRightIcon,
   ExternalLinkAltIcon,
 } from '@patternfly/react-icons';
-import { TypeSelectorComponent } from './TypeSelectorComponent';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +35,7 @@ interface ISMTExampleModalProps {
   transformType: string;
   setFieldValue: (value: any) => void;
   withMemory?: boolean;
+  isDetailModalOpen?: boolean;
 }
 
 enum indicatorType {
@@ -80,13 +81,13 @@ export const SMTExampleModal: React.FunctionComponent<
   transformType,
   setFieldValue,
   withMemory = false,
+  isDetailModalOpen,
 }) => {
   const { t } = useTranslation();
 
   const [selectedSMT, setSelectedSMT] = React.useState<string>('');
   const [matchingCondition, setMatchingCondition] =
     React.useState<boolean>(true);
-  const [play, setPlay] = React.useState<boolean>(false);
 
   const [originalRecord, setOriginalRecord] = React.useState<recordType>({
     topic: '',
@@ -115,12 +116,13 @@ export const SMTExampleModal: React.FunctionComponent<
     !withMemory && setSelectedSMT('');
     setMatchingCondition(true);
     handleExampleModalToggle();
+    setAffectedRecord([]);
   };
 
   const getTransformURL = () => {
     const transformURLParan = transforms[selectedSMT]?.route;
     if (selectedSMT.includes('debezium')) {
-      return `https://debezium.io/documentation/reference/transformations/${transformURLParan}`;
+      return `https://debezium.io/documentation/reference/stable/transformations/${transformURLParan}`;
     } else {
       return `https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.${transformURLParan}`;
     }
@@ -130,48 +132,41 @@ export const SMTExampleModal: React.FunctionComponent<
     if (transformType) {
       setSelectedSMT(transformType);
     }
-  }, [transformType]);
-
-  useEffect(() => {
-    setPlay(false);
-    setAffectedRecord([]);
-    setEventType('');
-    if (selectedSMT) {
-      setOriginalRecord({ ...transforms[selectedSMT]?.originalEvent });
-    }
-  }, [selectedSMT, matchingCondition]);
+  }, [transformType, isDetailModalOpen]);
 
   useEffect(() => {
     setMatchingCondition(true);
   }, [selectedSMT]);
 
   useEffect(() => {
-    if (play) {
+    if (selectedSMT) {
+      const originalEvent = transforms[selectedSMT]?.originalEvent;
       const transformedRecord = transforms[selectedSMT]?.transformedEvent;
       if (!matchingCondition && transforms[selectedSMT]?.notMatchingCondition) {
         const notMatchingConditionRecord =
           transforms[selectedSMT]?.notMatchingCondition;
+        setAffectedRecord([]);
         if (notMatchingConditionRecord === 'event-pass') {
           setEventType('event-pass');
-          setOriginalRecord({ ...originalRecord });
-          setTransformedRecord({ ...originalRecord });
+          setOriginalRecord({ ...originalEvent });
+          setTransformedRecord({ ...originalEvent });
         } else if (notMatchingConditionRecord === 'event-drop') {
           setEventType('event-drop');
           setOriginalRecord({
             topic: addIndicators(
-              originalRecord[recordPropertiesValues.TOPIC],
+              originalEvent[recordPropertiesValues.TOPIC],
               indicatorType.REMOVE
             ),
             eventHeader: addIndicators(
-              originalRecord[recordPropertiesValues.EVENT_HEADER],
+              originalEvent[recordPropertiesValues.EVENT_HEADER],
               indicatorType.REMOVE
             ),
             key: addIndicators(
-              originalRecord[recordPropertiesValues.KEY],
+              originalEvent[recordPropertiesValues.KEY],
               indicatorType.REMOVE
             ),
             value: addIndicators(
-              originalRecord[recordPropertiesValues.VALUE],
+              originalEvent[recordPropertiesValues.VALUE],
               indicatorType.REMOVE
             ),
           });
@@ -191,53 +186,50 @@ export const SMTExampleModal: React.FunctionComponent<
           Object.keys(transformedRecord).forEach((key) => {
             removedObj = {
               ...removedObj,
-              [key]: addIndicators(originalRecord[key], indicatorType.REMOVE),
+              [key]: addIndicators(originalEvent[key], indicatorType.REMOVE),
             };
           });
-          setOriginalRecord({ ...originalRecord, ...removedObj });
-          setTransformedRecord({ ...originalRecord, ...addedObj });
+          setOriginalRecord({ ...originalEvent, ...removedObj });
+          setTransformedRecord({ ...originalEvent, ...addedObj });
         } else if (transformedRecord === 'event-pass') {
+          setAffectedRecord([]);
           setEventType('event-pass');
-          setOriginalRecord({ ...originalRecord });
-          setTransformedRecord({ ...originalRecord });
+          setOriginalRecord({ ...originalEvent });
+          setTransformedRecord({ ...originalEvent });
         } else if (transformedRecord === 'event-drop') {
+          setAffectedRecord([]);
           setEventType('event-drop');
           setOriginalRecord({
             topic: addIndicators(
-              originalRecord[recordPropertiesValues.TOPIC],
+              originalEvent[recordPropertiesValues.TOPIC],
               indicatorType.REMOVE
             ),
             eventHeader: addIndicators(
-              originalRecord[recordPropertiesValues.EVENT_HEADER],
+              originalEvent[recordPropertiesValues.EVENT_HEADER],
               indicatorType.REMOVE
             ),
             key: addIndicators(
-              originalRecord[recordPropertiesValues.KEY],
+              originalEvent[recordPropertiesValues.KEY],
               indicatorType.REMOVE
             ),
             value: addIndicators(
-              originalRecord[recordPropertiesValues.VALUE],
+              originalEvent[recordPropertiesValues.VALUE],
               indicatorType.REMOVE
             ),
           });
         }
       }
     }
-  }, [play]);
+  }, [selectedSMT, matchingCondition]);
 
   return (
     <Modal
       variant={ModalVariant.large}
-      title={'Single message transform example'}
+      title={t('smtExampleTitle')}
       isOpen={isExampleModalOpen}
       description={
         <TextContent>
-          <Text component={TextVariants.p}>
-            Below we have taken a standard Debezium event/record as an example
-            to understand the effect of transformation. Select a SMT from the
-            dropdown and then based on the selected SMT if applicable you toggle
-            between the conditions to see the transformation effect. &nbsp;
-          </Text>
+          <Text component={TextVariants.p}>{t('smtExampleDescription')}</Text>
         </TextContent>
       }
       onClose={toggleModel}
@@ -283,14 +275,13 @@ export const SMTExampleModal: React.FunctionComponent<
                     isChecked={matchingCondition === true}
                     name="condition-toggle"
                     onChange={handleChange}
-                    // label="Event with matching condition"
                     label={
                       <TextContent>
                         <Text
                           component={TextVariants.small}
                           className="smt_condition_radio"
                         >
-                          Event with matching condition
+                          {t('smtMatchingCondition')}
                         </Text>
                       </TextContent>
                     }
@@ -303,14 +294,13 @@ export const SMTExampleModal: React.FunctionComponent<
                     isChecked={matchingCondition === false}
                     name="condition-toggle"
                     onChange={handleChange}
-                    // label="Event with non-matching condition"
                     label={
                       <TextContent>
                         <Text
                           component={TextVariants.small}
                           className="smt_condition_radio"
                         >
-                          Event with non-matching condition
+                          {t('smtNonMatchingCondition')}
                         </Text>
                       </TextContent>
                     }
@@ -327,7 +317,7 @@ export const SMTExampleModal: React.FunctionComponent<
         <GridItem span={6} style={{ textAlign: 'center' }}>
           <TextContent>
             <Text component={TextVariants.h4}>
-              <b>Original event/record</b>
+              <b>{t('smtExampleOriginalEvent')}</b>
             </Text>
           </TextContent>
           <List isPlain className="event_box">
@@ -335,7 +325,7 @@ export const SMTExampleModal: React.FunctionComponent<
               <ListItem
                 key={property}
                 className={
-                  play && eventType === 'event-drop'
+                  eventType === 'event-drop'
                     ? 'removed'
                     : affectedRecord.includes(property)
                     ? 'removed'
@@ -346,7 +336,7 @@ export const SMTExampleModal: React.FunctionComponent<
                   <GridItem span={3}>
                     <Label
                       color={
-                        play && eventType === 'event-drop'
+                        eventType === 'event-drop'
                           ? 'red'
                           : affectedRecord.includes(property)
                           ? 'red'
@@ -369,15 +359,13 @@ export const SMTExampleModal: React.FunctionComponent<
         <GridItem span={1} className="play_button">
           <AngleDoubleRightIcon
             size="lg"
-            style={!!selectedSMT ? { cursor: 'pointer' } : {}}
             disabled={!selectedSMT}
-            onClick={() => setPlay(true)}
           />
         </GridItem>
         <GridItem span={5} className="transformed-block">
           <TextContent>
             <Text component={TextVariants.h4}>
-              <b>After transformation event/record</b>
+              <b>{t('smtExampleTransformedEvent')}</b>
             </Text>
           </TextContent>
           <List
@@ -393,14 +381,14 @@ export const SMTExampleModal: React.FunctionComponent<
                 <ListItem
                   key={property}
                   className={
-                    selectedSMT && play && affectedRecord.includes(property)
+                    selectedSMT && affectedRecord.includes(property)
                       ? 'added'
                       : ''
                   }
                 >
                   <pre>
                     <code>
-                      {selectedSMT && play ? transformedRecord[property] : ''}
+                      {selectedSMT ? transformedRecord[property] : ''}
                     </code>
                   </pre>
                 </ListItem>
@@ -413,10 +401,14 @@ export const SMTExampleModal: React.FunctionComponent<
       </Grid>
       {transforms[selectedSMT]?.note && (
         <HelperText>
-        <HelperTextItem><b><i>{'Note: '}</i></b>{transforms[selectedSMT]?.note}</HelperTextItem>
-      </HelperText>
+          <HelperTextItem>
+            <b>
+              <i>{t('notes')}</i>
+            </b>
+            {transforms[selectedSMT]?.note}
+          </HelperTextItem>
+        </HelperText>
       )}
-      
     </Modal>
   );
 };
