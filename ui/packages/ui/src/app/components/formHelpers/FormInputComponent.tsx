@@ -17,12 +17,16 @@ export interface IFormInputComponentProps {
   isRequired: boolean;
   validated?: 'default' | 'success' | 'warning' | 'error' | undefined;
   clearValidationError: () => void;
+  propertyChange: (name: string, selection: any) => void;
+  isDisabled?: boolean;
 }
 export const FormInputComponent: React.FunctionComponent<
   IFormInputComponentProps
 > = (props) => {
   const [field] = useField(props);
-
+  const handleChange = () => {
+    props.propertyChange(field.name, field.value);
+  };
   const handleKeyPress = (keyEvent: KeyboardEvent) => {
     // disallow entry of "." and "-" for NON-NEG-INT or NON-NEG-LONG or POS-INT
     // disallow entry of "." for INT or LONG
@@ -79,6 +83,7 @@ export const FormInputComponent: React.FunctionComponent<
           onChange={(e) => {
             field.onChange(field.name)(e);
             props.clearValidationError();
+            handleChange();
           }}
           inputName={field.name}
           inputAriaLabel={field.name}
@@ -100,11 +105,8 @@ export const FormInputComponent: React.FunctionComponent<
           }}
           aria-label={field.name}
           validated={props.validated}
-          type={
-            props.type === 'PASSWORD'
-              ? 'password'
-              : 'text'
-          }
+          type={props.type === 'PASSWORD' ? 'password' : 'text'}
+          isDisabled={props.isDisabled}
           onKeyPress={(event) => handleKeyPress(event as any)}
         />
       )}

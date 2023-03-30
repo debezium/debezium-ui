@@ -270,7 +270,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = (
       const transformList = props.transformsValues
         .get('transforms')
         ?.split(',');
-      transformList.forEach((tName, index) => {
+      transformList?.forEach((tName, index) => {
         const transformData: ITransformData = { key: Math.random() * 10000 };
         transformData.name = tName;
         transformData.type = props.transformsValues.get(
