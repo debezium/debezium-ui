@@ -26,7 +26,7 @@ export interface ITopicGroupData {
 
 export interface ITopicCreationStepProps {
   topicCreationEnabled: boolean;
-  topicCreationValues: Map<string, any>;
+  topicCreationValues: Map<string, string>;
   updateTopicCreationValues: (data: any) => void;
   setIsTopicCreationDirty: (data: boolean) => void;
   isTopicCreationDirty: boolean;
@@ -152,7 +152,10 @@ export const TopicCreationStep: React.FunctionComponent<
               )
             : topicCreateValues.set(TOPIC_CREATION_GROUPS, val.name);
           for (const [key, value] of Object.entries(val.config)) {
-            topicCreateValues.set(`topic_creation_${val.name}_${key}`, value);
+            topicCreateValues.set(
+              `topic_creation_${val.name}_${key.replace(/[&]/g, '_')}`,
+              value
+            );
           }
         }
       });
@@ -161,7 +164,10 @@ export const TopicCreationStep: React.FunctionComponent<
     }
     if (Object.keys(topicDefaults).length > 0) {
       for (const [key, value] of Object.entries(topicDefaults)) {
-        topicCreateValues.set(`topic_creation_${key}`, value);
+        topicCreateValues.set(
+          `topic_creation_${key.replace(/[&]/g, '_')}`,
+          value
+        );
       }
     }
     props.updateTopicCreationValues(topicCreateValues);

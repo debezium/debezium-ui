@@ -183,5 +183,7 @@
   "addTopicGroupTooltip": "Add another topic group",
   "removeTopicGroupTooltip": "Remove this topic group",
   "validationSucessMsg": "The validation was successful",
-  "optionalMsg": "This step is optional"
+  "optionalMsg": "This step is optional",
+  "editConnector": "Edit connector",
+  "editAconnector": "Edit a connector"
 }

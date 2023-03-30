@@ -42,9 +42,10 @@ import {
 } from '@patternfly/react-table';
 import { PageLoader, ToastAlertComponent, ConnectorIcon } from 'components';
 import { AppLayoutContext } from 'layout';
-import React, { SyntheticEvent } from 'react';
+import React, { SyntheticEvent, useCallback } from 'react';
 import isEqual from 'react-fast-compare';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import {
   ApiError,
   ConfirmationButtonStyle,
@@ -77,9 +78,11 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     RESUME = 'RESUME',
     RESTART = 'RESTART',
     VIEW = 'VIEW',
+    EDIT = 'EDIT',
     RESTART_TASK = 'RESTART_TASK',
     NONE = 'NONE',
   }
+  const history = useHistory();
   const [connectors, setConnectors] = React.useState<Connector[]>(
     [] as Connector[]
   );
@@ -129,6 +132,14 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     setCurrentAction(Action.NONE);
     setCurrentActionConnector('');
   };
+
+  const goToEditConnector = useCallback(
+    (connName: string, connector?: any) =>
+      history.push({
+        pathname: `/${connName}`,
+      }),
+    [history]
+  );
 
   const setCurrentActionAndName = (
     action: Action,
@@ -563,6 +574,19 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         title: t('view'),
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.VIEW, rowData.connName, rowData);
+        },
+        isDisabled:
+          row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
+            ? true
+            : false,
+      },
+      {
+        isSeparator: true,
+      },
+      {
+        title: t('Edit'),
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
+          goToEditConnector(rowData.connName, rowData);
         },
         isDisabled:
           row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'

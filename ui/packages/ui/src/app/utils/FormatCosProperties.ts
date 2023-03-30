@@ -122,7 +122,9 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
  * @param connectorData
  * @returns ConnectorProperty[]
  */
- export const getPropertiesDataDownstream = (connectorData: any): ConnectorProperty[] => {
+export const getPropertiesDataDownstream = (
+  connectorData: any
+): ConnectorProperty[] => {
   const connProperties: ConnectorProperty[] = [];
   const schema = connectorData.components.schemas;
   const schemaDefinition = schema[Object.keys(schema)[0]];
@@ -146,3 +148,34 @@ export const getPropertiesData = (connectorData: any): ConnectorProperty[] => {
   );
 };
 
+/**
+ * Format the Connector properties passed via connector prop
+ * @param connectorData
+ * @returns ConnectorProperty[]
+ */
+export const getPropertiesDatawithDefaultConfig = (
+  connectorData: any,
+  config?: any
+): ConnectorProperty[] => {
+  const connProperties: ConnectorProperty[] = [];
+  const schema = connectorData.components.schemas;
+  const schemaDefinition = schema[Object.keys(schema)[0]];
+  console.log(schema);
+  const schemaProperties = schemaDefinition.properties;
+
+  for (const propKey of Object.keys(schemaProperties)) {
+    const prop = schemaProperties[propKey];
+    if (prop['type'] === 'object') {
+      for (const propertiesKey of Object.keys(prop.properties)) {
+        const property = prop.properties[propertiesKey];
+
+        connProperties.push(setProperties(property));
+      }
+    } else {
+      connProperties.push(setProperties(prop));
+    }
+  }
+  return formatPropertyDefinitions(
+    getFormattedProperties(connProperties, ConnectorTypeId.POSTGRES)
+  );
+};

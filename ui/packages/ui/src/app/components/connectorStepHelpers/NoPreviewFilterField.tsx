@@ -4,12 +4,15 @@ import React from 'react';
 export interface INoPreviewFilterFieldProps {
   i18nShowFilter: string;
   i18nHideFilter: string;
+  expanded?: boolean;
 }
 
 export const NoPreviewFilterField: React.FunctionComponent<
   INoPreviewFilterFieldProps
 > = (props) => {
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(
+    props.expanded || false
+  );
   const onToggle = (isExpandedVal: boolean) => {
     setIsExpanded(isExpandedVal);
   };

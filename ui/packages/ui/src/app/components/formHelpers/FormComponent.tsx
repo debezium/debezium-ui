@@ -33,6 +33,7 @@ export interface IFormComponentProps {
     value: any,
     shouldValidate?: boolean | undefined
   ) => void;
+  isDisabled?: boolean;
 }
 
 const getInvalidFilterMsg = (
@@ -225,6 +226,8 @@ export const FormComponent: React.FunctionComponent<IFormComponentProps> = (
           infoText={props.propertyDefinition.description}
           validated={getValidate()}
           clearValidationError={props.clearValidationError || clearValidation}
+          propertyChange={props.propertyChange}
+          isDisabled={props.isDisabled}
         />
       );
     }

@@ -35,6 +35,8 @@ export interface IFilterConfigStepProps {
   updateFilterValues: (data: Map<string, string>) => void;
   setIsValidFilter: (val: SetStateAction<boolean>) => void;
   selectedConnectorType: string;
+  connectorConfig?: Map<string, string>;
+  isEditMode?: boolean;
 }
 
 const formatResponseData = (data: DataCollection[]) => {
@@ -71,7 +73,7 @@ export const FilterConfigStep: React.FunctionComponent<
   );
 
   const [showContradictingFilterAlert, setShowContradictingFilterAlert] =
-  React.useState<boolean>(false);
+    React.useState<boolean>(false);
 
   const [treeData, setTreeData] = React.useState<any[]>([]);
   const [invalidMsg, setInvalidMsg] = React.useState<Map<string, string>>(
@@ -156,7 +158,28 @@ export const FilterConfigStep: React.FunctionComponent<
     }
     props.setIsValidFilter(true);
     setFormData(new Map());
-    getFilterSchema(true, new Map());
+    if (props.isEditMode) {
+      const propertyToInclude = [
+        'connector.id',
+        'database.hostname',
+        'database.user',
+        'database.password',
+        'database.dbname',
+      ];
+      const connectorConfigCopy = new Map();
+      propertyToInclude.map((property) => {
+        if (props.connectorConfig?.has(property)) {
+          connectorConfigCopy.set(
+            property,
+            props.connectorConfig.get(property)
+          );
+        }
+      });
+
+      getFilterSchema(true, new Map(connectorConfigCopy));
+    } else {
+      getFilterSchema(true, new Map());
+    }
     setShowClearDialog(false);
   };
 
@@ -189,11 +212,7 @@ export const FilterConfigStep: React.FunctionComponent<
         })}
       </Text>
       {showContradictingFilterAlert && (
-        <Alert
-          variant="info"
-          isInline
-          title={t('contradictingFilterMsg')}
-        />
+        <Alert variant="info" isInline title={t('contradictingFilterMsg')} />
       )}
       <Form className="child-selection-step_form">
         {filterConfigurationPageContentObj.fieldArray.map((fieldFilter: any) =>
@@ -215,6 +234,12 @@ export const FilterConfigStep: React.FunctionComponent<
             />
           ) : (
             <NoPreviewFilterField
+              expanded={
+                props.isEditMode &&
+                props.connectorConfig?.get('column.include.list')
+                  ? true
+                  : false
+              }
               key={fieldFilter.field}
               i18nShowFilter={t('showFilter', { field: fieldFilter.field })}
               i18nHideFilter={t('hideFilter', { field: fieldFilter.field })}
