@@ -58,6 +58,7 @@ import {
   PropertyName,
   ConfirmationDialog,
   ConfirmationButtonStyle,
+  customPropertiesRegex,
 } from 'shared';
 import { getPropertiesDatawithDefaultConfig } from 'src/app/utils/FormatCosProperties';
 
@@ -591,6 +592,19 @@ export const EditConnectorComponent: React.FunctionComponent<
     setRuntimeOptionsPropValues(new Map(Object.entries(connectorConfig)));
     setTopicCreationPropValues(new Map(Object.entries(connectorConfig)));
     setTopicCreationEnabled(true);
+
+    const connectorConfigCopy = new Map(Object.entries(connectorConfig));
+    connectorConfigCopy.forEach((_, configKey) => {
+      const propsMatched = customPropertiesRegex(configKey);
+      if (propsMatched !== undefined && propsMatched !== null) {
+        connectorConfigCopy.delete(configKey);
+      }
+      Object.values(PropertyName).map((key) => {
+        connectorConfigCopy.delete(key);
+      });
+    });
+
+    setCustomPropertiesValues(mapToObject(connectorConfigCopy));
   }, [connectorConfig]);
 
   const disableNextButton = (activeStepId: any): boolean => {
@@ -928,6 +942,7 @@ export const EditConnectorComponent: React.FunctionComponent<
                   showIcon={false}
                 />
                 <CustomPropertiesStep
+                  connectorConfig={new Map(Object.entries(connectorConfig))}
                   basicProperties={new Map(basicPropValues)}
                   customProperties={customPropertiesValues}
                   updateCustomPropertiesValues={handleCustomPropertiesUpdate}
@@ -936,6 +951,7 @@ export const EditConnectorComponent: React.FunctionComponent<
                   selectedConnectorType={connectorConfig['connector.id']}
                   clusterId={clusterID.toString()}
                   propertyValues={getFinalProperties(CUSTOM_PROPERTIES_STEP_ID)}
+                  isEditMode={true}
                 />
               </PageSection>
             )}
