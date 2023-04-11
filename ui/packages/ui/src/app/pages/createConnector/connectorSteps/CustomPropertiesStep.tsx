@@ -48,7 +48,7 @@ export interface ICustomProperties {
 
 export interface ICustomPropertiesStepProps {
   basicProperties: Map<string, string>;
-  connectorConfig: Map<string, string>;
+  connectorConfig?: Map<string, string>;
   customProperties: { [key: string]: string };
   updateCustomPropertiesValues: (data: any) => void;
   setIsCustomPropertiesDirty: (data: boolean) => void;
@@ -154,7 +154,7 @@ export const CustomPropertiesStep: React.FunctionComponent<
       props.selectedConnectorType,
       {
         ...mapToObject(new Map(props.basicProperties)),
-        ...mapToObject(new Map(props.connectorConfig)),
+        ...mapToObject(new Map(props.connectorConfig!)),
         ...customPropertiesValue,
       },
     ])
