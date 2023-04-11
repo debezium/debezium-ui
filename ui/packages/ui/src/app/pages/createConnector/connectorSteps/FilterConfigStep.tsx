@@ -235,8 +235,9 @@ export const FilterConfigStep: React.FunctionComponent<
           ) : (
             <NoPreviewFilterField
               expanded={
-                props.isEditMode &&
-                props.connectorConfig?.get('column.include.list')
+                (props.isEditMode &&
+                  props.connectorConfig?.get('column.include.list')) ||
+                props.connectorConfig?.get('column.exclude.list')
                   ? true
                   : false
               }

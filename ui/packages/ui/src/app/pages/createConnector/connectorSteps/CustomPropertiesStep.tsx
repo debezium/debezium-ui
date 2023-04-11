@@ -34,7 +34,12 @@ import {
 import _ from 'lodash';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetch_retry, mapToObject } from 'shared';
+import {
+  fetch_retry,
+  mapToObject,
+  PropertyName,
+  customPropertiesRegex,
+} from 'shared';
 
 export interface ICustomProperties {
   key: string;
@@ -43,6 +48,7 @@ export interface ICustomProperties {
 
 export interface ICustomPropertiesStepProps {
   basicProperties: Map<string, string>;
+  connectorConfig: Map<string, string>;
   customProperties: { [key: string]: string };
   updateCustomPropertiesValues: (data: any) => void;
   setIsCustomPropertiesDirty: (data: boolean) => void;
@@ -50,6 +56,7 @@ export interface ICustomPropertiesStepProps {
   selectedConnectorType: string;
   clusterId: string;
   propertyValues: Map<string, string>;
+  isEditMode?: boolean;
 }
 
 const TransformAlert: FC = () => {
@@ -61,7 +68,6 @@ export const CustomPropertiesStep: React.FunctionComponent<
   ICustomPropertiesStepProps
 > = (props) => {
   const { t } = useTranslation();
-
   const [properties, setProperties] = React.useState<
     Map<string, ICustomProperties>
   >(new Map<string, ICustomProperties>());
@@ -70,7 +76,6 @@ export const CustomPropertiesStep: React.FunctionComponent<
   const [validationResult, setValidationResult] = React.useState<boolean>(true);
 
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
-
   const addProperty = () => {
     const propertiesCopy = new Map(properties);
     propertiesCopy.set('' + Math.floor(Math.random() * 100000), {
@@ -137,7 +142,7 @@ export const CustomPropertiesStep: React.FunctionComponent<
    */
   const validateCustomProperties = () => {
     setValidationInProgress(true);
-    const customPropertiesValue = {};
+    const customPropertiesValue: any = {};
     properties.forEach((val) => {
       if (val.key && val.value) {
         customPropertiesValue[val.key] = val.value;
@@ -149,6 +154,7 @@ export const CustomPropertiesStep: React.FunctionComponent<
       props.selectedConnectorType,
       {
         ...mapToObject(new Map(props.basicProperties)),
+        ...mapToObject(new Map(props.connectorConfig)),
         ...customPropertiesValue,
       },
     ])
@@ -178,6 +184,24 @@ export const CustomPropertiesStep: React.FunctionComponent<
     value: string,
     event: React.FormEvent<HTMLInputElement>
   ) => {
+    if (event.currentTarget.id.includes('key')) {
+      const matchedKey: any = [];
+      const propsMatched = customPropertiesRegex(value);
+
+      Object.values(PropertyName).map((key) => {
+        if (value === key) matchedKey.push(key);
+      });
+
+      if (
+        matchedKey.length > 0 ||
+        (propsMatched !== undefined && propsMatched !== null)
+      ) {
+        setValidationResult(false);
+      } else {
+        setValidationResult(true);
+      }
+    }
+
     event.currentTarget.id.includes('key')
       ? updateProperties(event.currentTarget.id.split('_')[1], 'key', value)
       : updateProperties(event.currentTarget.id.split('_')[1], 'value', value);
@@ -226,6 +250,11 @@ export const CustomPropertiesStep: React.FunctionComponent<
                           id={'key_' + key}
                           onChange={handlePropertyChange}
                           aria-label="text input example"
+                          // isDisabled={
+                          //   props.isEditMode && properties.get(key)!.value
+                          //     ? true
+                          //     : false
+                          // }
                         />
                       </GridItem>
                       <GridItem span={1}>

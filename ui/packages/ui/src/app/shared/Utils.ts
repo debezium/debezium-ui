@@ -14,7 +14,7 @@ export enum ConnectorTypeId {
   MYSQL = 'mysql',
   SQLSERVER = 'sqlserver',
   MONGO = 'mongodb',
-  ORACLE = 'oracle'
+  ORACLE = 'oracle',
 }
 
 export enum DatabaseFilter {
@@ -170,6 +170,12 @@ export enum PropertyName {
   TIME_PRECISION_MODE = 'time.precision.mode',
   TOASTED_VALUE_PLACEHOLDER = 'toasted.value.placeholder',
   TOMBSTONES_ON_DELETE = 'tombstones.on.delete',
+  TRANSFORMS = 'transforms',
+  TRANSFORMS_NAME_TOPIC_REGEX = 'transforms.(.+).topic.regex',
+  TRANSFORMS_NAME_LANGUAGE = 'transforms.(.+).language',
+  TRANSFORMS_NAME_CONDITION = 'transforms.(.+).condition',
+  TRANSFORMS_NAME_TYPE = 'transforms.(.+).type',
+  TRANSFORMS_NAME_NULL_HANDLING_MODE = 'transforms.(.+).null.handling.mode',
   TOPIC_CREATION_PREFIX = 'topic.creation.',
   TOPIC_CREATION_GROUP_PREFIX = 'topic.creation.(.+).',
   TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR = 'topic.creation.default.replication.factor',
@@ -386,10 +392,7 @@ export function combineAndMinimizePropertyValues(
       yield* propValues2;
     })()
   );
-  const minimizedValues = minimizePropertyValues(
-    valueMap,
-    propertyDefns
-  );
+  const minimizedValues = minimizePropertyValues(valueMap, propertyDefns);
   return minimizedValues;
 }
 
@@ -790,7 +793,7 @@ export function getFormattedProperties(
   } else if (connectorTypeId === ConnectorTypeId.ORACLE) {
     for (const propDefn of formattedPropertyDefns) {
       propDefn.gridWidthSm = 12;
-      const propName = propDefn.name.replace(/_/g, ".");  // Ensure dotted version of name
+      const propName = propDefn.name.replace(/_/g, '.'); // Ensure dotted version of name
       switch (propName) {
         case PropertyName.DECIMAL_HANDLING_MODE:
         case PropertyName.TIME_PRECISION_MODE:
@@ -809,7 +812,7 @@ export function getFormattedProperties(
         case PropertyName.LOG_MINING_BATCH_SIZE_MIN:
         case PropertyName.LOG_MINING_BATCH_SIZE_MAX:
           propDefn.gridWidthLg = 4;
-          propDefn.type = "POS-INT";
+          propDefn.type = 'POS-INT';
           break;
         case PropertyName.SNAPSHOT_DELAY_MS:
         case PropertyName.SNAPSHOT_LOCK_TIMEOUT_MS:
@@ -822,13 +825,16 @@ export function getFormattedProperties(
         case PropertyName.LOG_MINING_SLEEP_TIME_MAX_MS:
         case PropertyName.LOG_MINING_SLEEP_TIME_INCREMENT_MS:
           propDefn.gridWidthLg = 4;
-          propDefn.type = "DURATION";
-          propDefn.displayName = propDefn.displayName.replace("(ms)", "").replace("(milli-seconds)","").replace("(milliseconds)","");
+          propDefn.type = 'DURATION';
+          propDefn.displayName = propDefn.displayName
+            .replace('(ms)', '')
+            .replace('(milli-seconds)', '')
+            .replace('(milliseconds)', '');
           break;
         case PropertyName.DATABASE_PORT:
         case PropertyName.SNAPSHOT_FETCH_SIZE:
           propDefn.gridWidthLg = 4;
-          propDefn.type =  "NON-NEG-INT";
+          propDefn.type = 'NON-NEG-INT';
           break;
         case PropertyName.DATABASE_DBNAME:
           propDefn.gridWidthLg = 6;
@@ -843,16 +849,16 @@ export function getFormattedProperties(
         case PropertyName.LOB_ENABLED:
         case PropertyName.LOG_MINING_ARCHIVE_LOG_ONLY_MODE:
           propDefn.gridWidthLg = 12;
-          propDefn.type = "BOOLEAN-SWITCH";
+          propDefn.type = 'BOOLEAN-SWITCH';
           break;
         case PropertyName.COLUMN_TRUNCATE:
         case PropertyName.COLUMN_MASK:
           propDefn.gridWidthLg = 12;
-          propDefn.type =  "COL_MASK_OR_TRUNCATE";
+          propDefn.type = 'COL_MASK_OR_TRUNCATE';
           break;
         case PropertyName.COLUMN_MASK_HASH_SALT:
           propDefn.gridWidthLg = 12;
-          propDefn.type =  "COL_MASK_HASH_SALT";
+          propDefn.type = 'COL_MASK_HASH_SALT';
           break;
         default:
           propDefn.gridWidthLg = 12;
@@ -1171,4 +1177,12 @@ export function checkForContradictingFilters(filters, connectorType): boolean {
     }
   }
   return false;
+}
+
+export function customPropertiesRegex(value: string) {
+  return value
+    .replace(/\./g, ' ')
+    .match(
+      /(^connector\s.*)|(^name$)|(^topic\s.*)|(^transforms\s.*)|(^column\s.*)|(^.*\screation\s.*$)|(^.*\sclass\s.*$)|(^.*\sid\s.*$)|(^.*\sdisplayName\s.*$)|(^.*\smask\s.*$)|(^.*\sexclude$)|(^.*\siclude$)|(^.*\schars$)|(^.*\slanguage$)|(^.*\stype$)|(^.*\sregex$)|(^.*\smode$)|(^.*\smode$)/i
+    )?.input;
 }
