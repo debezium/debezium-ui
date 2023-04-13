@@ -26,6 +26,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupCheckStrategy;
 import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -64,12 +65,19 @@ public class Infrastructure {
                     .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
                     .withNetworkAliases("mysql");
 
-    private static final MongoDbContainer MONGODB_CONTAINER = MongoDbContainer.node()
-            .name("mongodb")
-            .replicaSet("rs0")
-            .imageName(DockerImageName.parse("mongo:5.0"))
-            .network(NETWORK)
-            .build();
+    private static final MongoDbContainer MONGODB_CONTAINER;
+    static {
+        MONGODB_CONTAINER = MongoDbContainer.node()
+                .name("localhost")
+                .replicaSet("rs0")
+                .imageName(DockerImageName.parse("mongo:5.0"))
+                .network(NETWORK)
+                .build();
+        MONGODB_CONTAINER
+                .withNetworkAliases("mongodb")
+                .withCopyFileToContainer(MountableFile.forClasspathResource("initialize-mongo-single.js"), "/docker-entrypoint-initdb.d/")
+                .initReplicaSet(false, MONGODB_CONTAINER.getNamedAddress());
+    }
 
     private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
             new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-latest"))
