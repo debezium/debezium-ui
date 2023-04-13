@@ -6,12 +6,13 @@
 package io.debezium.configserver.util;
 
 import io.debezium.connector.mongodb.MongoDbConnectorConfig;
+
 import io.debezium.testing.testcontainers.Connector;
 import io.debezium.testing.testcontainers.ConnectorConfiguration;
 import io.debezium.testing.testcontainers.ConnectorResolver;
 import io.debezium.testing.testcontainers.DebeziumContainer;
-import io.debezium.testing.testcontainers.MongoDbContainer;
-
+import io.debezium.testing.testcontainers.MongoDbReplicaSet;
+import io.debezium.testing.testcontainers.util.MoreStartables;
 import org.awaitility.Awaitility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,8 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupCheckStrategy;
-import org.testcontainers.lifecycle.Startables;
+import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -66,13 +66,13 @@ public class Infrastructure {
                     .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
                     .withNetworkAliases("mysql");
 
-    private static final MongoDbContainer MONGODB_CONTAINER;
+    private static final MongoDbReplicaSet MONGODB_REPLICA;
     static {
-        MONGODB_CONTAINER = MongoDbContainer.node()
-                .name("localhost")
-                .replicaSet("rs0")
-                .imageName(DockerImageName.parse("mongo:5.0"))
+        MONGODB_REPLICA = MongoDbReplicaSet.replicaSet()
+                .name("rs0")
+                .memberCount(1)
                 .network(NETWORK)
+                .imageName(DockerImageName.parse("mongo:5.0"))
                 .build();
     }
 
@@ -103,30 +103,30 @@ public class Infrastructure {
         return NETWORK;
     }
 
-    private static Supplier<Stream<GenericContainer<?>>> getContainers(DATABASE database) {
-        final GenericContainer<?> dbContainer;
+    private static Supplier<Stream<Startable>> getContainers(DATABASE database) {
+        final Startable dbStartable;
         switch (database) {
             case POSTGRES:
-                dbContainer = POSTGRES_CONTAINER;
+                dbStartable = POSTGRES_CONTAINER;
                 break;
             case MYSQL:
-                dbContainer = MYSQL_CONTAINER;
+                dbStartable = MYSQL_CONTAINER;
                 break;
             case MONGODB:
-                dbContainer = MONGODB_CONTAINER;
+                dbStartable = MONGODB_REPLICA;
                 break;
             case SQLSERVER:
-                dbContainer = SQL_SERVER_CONTAINER;
+                dbStartable = SQL_SERVER_CONTAINER;
                 break;
             case NONE:
             default:
-                dbContainer = null;
+                dbStartable = null;
                 break;
         }
 
-        final Supplier<Stream<GenericContainer<?>>> containers;
-        if (null != dbContainer) {
-            containers = () -> Stream.of(KAFKA_CONTAINER, dbContainer, DEBEZIUM_CONTAINER);
+        final Supplier<Stream<Startable>> containers;
+        if (null != dbStartable) {
+            containers = () -> Stream.of(KAFKA_CONTAINER, dbStartable, DEBEZIUM_CONTAINER);
         }
         else {
             containers = () -> Stream.of(KAFKA_CONTAINER, DEBEZIUM_CONTAINER);
@@ -135,23 +135,27 @@ public class Infrastructure {
     }
 
     public static void stopContainers(DATABASE database) {
-        getContainers(database).get().forEach(GenericContainer::stop);
+        MoreStartables.deepStopSync(getContainers(database).get());
     }
 
     public static void startContainers(DATABASE database) {
-        final Supplier<Stream<GenericContainer<?>>> containers = getContainers(database);
+        final Supplier<Stream<Startable>> containers = getContainers(database);
 
         if ("true".equals(System.getenv("CI"))) {
-            containers.get().forEach(container -> container.withStartupTimeout(Duration.ofSeconds(90)));
+            containers.get().forEach(container -> {
+                if (container instanceof GenericContainer<?>) {
+                    ((GenericContainer<?>) container).withStartupTimeout(Duration.ofSeconds(90));
+                }
+                if (container instanceof MongoDbReplicaSet) {
+                    // This could be added to MongoDbReplicaSet
+                    ((MongoDbReplicaSet) container).getMembers().forEach(member -> {
+                        member.withStartupTimeout(Duration.ofSeconds(90));
+                    });
+                }
+            });
         }
-        Startables.deepStart(containers.get()).join();
 
-        if (DATABASE.MONGODB.equals(database)) {
-            MONGODB_CONTAINER
-                    .withNetworkAliases("mongodb")
-                    .withCopyFileToContainer(MountableFile.forClasspathResource("initialize-mongo-single.js"), "/docker-entrypoint-initdb.d/")
-                    .initReplicaSet(false, MONGODB_CONTAINER.getNamedAddress());
-        }
+        MoreStartables.deepStartSync(containers.get());
     }
 
     public static KafkaContainer getKafkaContainer() {
@@ -170,8 +174,8 @@ public class Infrastructure {
         return MYSQL_CONTAINER;
     }
 
-    public static MongoDbContainer getMongoDbContainer() {
-        return MONGODB_CONTAINER;
+    public static MongoDbReplicaSet getMongoDbContainer() {
+        return MONGODB_REPLICA;
     }
 
     public static MSSQLServerContainer<?> getSqlServerContainer() {
@@ -211,9 +215,8 @@ public class Infrastructure {
     }
 
     public static ConnectorConfiguration getMongoDbConnectorConfiguration(int id, String... options) {
-        final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbContainer(MONGODB_CONTAINER)
+        final ConnectorConfiguration config = ConnectorConfiguration.forMongoDbReplicaSet(MONGODB_REPLICA)
                 .with("snapshot.mode", "never") // temporarily disable snapshot mode globally until we can check if connectors inside testcontainers are in SNAPSHOT or STREAMING mode (wait for snapshot finished!)
-                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(), "mongodb://" +  MONGODB_CONTAINER.getNamedAddress())
                 .with(MongoDbConnectorConfig.USER.name(), "debezium")
                 .with(MongoDbConnectorConfig.PASSWORD.name(), "dbz")
                 .with(MongoDbConnectorConfig.TOPIC_PREFIX.name(), "mongo" + id);

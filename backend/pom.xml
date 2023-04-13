@@ -387,6 +387,7 @@
             <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
+          <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
         </configuration>
         <executions>
           <execution>
@@ -424,6 +425,7 @@
                 <maven.home>${maven.home}</maven.home>
               </systemPropertyVariables>
               <excludes>Native**IT.java</excludes>
+              <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
             </configuration>
           </execution>
         </executions>
@@ -460,6 +462,7 @@
                     <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
                     <maven.home>${maven.home}</maven.home>
                   </systemPropertyVariables>
+                  <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
                 </configuration>
               </execution>
             </executions>
