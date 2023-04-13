@@ -41,6 +41,7 @@ public class Infrastructure {
     public enum DATABASE {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
+
     private static final String DEBEZIUM_CONTAINER_VERSION = "2.2";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
