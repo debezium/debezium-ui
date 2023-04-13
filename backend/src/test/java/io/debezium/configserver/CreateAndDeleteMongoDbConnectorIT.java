@@ -9,7 +9,7 @@ import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.MongoDbInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
-import io.debezium.testing.testcontainers.MongoDbContainer;
+import io.debezium.testing.testcontainers.MongoDbReplicaSet;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
@@ -54,7 +54,8 @@ public class CreateAndDeleteMongoDbConnectorIT {
                 Infrastructure.getMongoDbConnectorConfiguration(1)
             );
 
-        MongoDbContainer mongoDbContainer = Infrastructure.getMongoDbContainer();
+        MongoDbReplicaSet mongoDbReplicaSet = Infrastructure.getMongoDbContainer();
+        
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(connector.toJson())
                 .post(ConnectorURIs.API_PREFIX + ConnectorURIs.CREATE_CONNECTOR_ENDPOINT, 1, "mongodb")
             .then().log().all()
@@ -63,7 +64,7 @@ public class CreateAndDeleteMongoDbConnectorIT {
             .and().rootPath("config")
                 .body("['connector.class']", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
                 .and().body("['mongodb.connection.string']",
-                        equalTo("mongodb://"+ mongoDbContainer.getNamedAddress()));
+                        equalTo(mongoDbReplicaSet.getConnectionString()));
     }
 
     @Test
