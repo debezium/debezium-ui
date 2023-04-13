@@ -48,6 +48,19 @@
 
   <dependencyManagement>
     <dependencies>
+      <!--
+        The `quarkus-bom` imports the `testcontainers-bom` and version of Quarkus being used in the backend imports uses
+        testcontainers version 1.15.2. For running the backend tests without using testcontainers version 1.17.6, we have
+        container startup issues, so we must explicitly upgrade the version of testcontainers-bom to 1.17.6 version instead
+        of specifying the dependency in the root pom.xml.
+      -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -138,11 +151,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
