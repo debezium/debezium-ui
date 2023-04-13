@@ -73,10 +73,6 @@ public class Infrastructure {
                 .imageName(DockerImageName.parse("mongo:5.0"))
                 .network(NETWORK)
                 .build();
-        MONGODB_CONTAINER
-                .withNetworkAliases("mongodb")
-                .withCopyFileToContainer(MountableFile.forClasspathResource("initialize-mongo-single.js"), "/docker-entrypoint-initdb.d/")
-                .initReplicaSet(false, MONGODB_CONTAINER.getNamedAddress());
     }
 
     private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
@@ -148,6 +144,13 @@ public class Infrastructure {
             containers.get().forEach(container -> container.withStartupTimeout(Duration.ofSeconds(90)));
         }
         Startables.deepStart(containers.get()).join();
+
+        if (DATABASE.MONGODB.equals(database)) {
+            MONGODB_CONTAINER
+                    .withNetworkAliases("mongodb")
+                    .withCopyFileToContainer(MountableFile.forClasspathResource("initialize-mongo-single.js"), "/docker-entrypoint-initdb.d/")
+                    .initReplicaSet(false, MONGODB_CONTAINER.getNamedAddress());
+        }
     }
 
     public static KafkaContainer getKafkaContainer() {
