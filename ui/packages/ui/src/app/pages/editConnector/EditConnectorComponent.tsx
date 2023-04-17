@@ -4,10 +4,10 @@ import {
   RuntimeOptionsStep,
   TransformsStep,
   FilterConfigStep,
-  TopicCreationStep,
   CustomPropertiesStep,
 } from '../createConnector/connectorSteps';
 import { EditPropertiesStep } from './EditPropertiesStep';
+import { EditTopicCreationStep } from './EditTopicCreationStep';
 import {
   ConnectionValidationResult,
   ConnectorProperty,
@@ -590,7 +590,8 @@ export const EditConnectorComponent: React.FunctionComponent<
     setTransformsValues(new Map(Object.entries(connectorConfig)));
     setDataOptionsPropValues(new Map(Object.entries(connectorConfig)));
     setRuntimeOptionsPropValues(new Map(Object.entries(connectorConfig)));
-    setTopicCreationPropValues(new Map(Object.entries(connectorConfig)));
+    // setTopicCreationPropValues(new Map(Object.entries(connectorConfig)));
+    setTopicCreationPropValues(new Map<string, any>());
     setTopicCreationEnabled(true);
 
     const connectorConfigCopy = new Map(Object.entries(connectorConfig));
@@ -816,8 +817,9 @@ export const EditConnectorComponent: React.FunctionComponent<
                   connectorType={connectorConfig['connector.id']}
                   showIcon={false}
                 />
-                <TopicCreationStep
+                <EditTopicCreationStep
                   topicCreationEnabled={topicCreationEnabled}
+                  connectorConfig={new Map(Object.entries(connectorConfig))}
                   topicCreationValues={topicCreationPropValues}
                   updateTopicCreationValues={handleTopicCreationUpdate}
                   setIsTopicCreationDirty={setIsTopicCreationDirty}

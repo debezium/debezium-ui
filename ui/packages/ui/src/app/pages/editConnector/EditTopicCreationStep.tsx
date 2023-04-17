@@ -1,6 +1,6 @@
 import { IValidationRef } from '..';
-import topicCreationResponse from '../../../../../assets/mockResponse/topicCreation.json';
-import './TopicCreationStep.css';
+import topicCreationResponse from '../../../../assets/mockResponse/topicCreation.json';
+import '../createConnector/connectorSteps/TopicCreationStep.css';
 import {
   Alert,
   Button,
@@ -24,9 +24,10 @@ export interface ITopicGroupData {
   config?: any;
 }
 
-export interface ITopicCreationStepProps {
+export interface IEditTopicCreationStepProps {
   topicCreationEnabled: boolean;
-  topicCreationValues: Map<string, any>;
+  topicCreationValues: Map<string, string>;
+  connectorConfig: Map<string, string>;
   updateTopicCreationValues: (data: any) => void;
   setIsTopicCreationDirty: (data: boolean) => void;
   isTopicCreationDirty: boolean;
@@ -49,8 +50,8 @@ const TopicCreationDisabledAlert: FC = () => {
   );
 };
 
-export const TopicCreationStep: React.FunctionComponent<
-  ITopicCreationStepProps
+export const EditTopicCreationStep: React.FunctionComponent<
+  IEditTopicCreationStepProps
 > = (props) => {
   const { t } = useTranslation();
   const [topicGroups, setTopicGroups] = React.useState<
@@ -152,7 +153,10 @@ export const TopicCreationStep: React.FunctionComponent<
               )
             : topicCreateValues.set(TOPIC_CREATION_GROUPS, val.name);
           for (const [key, value] of Object.entries(val.config)) {
-            topicCreateValues.set(`topic_creation_${val.name}_${key}`, value);
+            topicCreateValues.set(
+              `topic_creation_${val.name}_${key.replace(/[&]/g, '_')}`,
+              value
+            );
           }
         }
       });
@@ -161,17 +165,24 @@ export const TopicCreationStep: React.FunctionComponent<
     }
     if (Object.keys(topicDefaults).length > 0) {
       for (const [key, value] of Object.entries(topicDefaults)) {
-        topicCreateValues.set(`topic_creation_${key}`, value);
+        topicCreateValues.set(
+          `topic_creation_${key.replace(/[&]/g, '_')}`,
+          value
+        );
       }
     }
     props.updateTopicCreationValues(topicCreateValues);
   }, [topicGroups, topicDefaults]);
 
   React.useEffect(() => {
-    if (props.topicCreationValues.size > 0) {
+    if (props.connectorConfig.size > 0) {
+      const topicCreationValuesCopy = new Map();
+      props.connectorConfig.forEach((value, key) => {
+        topicCreationValuesCopy.set(key.replace(/[.]/g, '_'), value);
+      });
       // Set the topic creation groups
       const topicGroupsVal = new Map();
-      const topicGroupList = props.topicCreationValues
+      const topicGroupList = topicCreationValuesCopy
         .get(TOPIC_CREATION_GROUPS)
         ?.split(',');
       if (topicGroupList) {
@@ -181,7 +192,7 @@ export const TopicCreationStep: React.FunctionComponent<
           };
           topicGroupData.name = tName;
           topicGroupData.config = {};
-          for (const [key, value] of props.topicCreationValues.entries()) {
+          for (const [key, value] of topicCreationValuesCopy.entries()) {
             if (key.includes(`_${tName}_`)) {
               const fieldName = key.split(`topic_creation_${tName}_`)[1];
               topicGroupData.config[fieldName] = value;
@@ -193,7 +204,7 @@ export const TopicCreationStep: React.FunctionComponent<
       }
       // Set the topic creation default properties
       const topicDefaultsVal = {};
-      for (const [key, value] of props.topicCreationValues.entries()) {
+      for (const [key, value] of topicCreationValuesCopy) {
         if (key.startsWith('topic_creation_default_')) {
           const fieldName = key.split('topic_creation_')[1];
           topicDefaultsVal[fieldName] = value;
@@ -203,7 +214,6 @@ export const TopicCreationStep: React.FunctionComponent<
     }
     props.setIsTopicCreationDirty(false);
   }, []);
-
   return (
     // tslint:disable: no-string-literal
     <div>
