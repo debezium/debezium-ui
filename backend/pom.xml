@@ -198,6 +198,11 @@
       <artifactId>mssqlserver</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jolokia</groupId>
+      <artifactId>jolokia-client-java</artifactId>
+      <version>${version.jolokia.client}</version>
+    </dependency>
   </dependencies>
 
   <build>

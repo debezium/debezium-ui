@@ -20,6 +20,10 @@ public abstract class AbstractInfrastructureTestResourceLifecycleManager impleme
                 KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URIS,
                 "http://" + Infrastructure.getDebeziumContainer().getHost() + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8083)
         );
+        config.put(
+                KafkaConnectClientFactory.PROPERTY_JOLOKIA_CLIENT_URI,
+                "http://" + Infrastructure.getDebeziumContainer().getHost() + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8778) + "/jolokia"
+        );
         return config;
     }
 
