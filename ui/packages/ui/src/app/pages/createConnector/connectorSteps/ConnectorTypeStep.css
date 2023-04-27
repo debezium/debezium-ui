@@ -4,6 +4,7 @@
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
+    --pf-l-flex--AlignItems: none !important;
     & > div {
       text-align: center;
       cursor: pointer;
