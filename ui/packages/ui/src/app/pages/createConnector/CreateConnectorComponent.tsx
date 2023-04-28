@@ -366,7 +366,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
   const goToNext = (currentId: any, onNext: () => void) => {
     setConnectorCreateFailed(false);
     const nextId = currentId + 1;
-    setFinishStepId(nextId);
+    setFinishStepId(currentId === 8? currentId: nextId);
     setStepIdReached(stepIdReached < nextId ? nextId : stepIdReached);
     onNext();
   };
