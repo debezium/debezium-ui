@@ -42,7 +42,7 @@ public class Infrastructure {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
 
-    private static final String DEBEZIUM_CONTAINER_VERSION = "2.2";
+    private static final String DEBEZIUM_CONTAINER_VERSION = "2.3";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
