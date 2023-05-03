@@ -5,15 +5,10 @@
  */
 package io.debezium.configserver;
 
-import io.debezium.configserver.model.ConnectorProperty;
 import io.debezium.configserver.rest.ConnectorURIs;
 import io.debezium.configserver.util.Infrastructure;
 import io.debezium.configserver.util.PostgresInfrastructureTestProfile;
 import io.debezium.testing.testcontainers.Connector;
-import io.debezium.configserver.service.ConnectorIntegratorBase;
-import io.debezium.connector.mongodb.MongoDbConnectorConfig;
-import io.debezium.connector.mysql.MySqlConnectorConfig;
-import io.debezium.connector.postgresql.PostgresConnectorConfig;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import org.junit.jupiter.api.Test;
@@ -39,52 +34,6 @@ public class ConnectorResourceIT {
                      equalTo("io.debezium.connector.mysql.MySqlConnector"),
                      equalTo("io.debezium.connector.mongodb.MongoDbConnector")
                 ));
-    }
-
-    @Test
-    public void testPostgresConnectorTypesEndpoint() {
-        given()
-            .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "postgres")
-            .then().log().all()
-            .statusCode(200)
-            .body("className", equalTo("io.debezium.connector.postgresql.PostgresConnector"))
-            .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.SnapshotMode.values())))
-            .body("properties.find { it.name == 'decimal.handling.mode' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(PostgresConnectorConfig.DecimalHandlingMode.values())))
-            .body("properties.contains(null)", is(false))
-            .body("enabled", is(true));
-    }
-
-    @Test
-    public void testMySqlConnectorTypesEndpoint() {
-        given()
-            .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "mysql")
-            .then().log().all()
-            .statusCode(200)
-            .body("className", equalTo("io.debezium.connector.mysql.MySqlConnector"))
-            .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(MySqlConnectorConfig.SnapshotMode.values())))
-            .body("properties.find { it.name == 'snapshot.locking.mode' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(MySqlConnectorConfig.SnapshotLockingMode.values())))
-            .body("properties.find { it.name == 'snapshot.new.tables' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(MySqlConnectorConfig.SnapshotNewTables.values())))
-            .body("properties.contains(null)", is(false))
-            .body("enabled", is(true));
-    }
-
-    @Test
-    public void testMongoDbConnectorTypesEndpoint() {
-        given()
-            .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR, "mongodb")
-            .then().log().all()
-            .statusCode(200)
-            .body("className", equalTo("io.debezium.connector.mongodb.MongoDbConnector"))
-            .body("properties.find { it.name == 'snapshot.mode' }.allowedValues",
-                    equalTo(ConnectorIntegratorBase.enumArrayToList(MongoDbConnectorConfig.SnapshotMode.values())))
-            .body("properties.find { it.name == 'field.renames' }.category", is(ConnectorProperty.Category.CONNECTOR_ADVANCED.name()))
-            .body("properties.contains(null)", is(false))
-            .body("enabled", is(true));
     }
 
     @Test

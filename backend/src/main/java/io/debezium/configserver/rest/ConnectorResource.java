@@ -43,7 +43,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 import io.debezium.DebeziumException;
 import io.debezium.configserver.model.ConnectionValidationResult;
-import io.debezium.configserver.model.ConnectorType;
 import io.debezium.configserver.model.ConnectorDefinition;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
@@ -96,40 +95,6 @@ public class ConnectorResource {
                 .stream()
                 .map(ConnectorIntegrator::getConnectorDefinition)
                 .collect(Collectors.toList());
-    }
-
-    @Path(ConnectorURIs.CONNECTOR_TYPES_ENDPOINT_FOR_CONNECTOR)
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @APIResponse(
-            responseCode = "200",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = ConnectorType.class)
-            ))
-    @APIResponse(
-            responseCode = "400",
-            description = "Invalid connector type provided",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = BadRequestResponse.class)
-            ))
-    public Response getConnectorTypes(@PathParam("id") String connectorTypeId) {
-        if (null == connectorTypeId || "".equals(connectorTypeId)) {
-            return Response.status(Status.BAD_REQUEST)
-                    .entity(new BadRequestResponse("You have to specify a connector type!"))
-                    .build();
-        }
-
-        ConnectorIntegrator integrator = integrators.get(connectorTypeId);
-
-        if (integrator == null) {
-            return Response.status(Status.BAD_REQUEST)
-                    .entity(new BadRequestResponse("Unknown connector type: " + connectorTypeId))
-                    .build();
-        }
-
-        return Response.ok(integrator.getConnectorType()).build();
     }
 
     private Map<String, String> convertPropertiesToStrings(Map<String, ?> properties) {
