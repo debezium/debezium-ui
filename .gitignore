@@ -5,6 +5,7 @@ activemq-data/
 *.iws
 node_modules/
 .metadata/
+.mvn/
 .recommenders/
 .classpath
 .project
