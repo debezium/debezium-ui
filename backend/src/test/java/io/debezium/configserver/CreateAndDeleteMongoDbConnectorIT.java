@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestProfile(MongoDbInfrastructureTestProfile.class)
 public class CreateAndDeleteMongoDbConnectorIT {
 
+    private static final String WAITTIME_PROPERTY = "debezium.test.records.waittime";
+
     @BeforeEach
     public void resetRunningConnectors() {
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
@@ -78,6 +80,10 @@ public class CreateAndDeleteMongoDbConnectorIT {
 
     @Test
     public void testMongoDbDeleteConnectorSuccessful() {
+        final int defaultWaittime = Integer.parseInt(System.getProperty(WAITTIME_PROPERTY, "2"));
+        if (defaultWaittime < 10) {
+            System.setProperty(WAITTIME_PROPERTY, "10");
+        }
         final var deleteMongoDbConnectorName = "delete-connector-mongodb";
         Infrastructure.getDebeziumContainer().deleteAllConnectors();
         Infrastructure.getDebeziumContainer().registerConnector(
@@ -92,6 +98,9 @@ public class CreateAndDeleteMongoDbConnectorIT {
                 .statusCode(204);
 
         assertTrue(Infrastructure.getDebeziumContainer().connectorIsNotRegistered(deleteMongoDbConnectorName));
+        if (defaultWaittime < 10) {
+            System.setProperty(WAITTIME_PROPERTY, String.valueOf(defaultWaittime));
+        }
     }
 
 }

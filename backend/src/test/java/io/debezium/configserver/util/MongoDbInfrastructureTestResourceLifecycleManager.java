@@ -32,4 +32,3 @@ public class MongoDbInfrastructureTestResourceLifecycleManager extends AbstractI
         super.stop();
     }
 }
-

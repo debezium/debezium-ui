@@ -66,15 +66,13 @@ public class Infrastructure {
                     .withEnv("MYSQL_ROOT_PASSWORD", "debezium")
                     .withNetworkAliases("mysql");
 
-    private static final MongoDbReplicaSet MONGODB_REPLICA;
-    static {
-        MONGODB_REPLICA = MongoDbReplicaSet.replicaSet()
+    private static final MongoDbReplicaSet MONGODB_REPLICA =
+            MongoDbReplicaSet.replicaSet()
                 .name("rs0")
                 .memberCount(1)
                 .network(NETWORK)
                 .imageName(DockerImageName.parse("mongo:5.0"))
                 .build();
-    }
 
     private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
             new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-latest"))
