@@ -8,8 +8,10 @@ package io.debezium.configserver.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 import io.debezium.config.ConfigDefinition;
@@ -34,6 +36,17 @@ import io.debezium.relational.HistorizedRelationalDatabaseConnectorConfig;
 import io.debezium.storage.kafka.history.KafkaSchemaHistory;
 
 public abstract class ConnectorIntegratorBase implements ConnectorIntegrator {
+
+    public static final Map<String, ConnectorIntegrator> integrators = new HashMap<>();
+    public static final List<String> supportedConnectorClassnames = new ArrayList<>();
+
+    static {
+        ServiceLoader.load(ConnectorIntegrator.class)
+                .forEach(integrator -> {
+                    integrators.put(integrator.getConnectorType().id, integrator);
+                    supportedConnectorClassnames.add(integrator.getConnectorType().className);
+                });
+    }
 
     protected abstract ConnectorDescriptor getConnectorDescriptor();
 

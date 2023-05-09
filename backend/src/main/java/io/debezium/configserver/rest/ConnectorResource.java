@@ -8,11 +8,9 @@ package io.debezium.configserver.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 import io.debezium.configserver.model.ConnectConnectorConfigResponse;
 import io.debezium.configserver.model.ConnectorStatus;
@@ -50,22 +48,13 @@ import io.debezium.configserver.rest.client.KafkaConnectClient;
 import io.debezium.configserver.rest.model.BadRequestResponse;
 import io.debezium.configserver.rest.model.ServerError;
 import io.debezium.configserver.service.ConnectorIntegrator;
+import static io.debezium.configserver.service.ConnectorIntegratorBase.integrators;
+import static io.debezium.configserver.service.ConnectorIntegratorBase.supportedConnectorClassnames;
 
 @Path(ConnectorURIs.API_PREFIX)
 public class ConnectorResource {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
-
-    private final Map<String, ConnectorIntegrator> integrators;
-
-    public ConnectorResource() {
-        Map<String, ConnectorIntegrator> integrators = new HashMap<>();
-
-        ServiceLoader.load(ConnectorIntegrator.class)
-                .forEach(integrator -> integrators.put(integrator.getConnectorType().id, integrator));
-
-        this.integrators = Collections.unmodifiableMap(integrators);
-    }
 
     @Path(ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
     @GET
@@ -338,7 +327,7 @@ public class ConnectorResource {
                                 try {
                                     var connectorInfo = kafkaConnectClient.getConnectorInfo(connectorName);
                                     String connectorType = connectorInfo.getConfig().get("connector.class");
-                                    if (!connectorType.startsWith("io.debezium")) {
+                                    if (!supportedConnectorClassnames.contains(connectorType))     {
                                         return null;
                                     }
                                     LOGGER.debug("Kafka Connect connector status details: " + connectorInfo);

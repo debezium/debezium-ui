@@ -29,9 +29,7 @@ public class ValidateMongoDbFiltersIT {
 
     @Test
     public void testEmptyMongoDbFilters() {
-        ConnectorConfiguration config = Infrastructure.getMongoDbConnectorConfiguration(1)
-                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(),
-                         Infrastructure.getMongoDbContainer().getConnectionString());
+        ConnectorConfiguration config = Infrastructure.getMongoDbConnectorConfiguration(1);
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
             .post(ConnectorURIs.API_PREFIX + ConnectorURIs.FILTERS_VALIDATION_ENDPOINT, "mongodb")
@@ -51,8 +49,6 @@ public class ValidateMongoDbFiltersIT {
     @Test
     public void testValidTableIncludeList() {
         ConnectorConfiguration config = Infrastructure.getMongoDbConnectorConfiguration(1)
-                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(),
-                         Infrastructure.getMongoDbContainer().getConnectionString())
                 .with(MongoDbConnectorConfig.COLLECTION_INCLUDE_LIST.name(), "inventory\\.product.*");
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
@@ -71,8 +67,6 @@ public class ValidateMongoDbFiltersIT {
     @Test
     public void testValidDatabaseIncludeList() {
         ConnectorConfiguration config = Infrastructure.getMongoDbConnectorConfiguration(1)
-                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(),
-                         Infrastructure.getMongoDbContainer().getConnectionString())
                 .with(MongoDbConnectorConfig.DATABASE_INCLUDE_LIST.name(), "inventory");
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
@@ -93,8 +87,6 @@ public class ValidateMongoDbFiltersIT {
     @Test
     public void testDatabaseIncludeListPatternInvalid() {
         ConnectorConfiguration config = Infrastructure.getMongoDbConnectorConfiguration(1)
-                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(),
-                         Infrastructure.getMongoDbContainer().getConnectionString())
                 .with(MongoDbConnectorConfig.DATABASE_INCLUDE_LIST.name(), "+");
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
@@ -112,8 +104,6 @@ public class ValidateMongoDbFiltersIT {
     @Test
     public void testDatabaseExcludeListPatternInvalid() {
         ConnectorConfiguration config = Infrastructure.getMongoDbConnectorConfiguration(1)
-                .with(MongoDbConnectorConfig.CONNECTION_STRING.name(),
-                         Infrastructure.getMongoDbContainer().getConnectionString())
                 .with(MongoDbConnectorConfig.DATABASE_EXCLUDE_LIST.name(), "+");
 
         given().when().contentType(ContentType.JSON).accept(ContentType.JSON).body(config.toJson())
