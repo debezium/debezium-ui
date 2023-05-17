@@ -13,7 +13,7 @@
     "start": "webpack serve --color --progress --host localhost --port 8888 --config webpack.dev.js",
     "start:federate": "webpack serve --color --progress --host localhost --port 3000 --config webpack.dev.js",
     "start:prod": "node scripts/serve",
-    "lint": "tslint -c ./tslint.json --project .",
+    "lint": "eslint -c .eslintrc.js --ext .ts .",
     "lint:fix": "npm run lint --fix",
     "format": "prettier --check --write ./src/**/*.{tsx,ts}",
     "format:fix": "prettier --write --ignore-unknown 'src'",
