@@ -40,7 +40,7 @@
   "dependencies": {
     "@debezium/ui-models": "^1.0.0",
     "@debezium/ui-services": "^1.0.0",
-    "@trivago/prettier-plugin-sort-imports": "3.4.0",
+    "@trivago/prettier-plugin-sort-imports": "4.1.1",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
     "prettier": "2.8.8",
