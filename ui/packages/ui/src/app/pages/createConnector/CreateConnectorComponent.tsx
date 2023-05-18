@@ -1182,7 +1182,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
                 {t('back')}
               </Button>
               {activeStep.id &&
-                activeStep.id >= PROPERTIES_STEP_ID &&
+                activeStep.id as number >= PROPERTIES_STEP_ID &&
                 activeStep.id !== REVIEW_STEP_ID && (
                   <Tooltip content={<div>{t('skipToReviewTooltip')}</div>}>
                     <Button
