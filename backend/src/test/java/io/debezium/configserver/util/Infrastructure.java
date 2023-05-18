@@ -41,25 +41,22 @@ public class Infrastructure {
     public enum DATABASE {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
-
-    private static final String DEBEZIUM_CONTAINER_VERSION = "2.3";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
 
     private static final KafkaContainer KAFKA_CONTAINER =
-            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.2.3"))
+            new KafkaContainer(DockerImageName.parse("quay.io/debezium/kafka:latest").asCompatibleSubstituteFor("kafka"))
                     .withNetworkAliases(KAFKA_HOSTNAME)
                     .withNetwork(NETWORK);
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
-            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("postgres"))
+            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:latest").asCompatibleSubstituteFor("postgres"))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("postgres");
 
     private static final MySQLContainer<?> MYSQL_CONTAINER =
-            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("mysql"))
+            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:latest").asCompatibleSubstituteFor("mysql"))
                     .withNetwork(NETWORK)
                     .withUsername("mysqluser")
                     .withPassword("mysqlpw")
