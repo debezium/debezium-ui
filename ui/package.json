@@ -92,7 +92,7 @@
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.1.1",
     "webpack-dev-server": "4.15.0",
-    "webpack-merge": "5.8.0"
+    "webpack-merge": "5.9.0"
   },
   "dependencies": {
     "@patternfly/patternfly": "4.224.2",
