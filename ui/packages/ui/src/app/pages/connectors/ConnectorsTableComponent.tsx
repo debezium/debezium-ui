@@ -505,7 +505,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
               <ConnectorOverview
                 i18nOverview={t('overview')}
                 i18nMessagePerSec={t('messagePerSec')}
-                i18nMaxLagInLastMin={t('maxLagInLastMin')}
+                // i18nMaxLagInLastMin={t('maxLagInLastMin')}
                 i18nPercentiles={t('percentiles')}
               />
             ),

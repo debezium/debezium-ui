@@ -4,7 +4,7 @@ import * as React from 'react';
 export interface IConnectorcOverviewProps {
   i18nOverview: string;
   i18nMessagePerSec: string;
-  i18nMaxLagInLastMin: string;
+  // i18nMaxLagInLastMin: string;
   i18nPercentiles: string;
 }
 
@@ -21,7 +21,7 @@ export const ConnectorOverview: React.FunctionComponent<
           {props.i18nOverview}
         </Title>
         <div>{props.i18nMessagePerSec}: 0</div>
-        <div>{props.i18nMaxLagInLastMin}: 0</div>
+        {/* <div>{props.i18nMaxLagInLastMin}: 0</div> */}
         <div>{props.i18nPercentiles}: 0</div>
       </FlexItem>
     </Flex>
