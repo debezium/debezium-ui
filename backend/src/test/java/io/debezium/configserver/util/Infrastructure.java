@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
@@ -41,22 +40,27 @@ public class Infrastructure {
     public enum DATABASE {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
+    private static final String DEBEZIUM_CONTAINER_VERSION = "latest";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
 
-    private static final KafkaContainer KAFKA_CONTAINER =
-            new KafkaContainer(DockerImageName.parse("quay.io/debezium/kafka:latest").asCompatibleSubstituteFor("kafka"))
+    private static final GenericContainer<?> KAFKA_CONTAINER =
+            new GenericContainer<>(DockerImageName.parse("quay.io/debezium/kafka:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("kafka"))
                     .withNetworkAliases(KAFKA_HOSTNAME)
-                    .withNetwork(NETWORK);
+                    .withNetwork(NETWORK)
+                    .withEnv("KAFKA_CONTROLLER_QUORUM_VOTERS", "1@" + KAFKA_HOSTNAME + ":9093")
+                    .withEnv("CLUSTER_ID", "5Yr1SIgYQz-b-dgRabWx4g")
+                    .withEnv("NODE_ID", "1");
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
-            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:latest").asCompatibleSubstituteFor("postgres"))
+            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("postgres"))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("postgres");
 
     private static final MySQLContainer<?> MYSQL_CONTAINER =
-            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:latest").asCompatibleSubstituteFor("mysql"))
+            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("mysql"))
                     .withNetwork(NETWORK)
                     .withUsername("mysqluser")
                     .withPassword("mysqlpw")
@@ -153,7 +157,7 @@ public class Infrastructure {
         MoreStartables.deepStartSync(containers.get());
     }
 
-    public static KafkaContainer getKafkaContainer() {
+    public static GenericContainer getKafkaContainer() {
         return KAFKA_CONTAINER;
     }
 
