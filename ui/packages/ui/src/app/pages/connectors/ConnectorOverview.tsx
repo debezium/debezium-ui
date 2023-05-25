@@ -6,7 +6,6 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetch_retry } from 'shared';
-import { boolean } from 'yup';
 
 export interface IConnectorcOverviewProps {
   clusterId: number;
