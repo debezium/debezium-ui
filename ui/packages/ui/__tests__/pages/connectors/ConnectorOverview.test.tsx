@@ -1,25 +1,23 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
 import {
   IConnectorcOverviewProps,
   ConnectorOverview,
-} from "../../../src/app/pages/connectors/ConnectorOverview";
+} from '../../../src/app/pages/connectors/ConnectorOverview';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
 
-describe("<ConnectorOverview />", () => {
+describe('<ConnectorOverview />', () => {
   const renderSetup = (props: IConnectorcOverviewProps) => {
     return render(<ConnectorOverview {...props} />);
   };
 
-  it("should render ConnectorOverview", () => {
+  it('should render ConnectorOverview', () => {
     const props: IConnectorcOverviewProps = {
-      i18nOverview: "Overview",
-      i18nMessagePerSec: "MessagePerSec",
-      i18nMaxLagInLastMin: "MaxLagInLastMin",
-      i18nPercentiles: "Percentiles",
+      clusterId: 1234,
+      connectorName: 'pgTest',
     };
 
     renderSetup(props);
 
-    expect(screen.getByText(props.i18nOverview)).toBeInTheDocument();
+    expect(screen.getByText('Metrics')).toBeInTheDocument();
   });
 });
