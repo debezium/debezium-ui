@@ -18,6 +18,6 @@ describe('<ConnectorOverview />', () => {
 
     renderSetup(props);
 
-    expect(screen.getByText('Metrics')).toBeInTheDocument();
+    expect(screen.getByText('metrics')).toBeInTheDocument();
   });
 });
