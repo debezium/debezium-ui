@@ -101,7 +101,7 @@
     "@patternfly/react-styles": "4.92.6",
     "@patternfly/react-table": "4.113.0",
     "@testing-library/cypress": "8.0.7",
-    "formik": "2.3.2",
+    "formik": "2.4.0",
     "i18next": "22.5.0",
     "i18next-http-backend": "2.2.1",
     "i18next-parser": "8.0.0",
