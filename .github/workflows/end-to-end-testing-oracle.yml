@@ -70,7 +70,7 @@ jobs:
           install-command: npm install
           working-directory: ./ui
       - name: End-to-End Test Debezium UI
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4.1.0
         with:
           # we have already installed everything
           install: false
