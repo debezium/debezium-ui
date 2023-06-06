@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 describe("Connectors page", () => {
-  it("Run happy flow to create a connector", () => {
+  it("Run a happy flow to create a connector", () => {
     cy.visit("/");
 
     cy.get(".pf-c-page__header")
