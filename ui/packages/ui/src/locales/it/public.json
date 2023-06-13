@@ -22,7 +22,7 @@
   "Successfully copied to clipboard!": "Copiato con successo negli appunti!",
   "Copy to clipboard": "Copia negli appunti",
   "metrics":"Metrica",
-  "Connected": "Connected",
+  "Connected": "Streaming in corso",
   "TotalNumberOfEventsSeen": "Assolutamente no. degli eventi",
   "MilliSecondsSinceLastEvent": "Tempo trascorso dall'ultimo evento",
   "Download JSON": "Scarica JSON",

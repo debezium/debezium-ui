@@ -23,7 +23,7 @@
   "Copy to clipboard": "复制到剪贴板",
   "Download JSON": "下载 JSON",
   "metrics":"指标",
-  "Connected": "Connected",
+  "Connected": "流媒体正在进行中",
   "TotalNumberOfEventsSeen": "完全没有。事件的",
   "MilliSecondsSinceLastEvent": "自上次活动以来的时间",
   "pageNotFound": "页面未找到",
