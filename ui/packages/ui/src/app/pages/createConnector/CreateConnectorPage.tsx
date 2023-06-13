@@ -59,6 +59,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           </LevelItem>
         </Level>
       </PageSection>
+      <PageSection className='app-page-section-wrapper'>
       <div className="app-page-section-border-bottom">
         <CreateConnectorComponent
           onCancelCallback={onCancel}
@@ -67,6 +68,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           connectorNames={connectorNames}
         />
       </div>
+      </PageSection>
     </>
   );
 };

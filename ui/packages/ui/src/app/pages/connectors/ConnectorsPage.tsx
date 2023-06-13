@@ -1,5 +1,6 @@
 import ConnectorsTableComponent from './ConnectorsTableComponent';
 import './ConnectorsTableComponent.css';
+import { PageSection } from '@patternfly/react-core';
 import { AppLayoutContext } from 'layout';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,12 +20,14 @@ export const ConnectorsPage: React.FunctionComponent = (props) => {
 
   const appLayoutContext = React.useContext(AppLayoutContext);
   return (
-    <ConnectorsTableComponent
-      createConnectorCallback={createConnector}
-      i18nApiErrorTitle={t('apiErrorTitle')}
-      i18nApiErrorMsg={t('apiErrorMsg')}
-      title={t('connectors')}
-      clusterId={appLayoutContext.clusterId}
-    />
+    <PageSection className='page_wrapper'>
+      <ConnectorsTableComponent
+        createConnectorCallback={createConnector}
+        i18nApiErrorTitle={t('apiErrorTitle')}
+        i18nApiErrorMsg={t('apiErrorMsg')}
+        title={t('connectors')}
+        clusterId={appLayoutContext.clusterId}
+      />
+    </PageSection>
   );
 };
