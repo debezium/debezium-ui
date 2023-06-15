@@ -335,9 +335,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     return taskElements;
   };
 
-  const onConnectorDrawer = (c: Connector) => {
-    setSelectedConnector(c);
-  };
+  // const onConnectorDrawer = (c: Connector) => {
+  //   setSelectedConnector(c);
+  // };
 
   const deselectConnector = () => {
     setSelectedConnector(undefined);
