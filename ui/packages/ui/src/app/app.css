@@ -21,6 +21,9 @@ body {
 .app-page {
   height: 100vh;
   background-color: white;
+  &_main_page_section{
+    padding: 0px;
+  }
 }
 
 .app-page-section-border-bottom {

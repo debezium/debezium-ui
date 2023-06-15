@@ -19,7 +19,7 @@ export const AppLayout: React.FC = ({ children }) => {
         breadcrumb={breadcrumb}
         className="app-page"
       >
-        <PageSection variant={PageSectionVariants.light} className='main_page_section'>
+        <PageSection variant={PageSectionVariants.light} className='app-page_main_page_section'>
           {children}
         </PageSection>
       </Page>
