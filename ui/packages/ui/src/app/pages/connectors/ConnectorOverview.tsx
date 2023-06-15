@@ -1,7 +1,11 @@
+import './ConnectorOverview.css';
 import { Metrics } from '@debezium/ui-models';
 import { Services } from '@debezium/ui-services';
-import { Flex, FlexItem, Title } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { Flex, FlexItem, Skeleton, Title } from '@patternfly/react-core';
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from '@patternfly/react-icons';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -45,15 +49,43 @@ export const ConnectorOverview: React.FunctionComponent<
 
   return (
     <Flex>
-      <FlexItem>
+      <FlexItem className="overview_metrics_skeleton">
         <Title headingLevel="h3" size={'md'}>
-           <b>{t('metrics')}</b>
+          <b>{t('metrics')}</b>
         </Title>
-        {connectorMetrics?.map((metrics) => (
-          <div>
-            {t(metrics.request.attribute)}: { typeof metrics.value === "boolean" ? metrics.value ? <CheckCircleIcon style={{'color': '#3E8635'}}/> : <ExclamationCircleIcon style={{'color': '#C9190B'}}/> : metrics.value }
-          </div>
-        ))}
+        {connectorMetrics ? (
+          connectorMetrics.map((metrics) => (
+            <p>
+              {t(metrics.request.attribute)}:{' '}
+              {typeof metrics.value === 'boolean' ? (
+                metrics.value ? (
+                  <CheckCircleIcon className="overview_metrics_connected" />
+                ) : (
+                  <ExclamationCircleIcon style={{ color: '#C9190B' }} />
+                )
+              ) : (
+                metrics.value
+              )}
+            </p>
+          ))
+        ) : (
+          <>
+            <Skeleton
+              fontSize="sm"
+              screenreaderText="Loading connector metrics"
+              width="70%"
+            />
+            <Skeleton
+              fontSize="sm"
+              screenreaderText="Loading connector metrics"
+              width="85%"
+            />
+            <Skeleton
+              fontSize="sm"
+              screenreaderText="Loading connector metrics"
+            />
+          </>
+        )}
       </FlexItem>
     </Flex>
   );
