@@ -19,7 +19,7 @@ import io.debezium.configserver.rest.client.KafkaConnectClient;
 import io.debezium.configserver.rest.client.KafkaConnectException;
 import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
 import io.debezium.configserver.rest.client.InvalidClusterException;
-import io.debezium.configserver.rest.client.JolokiaClient;
+import io.debezium.configserver.rest.client.jolokia.JolokiaClient;
 import io.debezium.configserver.service.StacktraceHelper;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -546,14 +546,14 @@ public class ConnectorResource {
             @PathParam("connector-name") String connectorName
     ) throws KafkaConnectClientException, KafkaConnectException {
         URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-
+        String jolokiaUrl = String.format("http://%s:%d/jolokia", kafkaConnectURI.getHost(), JolokiaClient.DEFAULT_JOLOKIA_PORT);
         List<JSONObject> connectorMetricsResponse;
         try {
             Map connectorConfigResponse = getConnectorConfig(cluster, connectorName).readEntity(Map.class);
             String serverName = connectorConfigResponse.get("topic.prefix").toString();
             String connectorType = connectorConfigResponse.get("connector.id").toString();
             connectorMetricsResponse = jolokiaClient
-                    .getMetrics(connectorType, serverName, jolokiaClient.getAttributeNames())
+                    .getMetrics(jolokiaUrl, connectorType, serverName, jolokiaClient.getAttributeNames())
                     .stream()
                     .map(J4pResponse::asJSONObject)
                     .collect(Collectors.toList());

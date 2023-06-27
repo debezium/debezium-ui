@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 public class KafkaConnectClientFactory {
 
     public static final String PROPERTY_KAFKA_CONNECT_URIS = "kafka.connect.uris";
-    public static final String PROPERTY_JOLOKIA_CLIENT_URI = "jolokia.client.uri";
 
     private static List<String> kafkaConnectBaseUris;
     private static KafkaConnectClusterList kafkaConnectBaseURIsList;

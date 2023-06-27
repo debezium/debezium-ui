@@ -112,7 +112,6 @@ public class Infrastructure {
                 .withKafka(KAFKA_CONTAINER.getNetwork(), KAFKA_HOSTNAME + ":9092")
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                 .dependsOn(KAFKA_CONTAINER)
-                .withStartupTimeout(Duration.ofSeconds(120))
                 .withEnv("ENABLE_JOLOKIA", "true")
                 .withExposedPorts(8083, 8778);
 
@@ -178,10 +177,6 @@ public class Infrastructure {
 
     public static GenericContainer getKafkaContainer() {
         return KAFKA_CONTAINER;
-    }
-
-    public static Integer getJolokiaPort() {
-        return DEBEZIUM_CONTAINER.getMappedPort(8778);
     }
 
     public static DebeziumContainer getDebeziumContainer() {
