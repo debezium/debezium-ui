@@ -1,6 +1,5 @@
 {
   "name": "@debezium/ui",
-  "federatedModuleName": "dbz",
   "port": 8888,
   "version": "0.0.1",
   "description": "Debezium UI",
