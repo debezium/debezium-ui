@@ -33,7 +33,7 @@
     ]
   },
   "devDependencies": {
-    "@redhat-cloud-services/frontend-components-config": "4.7.3",
+    "@redhat-cloud-services/frontend-components-config": "5.0.5",
     "@testing-library/cypress": "9.0.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.5",
