@@ -5,8 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
-const ChunkMapper = require('@redhat-cloud-services/frontend-components-config/chunk-mapper');
-const { dependencies, federatedModuleName } = require('./package.json');
+
 
 const getCommitHash = () => {
   try {
@@ -126,31 +125,6 @@ module.exports = (argv) => {
         filename: '[name].[contenthash:8].css',
         chunkFilename: '[contenthash:8].css',
         ignoreOrder: true
-      }),
-      new ChunkMapper({
-        modules: [federatedModuleName],
-      }),
-      new webpack.container.ModuleFederationPlugin({
-        name: 'debezium_ui',
-        filename: 'dbz-connector-configurator.remoteEntry.js',
-        exposes: {
-          './config': './src/app/pages/createConnector/federatedModule/config',
-        },
-        shared: {
-          ...dependencies,
-          react: {
-            singleton: true,
-            requiredVersion: dependencies['react'],
-          },
-          'react-dom': {
-            singleton: true,
-            requiredVersion: dependencies['react-dom'],
-          },
-          'react-router-dom': {
-            singleton: false, // consoledot needs this to be off to be able to upgrade the router to v6. We don't need this to be a singleton, so let's keep this off
-            requiredVersion: dependencies['react-router-dom'],
-          },
-        },
       }),
     ],
     output: {
