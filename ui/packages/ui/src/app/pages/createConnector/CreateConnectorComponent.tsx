@@ -51,7 +51,7 @@ import {
   PropertyCategory,
   PropertyName,
 } from 'shared';
-import { getPropertiesDataDownstream } from 'src/app/utils/FormatCosProperties';
+import { getPropertiesDatawithDefaultConfig } from 'src/app/utils/FormatCosProperties';
 import { CustomPropertiesStep } from './connectorSteps/CustomPropertiesStep';
 
 /**
@@ -434,7 +434,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
           //   ).name = 'column.mask.hash';
           // }
           setSelectedConnectorPropertyDefns(
-            getPropertiesDataDownstream(cDetails)
+            getPropertiesDatawithDefaultConfig(cDetails)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
@@ -723,7 +723,7 @@ export const CreateConnectorComponent: React.FunctionComponent<
           //   ).name = 'column.mask.hash';
           // }
           setSelectedConnectorPropertyDefns(
-            getPropertiesDataDownstream(cDetails)
+            getPropertiesDatawithDefaultConfig(cDetails)
           );
         })
         .catch((err: React.SetStateAction<Error>) => {
