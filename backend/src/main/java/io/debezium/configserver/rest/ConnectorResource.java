@@ -7,6 +7,7 @@ package io.debezium.configserver.rest;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
 import io.debezium.configserver.rest.client.InvalidClusterException;
 import io.debezium.configserver.rest.client.jolokia.JolokiaClient;
 import io.debezium.configserver.service.StacktraceHelper;
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -546,14 +548,20 @@ public class ConnectorResource {
             @PathParam("connector-name") String connectorName
     ) throws KafkaConnectClientException, KafkaConnectException {
         URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
-        String jolokiaUrl = String.format("http://%s:%d/jolokia", kafkaConnectURI.getHost(), JolokiaClient.DEFAULT_JOLOKIA_PORT);
+        URI jolokiaURI;
+        try {
+            jolokiaURI = new URIBuilder(kafkaConnectURI).setPort(JolokiaClient.getJolokiaPort()).setPath(kafkaConnectURI.getPath() + "jolokia").build();
+        }
+        catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         List<JSONObject> connectorMetricsResponse;
         try {
             Map connectorConfigResponse = getConnectorConfig(cluster, connectorName).readEntity(Map.class);
             String serverName = connectorConfigResponse.get("topic.prefix").toString();
             String connectorType = connectorConfigResponse.get("connector.id").toString();
             connectorMetricsResponse = jolokiaClient
-                    .getMetrics(jolokiaUrl, connectorType, serverName, jolokiaClient.getAttributeNames())
+                    .getMetrics(jolokiaURI.toString(), connectorType, serverName, jolokiaClient.getAttributeNames())
                     .stream()
                     .map(J4pResponse::asJSONObject)
                     .collect(Collectors.toList());

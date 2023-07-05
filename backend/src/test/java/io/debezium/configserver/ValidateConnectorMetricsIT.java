@@ -34,6 +34,7 @@ public class ValidateConnectorMetricsIT {
                 Infrastructure.getPostgresConnectorConfiguration(1));
 
         Infrastructure.getDebeziumContainer().ensureConnectorState(connectorName, Connector.State.RUNNING);
+        Infrastructure.getDebeziumContainer().ensureConnectorTaskState(connectorName, 0, Connector.State.RUNNING);
 
         given()
                 .when().get(ConnectorURIs.API_PREFIX + ConnectorURIs.LIST_CONNECTOR_METRICS_ENDPOINT, 1, connectorName)
