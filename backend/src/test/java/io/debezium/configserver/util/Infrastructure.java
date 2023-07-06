@@ -35,19 +35,34 @@ import java.util.stream.Stream;
 
 public class Infrastructure {
 
+    // Those versions are managed in the debezium-ui-parent pom.xml!
+    private static final String DEBEZIUM_EXAMPLES_CONTAINER_VERSION;
+    private static final String DEBEZIUM_CONNECT_CONTAINER_VERSION;
+    private static final String SQLSERVER_CONTAINER_VERSION;
+    private static final String MONGODB_CONTAINER_VERSION;
+
+    static {
+        final PropertiesReader debeziumPropertiesReader = PropertiesReader.debeziumPropertiesReader();
+        // Those versions are managed in the debezium-ui-parent pom.xml!
+        DEBEZIUM_EXAMPLES_CONTAINER_VERSION = debeziumPropertiesReader.getProperty("debezium.examples.container.version");
+        DEBEZIUM_CONNECT_CONTAINER_VERSION = debeziumPropertiesReader.getProperty("debezium.connect.container.version");
+        SQLSERVER_CONTAINER_VERSION = debeziumPropertiesReader.getProperty("sqlserver.container.version");
+        MONGODB_CONTAINER_VERSION = debeziumPropertiesReader.getProperty("mongodb.container.version");
+    }
+
     private static final String KAFKA_HOSTNAME = "kafka-dbz-ui";
 
     public enum DATABASE {
         POSTGRES, MYSQL, SQLSERVER, MONGODB, ORACLE, NONE
     }
-    private static final String DEBEZIUM_CONTAINER_VERSION = "latest";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Infrastructure.class);
 
     private static final Network NETWORK = Network.newNetwork();
 
     private static final GenericContainer<?> KAFKA_CONTAINER =
-            new GenericContainer<>(DockerImageName.parse("quay.io/debezium/kafka:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("kafka"))
+            new GenericContainer<>(DockerImageName.parse("quay.io/debezium/kafka:" + DEBEZIUM_EXAMPLES_CONTAINER_VERSION)
+                    .asCompatibleSubstituteFor("kafka"))
                     .withNetworkAliases(KAFKA_HOSTNAME)
                     .withNetwork(NETWORK)
                     .withEnv("KAFKA_CONTROLLER_QUORUM_VOTERS", "1@" + KAFKA_HOSTNAME + ":9093")
@@ -55,12 +70,14 @@ public class Infrastructure {
                     .withEnv("NODE_ID", "1");
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
-            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("postgres"))
+            new PostgreSQLContainer<>(DockerImageName.parse("quay.io/debezium/example-postgres:" + DEBEZIUM_EXAMPLES_CONTAINER_VERSION)
+                    .asCompatibleSubstituteFor("postgres"))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("postgres");
 
     private static final MySQLContainer<?> MYSQL_CONTAINER =
-            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:" + DEBEZIUM_CONTAINER_VERSION).asCompatibleSubstituteFor("mysql"))
+            new MySQLContainer<>(DockerImageName.parse("quay.io/debezium/example-mysql:" + DEBEZIUM_EXAMPLES_CONTAINER_VERSION)
+                    .asCompatibleSubstituteFor("mysql"))
                     .withNetwork(NETWORK)
                     .withUsername("mysqluser")
                     .withPassword("mysqlpw")
@@ -72,11 +89,11 @@ public class Infrastructure {
                 .name("rs0")
                 .memberCount(1)
                 .network(NETWORK)
-                .imageName(DockerImageName.parse("mongo:5.0"))
+                .imageName(DockerImageName.parse("mongo:" + MONGODB_CONTAINER_VERSION))
                 .build();
 
     private static final MSSQLServerContainer<?> SQL_SERVER_CONTAINER =
-            new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-latest"))
+            new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:" + SQLSERVER_CONTAINER_VERSION))
                     .withNetwork(NETWORK)
                     .withNetworkAliases("sqlserver")
                     .withEnv("SA_PASSWORD", "Password!")
@@ -87,16 +104,14 @@ public class Infrastructure {
                     .withInitScript("/initialize-sqlserver-database.sql")
                     .acceptLicense();
 
-    private static final DebeziumContainer DEBEZIUM_CONTAINER;
-    static {
-        DEBEZIUM_CONTAINER = new DebeziumContainer("quay.io/debezium/connect:nightly")
+    private static final DebeziumContainer DEBEZIUM_CONTAINER =
+            new DebeziumContainer("quay.io/debezium/connect:" + DEBEZIUM_CONNECT_CONTAINER_VERSION)
                 .withEnv("ENABLE_DEBEZIUM_SCRIPTING", "true")
                 .withEnv("CONNECT_REST_EXTENSION_CLASSES", "io.debezium.kcrestextension.DebeziumConnectRestExtension")
                 .withNetwork(NETWORK)
                 .withKafka(KAFKA_CONTAINER.getNetwork(), KAFKA_HOSTNAME + ":9092")
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                 .dependsOn(KAFKA_CONTAINER);
-    }
 
     public static Network getNetwork() {
         return NETWORK;

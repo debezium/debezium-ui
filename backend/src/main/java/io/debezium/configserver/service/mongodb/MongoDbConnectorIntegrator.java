@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.mongodb.ReadPreference;
 import io.debezium.DebeziumException;
 import io.debezium.config.CommonConnectorConfig;
 import io.debezium.config.Configuration;
@@ -97,7 +96,7 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
 
     protected MongoDbConnection primary(MongoDbTaskContext context) throws Throwable {
         ReplicaSet replicaSet = new ReplicaSet(context.getConnectionContext().connectionString());
-        return context.getConnectionContext().connect(replicaSet, ReadPreference.primary(), context.filters(), (s, throwable) -> {
+        return context.getConnectionContext().connect(replicaSet, context.filters(), (s, throwable) -> {
             throw new DebeziumException(s, throwable);
         });
     }

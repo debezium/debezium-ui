@@ -3,12 +3,12 @@ version: '3'
 services:
   dbzui-zookeeper:
     container_name: dbzui-zookeeper
-    image: quay.io/debezium/zookeeper:2.3
+    image: quay.io/debezium/zookeeper:latest
     networks:
       - dbzui-network
   dbzui-kafka:
     container_name: dbzui-kafka
-    image: quay.io/debezium/kafka:2.3
+    image: quay.io/debezium/kafka:latest
     ports:
       - "9092:9092"
     depends_on:
@@ -19,7 +19,7 @@ services:
       - dbzui-network
   dbzui-db-pg:
     container_name: dbzui-db-pg
-    image: quay.io/debezium/example-postgres:2.3
+    image: quay.io/debezium/example-postgres:latest
     ports:
       - "65432:5432"
     environment:
@@ -29,7 +29,7 @@ services:
       - dbzui-network
   dbzui-db-mysql:
     container_name: dbzui-db-mysql
-    image: quay.io/debezium/example-mysql:2.3
+    image: quay.io/debezium/example-mysql:latest
     ports:
       - "63306:3306"
     environment:
