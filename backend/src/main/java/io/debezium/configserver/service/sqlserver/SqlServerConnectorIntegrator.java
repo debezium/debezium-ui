@@ -141,8 +141,7 @@ public class SqlServerConnectorIntegrator extends ConnectorIntegratorBase {
     }
     
     private SqlServerConnection connect(SqlServerConnectorConfig sqlServerConfig) {
-        return new SqlServerConnection(sqlServerConfig.getJdbcConfig(), null, Collections.emptySet(),
-                sqlServerConfig.useSingleDatabase());
+        return new SqlServerConnection(sqlServerConfig, null, Collections.emptySet(), sqlServerConfig.useSingleDatabase());
     }
 
     @Override

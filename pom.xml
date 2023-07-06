@@ -12,8 +12,15 @@
   <name>Debezium UI Build Aggregator</name>
 
   <properties>
-    <revision>2.3.0-SNAPSHOT</revision>
+    <!--// Debezium UI major versions. Need to be updated accordingly! //-->
+    <revision>2.4.0-SNAPSHOT</revision>
     <debezium.base.version>${revision}</debezium.base.version>
+    <debezium.examples.container.version>latest</debezium.examples.container.version>
+    <debezium.connect.container.version>nightly</debezium.connect.container.version>
+    <sqlserver.container.version>2019-latest</sqlserver.container.version>
+    <mongodb.container.version>5.0</mongodb.container.version>
+
+    <!--// Project and build options //-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
@@ -22,7 +29,8 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.release>11</maven.compiler.release>
-    <!-- Plug-in versions -->
+
+    <!--// Dependency libs and plug-in versions //-->
     <frontend.maven.plugin.version>1.12.1</frontend.maven.plugin.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
