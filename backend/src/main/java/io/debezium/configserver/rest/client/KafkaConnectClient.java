@@ -93,4 +93,9 @@ public interface KafkaConnectClient {
     @Path("/debezium/topic-creation")
     @Produces("application/json")
     Boolean isTopicCreationEnabled() throws ProcessingException, IOException;
+
+    @GET
+    @Path("/connectors/{connector-name}/metrics")
+    @Produces("application/json")
+    List<String> getConnectorMetrics(@PathParam("connector-name") String connectorName) throws ProcessingException, IOException;
 }

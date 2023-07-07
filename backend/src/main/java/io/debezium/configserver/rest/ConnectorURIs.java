@@ -23,4 +23,5 @@ public final class ConnectorURIs {
     public static final String CONNECTOR_CONFIG_ENDPOINT = "/connectors/{cluster}/{connector-name}/config";
     public static final String TRANSFORMS_LIST = "/{cluster}/transforms.json";
     public static final String TOPIC_CREATION_ENABLED = "/{cluster}/topic-creation-enabled";
+    public static final String LIST_CONNECTOR_METRICS_ENDPOINT = "/connectors/{cluster}/{connector-name}/metrics";
 }

@@ -85,6 +85,7 @@ services:
     image: quay.io/debezium/connect:nightly
     ports:
       - "8083:8083"
+      - "8778:8778"
     depends_on:
       - dbzui-kafka
       - dbzui-db-pg
@@ -96,6 +97,7 @@ services:
       - STATUS_STORAGE_TOPIC=my_connect_statuses
       - ENABLE_DEBEZIUM_SCRIPTING=true
       - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
+      - ENABLE_JOLOKIA=true
     networks:
       - dbzui-network
   dbzui-backend:

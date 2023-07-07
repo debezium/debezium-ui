@@ -7,6 +7,7 @@ package io.debezium.configserver.rest;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,13 @@ import java.util.Optional;
 import io.debezium.configserver.model.ConnectConnectorConfigResponse;
 import io.debezium.configserver.model.ConnectorStatus;
 import io.debezium.configserver.model.KafkaConnectClusterList;
-import io.debezium.configserver.rest.client.InvalidClusterException;
-import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
+import io.debezium.configserver.rest.client.KafkaConnectClient;
 import io.debezium.configserver.rest.client.KafkaConnectException;
+import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
+import io.debezium.configserver.rest.client.InvalidClusterException;
+import io.debezium.configserver.rest.client.jolokia.JolokiaClient;
 import io.debezium.configserver.service.StacktraceHelper;
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -26,6 +30,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.jboss.logging.Logger;
 import java.util.stream.Collectors;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -44,10 +49,12 @@ import io.debezium.configserver.model.ConnectionValidationResult;
 import io.debezium.configserver.model.ConnectorDefinition;
 import io.debezium.configserver.model.FilterValidationResult;
 import io.debezium.configserver.model.PropertiesValidationResult;
-import io.debezium.configserver.rest.client.KafkaConnectClient;
 import io.debezium.configserver.rest.model.BadRequestResponse;
 import io.debezium.configserver.rest.model.ServerError;
 import io.debezium.configserver.service.ConnectorIntegrator;
+import org.jolokia.client.request.J4pResponse;
+import org.json.simple.JSONObject;
+
 import static io.debezium.configserver.service.ConnectorIntegratorBase.integrators;
 import static io.debezium.configserver.service.ConnectorIntegratorBase.supportedConnectorClassnames;
 
@@ -55,6 +62,9 @@ import static io.debezium.configserver.service.ConnectorIntegratorBase.supported
 public class ConnectorResource {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
+
+    @Inject
+    JolokiaClient jolokiaClient;
 
     @Path(ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
     @GET
@@ -515,5 +525,50 @@ public class ConnectorResource {
             }
         }
         return Optional.empty();
+    }
+
+    @Path(ConnectorURIs.LIST_CONNECTOR_METRICS_ENDPOINT)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON))
+    @APIResponse(
+            responseCode = "404",
+            description = "Connector metrics with specified name not found")
+    @APIResponse(
+            responseCode = "500",
+            description = "Exception during Kafka Connect URI validation",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ServerError.class)
+            ))
+    public Response getConnectorMetrics(
+            @PathParam("cluster") int cluster,
+            @PathParam("connector-name") String connectorName
+    ) throws KafkaConnectClientException, KafkaConnectException {
+        URI kafkaConnectURI = KafkaConnectClientFactory.getKafkaConnectURIforCluster(cluster);
+        URI jolokiaURI;
+        try {
+            jolokiaURI = new URIBuilder(kafkaConnectURI).setPort(JolokiaClient.getJolokiaPort()).setPath(kafkaConnectURI.getPath() + "jolokia").build();
+        }
+        catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        List<JSONObject> connectorMetricsResponse;
+        try {
+            Map connectorConfigResponse = getConnectorConfig(cluster, connectorName).readEntity(Map.class);
+            String serverName = connectorConfigResponse.get("topic.prefix").toString();
+            String connectorType = connectorConfigResponse.get("connector.id").toString();
+            connectorMetricsResponse = jolokiaClient
+                    .getMetrics(jolokiaURI.toString(), connectorType, serverName, jolokiaClient.getAttributeNames())
+                    .stream()
+                    .map(J4pResponse::asJSONObject)
+                    .collect(Collectors.toList());
+        }
+        catch (ProcessingException e) {
+            throw new KafkaConnectClientException(kafkaConnectURI, e);
+        }
+        return Response.ok().entity(connectorMetricsResponse).type(MediaType.APPLICATION_JSON).build();
     }
 }

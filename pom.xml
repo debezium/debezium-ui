@@ -43,6 +43,7 @@
     <quarkus.platform.version>3.0.2.Final</quarkus.platform.version>
     <quarkus.plugin.version>${quarkus.platform.version}</quarkus.plugin.version>
     <okhttp.version>4.11.0</okhttp.version>
+    <version.jolokia.client>1.7.2</version.jolokia.client>
     <okio.version>3.3.0</okio.version>
     <version.checkstyle.plugin>3.2.1</version.checkstyle.plugin>
     <version.checkstyle>8.32</version.checkstyle>

@@ -6,6 +6,7 @@
 package io.debezium.configserver.util;
 
 import io.debezium.configserver.rest.client.KafkaConnectClientFactory;
+import io.debezium.configserver.rest.client.jolokia.JolokiaClient;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import java.util.HashMap;
@@ -20,6 +21,8 @@ public abstract class AbstractInfrastructureTestResourceLifecycleManager impleme
                 KafkaConnectClientFactory.PROPERTY_KAFKA_CONNECT_URIS,
                 "http://" + Infrastructure.getDebeziumContainer().getHost() + ":" + Infrastructure.getDebeziumContainer().getMappedPort(8083)
         );
+        config.put(JolokiaClient.PROPERTY_CONNECT_JOLOKIA_PORT,
+                String.valueOf(Infrastructure.getDebeziumContainer().getMappedPort(JolokiaClient.DEFAULT_JOLOKIA_PORT)));
         return config;
     }
 
