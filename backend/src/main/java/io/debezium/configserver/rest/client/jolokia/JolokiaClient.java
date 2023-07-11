@@ -11,8 +11,6 @@ import java.util.List;
 import javax.management.MalformedObjectNameException;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jolokia.client.BasicAuthenticator;
 import org.jolokia.client.J4pClient;
@@ -25,9 +23,10 @@ public class JolokiaClient {
 
     public static final Integer DEFAULT_JOLOKIA_PORT = 8778;
     public static final String PROPERTY_CONNECT_JOLOKIA_PORT = "connect.jolokia.port";
-
-    @Inject
-    private JolokiaAttributes jolokiaAttributes;
+    private final JolokiaAttributes jolokiaAttributes;
+    public JolokiaClient(JolokiaAttributes jolokiaAttributes) {
+        this.jolokiaAttributes = jolokiaAttributes;
+    }
 
     public static Integer getJolokiaPort() {
         return ConfigProvider.getConfig().getOptionalValue(PROPERTY_CONNECT_JOLOKIA_PORT, Integer.class)

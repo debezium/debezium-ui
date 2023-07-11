@@ -30,7 +30,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.jboss.logging.Logger;
 import java.util.stream.Collectors;
 
-import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -62,9 +61,10 @@ import static io.debezium.configserver.service.ConnectorIntegratorBase.supported
 public class ConnectorResource {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectorResource.class);
-
-    @Inject
-    JolokiaClient jolokiaClient;
+    private final JolokiaClient jolokiaClient;
+    public ConnectorResource (JolokiaClient jolokiaClient) {
+        this.jolokiaClient = jolokiaClient;
+    }
 
     @Path(ConnectorURIs.CONNECT_CLUSTERS_ENDPOINT)
     @GET
