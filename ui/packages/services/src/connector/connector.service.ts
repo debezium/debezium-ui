@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 import { BaseService } from "../baseService";
-import {
-  ConnectionValidationResult,
-  Connector,
-  ConnectorType,
-  FilterValidationResult,
-  PropertiesValidationResult,
-} from "@debezium/ui-models";
+import { ConnectionValidationResult, Connector, ConnectorType, FilterValidationResult, Metrics, PropertiesValidationResult } from "@debezium/ui-models";
+
 
 /**
  * The connector service.  Used to fetch connectors and other connector operations.
@@ -217,6 +212,23 @@ export class ConnectorService extends BaseService {
       { clusterId }
     );
     return this.httpGet<Connector[]>(endpoint);
+  }
+
+  /**
+   * Get the available connector metrics for the supplied clusterId and connector name
+   */
+  public getConnectorMetrics(
+    clusterId: number,
+    connectorName: string
+  ): Promise<Metrics[]> {
+    this.logger?.info("[ConnectorService] Getting the connector metrics.");
+
+    const endpoint: string = this.endpoint(
+      "/connectors/:clusterId/:connectorName/metrics",
+      undefined,
+      { clusterId, connectorName }
+    );
+    return this.httpGet<Metrics[]>(endpoint);
   }
 
   /**

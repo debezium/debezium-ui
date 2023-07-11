@@ -499,16 +499,14 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         parent: counter,
         cells: [
           { title: <div>{''}</div> },
-          { title: <div>{''}</div> },
+          { title: (
+            <ConnectorOverview
+              clusterId={props.clusterId}
+              connectorName={conn.name}
+            />
+          ) },
           {
-            title: (
-              <ConnectorOverview
-                i18nOverview={t('overview')}
-                i18nMessagePerSec={t('messagePerSec')}
-                i18nMaxLagInLastMin={t('maxLagInLastMin')}
-                i18nPercentiles={t('percentiles')}
-              />
-            ),
+            title: <div>{''}</div>,
           },
           {
             title: (

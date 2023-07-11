@@ -18,50 +18,64 @@
 /**
  * Model which represents a connector
  */
-// tslint:disable-next-line: interface-name
 export interface Connector {
-    connectorStatus: 'UNASSIGNED' | 'RUNNING' | 'PAUSED' | 'FAILED' | 'DESTROYED';
-    connectorType: string;
-    name: string;
-    taskStates: any;
+  connectorStatus: "UNASSIGNED" | "RUNNING" | "PAUSED" | "FAILED" | "DESTROYED";
+  connectorType: string;
+  name: string;
+  taskStates: any;
 }
+
+/**
+ * Model which represents a Metrics request
+ */
+export type MetricsRequest = {
+  mbean: string;
+  attribute: string;
+  type: string;
+};
+
+/**
+ * Model which represents a Metrics
+ */
+export type Metrics = {
+  request: MetricsRequest;
+  value: unknown;
+  timestamp: number;
+  status: number;
+};
 
 /**
  * Model which represents the configuration for a connector
  */
-// tslint:disable-next-line: interface-name
 export interface ConnectorConfiguration {
-    name: string;
-    config: Map<string,string>;
+  name: string;
+  config: Map<string, string>;
 }
 
 /**
  * Model which represents a property validation result
  */
-// tslint:disable-next-line: interface-name
 export interface PropertyValidationResult {
-    property: string;
-    message: string;
-    displayName: string;
+  property: string;
+  message: string;
+  displayName: string;
 }
 
 /**
  * Model which represents a properties validation result
  */
-// tslint:disable-next-line: interface-name
 export interface PropertiesValidationResult {
-    status: 'VALID' | 'INVALID';
-    propertyValidationResults: PropertyValidationResult[];
+  status: "VALID" | "INVALID";
+  propertyValidationResults: PropertyValidationResult[];
 }
 
 /**
  * Model which represents a connector validation result
  */
-// tslint:disable-next-line: interface-name
 export interface ConnectionValidationResult {
-    status: 'VALID' | 'INVALID';
-    propertyValidationResults: PropertyValidationResult[];
-    genericValidationResults: GenericValidationResult[];
+  status: "VALID" | "INVALID";
+  propertyValidationResults: PropertyValidationResult[];
+  genericValidationResults: GenericValidationResult[];
 }
 
 /**
@@ -69,56 +83,56 @@ export interface ConnectionValidationResult {
  */
 // tslint:disable-next-line: interface-name
 export interface ConnectorProperty {
-    allowedValues?: string[];
-    category: 'CONNECTION' | 
-    'CONNECTION_ADVANCED' | 
-    'CONNECTION_ADVANCED_REPLICATION' | 
-    'CONNECTION_ADVANCED_PUBLICATION' | 
-    'CONNECTION_ADVANCED_SSL' | 
-    'FILTERS' |
-    'CONNECTOR' |
-    'CONNECTOR_NAME' | 
-    'CONNECTOR_ADVANCED' | 
-    'CONNECTOR_SNAPSHOT' | 
-    'ADVANCED' | 
-    'ADVANCED_HEARTBEAT'
-    ;
-    defaultValue?: any;
-    description: string;
-    displayName: string;
-    gridWidthLg?: 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
-    gridWidthSm?: 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
-    name: string;
-    isMandatory: boolean;
-    type: 'BOOLEAN' | 
-          'BOOLEAN-SWITCH' | 
-          'DURATION' | 
-          'STRING' | 
-          'INT' | 
-          'NON-NEG-INT' | 
-          'POS-INT' | 
-          'SHORT' | 
-          'LONG' | 
-          'NON-NEG-LONG' |
-          'DOUBLE' | 
-          'LIST' | 
-          'CLASS' | 
-          'PASSWORD'|
-          'COL_MASK_OR_TRUNCATE' |
-          'COL_MASK_HASH_SALT';
+  allowedValues?: string[];
+  category:
+    | "CONNECTION"
+    | "CONNECTION_ADVANCED"
+    | "CONNECTION_ADVANCED_REPLICATION"
+    | "CONNECTION_ADVANCED_PUBLICATION"
+    | "CONNECTION_ADVANCED_SSL"
+    | "FILTERS"
+    | "CONNECTOR"
+    | "CONNECTOR_NAME"
+    | "CONNECTOR_ADVANCED"
+    | "CONNECTOR_SNAPSHOT"
+    | "ADVANCED"
+    | "ADVANCED_HEARTBEAT";
+  defaultValue?: any;
+  description: string;
+  displayName: string;
+  gridWidthLg?: 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
+  gridWidthSm?: 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
+  name: string;
+  isMandatory: boolean;
+  type:
+    | "BOOLEAN"
+    | "BOOLEAN-SWITCH"
+    | "DURATION"
+    | "STRING"
+    | "INT"
+    | "NON-NEG-INT"
+    | "POS-INT"
+    | "SHORT"
+    | "LONG"
+    | "NON-NEG-LONG"
+    | "DOUBLE"
+    | "LIST"
+    | "CLASS"
+    | "PASSWORD"
+    | "COL_MASK_OR_TRUNCATE"
+    | "COL_MASK_HASH_SALT";
 }
 
 /**
  * Model which represents a connector type
  */
-// tslint:disable-next-line: interface-name
 export interface ConnectorType {
-    id: string;
-    className: string;
-    displayName: string;
-    version: string;
-    enabled: boolean;
-    properties?: ConnectorProperty[];
+  id: string;
+  className: string;
+  displayName: string;
+  version: string;
+  enabled: boolean;
+  properties?: ConnectorProperty[];
 }
 
 /**
@@ -126,8 +140,8 @@ export interface ConnectorType {
  */
 // tslint:disable-next-line: interface-name
 export interface DataCollection {
-    name: string;
-    namespace: string;
+  name: string;
+  namespace: string;
 }
 
 /**
@@ -135,9 +149,9 @@ export interface DataCollection {
  */
 // tslint:disable-next-line: interface-name
 export interface FilterValidationResult {
-    status: 'VALID' | 'INVALID';
-    propertyValidationResults: PropertyValidationResult[];
-    matchedCollections: DataCollection[];
+  status: "VALID" | "INVALID";
+  propertyValidationResults: PropertyValidationResult[];
+  matchedCollections: DataCollection[];
 }
 
 /**
@@ -145,6 +159,6 @@ export interface FilterValidationResult {
  */
 // tslint:disable-next-line: interface-name
 export interface GenericValidationResult {
-    message: string;
-    trace: string;
+  message: string;
+  trace: string;
 }
