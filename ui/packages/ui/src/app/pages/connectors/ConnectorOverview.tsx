@@ -16,6 +16,22 @@ export interface IConnectorcOverviewProps {
   connectorName: string;
 }
 
+const convertMillisecToTime = (millisec: number) => {
+  const seconds = (millisec / 1000).toFixed(1);
+  const minutes = (millisec / (1000 * 60)).toFixed(2);
+  const hours = (millisec / (1000 * 60 * 60)).toFixed(2);
+  const days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
+  if (parseInt(seconds) < 60) {
+    return seconds + ' Sec';
+  } else if (parseInt(minutes) < 60) {
+    return minutes + ' Min';
+  } else if (parseInt(hours) < 24) {
+    return hours + ' Hrs';
+  } else {
+    return days + ' Days';
+  }
+};
+
 /**
  * Component for display of Connector Overview
  */
@@ -57,7 +73,9 @@ export const ConnectorOverview: React.FunctionComponent<
           connectorMetrics.map((metrics) => (
             <p>
               {t(metrics.request.attribute)}:{' '}
-              {typeof metrics.value === 'boolean' ? (
+              {metrics.request.attribute === 'MilliSecondsSinceLastEvent' ? (
+                convertMillisecToTime(metrics.value as number)
+              ) : typeof metrics.value === 'boolean' ? (
                 metrics.value ? (
                   <CheckCircleIcon className="overview_metrics_connected" />
                 ) : (
