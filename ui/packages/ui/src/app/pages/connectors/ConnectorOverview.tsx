@@ -21,7 +21,9 @@ const convertMillisecToTime = (millisec: number) => {
   const minutes = (millisec / (1000 * 60)).toFixed(2);
   const hours = (millisec / (1000 * 60 * 60)).toFixed(2);
   const days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
-  if (parseInt(seconds) < 60) {
+  if (millisec <= 0){
+    return millisec;
+  }  else if (parseInt(seconds) < 60) {
     return seconds + ' Sec';
   } else if (parseInt(minutes) < 60) {
     return minutes + ' Min';
