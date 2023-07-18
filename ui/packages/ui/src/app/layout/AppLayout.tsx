@@ -1,7 +1,8 @@
-import './layout.css';
+
 import { Page, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import { AppHeader, AppLayoutContext } from 'layout';
 import * as React from 'react';
+import './layout.css';
 
 export const AppLayout: React.FC = ({ children }) => {
   const [breadcrumb, setHasBreadcrumb] = React.useState(null);
@@ -18,7 +19,7 @@ export const AppLayout: React.FC = ({ children }) => {
         breadcrumb={breadcrumb}
         className="app-page"
       >
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection variant={PageSectionVariants.light} className='app-page_main_page_section'>
           {children}
         </PageSection>
       </Page>

@@ -33,6 +33,8 @@ import {
   GridItem,
   Spinner,
   Alert,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import {
   ToastAlertComponent,
@@ -61,6 +63,8 @@ import {
   customPropertiesRegex,
 } from 'shared';
 import { getPropertiesDatawithDefaultConfig } from 'src/app/utils/FormatCosProperties';
+
+import './EditConnectorComponent.css';
 
 interface IValidationRef {
   validate: () => {};
@@ -617,349 +621,455 @@ export const EditConnectorComponent: React.FunctionComponent<
   };
   return (
     <>
-      <PageSection
-        variant={PageSectionVariants.light}
-        className="create-connector-page_breadcrumb"
-      >
-        <Breadcrumb>
-          <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-          <BreadcrumbItem isActive={true}>{t('editConnector')}</BreadcrumbItem>
-        </Breadcrumb>
-        <Level hasGutter={true}>
-          <LevelItem>
-            <TextContent>
-              <Title headingLevel="h3" size={TitleSizes['2xl']}>
-                {t('editAconnector')}
-              </Title>
-            </TextContent>
-          </LevelItem>
-        </Level>
-      </PageSection>
+      <Stack>
+        <StackItem>
+          <PageSection
+            variant={PageSectionVariants.light}
+            className="edit-connector-page_breadcrumb"
+          >
+            <Breadcrumb>
+              <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
+              <BreadcrumbItem isActive={true}>
+                {actionConnectorName}
+              </BreadcrumbItem>
+            </Breadcrumb>
+            <Level hasGutter={true}>
+              <LevelItem>
+                <TextContent>
+                  <Title headingLevel="h3" size={TitleSizes['2xl']}>
+                  {actionConnectorName}
+                  </Title>
+                </TextContent>
+              </LevelItem>
+            </Level>
+          </PageSection>
+        </StackItem>
+        <StackItem isFilled>
+          <PageSection variant={PageSectionVariants.light}>
+            <Grid>
+              <GridItem span={3}>
+                <Tabs
+                  activeKey={activeTabKey}
+                  onSelect={handleTabClick}
+                  isVertical
+                >
+                  <Tab
+                    eventKey={PROPERTIES_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Properties')}
+                      </TabTitleText>
+                    }
+                    data-testid={'properties'}
+                    className="pf-u-mt-sm"
+                  ></Tab>
+                  <Tab
+                    eventKey={FILTER_CONFIGURATION_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Filter definition')}
+                      </TabTitleText>
+                    }
+                    data-testid={'filter-definition'}
+                  ></Tab>
+                  <Tab
+                    eventKey={TRANSFORM_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Transformations')}
+                      </TabTitleText>
+                    }
+                    data-testid={'transformations'}
+                  ></Tab>
+                  <Tab
+                    eventKey={TOPIC_CREATION_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Topic creation')}
+                      </TabTitleText>
+                    }
+                    data-testid={'topic-creation'}
+                  ></Tab>
+                  <Tab
+                    eventKey={DATA_OPTIONS_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Data options')}
+                      </TabTitleText>
+                    }
+                    data-testid={'data-options'}
+                  ></Tab>
+                  <Tab
+                    eventKey={RUNTIME_OPTIONS_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Runtime options')}
+                      </TabTitleText>
+                    }
+                    data-testid={'runtime-options'}
+                  ></Tab>
+                  <Tab
+                    eventKey={CUSTOM_PROPERTIES_STEP_ID}
+                    title={
+                      <TabTitleText aria-label="vertical" role="region">
+                        {t('Custom properties')}
+                      </TabTitleText>
+                    }
+                    data-testid={'custom-properties'}
+                  ></Tab>
+                </Tabs>
+              </GridItem>
 
-      <PageSection variant={PageSectionVariants.light}>
-        <Grid>
-          <GridItem span={3}>
-            <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isVertical>
-              <Tab
-                eventKey={PROPERTIES_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Properties')}
-                  </TabTitleText>
-                }
-                data-testid={'properties'}
-                className="pf-u-mt-sm"
-              ></Tab>
-              <Tab
-                eventKey={FILTER_CONFIGURATION_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Filter definition')}
-                  </TabTitleText>
-                }
-                data-testid={'filter-definition'}
-              ></Tab>
-              <Tab
-                eventKey={TRANSFORM_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Transformations')}
-                  </TabTitleText>
-                }
-                data-testid={'transformations'}
-              ></Tab>
-              <Tab
-                eventKey={TOPIC_CREATION_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Topic creation')}
-                  </TabTitleText>
-                }
-                data-testid={'topic-creation'}
-              ></Tab>
-              <Tab
-                eventKey={DATA_OPTIONS_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Data options')}
-                  </TabTitleText>
-                }
-                data-testid={'data-options'}
-              ></Tab>
-              <Tab
-                eventKey={RUNTIME_OPTIONS_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Runtime options')}
-                  </TabTitleText>
-                }
-                data-testid={'runtime-options'}
-              ></Tab>
-              <Tab
-                eventKey={CUSTOM_PROPERTIES_STEP_ID}
-                title={
-                  <TabTitleText aria-label="vertical" role="region">
-                    {t('Custom properties')}
-                  </TabTitleText>
-                }
-                data-testid={'custom-properties'}
-              ></Tab>
-            </Tabs>
-          </GridItem>
-
-          <GridItem span={9}>
-            {activeTabKey === PROPERTIES_STEP_ID &&
-              selectedConnectorPropertyDefns.length !== 0 && (
-                <PageSection>
-                  <EditPropertiesStep
-                    connectorConfig={connectorConfig}
-                    selectedConnectorType={connectorConfig['connector.id']}
-                    propertyDefinitions={selectedConnectorPropertyDefns}
-                    basicPropertyDefinitions={getBasicPropertyDefinitions(
-                      selectedConnectorPropertyDefns
-                    )}
-                    basicPropertyValues={basicPropValues}
-                    setBasicPropValues={setBasicPropValues}
-                    advancedPropertyDefinitions={getAdvancedPropertyDefinitions(
-                      selectedConnectorPropertyDefns
-                    )}
-                    advancedPropertyValues={advancedPropValues}
-                    setAdvancedPropValues={setAdvancedPropValues}
-                    i18nIsRequiredText={t('isRequired')}
-                    i18nAdvancedPropertiesText={t('advancedPropertiesText')}
-                    i18nAdvancedPublicationPropertiesText={t(
-                      'advancedPublicationPropertiesText'
-                    )}
-                    i18nAdvancedReplicationPropertiesText={t(
-                      'advancedReplicationPropertiesText'
-                    )}
-                    i18nBasicPropertiesText={t('basicPropertiesText')}
-                    onValidateProperties={handleValidateConnectionProperties}
-                    ref={connectionPropsRef}
-                    setConnectionPropsValid={setConnectionPropsValid}
-                    setConnectionStepsValid={setConnectionStepsValid}
-                    invalidMsg={connectionPropsValidMsg}
-                    clearValidationError={clearValidationError}
-                  />
-                  {validateInProgress ? (
-                    <Spinner size="lg" />
-                  ) : (
-                    connectionStepsValid === 1 &&
-                    (!connectionPropsValid ? (
-                      <div style={{ padding: '15px 0' }}>
-                        <Alert
-                          variant="danger"
-                          isInline={true}
-                          title={
-                            <ConnectionPropertiesError
-                              connectionPropsMsg={connectionPropsValidMsg}
-                              i18nFieldValidationErrorMsg={t(
-                                'resolveFieldErrorsMsg'
-                              )}
-                              i18nValidationErrorMsg={t(
-                                'resolvePropertyErrorsMsg'
-                              )}
+              <GridItem span={9}>
+                {activeTabKey === PROPERTIES_STEP_ID &&
+                  selectedConnectorPropertyDefns.length !== 0 && (
+                    <PageSection>
+                      <EditPropertiesStep
+                        connectorConfig={connectorConfig}
+                        selectedConnectorType={connectorConfig['connector.id']}
+                        propertyDefinitions={selectedConnectorPropertyDefns}
+                        basicPropertyDefinitions={getBasicPropertyDefinitions(
+                          selectedConnectorPropertyDefns
+                        )}
+                        basicPropertyValues={basicPropValues}
+                        setBasicPropValues={setBasicPropValues}
+                        advancedPropertyDefinitions={getAdvancedPropertyDefinitions(
+                          selectedConnectorPropertyDefns
+                        )}
+                        advancedPropertyValues={advancedPropValues}
+                        setAdvancedPropValues={setAdvancedPropValues}
+                        i18nIsRequiredText={t('isRequired')}
+                        i18nAdvancedPropertiesText={t('advancedPropertiesText')}
+                        i18nAdvancedPublicationPropertiesText={t(
+                          'advancedPublicationPropertiesText'
+                        )}
+                        i18nAdvancedReplicationPropertiesText={t(
+                          'advancedReplicationPropertiesText'
+                        )}
+                        i18nBasicPropertiesText={t('basicPropertiesText')}
+                        onValidateProperties={
+                          handleValidateConnectionProperties
+                        }
+                        ref={connectionPropsRef}
+                        setConnectionPropsValid={setConnectionPropsValid}
+                        setConnectionStepsValid={setConnectionStepsValid}
+                        invalidMsg={connectionPropsValidMsg}
+                        clearValidationError={clearValidationError}
+                      />
+                      {validateInProgress ? (
+                        <Spinner size="lg" />
+                      ) : (
+                        connectionStepsValid === 1 &&
+                        (!connectionPropsValid ? (
+                          <div style={{ padding: '15px 0' }}>
+                            <Alert
+                              variant="danger"
+                              isInline={true}
+                              title={
+                                <ConnectionPropertiesError
+                                  connectionPropsMsg={connectionPropsValidMsg}
+                                  i18nFieldValidationErrorMsg={t(
+                                    'resolveFieldErrorsMsg'
+                                  )}
+                                  i18nValidationErrorMsg={t(
+                                    'resolvePropertyErrorsMsg'
+                                  )}
+                                />
+                              }
                             />
-                          }
-                        />
-                      </div>
+                          </div>
+                        ) : (
+                          <Alert
+                            variant="success"
+                            isInline={true}
+                            title="The validation was successful."
+                          />
+                        ))
+                      )}
+                    </PageSection>
+                  )}
+                {activeTabKey === FILTER_CONFIGURATION_STEP_ID && (
+                  <PageSection>
+                    <ConnectorNameTypeHeader
+                      connectorName={connectorConfig['name']}
+                      connectorType={connectorConfig['connector.id']}
+                      showIcon={false}
+                    />
+                    <FilterConfigStep
+                      propertyValues={
+                        new Map([...basicPropValues, ...advancedPropValues])
+                      }
+                      filterValues={filterValues}
+                      updateFilterValues={handleFilterUpdate}
+                      connectorType={connectorConfig['connector.id']}
+                      selectedConnectorType={connectorConfig['connector.id']}
+                      setIsValidFilter={setIsValidFilter}
+                      connectorConfig={new Map(Object.entries(connectorConfig))}
+                      isEditMode={true}
+                    />
+                  </PageSection>
+                )}
+                {activeTabKey === TRANSFORM_STEP_ID && (
+                  <PageSection>
+                    <ConnectorNameTypeHeader
+                      connectorName={connectorConfig['name']}
+                      connectorType={connectorConfig['connector.id']}
+                      showIcon={false}
+                    />
+                    <TransformsStep
+                      transformsValues={transformsValues}
+                      updateTransformValues={handleTransformsUpdate}
+                      setIsTransformDirty={setIsTransformDirty}
+                      selectedConnectorType={connectorConfig['connector.id']}
+                      clusterId={clusterID.toString()}
+                    />
+                  </PageSection>
+                )}
+                {activeTabKey === TOPIC_CREATION_STEP_ID && (
+                  <PageSection>
+                    <ConnectorNameTypeHeader
+                      connectorName={connectorConfig['name']}
+                      connectorType={connectorConfig['connector.id']}
+                      showIcon={false}
+                    />
+                    <EditTopicCreationStep
+                      topicCreationEnabled={topicCreationEnabled}
+                      connectorConfig={new Map(Object.entries(connectorConfig))}
+                      topicCreationValues={topicCreationPropValues}
+                      updateTopicCreationValues={handleTopicCreationUpdate}
+                      setIsTopicCreationDirty={setIsTopicCreationDirty}
+                      isTopicCreationDirty={isTopicCreationDirty}
+                    />
+                  </PageSection>
+                )}
+                {activeTabKey === DATA_OPTIONS_STEP_ID && (
+                  <PageSection>
+                    <ConnectorNameTypeHeader
+                      connectorName={connectorConfig['name']}
+                      connectorType={connectorConfig['connector.id']}
+                      showIcon={false}
+                    />
+                    <DataOptionsStep
+                      propertyDefinitions={getDataOptionsPropertyDefinitions(
+                        selectedConnectorPropertyDefns
+                      )}
+                      propertyValues={dataOptionsPropValues}
+                      i18nAdvancedMappingPropertiesText={t(
+                        'advancedMappingPropertiesText'
+                      )}
+                      i18nMappingPropertiesText={t('mappingPropertiesText')}
+                      i18nSnapshotPropertiesText={t('snapshotPropertiesText')}
+                      onValidateProperties={handleValidateOptionProperties}
+                      ref={dataOptionRef}
+                      setDataOptionsValid={setDataOptionsPropsValid}
+                      setDataStepsValid={setDataStepsValid}
+                      invalidMsg={connectionPropsValidMsg}
+                    />
+                    {validateInProgress ? (
+                      <Spinner size="lg" />
                     ) : (
-                      <Alert
-                        variant="success"
-                        isInline={true}
-                        title="The validation was successful."
-                      />
-                    ))
-                  )}
-                </PageSection>
+                      dataStepsValid === 1 &&
+                      (!dataOptionsPropsValid ? (
+                        <div style={{ padding: '15px 0' }}>
+                          <Alert
+                            variant="danger"
+                            isInline={true}
+                            title={
+                              <ConnectionPropertiesError
+                                connectionPropsMsg={connectionPropsValidMsg}
+                                i18nFieldValidationErrorMsg={t(
+                                  'resolveFieldErrorsMsg'
+                                )}
+                                i18nValidationErrorMsg={t(
+                                  'resolvePropertyErrorsMsg'
+                                )}
+                              />
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <Alert
+                          variant="success"
+                          isInline={true}
+                          title="The validation was successful."
+                        />
+                      ))
+                    )}
+                  </PageSection>
+                )}
+                {activeTabKey === RUNTIME_OPTIONS_STEP_ID && (
+                  <PageSection>
+                    <ConnectorNameTypeHeader
+                      connectorName={connectorConfig['name']}
+                      connectorType={connectorConfig['connector.id']}
+                      showIcon={false}
+                    />
+                    <RuntimeOptionsStep
+                      propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
+                        selectedConnectorPropertyDefns
+                      )}
+                      propertyValues={runtimeOptionsPropValues}
+                      i18nIsRequiredText={t('isRequired')}
+                      i18nEngineProperties={t('engineProperties')}
+                      i18nHeartbeatProperties={t('heartbeatProperties')}
+                      onValidateProperties={handleValidateOptionProperties}
+                      ref={runtimeOptionRef}
+                      setRuntimeOptionsValid={setRuntimeOptionsPropsValid}
+                      setRuntimeStepsValid={setRuntimeStepsValid}
+                      invalidMsg={connectionPropsValidMsg}
+                    />
+                    {validateInProgress ? (
+                      <Spinner size="lg" />
+                    ) : (
+                      runtimeStepsValid === 1 &&
+                      !connectorCreateFailed &&
+                      (!runtimeOptionsPropsValid ? (
+                        <div style={{ padding: '15px 0' }}>
+                          <Alert
+                            variant="danger"
+                            isInline={true}
+                            title={
+                              <ConnectionPropertiesError
+                                connectionPropsMsg={connectionPropsValidMsg}
+                                i18nFieldValidationErrorMsg={t(
+                                  'resolveFieldErrorsMsg'
+                                )}
+                                i18nValidationErrorMsg={t(
+                                  'resolvePropertyErrorsMsg'
+                                )}
+                              />
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <Alert
+                          variant="success"
+                          isInline={true}
+                          title="The validation was successful."
+                        />
+                      ))
+                    )}
+                  </PageSection>
+                )}
+                {activeTabKey === CUSTOM_PROPERTIES_STEP_ID && (
+                  <PageSection>
+                    <ConnectorNameTypeHeader
+                      connectorName={connectorConfig['name']}
+                      connectorType={connectorConfig['connector.id']}
+                      showIcon={false}
+                    />
+                    <CustomPropertiesStep
+                      connectorConfig={new Map(Object.entries(connectorConfig))}
+                      basicProperties={new Map(basicPropValues)}
+                      customProperties={customPropertiesValues}
+                      updateCustomPropertiesValues={
+                        handleCustomPropertiesUpdate
+                      }
+                      setIsCustomPropertiesDirty={setIsCustomPropertiesDirty}
+                      isCustomPropertiesDirty={isCustomPropertiesDirty}
+                      selectedConnectorType={connectorConfig['connector.id']}
+                      clusterId={clusterID.toString()}
+                      propertyValues={getFinalProperties(
+                        CUSTOM_PROPERTIES_STEP_ID
+                      )}
+                      isEditMode={true}
+                    />
+                  </PageSection>
+                )}
+              </GridItem>
+            </Grid>
+          </PageSection>
+        </StackItem>
+        <StackItem className='edit-footer'>
+          <PageSection className="pf-u-p-md" variant="light" hasShadowTop>
+            <>
+              {activeTabKey === PROPERTIES_STEP_ID ||
+              activeTabKey === DATA_OPTIONS_STEP_ID ||
+              activeTabKey === RUNTIME_OPTIONS_STEP_ID ? (
+                (activeTabKey === PROPERTIES_STEP_ID &&
+                  !connectionPropsValid) ||
+                (activeTabKey === DATA_OPTIONS_STEP_ID &&
+                  !dataOptionsPropsValid) ||
+                (activeTabKey === RUNTIME_OPTIONS_STEP_ID &&
+                  !runtimeOptionsPropsValid) ? (
+                  <>
+                    <Button
+                      onClick={() => validateStep(activeTabKey)}
+                      className="pf-u-mr-md pf-u-mb-sm"
+                    >
+                      {t('validate')}
+                    </Button>
+                    <hr className="pf-c-divider pf-m-vertical" />
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      isDisabled={true}
+                      onClick={() => validateStep(activeTabKey)}
+                      className="pf-u-mr-md pf-u-mb-sm"
+                    >
+                      {t('validate')}
+                    </Button>
+                    <hr className="pf-c-divider pf-m-vertical" />
+                  </>
+                )
+              ) : (
+                <></>
               )}
-            {activeTabKey === FILTER_CONFIGURATION_STEP_ID && (
-              <PageSection>
-                <ConnectorNameTypeHeader
-                  connectorName={connectorConfig['name']}
-                  connectorType={connectorConfig['connector.id']}
-                  showIcon={false}
-                />
-                <FilterConfigStep
-                  propertyValues={
-                    new Map([...basicPropValues, ...advancedPropValues])
+
+              {disableNextButton(activeTabKey) ? (
+                <Button
+                  isDisabled={true}
+                  variant="primary"
+                  type="submit"
+                  className={
+                    (activeTabKey === FILTER_CONFIGURATION_STEP_ID &&
+                      !isValidFilter) ||
+                    (activeTabKey === TRANSFORM_STEP_ID && isTransformDirty) ||
+                    (activeTabKey === CUSTOM_PROPERTIES_STEP_ID &&
+                      isCustomPropertiesDirty) ||
+                    (activeTabKey === TOPIC_CREATION_STEP_ID &&
+                      isTopicCreationDirty)
+                      ? 'pf-m-disabled'
+                      : ''
                   }
-                  filterValues={filterValues}
-                  updateFilterValues={handleFilterUpdate}
-                  connectorType={connectorConfig['connector.id']}
-                  selectedConnectorType={connectorConfig['connector.id']}
-                  setIsValidFilter={setIsValidFilter}
-                  connectorConfig={new Map(Object.entries(connectorConfig))}
-                  isEditMode={true}
-                />
-              </PageSection>
-            )}
-            {activeTabKey === TRANSFORM_STEP_ID && (
-              <PageSection>
-                <ConnectorNameTypeHeader
-                  connectorName={connectorConfig['name']}
-                  connectorType={connectorConfig['connector.id']}
-                  showIcon={false}
-                />
-                <TransformsStep
-                  transformsValues={transformsValues}
-                  updateTransformValues={handleTransformsUpdate}
-                  setIsTransformDirty={setIsTransformDirty}
-                  selectedConnectorType={connectorConfig['connector.id']}
-                  clusterId={clusterID.toString()}
-                />
-              </PageSection>
-            )}
-            {activeTabKey === TOPIC_CREATION_STEP_ID && (
-              <PageSection>
-                <ConnectorNameTypeHeader
-                  connectorName={connectorConfig['name']}
-                  connectorType={connectorConfig['connector.id']}
-                  showIcon={false}
-                />
-                <EditTopicCreationStep
-                  topicCreationEnabled={topicCreationEnabled}
-                  connectorConfig={new Map(Object.entries(connectorConfig))}
-                  topicCreationValues={topicCreationPropValues}
-                  updateTopicCreationValues={handleTopicCreationUpdate}
-                  setIsTopicCreationDirty={setIsTopicCreationDirty}
-                  isTopicCreationDirty={isTopicCreationDirty}
-                />
-              </PageSection>
-            )}
-            {activeTabKey === DATA_OPTIONS_STEP_ID && (
-              <PageSection>
-                <ConnectorNameTypeHeader
-                  connectorName={connectorConfig['name']}
-                  connectorType={connectorConfig['connector.id']}
-                  showIcon={false}
-                />
-                <DataOptionsStep
-                  propertyDefinitions={getDataOptionsPropertyDefinitions(
-                    selectedConnectorPropertyDefns
-                  )}
-                  propertyValues={dataOptionsPropValues}
-                  i18nAdvancedMappingPropertiesText={t(
-                    'advancedMappingPropertiesText'
-                  )}
-                  i18nMappingPropertiesText={t('mappingPropertiesText')}
-                  i18nSnapshotPropertiesText={t('snapshotPropertiesText')}
-                  onValidateProperties={handleValidateOptionProperties}
-                  ref={dataOptionRef}
-                  setDataOptionsValid={setDataOptionsPropsValid}
-                  setDataStepsValid={setDataStepsValid}
-                  invalidMsg={connectionPropsValidMsg}
-                />
-                {validateInProgress ? (
-                  <Spinner size="lg" />
-                ) : (
-                  dataStepsValid === 1 &&
-                  (!dataOptionsPropsValid ? (
-                    <div style={{ padding: '15px 0' }}>
-                      <Alert
-                        variant="danger"
-                        isInline={true}
-                        title={
-                          <ConnectionPropertiesError
-                            connectionPropsMsg={connectionPropsValidMsg}
-                            i18nFieldValidationErrorMsg={t(
-                              'resolveFieldErrorsMsg'
-                            )}
-                            i18nValidationErrorMsg={t(
-                              'resolvePropertyErrorsMsg'
-                            )}
-                          />
-                        }
-                      />
-                    </div>
-                  ) : (
-                    <Alert
-                      variant="success"
-                      isInline={true}
-                      title="The validation was successful."
-                    />
-                  ))
-                )}
-              </PageSection>
-            )}
-            {activeTabKey === RUNTIME_OPTIONS_STEP_ID && (
-              <PageSection>
-                <ConnectorNameTypeHeader
-                  connectorName={connectorConfig['name']}
-                  connectorType={connectorConfig['connector.id']}
-                  showIcon={false}
-                />
-                <RuntimeOptionsStep
-                  propertyDefinitions={getRuntimeOptionsPropertyDefinitions(
-                    selectedConnectorPropertyDefns
-                  )}
-                  propertyValues={runtimeOptionsPropValues}
-                  i18nIsRequiredText={t('isRequired')}
-                  i18nEngineProperties={t('engineProperties')}
-                  i18nHeartbeatProperties={t('heartbeatProperties')}
-                  onValidateProperties={handleValidateOptionProperties}
-                  ref={runtimeOptionRef}
-                  setRuntimeOptionsValid={setRuntimeOptionsPropsValid}
-                  setRuntimeStepsValid={setRuntimeStepsValid}
-                  invalidMsg={connectionPropsValidMsg}
-                />
-                {validateInProgress ? (
-                  <Spinner size="lg" />
-                ) : (
-                  runtimeStepsValid === 1 &&
-                  !connectorCreateFailed &&
-                  (!runtimeOptionsPropsValid ? (
-                    <div style={{ padding: '15px 0' }}>
-                      <Alert
-                        variant="danger"
-                        isInline={true}
-                        title={
-                          <ConnectionPropertiesError
-                            connectionPropsMsg={connectionPropsValidMsg}
-                            i18nFieldValidationErrorMsg={t(
-                              'resolveFieldErrorsMsg'
-                            )}
-                            i18nValidationErrorMsg={t(
-                              'resolvePropertyErrorsMsg'
-                            )}
-                          />
-                        }
-                      />
-                    </div>
-                  ) : (
-                    <Alert
-                      variant="success"
-                      isInline={true}
-                      title="The validation was successful."
-                    />
-                  ))
-                )}
-              </PageSection>
-            )}
-            {activeTabKey === CUSTOM_PROPERTIES_STEP_ID && (
-              <PageSection>
-                <ConnectorNameTypeHeader
-                  connectorName={connectorConfig['name']}
-                  connectorType={connectorConfig['connector.id']}
-                  showIcon={false}
-                />
-                <CustomPropertiesStep
-                  connectorConfig={new Map(Object.entries(connectorConfig))}
-                  basicProperties={new Map(basicPropValues)}
-                  customProperties={customPropertiesValues}
-                  updateCustomPropertiesValues={handleCustomPropertiesUpdate}
-                  setIsCustomPropertiesDirty={setIsCustomPropertiesDirty}
-                  isCustomPropertiesDirty={isCustomPropertiesDirty}
-                  selectedConnectorType={connectorConfig['connector.id']}
-                  clusterId={clusterID.toString()}
-                  propertyValues={getFinalProperties(CUSTOM_PROPERTIES_STEP_ID)}
-                  isEditMode={true}
-                />
-              </PageSection>
-            )}
-          </GridItem>
-        </Grid>
-      </PageSection>
+                  onClick={() => onFinish(activeTabKey)}
+                >
+                  {t('save')}
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className={
+                    (activeTabKey === FILTER_CONFIGURATION_STEP_ID &&
+                      !isValidFilter) ||
+                    (activeTabKey === TRANSFORM_STEP_ID && isTransformDirty) ||
+                    (activeTabKey === CUSTOM_PROPERTIES_STEP_ID &&
+                      isCustomPropertiesDirty) ||
+                    (activeTabKey === TOPIC_CREATION_STEP_ID &&
+                      isTopicCreationDirty)
+                      ? 'pf-m-disabled'
+                      : ''
+                  }
+                  onClick={() => onFinish(activeTabKey)}
+                >
+                  {t('save')}
+                </Button>
+              )}
+
+              <Button
+                onClick={onClose}
+                variant="secondary"
+                className="pf-u-ml-md pf-u-mb-sm"
+              >
+                {t('cancel')}
+              </Button>
+            </>
+          </PageSection>
+        </StackItem>
+      </Stack>
+
       <>
         <ToastAlertComponent
           alerts={alerts}
@@ -977,90 +1087,6 @@ export const EditConnectorComponent: React.FunctionComponent<
           onConfirm={doGotoConnectorsListPage}
         />
       </>
-      <PageSection className="pf-u-p-md" variant="light" hasShadowTop>
-        <>
-          {activeTabKey === PROPERTIES_STEP_ID ||
-          activeTabKey === DATA_OPTIONS_STEP_ID ||
-          activeTabKey === RUNTIME_OPTIONS_STEP_ID ? (
-            (activeTabKey === PROPERTIES_STEP_ID && !connectionPropsValid) ||
-            (activeTabKey === DATA_OPTIONS_STEP_ID && !dataOptionsPropsValid) ||
-            (activeTabKey === RUNTIME_OPTIONS_STEP_ID &&
-              !runtimeOptionsPropsValid) ? (
-              <>
-                <Button
-                  onClick={() => validateStep(activeTabKey)}
-                  className="pf-u-mr-md pf-u-mb-sm"
-                >
-                  {t('validate')}
-                </Button>
-                <hr className="pf-c-divider pf-m-vertical" />
-              </>
-            ) : (
-              <>
-                <Button
-                  isDisabled={true}
-                  onClick={() => validateStep(activeTabKey)}
-                  className="pf-u-mr-md pf-u-mb-sm"
-                >
-                  {t('validate')}
-                </Button>
-                <hr className="pf-c-divider pf-m-vertical" />
-              </>
-            )
-          ) : (
-            <></>
-          )}
-
-          {disableNextButton(activeTabKey) ? (
-            <Button
-              isDisabled={true}
-              variant="primary"
-              type="submit"
-              className={
-                (activeTabKey === FILTER_CONFIGURATION_STEP_ID &&
-                  !isValidFilter) ||
-                (activeTabKey === TRANSFORM_STEP_ID && isTransformDirty) ||
-                (activeTabKey === CUSTOM_PROPERTIES_STEP_ID &&
-                  isCustomPropertiesDirty) ||
-                (activeTabKey === TOPIC_CREATION_STEP_ID &&
-                  isTopicCreationDirty)
-                  ? 'pf-m-disabled'
-                  : ''
-              }
-              onClick={() => onFinish(activeTabKey)}
-            >
-              {t('save')}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              type="submit"
-              className={
-                (activeTabKey === FILTER_CONFIGURATION_STEP_ID &&
-                  !isValidFilter) ||
-                (activeTabKey === TRANSFORM_STEP_ID && isTransformDirty) ||
-                (activeTabKey === CUSTOM_PROPERTIES_STEP_ID &&
-                  isCustomPropertiesDirty) ||
-                (activeTabKey === TOPIC_CREATION_STEP_ID &&
-                  isTopicCreationDirty)
-                  ? 'pf-m-disabled'
-                  : ''
-              }
-              onClick={() => onFinish(activeTabKey)}
-            >
-              {t('save')}
-            </Button>
-          )}
-
-          <Button
-            onClick={onClose}
-            variant="secondary"
-            className="pf-u-ml-md pf-u-mb-sm"
-          >
-            {t('cancel')}
-          </Button>
-        </>
-      </PageSection>
     </>
   );
 };

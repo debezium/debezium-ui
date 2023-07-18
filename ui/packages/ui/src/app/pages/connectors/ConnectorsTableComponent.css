@@ -85,3 +85,7 @@
     text-align: left;
   }
 }
+
+.page_wrapper{
+  height: 100%;
+}

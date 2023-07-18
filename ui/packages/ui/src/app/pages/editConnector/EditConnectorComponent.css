@@ -1,0 +1,16 @@
+.edit-footer{
+    position: sticky;
+    bottom: 0;
+}
+
+.edit-connector {
+    &-page_breadcrumb {
+      border-bottom: 1px solid var(--pf-global--BorderColor--100);
+      padding-bottom: 0px;
+      .pf-l-level {
+        .pf-c-content {
+          padding: 15px 0px;
+        }
+      }
+    }
+  }

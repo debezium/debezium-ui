@@ -335,10 +335,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     return taskElements;
   };
 
-  const onConnectorDrawer = (c: Connector) => {
-    console.log(c);
-    setSelectedConnector(c);
-  };
+  // const onConnectorDrawer = (c: Connector) => {
+  //   setSelectedConnector(c);
+  // };
 
   const deselectConnector = () => {
     setSelectedConnector(undefined);
@@ -478,7 +477,10 @@ export const ConnectorsTableComponent: React.FunctionComponent<
               <a>
                 <b
                   data-testid={'connector-name'}
-                  onClick={() => onConnectorDrawer(conn)}
+                  onClick={() => 
+                    // onConnectorDrawer(conn)
+                    goToEditConnector(conn.name)
+                  }
                 >
                   {conn.name}
                 </b>
