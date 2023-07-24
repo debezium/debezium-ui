@@ -960,7 +960,6 @@ export const EditConnectorComponent: React.FunctionComponent<
                     />
                     <CustomPropertiesStep
                       connectorConfig={new Map(Object.entries(connectorConfig))}
-                      basicProperties={new Map(basicPropValues)}
                       customProperties={customPropertiesValues}
                       updateCustomPropertiesValues={
                         handleCustomPropertiesUpdate
