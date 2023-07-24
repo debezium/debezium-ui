@@ -12,7 +12,9 @@
   }
 }
 .pf-c-table__action {
-  .pf-c-dropdown pf-m-align-right {
-    display: none !important;
+  .pf-c-dropdown.pf-m-align-right {
+    ul {
+      margin-right: 10px !important;
+    }
   }
 }
