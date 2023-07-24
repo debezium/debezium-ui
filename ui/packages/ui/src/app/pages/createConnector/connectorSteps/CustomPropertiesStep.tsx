@@ -47,7 +47,6 @@ export interface ICustomProperties {
 }
 
 export interface ICustomPropertiesStepProps {
-  basicProperties: Map<string, string>;
   connectorConfig?: Map<string, string>;
   customProperties: { [key: string]: string };
   updateCustomPropertiesValues: (data: any) => void;
@@ -153,7 +152,7 @@ export const CustomPropertiesStep: React.FunctionComponent<
     fetch_retry(connectorService.validateConnection, connectorService, [
       props.selectedConnectorType,
       {
-        ...mapToObject(new Map(props.basicProperties)),
+        ...mapToObject(new Map(props.propertyValues)),
         ...mapToObject(new Map(props.connectorConfig!)),
         ...customPropertiesValue,
       },
