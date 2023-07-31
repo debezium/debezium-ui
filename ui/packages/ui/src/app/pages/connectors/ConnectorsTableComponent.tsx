@@ -153,7 +153,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         name: connector.connName,
         taskStates: {},
       });
-      console.log(connector);
     } else {
       setCurrentAction(action);
       setCurrentActionConnector(connName);

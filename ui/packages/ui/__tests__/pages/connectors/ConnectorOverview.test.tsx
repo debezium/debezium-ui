@@ -1,13 +1,13 @@
 import {
   IConnectorcOverviewProps,
-  ConnectorOverview,
-} from '../../../src/app/pages/connectors/ConnectorOverview';
+  ConnectorExpandView,
+} from '../../../src/app/pages/connectors/ConnectorExpandView';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 describe('<ConnectorOverview />', () => {
   const renderSetup = (props: IConnectorcOverviewProps) => {
-    return render(<ConnectorOverview {...props} />);
+    return render(<ConnectorExpandView {...props} />);
   };
 
   it('should render ConnectorOverview', () => {
