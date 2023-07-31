@@ -17,15 +17,8 @@ import {
 import { Services } from '@debezium/ui-services';
 import {
   Button,
-  Breadcrumb,
-  BreadcrumbItem,
-  Level,
-  LevelItem,
   PageSection,
   PageSectionVariants,
-  TextContent,
-  Title,
-  TitleSizes,
   Tabs,
   Tab,
   TabTitleText,
@@ -43,9 +36,9 @@ import {
 } from 'components';
 import { AppLayoutContext } from 'layout';
 import _ from 'lodash';
-import React, { useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, Dispatch, SetStateAction, FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   fetch_retry,
   getAdvancedPropertyDefinitions,
@@ -69,17 +62,18 @@ import './EditConnectorComponent.css';
 interface IValidationRef {
   validate: () => {};
 }
-type IOnSuccessCallbackFn = () => void;
+// type IOnSuccessCallbackFn = () => void;
 
-type IOnCancelCallbackFn = () => void;
+// type IOnCancelCallbackFn = () => void;
 export interface IEditConnectorComponentProps {
-  onSuccessCallback: IOnSuccessCallbackFn;
-  onCancelCallback: IOnCancelCallbackFn;
+  // onSuccessCallback: IOnSuccessCallbackFn;
+  // onCancelCallback: IOnCancelCallbackFn;
+  actionConnectorName: string;
 }
 
-export const EditConnectorComponent: React.FunctionComponent<
+export const EditConnectorComponent: FC<
   IEditConnectorComponentProps
-> = () => {
+> = ({actionConnectorName}) => {
   const { t } = useTranslation();
   const history = useHistory();
   const [activeTabKey, setActiveTabKey] = React.useState<number>(1);
@@ -153,8 +147,8 @@ export const EditConnectorComponent: React.FunctionComponent<
     [key: string]: string;
   }>({});
 
-  const { pathname } = useLocation();
-  const actionConnectorName = pathname.replace(/^\/|\/$/g, '');
+  // const { pathname } = useLocation();
+  // const actionConnectorName = pathname.replace(/^\/|\/$/g, '');
 
   const appLayoutContext = React.useContext(AppLayoutContext);
   const clusterID = appLayoutContext.clusterId;
@@ -621,8 +615,9 @@ export const EditConnectorComponent: React.FunctionComponent<
   };
   return (
     <>
+    
       <Stack>
-        <StackItem>
+        {/* <StackItem>
           <PageSection
             variant={PageSectionVariants.light}
             className="edit-connector-page_breadcrumb"
@@ -643,7 +638,7 @@ export const EditConnectorComponent: React.FunctionComponent<
               </LevelItem>
             </Level>
           </PageSection>
-        </StackItem>
+        </StackItem> */}
         <StackItem isFilled>
           <PageSection variant={PageSectionVariants.light}>
             <Grid>

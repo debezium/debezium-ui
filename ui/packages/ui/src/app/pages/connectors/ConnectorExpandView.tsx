@@ -1,4 +1,4 @@
-import './ConnectorOverview.css';
+import './ConnectorExpandView.css';
 import { Metrics } from '@debezium/ui-models';
 import { Services } from '@debezium/ui-services';
 import { Flex, FlexItem, Skeleton, Title } from '@patternfly/react-core';
@@ -37,7 +37,7 @@ const convertMillisecToTime = (millisec: number) => {
 /**
  * Component for display of Connector Overview
  */
-export const ConnectorOverview: React.FunctionComponent<
+export const ConnectorExpandView: React.FunctionComponent<
   IConnectorcOverviewProps
 > = (props) => {
   const { t } = useTranslation();

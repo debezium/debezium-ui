@@ -1,5 +1,5 @@
 import { ConnectorDrawer } from './ConnectorDrawer';
-import { ConnectorOverview } from './ConnectorOverview';
+import { ConnectorExpandView } from './ConnectorExpandView';
 import { ConnectorStatus } from './ConnectorStatus';
 import { ConnectorTask } from './ConnectorTask';
 import { ConnectorTaskState } from './ConnectorTaskState';
@@ -502,7 +502,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         cells: [
           { title: <div>{''}</div> },
           { title: (
-            <ConnectorOverview
+            <ConnectorExpandView
               clusterId={props.clusterId}
               connectorName={conn.name}
             />
@@ -571,6 +571,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             : false,
       },
       {
+        isSeparator: true,
+      },
+      {
         title: t('view'),
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.VIEW, rowData.connName, rowData);
@@ -581,10 +584,17 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             : false,
       },
       {
-        isSeparator: true,
+        title: 'Edit connector config',
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
+          goToEditConnector(rowData.connName, rowData);
+        },
+        isDisabled:
+          row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
+            ? true
+            : false,
       },
       {
-        title: t('Edit'),
+        title: 'Incremental snapshot',
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           goToEditConnector(rowData.connName, rowData);
         },
