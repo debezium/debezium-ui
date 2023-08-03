@@ -1027,9 +1027,6 @@ export const CreateConnectorComponent: React.FunctionComponent<
               showIcon={false}
             />
             <CustomPropertiesStep 
-            basicProperties={new Map(
-              basicPropValues
-            )}
              customProperties={customPropertiesValues}
             updateCustomPropertiesValues={handleCustomPropertiesUpdate}
             setIsCustomPropertiesDirty={setIsCustomPropertiesDirty}
