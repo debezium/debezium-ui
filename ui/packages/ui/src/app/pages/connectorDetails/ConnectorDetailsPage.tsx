@@ -1,6 +1,8 @@
 import { CONNECTOR_DETAILS_TABS } from '../../constants/constants';
 import './ConnectorDetailsPage.css';
 import { EditConnectorComponent } from './EditConnectorComponent';
+import { IncrementalSnapshot } from './incrementalSnapshot/IncrementalSnapshot';
+import { Services } from '@debezium/ui-services';
 import {
   Stack,
   StackItem,
@@ -17,8 +19,11 @@ import {
   TabTitleText,
   Tabs,
 } from '@patternfly/react-core';
+import { ConnectorIcon } from 'components';
+import { AppLayoutContext } from 'layout';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { ConnectorTypeId, fetch_retry } from 'shared';
 
 export const ConnectorDetailsPage = () => {
   const { hash, pathname } = useLocation();
@@ -28,6 +33,9 @@ export const ConnectorDetailsPage = () => {
   const [activeTabKey, setActiveTabKey] = useState<string | number>(
     getTab(hash)
   );
+  const [connectorConfig, setConnectorConfig] = React.useState<
+    Map<string, string>
+  >(new Map<string, string>());
 
   /**
    * Toggle currently active tab
@@ -46,6 +54,21 @@ export const ConnectorDetailsPage = () => {
     setActiveTabKey(getTab(hash));
   }, [hash]);
 
+  const connectorService = Services.getConnectorService();
+  const appLayoutContext = React.useContext(AppLayoutContext);
+  const clusterID = appLayoutContext.clusterId;
+
+  useEffect(() => {
+    fetch_retry(connectorService.getConnectorConfig, connectorService, [
+      clusterID,
+      actionConnectorName,
+    ])
+      .then((cConnector) => {
+        setConnectorConfig(cConnector);
+      })
+      .catch((err: Error) => console.error('danger', err?.message));
+  }, [clusterID, actionConnectorName]);
+
   return (
     <Stack>
       <StackItem>
@@ -62,7 +85,21 @@ export const ConnectorDetailsPage = () => {
           <Level hasGutter={true}>
             <LevelItem>
               <TextContent>
+              
                 <Title headingLevel="h3" size={TitleSizes['2xl']}>
+                {/* {connectorConfig['connector.id'] && (
+                    <ConnectorIcon
+                      connectorType={
+                        connectorConfig['connector.id'] === 'PostgreSQL'
+                          ? ConnectorTypeId.POSTGRES
+                          : connectorConfig['connector.id']
+                      }
+                      alt={actionConnectorName}
+                      width={30}
+                      height={30}
+                    />
+                  )}
+                  {`            ${actionConnectorName}`} */}
                   {actionConnectorName}
                 </Title>
               </TextContent>
@@ -73,6 +110,7 @@ export const ConnectorDetailsPage = () => {
       <StackItem isFilled>
         <PageSection
           variant={PageSectionVariants.light}
+          className="connector-details-content"
           style={{ padding: '5px 5px 0 5px' }}
         >
           <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
@@ -99,7 +137,12 @@ export const ConnectorDetailsPage = () => {
               eventKey={CONNECTOR_DETAILS_TABS.IncrementalSnapshot}
               title={<TabTitleText>Incremental snapshot</TabTitleText>}
             >
-              Incremental snapshot
+              {actionConnectorName && connectorConfig['connector.id'] && (
+                <IncrementalSnapshot
+                  actionConnectorName={actionConnectorName}
+                  connectorConfig={connectorConfig}
+                />
+              )}
             </Tab>
           </Tabs>
         </PageSection>

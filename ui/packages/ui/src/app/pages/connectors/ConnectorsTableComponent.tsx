@@ -133,10 +133,29 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     setCurrentActionConnector('');
   };
 
+  const goToConnectorOverview = useCallback(
+    (connName: string, connector?: any) =>
+      history.push({
+        pathname: `/${connName}`,
+        hash: '#overview',
+      }),
+    [history]
+  );
+
   const goToEditConnector = useCallback(
     (connName: string, connector?: any) =>
       history.push({
         pathname: `/${connName}`,
+        hash: '#configuration',
+      }),
+    [history]
+  );
+
+  const goToIncrementalSnapshot = useCallback(
+    (connName: string, connector?: any) =>
+      history.push({
+        pathname: `/${connName}`,
+        hash: '#incrementalSnapshot',
       }),
     [history]
   );
@@ -478,7 +497,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
                   data-testid={'connector-name'}
                   onClick={() => 
                     // onConnectorDrawer(conn)
-                    goToEditConnector(conn.name)
+                    goToConnectorOverview(conn.name)
                   }
                 >
                   {conn.name}
@@ -595,7 +614,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
       {
         title: 'Incremental snapshot',
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
-          goToEditConnector(rowData.connName, rowData);
+          goToIncrementalSnapshot(rowData.connName, rowData);
         },
         isDisabled:
           row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'

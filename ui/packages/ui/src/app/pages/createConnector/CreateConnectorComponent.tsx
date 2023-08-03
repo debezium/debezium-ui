@@ -20,7 +20,12 @@ import { Services } from '@debezium/ui-services';
 import {
   Alert,
   Button,
+  Form,
+  FormGroup,
+  Modal,
+  ModalVariant,
   Spinner,
+  TextInput,
   Tooltip,
   Wizard,
   WizardContextConsumer,
@@ -30,9 +35,10 @@ import {
   ToastAlertComponent,
   ConnectionPropertiesError,
   ConnectorNameTypeHeader,
+  HelpInfoIcon,
 } from 'components';
 import _ from 'lodash';
-import React, { Dispatch, ReactNode, SetStateAction } from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Prompt } from 'react-router-dom';
 import {
@@ -53,6 +59,7 @@ import {
 } from 'shared';
 import { getPropertiesDatawithDefaultConfig } from 'src/app/utils/FormatCosProperties';
 import { CustomPropertiesStep } from './connectorSteps/CustomPropertiesStep';
+import { use } from 'i18next';
 
 /**
  * Put the enabled types first, then the disabled types.  alpha sort each group
@@ -192,6 +199,14 @@ export const CreateConnectorComponent: React.FunctionComponent<
     React.useState<boolean>(true);
   const [connectorCreateFailed, setConnectorCreateFailed] =
     React.useState<boolean>(false);
+
+
+
+    const [isIncrementalSnapshotModalOpen, setIsIncrementalSnapshotModalOpen] = useState(false);
+
+    const handleIncrementalSnapshotModalToggle = () => {
+
+    }
 
   const connectionPropsRef =
     React.useRef() as React.MutableRefObject<IValidationRef>;
@@ -1163,6 +1178,11 @@ export const CreateConnectorComponent: React.FunctionComponent<
                   {t('next')}
                 </Button>
               )}
+              {activeStep.id === REVIEW_STEP_ID && (
+                <Button variant="secondary" onClick={()=> setIsIncrementalSnapshotModalOpen(true)}>
+                Set incremental snapshot
+              </Button>
+              ) }
               <Button
                 variant="secondary"
                 onClick={
@@ -1241,6 +1261,48 @@ export const CreateConnectorComponent: React.FunctionComponent<
         onCancel={doCancelConfirmed}
         onConfirm={doGotoConnectorsListPage}
       />
+      <Modal
+          variant={ModalVariant.large}
+          title="Set incremental snapshot"
+          isOpen={isIncrementalSnapshotModalOpen}
+          onClose={()=>setIsIncrementalSnapshotModalOpen(false)}
+          actions={[
+            <Button key="confirm" variant="primary" onClick={handleIncrementalSnapshotModalToggle}>
+              Confirm
+            </Button>,
+            <Button key="cancel" variant="link" onClick={()=> setIsIncrementalSnapshotModalOpen(false)}>
+              Cancel
+            </Button>
+          ]}
+        >
+          <Form className="child-selection-step_form">
+            
+            <FormGroup
+              label={'Signaling data collection'}
+              isRequired={true}
+              labelIcon={
+                <HelpInfoIcon
+                  label={'Signaling data collection'}
+                  description={'The name of the data collection that is used to send signals/commands to Debezium. Signaling is disabled when not set.'}
+                />
+              }
+            >
+              <TextInput
+                name={'Signaling_data_collection'}
+                onChange={() => {}}
+                value={''}
+                onBlur={() => {}}
+                aria-label={'Signaling_data_collection'}
+              //   placeholder="e.g. databaseName.schemaName.tableName1, databaseName.schemaName.tableName1, ..."
+                //   validated={props.validated}
+                type={'text'}
+              />
+            </FormGroup>
+         
+         
+        </Form>
+        
+        </Modal>
     </>
   );
 };
