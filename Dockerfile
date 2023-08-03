@@ -6,7 +6,7 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_HOME="/usr/lib/jvm/jre-11"
 ENV NPM_CONFIG_CACHE="/.cache/npm"
 
-RUN microdnf install ca-certificates ${JAVA_PACKAGE} java-11-openjdk-devel git \
+RUN microdnf install ca-certificates ${JAVA_PACKAGE} java-11-openjdk-devel tzdata-java git \
     && microdnf update \
     && microdnf clean all \
     && mkdir -p /javabuild/backend \
@@ -46,7 +46,7 @@ ENV JAVA_HOME="/usr/lib/jvm/jre-11"
 
 # Install java and the run-java script
 # Also set up permissions for user `1001`
-RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
+RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} tzdata-java \
     && microdnf update \
     && microdnf clean all \
     && mkdir /deployments \
