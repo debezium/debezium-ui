@@ -40,7 +40,7 @@
     "@types/enzyme": "3.10.13",
     "@types/jest": "27.5.2",
     "@types/lodash": "4.14.197",
-    "@types/node": "18.17.4",
+    "@types/node": "18.17.5",
     "@types/react": "17.0.64",
     "@types/react-dom": "17.0.20",
     "@types/react-router": "5.1.20",
