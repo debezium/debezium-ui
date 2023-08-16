@@ -103,7 +103,10 @@ public class MongoDbConnectorIntegrator extends ConnectorIntegratorBase {
 
     protected <T extends DataCollectionId> Stream<T> determineDataCollectionsToBeSnapshotted(
             CommonConnectorConfig connectorConfig, final Collection<T> allDataCollections) {
-        final Set<Pattern> snapshotAllowedDataCollections = connectorConfig.getDataCollectionsToBeSnapshotted();
+        final Set<Pattern> snapshotAllowedDataCollections = connectorConfig.getDataCollectionsToBeSnapshotted()
+                .stream()
+                .map(regex -> Pattern.compile(regex, Pattern.CASE_INSENSITIVE))
+                .collect(Collectors.toSet());
         if (snapshotAllowedDataCollections.size() == 0) {
             return allDataCollections.stream();
         }
