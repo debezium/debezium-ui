@@ -70,7 +70,7 @@
   "customProperties": "Proprietà personalizzate",
   "incorrectCustomProperties": "Le proprietà personalizzate applicate non superano la convalida, aggiorna o rimuovi.",
   "configureCustomProperties": "Configura le proprietà personalizzate",
-  "customPropertiesDescription": "Configura le proprietà personalizzate per il tipo di connettore selezionato.",
+  "customPropertiesDescription": "Aggiungi ulteriori proprietà di configurazione mancanti nei passaggi precedenti per il tipo di connettore selezionato.",
   "removeCustomPropertiesMsg": "Fare clic su conferma per rimuovere eventuali proprietà personalizzate.",
   "name": "Nome",
   "status": "Stato",

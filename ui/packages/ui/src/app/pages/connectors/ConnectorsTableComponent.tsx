@@ -1,5 +1,4 @@
 import { ConnectorDrawer } from './ConnectorDrawer';
-import { ConnectorOverview } from './ConnectorOverview';
 import { ConnectorStatus } from './ConnectorStatus';
 import { ConnectorTask } from './ConnectorTask';
 import { ConnectorTaskState } from './ConnectorTaskState';
@@ -153,7 +152,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         name: connector.connName,
         taskStates: {},
       });
-      console.log(connector);
     } else {
       setCurrentAction(action);
       setCurrentActionConnector(connName);
@@ -501,12 +499,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         parent: counter,
         cells: [
           { title: <div>{''}</div> },
-          { title: (
-            <ConnectorOverview
-              clusterId={props.clusterId}
-              connectorName={conn.name}
-            />
-          ) },
+          { title: <></> },
           {
             title: <div>{''}</div>,
           },

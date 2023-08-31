@@ -8,6 +8,7 @@
       "@pf4-assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"],
       "shared": ["src/app/shared"],
       "components": ["src/app/components"],
+      "constants": ["src/app/constants/*"],
       "assets": ["assets"],
       "i18n": ["src/i18n"],
       "layout":["src/app/layout"],

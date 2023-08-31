@@ -1,13 +1,13 @@
 import {
   IConnectorcOverviewProps,
-  ConnectorOverview,
-} from '../../../src/app/pages/connectors/ConnectorOverview';
+  ConnectorExpandableView,
+} from '../../../src/app/pages/connectors/ConnectorExpandableView';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 describe('<ConnectorOverview />', () => {
   const renderSetup = (props: IConnectorcOverviewProps) => {
-    return render(<ConnectorOverview {...props} />);
+    return render(<ConnectorExpandableView {...props} />);
   };
 
   it('should render ConnectorOverview', () => {
@@ -18,6 +18,6 @@ describe('<ConnectorOverview />', () => {
 
     renderSetup(props);
 
-    expect(screen.getByText('metrics')).toBeInTheDocument();
+    expect(screen.getAllByText('Loading connector metrics')[0]).toBeInTheDocument();
   });
 });

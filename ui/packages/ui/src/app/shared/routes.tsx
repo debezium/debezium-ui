@@ -1,7 +1,7 @@
 import {
   ConnectorsPage,
   CreateConnectorPage,
-  EditConnectorComponent,
+  ConnectorDetailsPage,
 } from '../pages';
 import { RenderRoutes } from './RenderRoutes';
 
@@ -29,7 +29,7 @@ export const ROUTES = [
         path: '/:id/',
         key: 'CONNECTOR_DETAILS_PAGE',
         exact: true,
-        component: EditConnectorComponent,
+        component: ConnectorDetailsPage,
       },
     ],
   },

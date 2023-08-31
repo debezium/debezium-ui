@@ -1,7 +1,7 @@
-import './ConnectorOverview.css';
+import './ConnectorExpandableView.css';
 import { Metrics } from '@debezium/ui-models';
 import { Services } from '@debezium/ui-services';
-import { Flex, FlexItem, Skeleton, Title } from '@patternfly/react-core';
+import { Flex, FlexItem, Skeleton } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -37,7 +37,7 @@ const convertMillisecToTime = (millisec: number) => {
 /**
  * Component for display of Connector Overview
  */
-export const ConnectorOverview: React.FunctionComponent<
+export const ConnectorExpandableView: React.FunctionComponent<
   IConnectorcOverviewProps
 > = (props) => {
   const { t } = useTranslation();
@@ -68,12 +68,12 @@ export const ConnectorOverview: React.FunctionComponent<
   return (
     <Flex>
       <FlexItem className="overview_metrics_skeleton">
-        <Title headingLevel="h3" size={'md'}>
+        {/* <Title headingLevel="h3" size={'md'}>
           <b>{t('metrics')}</b>
-        </Title>
+        </Title> */}
         {connectorMetrics ? (
           connectorMetrics.map((metrics) => (
-            <p>
+            <p key={metrics.request.attribute}>
               {t(metrics.request.attribute)}:{' '}
               {metrics.request.attribute === 'MilliSecondsSinceLastEvent' ? (
                 convertMillisecToTime(metrics.value as number)
