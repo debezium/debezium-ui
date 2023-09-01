@@ -13,3 +13,11 @@
       padding-top: 10px;
     }
   }
+.connector-details-content{
+  padding: 5px 5px 0 5px;
+  height: 100%;
+  .pf-c-tab-content{
+    height: 100%;
+  }
+
+}

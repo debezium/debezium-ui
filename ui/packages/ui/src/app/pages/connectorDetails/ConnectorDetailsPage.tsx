@@ -1,5 +1,6 @@
 import { CONNECTOR_DETAILS_TABS } from '../../constants/constants';
 import './ConnectorDetailsPage.css';
+import { ConnectorOverview } from './ConnectorOverview';
 import { EditConnectorComponent } from './EditConnectorComponent';
 // import { IncrementalSnapshot } from './incrementalSnapshot/IncrementalSnapshot';
 import { Services } from '@debezium/ui-services';
@@ -23,7 +24,6 @@ import { AppLayoutContext } from 'layout';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { fetch_retry } from 'shared';
-import { ConnectorOverview } from './ConnectorOverview';
 
 export const ConnectorDetailsPage = () => {
   const { hash, pathname } = useLocation();
@@ -110,7 +110,6 @@ export const ConnectorDetailsPage = () => {
         <PageSection
           variant={PageSectionVariants.light}
           className="connector-details-content"
-          style={{ padding: '5px 5px 0 5px' }}
         >
           <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
             <Tab
@@ -119,14 +118,14 @@ export const ConnectorDetailsPage = () => {
               title={<TabTitleText>Overview</TabTitleText>}
             >
               <ConnectorOverview
-              connectorConfiguration={connectorConfig}
-              connectorName={actionConnectorName}
+                connectorConfiguration={connectorConfig}
+                connectorName={actionConnectorName}
               />
             </Tab>
             <Tab
               key={CONNECTOR_DETAILS_TABS.Configuration}
               eventKey={CONNECTOR_DETAILS_TABS.Configuration}
-              title={<TabTitleText>Configuration</TabTitleText>}
+              title={<TabTitleText> Edit connector config</TabTitleText>}
             >
               {actionConnectorName && (
                 <EditConnectorComponent
@@ -134,7 +133,6 @@ export const ConnectorDetailsPage = () => {
                   connectorConfiguration={connectorConfig}
                 />
               )}
-              {/* configuration */}
             </Tab>
             {/* <Tab
               key={CONNECTOR_DETAILS_TABS.IncrementalSnapshot}
@@ -146,7 +144,12 @@ export const ConnectorDetailsPage = () => {
                 //   actionConnectorName={actionConnectorName}
                 //   connectorConfig={connectorConfig}
                 // />
-                <></>
+                <PageSection isFilled={true}>
+                  <Card>
+                    <CardTitle>Coming soon</CardTitle>
+                    <CardBody></CardBody>
+                  </Card>
+                </PageSection>
               )}
             </Tab> */}
           </Tabs>

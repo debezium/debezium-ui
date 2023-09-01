@@ -61,12 +61,8 @@ import { getPropertiesDatawithDefaultConfig } from 'src/app/utils/FormatCosPrope
 interface IValidationRef {
   validate: () => {};
 }
-// type IOnSuccessCallbackFn = () => void;
 
-// type IOnCancelCallbackFn = () => void;
 export interface IEditConnectorComponentProps {
-  // onSuccessCallback: IOnSuccessCallbackFn;
-  // onCancelCallback: IOnCancelCallbackFn;
   actionConnectorName: string;
   connectorConfiguration: Map<string, string>;
 }
@@ -610,7 +606,7 @@ export const EditConnectorComponent: FC<IEditConnectorComponentProps> = ({
         <StackItem isFilled>
           <PageSection variant={PageSectionVariants.light}>
             <Grid>
-              <GridItem span={3}>
+              <GridItem span={2}>
                 <Tabs
                   activeKey={activeTabKey}
                   onSelect={handleTabClick}
@@ -683,7 +679,7 @@ export const EditConnectorComponent: FC<IEditConnectorComponentProps> = ({
                 </Tabs>
               </GridItem>
 
-              <GridItem span={9}>
+              <GridItem span={10}>
                 {activeTabKey === PROPERTIES_STEP_ID &&
                   selectedConnectorPropertyDefns.length !== 0 && (
                     <PageSection>

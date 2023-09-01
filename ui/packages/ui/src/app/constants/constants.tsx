@@ -1,5 +1,5 @@
 export enum CONNECTOR_DETAILS_TABS {
     Overview = 'overview',
-    Configuration = 'configuration',
+    Configuration = 'editConnectorConfig',
     IncrementalSnapshot = 'incrementalSnapshot',
   }
