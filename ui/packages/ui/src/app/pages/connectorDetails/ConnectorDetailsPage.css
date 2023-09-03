@@ -1,9 +1,5 @@
-.edit-footer{
-    position: sticky;
-    bottom: 0;
-}
-
-.edit-connector {
+.connector-details-header {
+  padding-bottom: 5px;
     &-page_breadcrumb {
       border-bottom: 1px solid var(--pf-global--BorderColor--100);
       padding-bottom: 0px;
@@ -12,5 +8,8 @@
           padding: 15px 0px;
         }
       }
+    }
+    .pf-l-level {
+      padding-top: 10px;
     }
   }

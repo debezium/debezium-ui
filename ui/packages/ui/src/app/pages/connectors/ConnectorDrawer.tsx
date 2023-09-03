@@ -126,7 +126,6 @@ export const ConnectorDrawerPanelContent: FunctionComponent<
       .then((cConnector) => {
         setLoading(false);
         setConnector(cConnector);
-        console.log(cConnector);
       })
       .catch((err: React.SetStateAction<Error>) => {
         setApiError(true);

@@ -1,5 +1,5 @@
 import { ConnectorDrawer } from './ConnectorDrawer';
-import { ConnectorOverview } from './ConnectorOverview';
+import { ConnectorExpandView } from './ConnectorExpandView';
 import { ConnectorStatus } from './ConnectorStatus';
 import { ConnectorTask } from './ConnectorTask';
 import { ConnectorTaskState } from './ConnectorTaskState';
@@ -133,10 +133,29 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     setCurrentActionConnector('');
   };
 
+  const goToConnectorOverview = useCallback(
+    (connName: string, connector?: any) =>
+      history.push({
+        pathname: `/${connName}`,
+        hash: '#overview',
+      }),
+    [history]
+  );
+
   const goToEditConnector = useCallback(
     (connName: string, connector?: any) =>
       history.push({
         pathname: `/${connName}`,
+        hash: '#configuration',
+      }),
+    [history]
+  );
+
+  const goToIncrementalSnapshot = useCallback(
+    (connName: string, connector?: any) =>
+      history.push({
+        pathname: `/${connName}`,
+        hash: '#incrementalSnapshot',
       }),
     [history]
   );
@@ -153,7 +172,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         name: connector.connName,
         taskStates: {},
       });
-      console.log(connector);
     } else {
       setCurrentAction(action);
       setCurrentActionConnector(connName);
@@ -479,7 +497,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
                   data-testid={'connector-name'}
                   onClick={() => 
                     // onConnectorDrawer(conn)
-                    goToEditConnector(conn.name)
+                    goToConnectorOverview(conn.name)
                   }
                 >
                   {conn.name}
@@ -502,7 +520,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         cells: [
           { title: <div>{''}</div> },
           { title: (
-            <ConnectorOverview
+            <ConnectorExpandView
               clusterId={props.clusterId}
               connectorName={conn.name}
             />
@@ -571,6 +589,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             : false,
       },
       {
+        isSeparator: true,
+      },
+      {
         title: t('view'),
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.VIEW, rowData.connName, rowData);
@@ -581,12 +602,19 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             : false,
       },
       {
-        isSeparator: true,
-      },
-      {
-        title: t('Edit'),
+        title: 'Edit connector config',
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           goToEditConnector(rowData.connName, rowData);
+        },
+        isDisabled:
+          row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
+            ? true
+            : false,
+      },
+      {
+        title: 'Incremental snapshot',
+        onClick: (event: any, rowId: any, rowData: any, extra: any) => {
+          goToIncrementalSnapshot(rowData.connName, rowData);
         },
         isDisabled:
           row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
