@@ -42,6 +42,7 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
       <PageSection
         variant={PageSectionVariants.light}
         className="create-connector-page_breadcrumb"
+        padding={{ default: 'noPadding' }}
       >
         <Breadcrumb>
           <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
@@ -59,15 +60,18 @@ export const CreateConnectorPage: React.FunctionComponent = () => {
           </LevelItem>
         </Level>
       </PageSection>
-      <PageSection className='app-page-section-wrapper'>
-      <div className="app-page-section-border-bottom">
-        <CreateConnectorComponent
-          onCancelCallback={onCancel}
-          onSuccessCallback={onSuccess}
-          clusterId={'' + clusterID}
-          connectorNames={connectorNames}
-        />
-      </div>
+      <PageSection
+        className="create-connector-page_main-section"
+        padding={{ default: 'noPadding' }}
+      >
+        <div className="app-page-section-border-bottom">
+          <CreateConnectorComponent
+            onCancelCallback={onCancel}
+            onSuccessCallback={onSuccess}
+            clusterId={'' + clusterID}
+            connectorNames={connectorNames}
+          />
+        </div>
       </PageSection>
     </>
   );

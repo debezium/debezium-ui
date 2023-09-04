@@ -6,6 +6,7 @@ import {
   FilterConfigStep,
   CustomPropertiesStep,
 } from '../createConnector/connectorSteps';
+import './EditConnectorComponent.css';
 import { EditPropertiesStep } from './EditPropertiesStep';
 import { EditTopicCreationStep } from './EditTopicCreationStep';
 import {
@@ -17,15 +18,8 @@ import {
 import { Services } from '@debezium/ui-services';
 import {
   Button,
-  Breadcrumb,
-  BreadcrumbItem,
-  Level,
-  LevelItem,
   PageSection,
   PageSectionVariants,
-  TextContent,
-  Title,
-  TitleSizes,
   Tabs,
   Tab,
   TabTitleText,
@@ -43,9 +37,9 @@ import {
 } from 'components';
 import { AppLayoutContext } from 'layout';
 import _ from 'lodash';
-import React, { useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, Dispatch, SetStateAction, FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   fetch_retry,
   getAdvancedPropertyDefinitions,
@@ -64,22 +58,19 @@ import {
 } from 'shared';
 import { getPropertiesDatawithDefaultConfig } from 'src/app/utils/FormatCosProperties';
 
-import './EditConnectorComponent.css';
-
 interface IValidationRef {
   validate: () => {};
 }
-type IOnSuccessCallbackFn = () => void;
 
-type IOnCancelCallbackFn = () => void;
 export interface IEditConnectorComponentProps {
-  onSuccessCallback: IOnSuccessCallbackFn;
-  onCancelCallback: IOnCancelCallbackFn;
+  actionConnectorName: string;
+  connectorConfiguration: Map<string, string>;
 }
 
-export const EditConnectorComponent: React.FunctionComponent<
-  IEditConnectorComponentProps
-> = () => {
+export const EditConnectorComponent: FC<IEditConnectorComponentProps> = ({
+  actionConnectorName,
+  connectorConfiguration,
+}) => {
   const { t } = useTranslation();
   const history = useHistory();
   const [activeTabKey, setActiveTabKey] = React.useState<number>(1);
@@ -153,9 +144,6 @@ export const EditConnectorComponent: React.FunctionComponent<
     [key: string]: string;
   }>({});
 
-  const { pathname } = useLocation();
-  const actionConnectorName = pathname.replace(/^\/|\/$/g, '');
-
   const appLayoutContext = React.useContext(AppLayoutContext);
   const clusterID = appLayoutContext.clusterId;
 
@@ -208,16 +196,9 @@ export const EditConnectorComponent: React.FunctionComponent<
   }, [alerts]);
 
   useEffect(() => {
-    const connectorService = Services.getConnectorService();
-    fetch_retry(connectorService.getConnectorConfig, connectorService, [
-      clusterID,
-      actionConnectorName,
-    ])
-      .then((cConnector) => {
-        setConnectorConfig(cConnector);
-      })
-      .catch((err: Error) => addAlert('danger', err?.message));
-  }, [clusterID, actionConnectorName]);
+    !_.isEmpty(connectorConfiguration) &&
+      setConnectorConfig(_.cloneDeep(connectorConfiguration));
+  }, [clusterID, actionConnectorName, connectorConfiguration]);
 
   useEffect(() => {
     if (!_.isEmpty(connectorConfig)) {
@@ -622,32 +603,10 @@ export const EditConnectorComponent: React.FunctionComponent<
   return (
     <>
       <Stack>
-        <StackItem>
-          <PageSection
-            variant={PageSectionVariants.light}
-            className="edit-connector-page_breadcrumb"
-          >
-            <Breadcrumb>
-              <BreadcrumbItem to="/">Connectors</BreadcrumbItem>
-              <BreadcrumbItem isActive={true}>
-                {actionConnectorName}
-              </BreadcrumbItem>
-            </Breadcrumb>
-            <Level hasGutter={true}>
-              <LevelItem>
-                <TextContent>
-                  <Title headingLevel="h3" size={TitleSizes['2xl']}>
-                  {actionConnectorName}
-                  </Title>
-                </TextContent>
-              </LevelItem>
-            </Level>
-          </PageSection>
-        </StackItem>
         <StackItem isFilled>
           <PageSection variant={PageSectionVariants.light}>
             <Grid>
-              <GridItem span={3}>
+              <GridItem span={2}>
                 <Tabs
                   activeKey={activeTabKey}
                   onSelect={handleTabClick}
@@ -720,7 +679,7 @@ export const EditConnectorComponent: React.FunctionComponent<
                 </Tabs>
               </GridItem>
 
-              <GridItem span={9}>
+              <GridItem span={10}>
                 {activeTabKey === PROPERTIES_STEP_ID &&
                   selectedConnectorPropertyDefns.length !== 0 && (
                     <PageSection>
@@ -979,7 +938,7 @@ export const EditConnectorComponent: React.FunctionComponent<
             </Grid>
           </PageSection>
         </StackItem>
-        <StackItem className='edit-footer'>
+        <StackItem className="edit-footer">
           <PageSection className="pf-u-p-md" variant="light" hasShadowTop>
             <>
               {activeTabKey === PROPERTIES_STEP_ID ||

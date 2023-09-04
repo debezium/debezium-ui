@@ -1,5 +1,4 @@
 import { ConnectorDrawer } from './ConnectorDrawer';
-import { ConnectorOverview } from './ConnectorOverview';
 import { ConnectorStatus } from './ConnectorStatus';
 import { ConnectorTask } from './ConnectorTask';
 import { ConnectorTaskState } from './ConnectorTaskState';
@@ -41,6 +40,7 @@ import {
   TableHeader,
 } from '@patternfly/react-table';
 import { PageLoader, ToastAlertComponent, ConnectorIcon } from 'components';
+import { CONNECTOR_DETAILS_TABS } from '../../constants/constants';
 import { AppLayoutContext } from 'layout';
 import React, { SyntheticEvent, useCallback } from 'react';
 import isEqual from 'react-fast-compare';
@@ -133,13 +133,32 @@ export const ConnectorsTableComponent: React.FunctionComponent<
     setCurrentActionConnector('');
   };
 
+  const goToConnectorOverview = useCallback(
+    (connName: string, connector?: any) =>
+      history.push({
+        pathname: `/${connName}`,
+        hash: `#${CONNECTOR_DETAILS_TABS.Overview}`,
+      }),
+    [history]
+  );
+
   const goToEditConnector = useCallback(
     (connName: string, connector?: any) =>
       history.push({
         pathname: `/${connName}`,
+        hash: `#${CONNECTOR_DETAILS_TABS.Configuration}`,
       }),
     [history]
   );
+
+  // const goToIncrementalSnapshot = useCallback(
+  //   (connName: string, connector?: any) =>
+  //     history.push({
+  //       pathname: `/${connName}`,
+  //       hash: `#${CONNECTOR_DETAILS_TABS.IncrementalSnapshot}`,
+  //     }),
+  //     [history]
+  //   );
 
   const setCurrentActionAndName = (
     action: Action,
@@ -153,7 +172,6 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         name: connector.connName,
         taskStates: {},
       });
-      console.log(connector);
     } else {
       setCurrentAction(action);
       setCurrentActionConnector(connName);
@@ -479,7 +497,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
                   data-testid={'connector-name'}
                   onClick={() => 
                     // onConnectorDrawer(conn)
-                    goToEditConnector(conn.name)
+                    goToConnectorOverview(conn.name)
                   }
                 >
                   {conn.name}
@@ -501,12 +519,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
         parent: counter,
         cells: [
           { title: <div>{''}</div> },
-          { title: (
-            <ConnectorOverview
-              clusterId={props.clusterId}
-              connectorName={conn.name}
-            />
-          ) },
+          { title: <></> },
           {
             title: <div>{''}</div>,
           },
@@ -571,6 +584,9 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             : false,
       },
       {
+        isSeparator: true,
+      },
+      {
         title: t('view'),
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           setCurrentActionAndName(Action.VIEW, rowData.connName, rowData);
@@ -581,10 +597,7 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             : false,
       },
       {
-        isSeparator: true,
-      },
-      {
-        title: t('Edit'),
+        title: 'Edit connector config',
         onClick: (event: any, rowId: any, rowData: any, extra: any) => {
           goToEditConnector(rowData.connName, rowData);
         },
@@ -593,6 +606,16 @@ export const ConnectorsTableComponent: React.FunctionComponent<
             ? true
             : false,
       },
+      // {
+      //   title: t('Incremental snapshot'),
+      //   onClick: (event: any, rowId: any, rowData: any, extra: any) => {
+      //     goToIncrementalSnapshot(rowData.connName, rowData);
+      //   },
+      //   isDisabled:
+      //     row.connStatus === 'UNASSIGNED' || row.connStatus === 'DESTROYED'
+      //       ? true
+      //       : false,
+      // },
       {
         isSeparator: true,
       },

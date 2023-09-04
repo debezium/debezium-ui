@@ -1,6 +1,6 @@
 .create-connector {
   &-page_breadcrumb {
-    padding-bottom: 0px !important;
+    padding: 10px !important;
     border-bottom: 1px solid var(--pf-global--BorderColor--100);
     .pf-l-level {
       .pf-c-content {
@@ -8,11 +8,6 @@
       }
     }
   }
-  .app-page-section-wrapper{
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-
 
   &-page_wizard {
     height: auto;
@@ -47,6 +42,10 @@
       }
     }
   }
+}
+
+.create-connector-page_main-section{
+  padding: 10px !important;
 }
 
 .skipToNextInfoBox {

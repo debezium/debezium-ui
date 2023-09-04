@@ -70,7 +70,7 @@
   "customProperties": "自定义属性",
   "incorrectCustomProperties": "应用的自定义属性未通过验证请更新或删除。",
   "configureCustomProperties": "配置自定义属性",
-  "customPropertiesDescription": "为选定的连接器类型配置自定义属性。",
+  "customPropertiesDescription": "为所选连接器类型添加先前步骤中缺少的其他配置属性。",
   "removeCustomPropertiesMsg": "单击确认以删除任何自定义属性。",
   "name": "名称",
   "status": "状态",

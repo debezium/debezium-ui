@@ -207,9 +207,10 @@ export const CustomPropertiesStep: React.FunctionComponent<
   };
 
   return (
-    <div>
+    <>
       {properties.size === 0 ? (
-        <EmptyState variant={EmptyStateVariant.small}>
+        <Bullseye>
+        <EmptyState variant={EmptyStateVariant.large}>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h4" size="lg">
             {t('customProperties')}
@@ -226,6 +227,8 @@ export const CustomPropertiesStep: React.FunctionComponent<
             {t('configureCustomProperties')}
           </Button>
         </EmptyState>
+      </Bullseye>
+        
       ) : (
         <>
           {!validationResult && (
@@ -391,6 +394,6 @@ export const CustomPropertiesStep: React.FunctionComponent<
       >
         {t('removeCustomPropertiesMsg')}
       </Modal>
-    </div>
+    </>
   );
 };

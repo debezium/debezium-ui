@@ -1,0 +1,23 @@
+.connector-details-header {
+  padding-bottom: 5px;
+    &-page_breadcrumb {
+      border-bottom: 1px solid var(--pf-global--BorderColor--100);
+      padding-bottom: 0px;
+      .pf-l-level {
+        .pf-c-content {
+          padding: 15px 0px;
+        }
+      }
+    }
+    .pf-l-level {
+      padding-top: 10px;
+    }
+  }
+.connector-details-content{
+  padding: 5px 5px 0 5px;
+  height: 100%;
+  .pf-c-tab-content{
+    height: 100%;
+  }
+
+}

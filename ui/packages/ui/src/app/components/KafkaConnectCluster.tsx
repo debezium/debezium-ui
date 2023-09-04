@@ -21,6 +21,9 @@ export const KafkaConnectCluster: React.FC<IKafkaConnectCluster> = (props) => {
     fetch_retry(globalsService.getConnectCluster, globalsService)
       .then((cClusters: string[]) => {
         setConnectClusters([...cClusters]);
+        if(cClusters.length > 0) {
+          props.handleChange(1);
+        }
       })
       .catch((err: React.SetStateAction<Error>) => {
         alert(err);
