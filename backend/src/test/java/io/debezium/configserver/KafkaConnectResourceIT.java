@@ -12,6 +12,7 @@ import io.debezium.configserver.util.NoDatabaseInfrastructureTestProfile;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -45,6 +46,7 @@ public class KafkaConnectResourceIT {
     }
 
     @Test
+    @Disabled("Constantly fails on GH actions, see DBZ-6943")
     public void testListTransformsEndpoint() {
         ensureDebeziumContainerIsHealthy();
         given()
