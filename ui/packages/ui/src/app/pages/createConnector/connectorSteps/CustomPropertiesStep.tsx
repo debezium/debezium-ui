@@ -292,7 +292,7 @@ export const CustomPropertiesStep: React.FunctionComponent<
                                   properties.get(key)!.key
                                 )
                                   ? 'Saved'
-                                  : 'Either key or value is empty'
+                                  : 'Not saved: either key or value is missing'
                               }
                             >
                               <Alert
@@ -310,11 +310,18 @@ export const CustomPropertiesStep: React.FunctionComponent<
                             </Tooltip>
                           </LevelItem>
                           <LevelItem>
-                            <Button
+                          <Tooltip
+                              position="top"
+                              content={
+                                 'Remove'
+                              }
+                            >
+                             <Button
                               variant="link"
                               icon={<MinusCircleIcon />}
                               onClick={() => deleteProperty(key)}
                             />
+                            </Tooltip>
                           </LevelItem>
                         </Level>
                       </GridItem>
