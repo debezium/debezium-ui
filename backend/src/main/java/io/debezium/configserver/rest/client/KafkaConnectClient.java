@@ -90,7 +90,7 @@ public interface KafkaConnectClient {
     List<TransformsInfo> listTransforms() throws ProcessingException, IOException;
 
     @GET
-    @Path("/debezium/topic-creation")
+    @Path("/debezium/topic-creation-enabled")
     @Produces("application/json")
     Boolean isTopicCreationEnabled() throws ProcessingException, IOException;
 
