@@ -114,3 +114,46 @@ The Debezium community welcomes anyone that wants to help out in any way, whethe
 reporting problems, helping with documentation, or contributing code changes to fix bugs, add tests,
 or implement new features.
 See [this document](https://github.com/debezium/debezium/blob/main/CONTRIBUTE.md) for details.
+
+## Quick-start
+
+```bash
+git clone https://github.com/patternfly/patternfly-react-seed
+cd patternfly-react-seed
+npm install && npm run start:dev
+```
+## Development scripts
+```sh
+# Install development/build dependencies
+npm install
+
+# Start the development server
+npm run start:dev
+
+# Run a production build (outputs to "dist" dir)
+npm run build
+
+# Run the test suite
+npm run test
+
+# Run the test suite with coverage
+npm run test:coverage
+
+# Run the linter
+npm run lint
+
+# Run the code formatter
+npm run format
+
+# Launch a tool to inspect the bundle size
+npm run bundle-profile:analyze
+
+# Start the express server (run a production build first)
+npm run start
+
+# Start storybook component explorer
+npm run storybook
+
+# Build storybook component explorer as standalone app (outputs to "storybook-static" dir)
+npm run build:storybook
+```

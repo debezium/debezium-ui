@@ -1,0 +1,7 @@
+.connector-plugin-card-header .pf-v5-c-card__header-main{
+    text-align: center;
+}
+
+.placeholder-database-icon{
+    font-size: var(--pf-v5-global--icon--FontSize--xl);
+}

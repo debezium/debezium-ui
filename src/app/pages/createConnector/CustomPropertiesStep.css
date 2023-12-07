@@ -1,0 +1,8 @@
+.custom-properties_form-input{
+    flex-grow: 1;
+}
+
+.custom-properties_json-section {
+    padding-left: 10px;
+    border-left: 1px solid lightgray;
+}

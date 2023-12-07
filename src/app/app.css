@@ -1,0 +1,11 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.pf-v5-c-content {
+  --pf-v5-c-content--small--Color: red; /* changes all <small> color to red */
+  --pf-v5-c-content--blockquote--BorderLeftColor: purple; /* changes all <blockquote> left border color to purple */
+  --pf-v5-c-content--hr--BackgroundColor: lemonchiffon; /* changes a <hr> color to lemonchiffon */
+}
