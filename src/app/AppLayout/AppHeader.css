@@ -1,0 +1,10 @@
+.theme-toggle .pf-m-selected{
+    background-color: #0066cc !important;
+}
+
+.theme-toggle .pf-v5-c-toggle-group__button:hover{
+background-color: #151515;
+}
+.theme-toggle .pf-v5-c-toggle-group__button:focus{
+    background-color: #151515;
+    }

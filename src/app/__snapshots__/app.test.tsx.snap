@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App tests should render default App component 1`] = `
+<DocumentFragment>
+  <div
+    class="pf-v5-c-page"
+  >
+    <div
+      class="pf-v5-c-skip-to-content"
+    >
+      <a
+        aria-disabled="false"
+        class="pf-v5-c-button pf-m-primary"
+        data-ouia-component-id="OUIA-Generated-Button-primary-1"
+        data-ouia-component-type="PF5/Button"
+        data-ouia-safe="true"
+        href="#primary-app-container"
+      >
+        Skip to Content
+      </a>
+    </div>
+    <header
+      class="pf-v5-c-masthead pf-m-display-inline-on-md"
+    >
+      <span
+        class="pf-v5-c-masthead__toggle"
+      >
+        <button
+          aria-disabled="false"
+          aria-label="Global navigation"
+          class="pf-v5-c-button pf-m-plain"
+          data-ouia-component-id="OUIA-Generated-Button-plain-1"
+          data-ouia-component-type="PF5/Button"
+          data-ouia-safe="true"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="pf-v5-svg"
+            fill="currentColor"
+            height="1em"
+            role="img"
+            viewBox="0 0 448 512"
+            width="1em"
+          >
+            <path
+              d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+            />
+          </svg>
+        </button>
+      </span>
+      <div
+        class="pf-v5-c-masthead__main"
+      >
+        <span
+          class="pf-v5-c-masthead__brand"
+        >
+          <img
+            alt="Patterfly Logo"
+            class="pf-v5-c-brand"
+            src="test-file-stub"
+            style="--pf-v5-c-brand--Height: 36px;"
+          />
+        </span>
+      </div>
+    </header>
+    <div
+      aria-hidden="false"
+      class="pf-v5-c-page__sidebar pf-m-expanded"
+      id="page-sidebar"
+    >
+      <div
+        class="pf-v5-c-page__sidebar-body"
+      >
+        <nav
+          aria-label="Global"
+          class="pf-v5-c-nav"
+          data-ouia-component-id="OUIA-Generated-Nav-1"
+          data-ouia-component-type="PF5/Nav"
+          data-ouia-safe="true"
+          id="nav-primary-simple"
+        >
+          <ul
+            class="pf-v5-c-nav__list"
+            id="nav-list-simple"
+            role="list"
+          >
+            <li
+              class="pf-v5-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-1"
+              data-ouia-component-type="PF5/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                aria-current="page"
+                class="pf-v5-c-nav__link pf-m-current active"
+                href="/"
+              >
+                Dashboard
+              </a>
+            </li>
+            <li
+              class="pf-v5-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-2"
+              data-ouia-component-type="PF5/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-v5-c-nav__link"
+                href="/support"
+              >
+                Support
+              </a>
+            </li>
+            <li
+              class="pf-v5-c-nav__item pf-m-expandable"
+              data-ouia-component-id="OUIA-Generated-NavExpandable-1"
+              data-ouia-component-type="PF5/NavExpandable"
+              data-ouia-safe="true"
+            >
+              <button
+                aria-expanded="false"
+                class="pf-v5-c-nav__link"
+                id="Settings-2"
+              >
+                Settings
+                <span
+                  class="pf-v5-c-nav__toggle"
+                >
+                  <span
+                    class="pf-v5-c-nav__toggle-icon"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-v5-svg"
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      viewBox="0 0 256 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      />
+                    </svg>
+                  </span>
+                </span>
+              </button>
+              <section
+                aria-labelledby="Settings-2"
+                class="pf-v5-c-nav__subnav"
+                hidden=""
+              >
+                <ul
+                  class="pf-v5-c-nav__list"
+                  role="list"
+                >
+                  <li
+                    class="pf-v5-c-nav__item"
+                    data-ouia-component-id="OUIA-Generated-NavItem-3"
+                    data-ouia-component-type="PF5/NavItem"
+                    data-ouia-safe="true"
+                  >
+                    <a
+                      class="pf-v5-c-nav__link"
+                      href="/settings/general"
+                    >
+                      General
+                    </a>
+                  </li>
+                  <li
+                    class="pf-v5-c-nav__item"
+                    data-ouia-component-id="OUIA-Generated-NavItem-4"
+                    data-ouia-component-type="PF5/NavItem"
+                    data-ouia-safe="true"
+                  >
+                    <a
+                      class="pf-v5-c-nav__link"
+                      href="/settings/profile"
+                    >
+                      Profile
+                    </a>
+                  </li>
+                </ul>
+              </section>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <main
+      class="pf-v5-c-page__main"
+      id="primary-app-container"
+      tabindex="-1"
+    >
+      <section
+        class="pf-v5-c-page__main-section"
+      >
+        <h1
+          class="pf-v5-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF5/Title"
+          data-ouia-safe="true"
+        >
+          Dashboard Page Title!
+        </h1>
+      </section>
+    </main>
+  </div>
+</DocumentFragment>
+`;

@@ -1,0 +1,4 @@
+.connector-details_task-status-text .pf-v5-c-helper-text__item{
+    /* text-align: center; */
+    display: grid !important;
+}

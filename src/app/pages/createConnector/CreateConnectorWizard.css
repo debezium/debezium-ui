@@ -1,0 +1,9 @@
+.connector-config-wizard .pf-v5-c-wizard__footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.connector-config-wizard .pf-v5-c-wizard__main-body {
+    padding-bottom: 4rem;
+}
