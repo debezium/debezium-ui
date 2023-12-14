@@ -30,7 +30,6 @@ export const DeleteConnectorModel: React.FC<DeleteConnectorModelProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  //   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const [validated, setValidated] = React.useState<validate>("default");
   const [deleteConnectorNameConfirmation, setDeleteConnectorNameConfirmation] =
     React.useState("");
@@ -41,7 +40,6 @@ export const DeleteConnectorModel: React.FC<DeleteConnectorModelProps> = ({
 
   const clearDeleteOperation = () => {
     setDeleteConnectorNameConfirmation("");
-    // setDeleteConnectorName('');
     updateDeleteModalOpen(false);
     setValidated("default");
   };
@@ -72,7 +70,11 @@ export const DeleteConnectorModel: React.FC<DeleteConnectorModelProps> = ({
           navigateTo && navigateTo !== "" && navigate(navigateTo);
         })
         .catch((err) => {
-          addNewNotification("danger", "Connector delete failed", err.message);
+          addNewNotification(
+            "danger",
+            "Connector delete failed",
+            err?.message || ""
+          );
         });
     }
   };

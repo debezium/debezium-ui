@@ -4,7 +4,7 @@
     "rootDir": ".",
     "outDir": "dist",
     "module": "esnext",
-    "target": "es5",
+    "target": "es2015",
     "lib": ["es6", "dom"],
     "sourceMap": true,
     "jsx": "react",

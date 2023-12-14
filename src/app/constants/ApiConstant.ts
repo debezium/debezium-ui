@@ -24,4 +24,5 @@ export enum FormStep {
   DATA_OPTION= "DataOption",
   RUNTIME_OPTION = "RuntimeOption",
   CUSTOM_PROPERTIES = "CustomProperties",
+  TRANSFORM="Transform",
 }

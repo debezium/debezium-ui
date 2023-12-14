@@ -74,7 +74,10 @@ const ConnectorTable: React.FC<Props> = ({
             );
           })
           .catch((err) => {
-            console.log("error", err);
+            addNewNotification(
+              "danger",
+              "Connector paused failed",
+              err?.message || "");
           });
       },
     },
@@ -91,7 +94,11 @@ const ConnectorTable: React.FC<Props> = ({
             );
           })
           .catch((err) => {
-            console.log("error", err);
+            addNewNotification(
+              "danger",
+              "Connector resume failed",
+              err?.message || ""
+            );
           });
       },
     },
@@ -111,12 +118,18 @@ const ConnectorTable: React.FC<Props> = ({
             );
           })
           .catch((err) => {
-            console.log("error", err);
+            addNewNotification(
+              "danger",
+              "Connector restart failed",
+              err?.message || ""
+            );
           });
       },
     },
     {
-      title: <a href="https://www.patternfly.org">Edit connector</a>,
+      // title: <a href="https://www.patternfly.org">Edit connector</a>,
+      title:"Edit connector",
+      isDisabled: true,
     },
     {
       isSeparator: true,

@@ -89,9 +89,12 @@
     "@patternfly/react-table": "^5.1.1",
     "@storybook/builder-webpack5": "^7.0.27",
     "axios": "^1.6.0",
+    "i": "^0.3.7",
     "lodash": "^4.17.21",
+    "npm": "^10.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-multi-ref": "^1.0.1",
     "serve-handler": "^6.1.5",
     "sirv-cli": "^2.0.2"
   }
