@@ -20,3 +20,12 @@ export const getConnectorClass = (connectorType: string | undefined) => {
       return "";
   }
 };
+
+
+export function mapToObject(map:  Map<string, string>) {
+  const obj = {} as Record<string, string>;
+  map.forEach((value, key) => {
+    obj[key] = value;
+  });
+  return obj;
+}

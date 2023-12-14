@@ -191,6 +191,18 @@ export class ConnectorService extends BaseService {
     );
     return this.httpPutWithReturn(endpoint, connectionPayload);
   }
+
+  public getTransformsList(baseHref: string): Promise<any> {
+    this.logger?.info(
+      "[ConnectorService] Getting the list of available connector transform:",
+    );
+    const endpoint: string = this.endpoint(
+      "debezium/transforms",
+      baseHref,
+      undefined,
+    );
+    return this.httpGet<any>(endpoint);
+  }
   
 
   /**

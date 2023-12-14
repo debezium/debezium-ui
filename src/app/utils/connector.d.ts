@@ -49,6 +49,7 @@ interface ConnectorPlugin {
 interface ConnectorProperties {
   format?: string;
   default?: any;
+  defaultValue?: any;
   title: string;
   description: string;
   type: string;
@@ -67,6 +68,11 @@ interface ConnectorSchema {
   "x-connector-id": string;
   "x-version": string;
   "x-classNames": string;
+}
+
+interface TransformList {
+  properties: Record<string, Omit<ConnectorProperties, "x-category">>;
+  transform: string;
 }
 
 interface ConnectorConfig {

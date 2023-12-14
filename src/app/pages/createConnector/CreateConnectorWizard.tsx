@@ -36,7 +36,7 @@ import { getConnectorClass, isEmpty } from "@app/utils";
 import usePostWithReturnApi from "@app/hooks/usePostWithReturnApi";
 import { CustomPropertiesStep } from "./CustomPropertiesStep";
 import { ConnectorTypeLogo } from "@app/components";
-// import TransformationStep from "./TransformationStep";
+import { TransformsStep } from "./TransformationStep";
 
 export const CreateConnectorWizard: React.FunctionComponent = () => {
   let { connectorPlugin } = useParams();
@@ -56,6 +56,10 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   >({});
 
   const [filterFormData, setFilterFormData] = React.useState<
+    Record<string, any>
+  >({});
+
+  const [transformFormData, setTransformFormData] = React.useState<
     Record<string, any>
   >({});
 
@@ -124,6 +128,13 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   const updateCustomFormData = useCallback(
     (formData: Record<string, string>) => {
       setCustomPropFormData(cloneDeep({ ...formData }));
+    },
+    []
+  );
+
+  const updateTransFormData = useCallback(
+    (formData: Record<string, string>) => {
+      setTransformFormData(cloneDeep({ ...formData }));
     },
     []
   );
@@ -249,8 +260,6 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
     postWithReturn: validateConnectionPostWithReturn,
   } = validateConnectionPost;
 
-  
-
   const filterDatabase = useCallback(async () => {
     await filterPostWithReturn(
       clusterUrl,
@@ -265,7 +274,6 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
       },
       connectorPlugin
     );
-
   }, [filterFormData, connectionFormData, connectorName]);
 
   const validateConnection = useCallback(async () => {
@@ -492,7 +500,7 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
 
   return (
     <>
-    <div ref={ref}> </div>
+      <div ref={ref}> </div>
       {PageTemplateTitle}
       <PageSection isFilled type={PageSectionTypes.wizard}>
         <Wizard
@@ -595,13 +603,10 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 key="wizard-step-2b"
                 isHidden={locationData.hideAdvance || false}
               >
-                <p>Transform step</p>
-                {/* <TransformationStep
-                formData={customPropFormData}
-                updateFormData={updateCustomFormData}
-                isCustomPropertiesDirty={isCustomPropertiesDirty}
-                updateCustomFormDirty={updateCustomFormDirty}
-                /> */}
+                <TransformsStep
+                  formData={transformFormData}
+                  updateFormData={updateTransFormData}
+                />
               </WizardStep>,
               <WizardStep
                 name="Topic creation"
@@ -654,6 +659,7 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                   connectorProperties={{
                     ...connectionFormData,
                     ...filterFormData,
+                    ...transformFormData,
                     ...dataOptionFormData,
                     ...runtimeFormData,
                   }}
@@ -661,9 +667,6 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
               </WizardStep>,
             ]}
           />
-          {/* <WizardStep name="Additional" id="wizard-step-3">
-            <p>Step 3 content</p>
-          </WizardStep> */}
           <WizardStep
             name="Review"
             id="wizard-step-3"
@@ -685,6 +688,7 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 ...dataOptionFormData,
                 ...runtimeFormData,
               }}
+              transformProperties={{ ...transformFormData }}
               customProperties={{ ...customPropFormData }}
             />
           </WizardStep>

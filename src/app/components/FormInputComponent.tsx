@@ -12,11 +12,11 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon, HelpIcon } from "@patternfly/react-icons";
-import { lowerCase } from "lodash";
+import { capitalize, lowerCase } from "lodash";
 import React, { FormEvent, SetStateAction, useEffect, useState } from "react";
 
 interface FormInputProps {
-  property: ConnectorProperties;
+  property: ConnectorProperties | Omit<ConnectorProperties, "x-category">;
   requiredList: string[] | null | undefined;
   formStep: FormStep;
   updateFormData: (key: string, value: any, formStep: FormStep) => void;
@@ -37,8 +37,8 @@ export const FormInputComponent: React.FC<FormInputProps> = ({
   useEffect(() => {
     if (formData[property["x-name"]]) {
       setValue(formData[property["x-name"]]);
-    } else if (property.default) {
-      setValue(property.default);
+    } else if (property.default || property.defaultValue) {
+      setValue(property.default || property.defaultValue);
     }
   }, []);
 
@@ -75,10 +75,10 @@ export const FormInputComponent: React.FC<FormInputProps> = ({
     updateFormData(property["x-name"], value, formStep);
   };
 
-  const formInput = (property: ConnectorProperties) => {
-    switch (property.type) {
+  const formInput = (property: ConnectorProperties | Omit<ConnectorProperties, "x-category">) => {
+    switch (property.type.toLowerCase()) {
       case "string":
-        if (property.format === "password") {
+        if (property.format?.toLowerCase() === "password") {
           return (
             <TextInput
               isRequired
@@ -160,9 +160,9 @@ export const FormInputComponent: React.FC<FormInputProps> = ({
   return (
     <FormGroup
       key={property["x-name"]}
-      label={property.title}
+      label={property.type.toLowerCase() !== "boolean" ? capitalize(property.title)  :""}
       labelIcon={
-        property.type !== "boolean" ? (
+        property.type.toLowerCase() !== "boolean" ? (
           <Popover
             aria-label="Popover with auto-width"
             bodyContent={<div>{property.description}</div>}
