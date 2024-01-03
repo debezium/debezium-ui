@@ -6,8 +6,8 @@ import {
   FormFieldGroupExpandable,
   FormFieldGroupHeader,
 } from "@patternfly/react-core";
-import { cloneDeep, isNil } from "lodash";
-import React, { useCallback } from "react";
+import { cloneDeep } from "lodash";
+import React from "react";
 
 interface RuntimeOptionStepProps {
   runtimeOptionEngineProperties: ConnectorProperties[];

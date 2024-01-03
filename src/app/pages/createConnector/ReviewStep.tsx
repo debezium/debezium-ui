@@ -1,13 +1,6 @@
 import { getConnectorClass } from "@app/utils";
 import {
-  DescriptionList,
-  DescriptionListGroup,
-  DescriptionListTerm,
-  DescriptionListDescription,
   Button,
-  Checkbox,
-  Switch,
-  Divider,
   CodeBlock,
   CodeBlockCode,
   ClipboardCopyButton,
@@ -18,31 +11,28 @@ import {
   EyeIcon,
   EyeSlashIcon,
   FileDownloadIcon,
-  PlayIcon,
-  PlusCircleIcon,
 } from "@patternfly/react-icons";
 import React from "react";
 
 interface ReviewStepProps {
-  // Add any props you need for the ReviewStep component
-  connectorSchema: Record<string, ConnectorProperties>;
   connectorName: Record<string, any>;
   connectorType: string | undefined;
   connectorProperties: Record<string, any>;
   customProperties: Record<string, any>;
   transformProperties: Record<string, any>;
+  topicGroupProperties: Record<string, any>;
 }
 
 export const ReviewStep: React.FC<ReviewStepProps> = ({
-  connectorSchema,
   connectorName,
   connectorType,
   connectorProperties,
   customProperties,
   transformProperties,
+  topicGroupProperties,
 }) => {
   // Add your component logic here
-  const [showJson, setShowJson] = React.useState<boolean>(false);
+  // const [showJson, setShowJson] = React.useState<boolean>(false);
   const [copied, setCopied] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
@@ -72,7 +62,20 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
     downloadJson!.removeChild(link);
   };
 
-  const connectorJsonPayload = JSON.stringify({name: connectorName.name,config:{"connector.class": getConnectorClass(connectorType), ...connectorProperties,...transformProperties, ...customProperties}}, null, 2);
+  const connectorJsonPayload = JSON.stringify(
+    {
+      name: connectorName.name,
+      config: {
+        "connector.class": getConnectorClass(connectorType),
+        ...connectorProperties,
+        ...transformProperties,
+        ...topicGroupProperties,
+        ...customProperties,
+      },
+    },
+    null,
+    2
+  );
 
   const actions = (
     <React.Fragment>
@@ -99,9 +102,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           id="copy-json-payload"
           textId="code-json-payload"
           aria-label="Copy to clipboard"
-          onClick={(e) =>
-            onClick(e, connectorJsonPayload)
-          }
+          onClick={(e) => onClick(e, connectorJsonPayload)}
           exitDelay={copied ? 1500 : 600}
           maxWidth="110px"
           variant="plain"
@@ -124,9 +125,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           <Button
             variant="plain"
             aria-label="Download icon"
-            onClick={(e) =>
-              downloadFile(e, connectorJsonPayload)
-            }
+            onClick={(e) => downloadFile(e, connectorJsonPayload)}
           >
             <FileDownloadIcon />
           </Button>
@@ -137,7 +136,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
 
   return (
     <div>
-      <Checkbox
+      {/* <Checkbox
         id="json-view-checkbox"
         isChecked={showJson}
         label="JSON View"
@@ -145,22 +144,11 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
         style={{ paddingBottom: "15px" }}
         onChange={() => setShowJson(!showJson)}
       />
-      {/* <Divider /> */}
-      {/* <Switch
-      id="json-view-checkbox"
-      label="JSON View"
-      labelOff="Table View"
-      isChecked={true}
-      onChange={() => {}}
-      ouiaId="BasicSwitch"
-    /> */}
-      {showJson ? (
-        <CodeBlock actions={actions} style={{ paddingTop: "15px" }}>
-          <CodeBlockCode id="json-content">
-            {connectorJsonPayload}
-          </CodeBlockCode>
-        </CodeBlock>
-      ) : (
+      {showJson ? ( */}
+      <CodeBlock actions={actions} style={{ paddingTop: "15px" }}>
+        <CodeBlockCode id="json-content">{connectorJsonPayload}</CodeBlockCode>
+      </CodeBlock>
+      {/* ) : (
         <DescriptionList
           style={{ paddingTop: "15px" }}
           isCompact
@@ -203,7 +191,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
             );
           })}
         </DescriptionList>
-      )}
+      )} */}
     </div>
   );
 };

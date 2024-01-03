@@ -1,0 +1,99 @@
+{
+    "defaults": [
+      {
+        "category": "TOPIC_CREATION",
+        "defaultValue": -1,
+        "description": "Topic Replication Factor default value",
+        "title": "Topic Replication Factor default",
+        "x-name": "topic.creation.default.replication.factor",
+        "type": "INT"
+      },
+      {
+        "category": "TOPIC_CREATION",
+        "defaultValue": -1,
+        "description": "Topic Partitions default value",
+        "title": "Topic Partitions default",
+        "x-name": "topic.creation.default.partitions",
+        "type": "INT"
+      },
+      {
+        "category": "TOPIC_CREATION",
+        "defaultValue": "delete",
+        "enum": ["compact", "delete"],
+        "description": "Topic Cleanup Policy default value",
+        "title": "Topic Cleanup Policy default",
+        "x-name": "topic.creation.default.cleanup.policy",
+        "type": "STRING"
+      },
+      {
+        "category": "TOPIC_CREATION",
+        "defaultValue": "producer",
+        "enum": ["uncompressed", "zstd", "lz4", "snappy", "gzip", "producer"],
+        "description": "Topic Compression Type default value",
+        "title": "Topic Compression Type default",
+        "x-name": "topic.creation.default.compression.type",
+        "type": "STRING"
+      }
+    ],
+    "groups": {
+      "properties": [
+        {
+          "category": "TOPIC_CREATION",
+          "description": "Topic Creation Groups",
+          "title": "Topic Creation Groups",
+          "x-name": "topic.creation.groups",
+          "type": "STRING"
+        },
+        {
+          "category": "TOPIC_CREATION",
+          "description": "Topic Group includes",
+          "title": "Topic includes",
+          "x-name": "include",
+          "type": "STRING"
+        },
+        {
+          "category": "TOPIC_CREATION",
+          "description": "Topic Group excludes",
+          "title": "Topic excludes",
+          "x-name": "exclude",
+          "type": "STRING"
+        }
+      ],
+      "options": [
+        {
+          "category": "TOPIC_CREATION",
+          "defaultValue": -1,
+          "description": "Topic Replication Factor value",
+          "title": "Topic Replication Factor",
+          "x-name": "replication.factor",
+          "type": "INT"
+        },
+        {
+          "category": "TOPIC_CREATION",
+          "defaultValue": -1,
+          "description": "Topic Partitions value",
+          "title": "Topic Partitions",
+          "x-name": "partitions",
+          "type": "INT"
+        },
+        {
+          "category": "TOPIC_CREATION",
+          "defaultValue": "delete",
+          "enum": ["compact", "delete"],
+          "description": "Topic Cleanup Policy value",
+          "title": "Topic Cleanup Policy",
+          "x-name": "cleanup.policy",
+          "type": "STRING"
+        },
+        {
+          "category": "TOPIC_CREATION",
+          "defaultValue": "producer",
+          "enum": ["uncompressed", "zstd", "lz4", "snappy", "gzip", "producer"],
+          "description": "Topic Compression Type value",
+          "title": "Topic Compression Type",
+          "x-name": "compression.type",
+          "type": "STRING"
+        }
+      ]
+    }
+  }

@@ -4,3 +4,6 @@ export * from './ReviewStep';
 export * from './FilterStep';
 export * from './DataOptionStep';
 export * from './RuntimeOptionStep';
+export * from './CustomPropertiesStep';
+export * from './TransformationStep';
+export * from './TopicCreationStep';

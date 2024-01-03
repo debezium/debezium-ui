@@ -494,8 +494,8 @@ export const TransformCard: React.FC<TransformCardProps> = ({
                       >
                         {nameIsValid === "error"
                           ? transformName === ""
-                            ? "Connector name is required."
-                            : "Enter a connector name that is unique from other existing connectors."
+                            ? "Transform name is required."
+                            : "Enter a transform name that is unique from other existing transform."
                           : ""}
                       </HelperTextItem>
                     </HelperText>

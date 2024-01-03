@@ -40,7 +40,7 @@ export const FormInputComponent: React.FC<FormInputProps> = ({
     } else if (property.default || property.defaultValue) {
       setValue(property.default || property.defaultValue);
     }
-  }, []);
+  }, [formData, property]);
 
   const updateFieldValue = (
     _event: React.FormEvent<HTMLInputElement>,

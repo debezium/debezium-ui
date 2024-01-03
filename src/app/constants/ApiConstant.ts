@@ -25,4 +25,5 @@ export enum FormStep {
   RUNTIME_OPTION = "RuntimeOption",
   CUSTOM_PROPERTIES = "CustomProperties",
   TRANSFORM="Transform",
+  TOPIC_CREATION="TopicCreation",
 }

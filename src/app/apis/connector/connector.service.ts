@@ -203,6 +203,18 @@ export class ConnectorService extends BaseService {
     );
     return this.httpGet<any>(endpoint);
   }
+
+  public getTopicCreationEnabled(baseHref: string): Promise<any> {
+    this.logger?.info(
+      "[ConnectorService] Getting the boolean value if topic creation is enabled:",
+    );
+    const endpoint: string = this.endpoint(
+      "debezium/topic-creation-enabled",
+      baseHref,
+      undefined,
+    );
+    return this.httpGet<any>(endpoint);
+  }
   
 
   /**
