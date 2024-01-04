@@ -1,4 +1,5 @@
 import {
+  Button,
   Flex,
   FlexItem,
   HelperText,
@@ -12,17 +13,46 @@ interface ConnectorTaskProps {
   connectorTasks: StatusTasks[];
 }
 
+type TaskStateColor =
+  | "blue"
+  | "cyan"
+  | "green"
+  | "orange"
+  | "purple"
+  | "red"
+  | "grey"
+  | "gold"
+  | undefined;
+
 export const ConnectorTask: React.FC<ConnectorTaskProps> = ({
   connectorTasks,
 }) => {
+  const getTaskStatus = (taskState: string): TaskStateColor => {
+    let labelColor: TaskStateColor;
+    switch (taskState) {
+      case "RUNNING":
+        labelColor = "green";
+        break;
+      case "STOPPED":
+        labelColor = "orange";
+        break;
+      case "PAUSED":
+        labelColor = "blue";
+        break;
+      case "FAILED":
+      case "DESTROYED":
+        labelColor = "red";
+        break;
+      default:
+        labelColor = "blue";
+        break;
+    }
+    return labelColor;
+  };
+
   return (
     <Flex>
-      <FlexItem>{connectorTasks.length}</FlexItem>
       <FlexItem>
-        {/* <HelperText>
-          <HelperTextItem variant="success">RUNNING:</HelperTextItem>
-        </HelperText> */}
-        RUNNING: &nbsp;
         {connectorTasks.map((task) => {
           return (
             <Popover
@@ -30,7 +60,6 @@ export const ConnectorTask: React.FC<ConnectorTaskProps> = ({
               triggerAction="hover"
               aria-label="Task popover"
               hasAutoWidth
-              //   appendTo={() => document.body}
               headerContent={
                 <div>
                   {task.id}: {task.state}
@@ -39,7 +68,7 @@ export const ConnectorTask: React.FC<ConnectorTaskProps> = ({
               bodyContent={<div>{task.trace}</div>}
               footerContent={<div>Worker id: {task.worker_id}</div>}
             >
-              <Label variant="outline" color="green">
+              <Label variant="outline" color={getTaskStatus(task.state)}>
                 Id: {task.id}
               </Label>
             </Popover>

@@ -16,7 +16,7 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import { cloneDeep, filter, findIndex } from "lodash";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface FilterStepProps {
   filterProperties: ConnectorProperties[];

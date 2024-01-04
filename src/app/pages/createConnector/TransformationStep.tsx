@@ -6,12 +6,8 @@ import {
   EmptyState,
   EmptyStateVariant,
   EmptyStateIcon,
-  Title,
   EmptyStateBody,
   Button,
-  Alert,
-  Grid,
-  GridItem,
   Modal,
   ModalVariant,
   EmptyStateHeader,
@@ -83,7 +79,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = ({
   const clearTransform = () => {
     setTransforms(new Map());
     saveTransform(new Map());
-    updateFormData(new Map());
+    updateFormData({});
     handleModalToggle();
   };
 
@@ -131,22 +127,6 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = ({
     });
     return nameList;
   };
-
-  // const saveTransforms = () => {
-  //   const cardsValid: any[] = [];
-  //   nameTypeCheckRef.map.forEach((input: any) => {
-  //     cardsValid.push(input.check());
-  //   });
-
-  //   Promise.all(cardsValid).then(
-  //     (d) => {
-  //       updateCustomFormDirty(false);
-  //     },
-  //     (e) => {
-  //       updateCustomFormDirty(true);
-  //     }
-  //   );
-  // };
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);

@@ -1,8 +1,6 @@
 import { FormInputComponent, validate } from "@app/components";
 import { FormStep } from "@app/constants";
 import {
-  BackToTop,
-  Button,
   Form,
   FormFieldGroupExpandable,
   FormFieldGroupHeader,
@@ -12,9 +10,9 @@ import {
   HelperTextItem,
   TextInput,
 } from "@patternfly/react-core";
-import { ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
-import { cloneDeep, isNil } from "lodash";
-import React, { FormEvent, useCallback, useRef } from "react";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { cloneDeep } from "lodash";
+import React, { FormEvent } from "react";
 
 interface ConnectionStepProps {
   connectionBasicProperties: ConnectorProperties[];

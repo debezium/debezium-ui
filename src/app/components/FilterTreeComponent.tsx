@@ -73,15 +73,7 @@ export const FilterTreeComponent: React.FunctionComponent<
             variant={"info"}
             isInline={true}
             title={"Applied filter response"}
-          >
-            {/* {!isEmpty(filterValues) ? (
-              <p>Applied filter response
-                <a onClick={clearFilter}>Clear all filters</a>
-              </p>
-            ) : (
-              ""
-            )} */}
-          </Alert>
+          />
 
           <TreeView
             data={treeData}
