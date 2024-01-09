@@ -215,6 +215,18 @@ export class ConnectorService extends BaseService {
     );
     return this.httpGet<any>(endpoint);
   }
+
+  public getConnectorMetrics(baseHref: string, connectorType: string, connectorName: string): Promise<any> {
+    this.logger?.info(
+      "[ConnectorService] Getting the Connector metrics:" + connectorName ,
+    );
+    const endpoint: string = this.endpoint(
+      "debezium/:connectorType/connectors/:connectorName/metrics",
+      baseHref,
+      { connectorType, connectorName },
+    );
+    return this.httpGet<any>(endpoint);
+  }
   
 
   /**
@@ -385,19 +397,19 @@ export class ConnectorService extends BaseService {
   /**
    * Get the available connector metrics for the supplied clusterId and connector name
    */
-  public getConnectorMetrics(
-    clusterId: number,
-    connectorName: string
-  ): Promise<any[]> {
-    this.logger?.info("[ConnectorService] Getting the connector metrics.");
+  // public getConnectorMetrics(
+  //   clusterId: number,
+  //   connectorName: string
+  // ): Promise<any[]> {
+  //   this.logger?.info("[ConnectorService] Getting the connector metrics.");
 
-    const endpoint: string = this.endpoint(
-      "/connectors/:clusterId/:connectorName/metrics",
-      "",
-      { clusterId, connectorName }
-    );
-    return this.httpGet<any[]>(endpoint);
-  }
+  //   const endpoint: string = this.endpoint(
+  //     "/connectors/:clusterId/:connectorName/metrics",
+  //     "",
+  //     { clusterId, connectorName }
+  //   );
+  //   return this.httpGet<any[]>(endpoint);
+  // }
 
   /**
    * Get the Connector config

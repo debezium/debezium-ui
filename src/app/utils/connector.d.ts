@@ -96,6 +96,31 @@ enum ConnectorType {
   "sink",
 }
 
+interface ConnectorMetrics {
+  name: string;
+  "tasks.max": string;
+  connector: ConnectorMetricsConnection;
+  tasks?: (TasksEntity)[] | null;
+}
+interface ConnectorMetricsConnection {
+  metrics: MetricsConnectorConnected;
+}
+interface MetricsConnectorConnected {
+  Connected: string;
+}
+interface TasksEntity {
+  id: number;
+  namespaces?: (TaskNamespaceMetrics)[] | null;
+}
+interface TaskNamespaceMetrics {
+  metrics: TaskMetrics;
+  name?: string | null;
+}
+interface TaskMetrics {
+  MilliSecondsSinceLastEvent: string;
+  TotalNumberOfEventsSeen: string;
+}
+
 interface ConnectorNameStatus {
   name: string;
   connector: Connector;

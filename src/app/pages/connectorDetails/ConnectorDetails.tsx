@@ -1,7 +1,7 @@
 import { AppLayoutContext } from "@app/AppLayout";
 import { Services } from "@app/apis/services";
 import {
-    Button,
+  Button,
   Card,
   CardBody,
   CardTitle,
@@ -19,6 +19,7 @@ import {
   GridItem,
   HelperText,
   HelperTextItem,
+  Icon,
   MenuToggle,
   MenuToggleElement,
   PageSection,
@@ -43,8 +44,18 @@ import {
   DeleteConnectorModel,
 } from "@app/components";
 import { POLLING_INTERVAL } from "@app/constants";
-import { TimesCircleIcon } from "@patternfly/react-icons";
-import "./ConnectorDetails.css";
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  PencilAltIcon,
+  TimesCircleIcon,
+} from "@patternfly/react-icons";
+import useFetchApiMultiVariableApi from "@app/hooks/useFetchApiMultiVariableApi";
+import {
+  convertMilliSecToTime,
+  getConnectorType,
+  getTaskStatus,
+} from "@app/utils";
 
 interface ConnectorDetailsProps {
   // Add any props you need for the component
@@ -116,6 +127,21 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
     isLoading: connectorStatusLoading,
     error: connectorStatusError,
   } = getConnectorStatus;
+
+  const getConnectorMetricsFetch =
+    useFetchApiMultiVariableApi<ConnectorMetrics>(
+      clusterUrl,
+      connectorService.getConnectorMetrics,
+      connectorService,
+      ["mysql", connectorName],
+      POLLING_INTERVAL.FiveSeconds
+    );
+
+  const {
+    data: connectorMetrics,
+    isLoading: connectorMetricsLoading,
+    error: connectorMetricsError,
+  } = getConnectorMetricsFetch;
 
   const onConnectorPause = () => {
     connectorService
@@ -286,9 +312,21 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
               <GridItem span={6}>
                 <Card>
                   <CardTitle>
-                    <Title headingLevel="h4" size="xl">
-                      Connector configuration
-                    </Title>
+                    <Split hasGutter>
+                      <SplitItem>
+                        <Title headingLevel="h4" size="xl">
+                          Connector configuration
+                        </Title>
+                      </SplitItem>
+                      <SplitItem isFilled></SplitItem>
+                      <SplitItem>
+                        <Tooltip
+                          content={<div>Edit connector configuration</div>}
+                        >
+                          <Button variant="link" icon={<PencilAltIcon />} />
+                        </Tooltip>
+                      </SplitItem>
+                    </Split>
                   </CardTitle>
                   <CardBody>
                     <DescriptionList
@@ -336,19 +374,12 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
                           >{`Id: ${task.id}`}</CardTitle>
                           <CardBody>
                             <Stack>
-                              <Tooltip
-                                content={
-                                  <div>
-                                    {task.trace}
-                                  </div>
-                                }
-                              >
+                              <Tooltip content={<div>{task.trace}</div>}>
                                 <Button variant="plain">
-                                <HelperText className="connector-details_task-status-text">
-                                  <HelperTextItem variant="error" hasIcon>
-                                    {task.state}
-                                  </HelperTextItem>
-                                </HelperText>
+                                  <ConnectorStatusComponent
+                                    status={task.state}
+                                    task={true}
+                                  />
                                 </Button>
                               </Tooltip>
 
@@ -361,14 +392,94 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
                   </CardBody>
                 </Card>
               </GridItem>
-              <GridItem span={3} rowSpan={2}>
+              <GridItem span={4}>
                 <Card>
                   <CardTitle>
                     <Title headingLevel="h4" size="xl">
                       Essential connector metrics
                     </Title>
                   </CardTitle>
-                  <CardBody>Coming soon</CardBody>
+                  <CardBody>
+                    <DescriptionList isHorizontal isCompact isFluid>
+                      <DescriptionListGroup>
+                        <DescriptionListTerm>
+                          Streaming in progress:
+                        </DescriptionListTerm>
+                        <DescriptionListDescription>
+                          {connectorMetrics?.connector.metrics.Connected ? (
+                            <Icon status="success">
+                              <CheckCircleIcon />
+                            </Icon>
+                          ) : (
+                            <Icon status="danger">
+                              <ExclamationCircleIcon />
+                            </Icon>
+                          )}
+                        </DescriptionListDescription>
+                      </DescriptionListGroup>
+                    </DescriptionList>
+                    {connectorMetrics?.tasks &&
+                      connectorMetrics?.tasks.map((task) => {
+                        return (
+                          <>
+                            <div
+                              style={{
+                                marginBottom: "5px",
+                                marginTop: "15px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              Task Id: {task.id}
+                            </div>
+
+                            {task.namespaces &&
+                              task.namespaces.map((namespace) => {
+                                return (
+                                  <>
+                                    {namespace.name && (
+                                      <div
+                                        style={{
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        Namespace: {namespace.name}
+                                      </div>
+                                    )}
+                                    <DescriptionList
+                                      displaySize={"lg"}
+                                      columnModifier={{ lg: "2Col" }}
+                                      style={{ marginBottom: "10px" }}
+                                    >
+                                      <Card component="div">
+                                        <DescriptionListTerm>
+                                          Time since last event:
+                                        </DescriptionListTerm>
+                                        <DescriptionListDescription>
+                                          {convertMilliSecToTime(
+                                            +namespace.metrics
+                                              .MilliSecondsSinceLastEvent
+                                          )}
+                                        </DescriptionListDescription>
+                                      </Card>
+                                      <Card component="div">
+                                        <DescriptionListTerm>
+                                          Total number of events:
+                                        </DescriptionListTerm>
+                                        <DescriptionListDescription>
+                                          {
+                                            namespace.metrics
+                                              .TotalNumberOfEventsSeen
+                                          }
+                                        </DescriptionListDescription>
+                                      </Card>
+                                    </DescriptionList>
+                                  </>
+                                );
+                              })}
+                          </>
+                        );
+                      })}
+                  </CardBody>
                 </Card>
               </GridItem>
             </Grid>
