@@ -1,17 +1,20 @@
-# Use the official Node.js image as the base image
-FROM node:18
+####
+# This Dockerfile is used in order to build a container with Debezium UI.
+###
+
+FROM registry.access.redhat.com/ubi9/nodejs-18
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy package.json and package-lock.json (or yarn.lock) to the working directory
-COPY package*.json ./
+COPY --chown=1001 package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY --chown=1001 . .
 
 EXPOSE 3000
 
@@ -19,7 +22,7 @@ EXPOSE 3000
 ENV NODE_ENV=production
 
 # Set the environment variable KAFKA_CONNECT_CLUSTERS
-ENV KAFKA_CONNECT_CLUSTERS=http://localhost:8085/
+ENV KAFKA_CONNECT_CLUSTERS=http://localhost:8083/
 
 # Build the React application
 RUN npm run build
