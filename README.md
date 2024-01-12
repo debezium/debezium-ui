@@ -21,7 +21,7 @@ This project is under active development, any contributions are very welcome.
 
 ## Prerequisites
 
-Debezium UI needs a properly running Debezium instance version 1.4.0.Beta1 or newer and running DB instances, depending
+With the latest update to Debezium UI you need a properly running Debezium instance version 2.5 or newer and running DB instances, depending
 on what connectors you are going to use (Postgres, Mongo DB, MySQL, etc).
 
 ### DEV Infrastructure with Docker-Compose
