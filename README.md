@@ -15,114 +15,109 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 Debezium is an open source distributed platform for change data capture (CDC).
 
 This repository contains a web-based UI for Debezium, allowing to configure Debezium connectors in an intuitive way, control their lifecycle, and more.
-The Debezium UI is a standalone web application, which connects to Kafka Connect via its REST API.
+The Debezium UI is a React-based Single Page Application code based on Patternfly 5, which connects to Kafka Connect via its REST API.
 
 This project is under active development, any contributions are very welcome.
 
-## Prerequisites
+## Requirements
+node (version 16.x.x or higher) and npm (version 8.x.x or higher).
 
-With the latest update to Debezium UI you need a properly running Debezium instance version 2.5 or newer and running DB instances, depending
-on what connectors you are going to use (Postgres, Mongo DB, MySQL, etc).
+## Quick-start
 
-### DEV Infrastructure with Docker-Compose
+To quickly start react based UI web app. 
 
-You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium, Postgres and
+```bash
+git clone https://github.com/debezium/debezium-ui
+cd debezium-ui
+npm install && export KAFKA_CONNECT_CLUSTERS={kafka-cluster-URLs} && npm run start:dev
+```
+
+**kafka-cluster-URLs** is comma separated list of kafka connect cluster URL's.
+
+Debezium UI will be available on [http://localhost:9000](http://localhost:9000)  
+
+## Running UI app with local Dev env. setup
+
+### Prerequisites
+
+With the latest update to Debezium UI you need a properly running Debezium instance version 2.5 or newer with Debezium kafka connect rest extension enabled and running DB instances, depending on what connectors you are going to use (Postgres, Mongo DB, MySQL, etc).
+
+#### DEV Infrastructure with Docker-Compose
+
+You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium, MySql, Postgres, SQL Server and
 Mongo DB using docker-compose:
+
+```bash
+git clone https://github.com/debezium/debezium-ui
+cd debezium-ui
+```
 
 ```
 ## optionally make sure you have the latest images:
 $ docker-compose pull
 
-Pulling dbzui-zookeeper ... done
-Pulling dbzui-db-mongo  ... done
-Pulling dbzui-db-mysql  ... done
-Pulling debezium-ui_mongo-initializer_1 ... done
-Pulling dbzui-kafka     ... done
-Pulling dbzui-db-pg     ... done
-Pulling dbzui-connect   ... done
+[+] Pulling 97/60
+ ✔ mysql 11 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
+ ✔ mongodb 6 layers [⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
+ ✔ postgres 23 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
+ ✔ sqlserver 2 layers [⣿⣿]      0B/0B      Pulled
+ ✔ zookeeper 15 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
+ ✔ kafka 11 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
+ ✔ connect 22 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled    
 
 ## start containers
 $ docker-compose up -d
 
-Creating dbzui-db-mysql  ... done
-Creating dbzui-db-pg     ... done
-Creating dbzui-zookeeper ... done
-Creating dbzui-db-mongo  ... done
-Creating debezium-ui_mongo-initializer_1 ... done
-Creating dbzui-kafka     ... done
-Creating dbzui-connect   ... done
+[+] Running 7/7
+ ✔ Container debezium-ui-zookeeper-1  Started
+ ✔ Container debezium-ui-mysql-1      Started
+ ✔ Container debezium-ui-sqlserver-1  Started
+ ✔ Container debezium-ui-postgres-1   Started
+ ✔ Container debezium-ui-mongodb-1    Started
+ ✔ Container debezium-ui-kafka-1      Started
+ ✔ Container debezium-ui-connect-1    Started
 
 ```
-
-Debezium UI will be available on [http://localhost:8080](http://localhost:8080)      
+    
 Kafka Connect REST API with Debezium will be available on local port **8083**.   
-Postgres will be available on local port **65432**.  
-MySQL will be available on local port **63306**.  
-Mongo DB will be availaible after ~20 seconds on local port **37017** (connect via `mongo -u debezium -p dbz --authenticationDatabase admin localhost:37017/inventory`)
+Postgres will be available on local port **5432**.  
+MySQL will be available on local port **3306**.  
+SqlServer will be available on local port **1433**
+Mongo DB will be available after ~20 seconds on local port **27017** (connect via `mongo -u debezium -p dbz --authenticationDatabase admin localhost:27017/inventory`).
 Kafka will be available on local port **9092**.  
+
+### UI Development
+
+Install all the dependencies
+```bash
+npm install
+```
+
+Running UI web app targeting local dev setup 
+```bash
+export KAFKA_CONNECT_CLUSTERS={http://localhost:8083/} && npm run start:dev
+```
+
+Debezium UI will be available on [http://localhost:9000](http://localhost:9000)  
+
+### Cleanup
 
 ```
 ## later stop containers:
 $ docker-compose down
 
-Stopping dbzui-connect   ... done
-Stopping dbzui-kafka     ... done
-Stopping dbzui-zookeeper ... done
-Stopping dbzui-db-mongo  ... done
-Stopping debezium-ui_mongo-initializer_1 ... done
-Stopping dbzui-db-pg     ... done
-Stopping dbzui-db-mysql  ... done
-Removing dbzui-connect   ... done
-Removing dbzui-kafka     ... done
-Removing dbzui-zookeeper ... done
-Removing dbzui-db-mongo  ... done
-Removing debezium-ui_mongo-initializer_1 ... done
-Removing dbzui-db-pg     ... done
-Removing dbzui-db-mysql  ... done
-Removing network debezium-ui_dbzui-network
+[+] Running 8/7
+ ✔ Container debezium-ui-connect-1    Removed
+ ✔ Container debezium-ui-mongodb-1    Removed
+ ✔ Container debezium-ui-mysql-1      Removed
+ ✔ Container debezium-ui-postgres-1   Removed
+ ✔ Container debezium-ui-kafka-1      Removed
+ ✔ Container debezium-ui-sqlserver-1  Removed
+ ✔ Container debezium-ui-zookeeper-1  Removed
+ ✔ Network debezium-ui_default        Removed
 
 ```
 
-## Build
-
-The entire application (UI and backend) can be built via Maven:
-
-```
-./mvnw clean install
-```
-
-The UI part is an single-page application (SPA) based on the React framework. It is packaged as JAR,
-whose contents are then exposed by the Quarkus-based backend application.
-
-### Backend
-
-The UI backend is a Quarkus application located under _backend_.
-You can run it in development mode like so:
-
-```
-./mvnw -am -pl backend package quarkus:dev
-```
-
-Swagger UI can be accessed from:  [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
-
-## UI Development
-
-The UI frontend code is located under the _ui_ folder.  See the [UI README](./ui/README.md) for more information about UI development.
-
-## Contributing
-
-The Debezium community welcomes anyone that wants to help out in any way, whether that includes
-reporting problems, helping with documentation, or contributing code changes to fix bugs, add tests,
-or implement new features.
-See [this document](https://github.com/debezium/debezium/blob/main/CONTRIBUTE.md) for details.
-
-## Quick-start
-
-```bash
-git clone https://github.com/patternfly/patternfly-react-seed
-cd patternfly-react-seed
-npm install && npm run start:dev
-```
 ## Development scripts
 ```sh
 # Install development/build dependencies
@@ -158,3 +153,10 @@ npm run storybook
 # Build storybook component explorer as standalone app (outputs to "storybook-static" dir)
 npm run build:storybook
 ```
+
+## Contributing
+
+The Debezium community welcomes anyone that wants to help out in any way, whether that includes
+reporting problems, helping with documentation, or contributing code changes to fix bugs, add tests,
+or implement new features.
+See [this document](https://github.com/debezium/debezium/blob/main/CONTRIBUTE.md) for details.
