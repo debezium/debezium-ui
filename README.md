@@ -53,7 +53,7 @@ You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium, MySq
 Mongo DB using docker compose:
 
 ```
-## optionally make sure you have the latest images:
+<!-- ## optionally make sure you have the latest images:
 $ docker compose pull
 
 [+] Pulling 97/60
@@ -63,19 +63,20 @@ $ docker compose pull
  ✔ sqlserver 2 layers [⣿⣿]      0B/0B      Pulled
  ✔ zookeeper 15 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
  ✔ kafka 11 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
- ✔ connect 22 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled    
+ ✔ connect 22 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled     -->
 
 ## start containers
-$ docker compose up -d
+$ DEBEZIUM_VERSION={DEBEZIUM_VERSION} docker compose up -d
 
-[+] Running 7/7
- ✔ Container debezium-ui-zookeeper-1  Started
- ✔ Container debezium-ui-mysql-1      Started
- ✔ Container debezium-ui-sqlserver-1  Started
- ✔ Container debezium-ui-postgres-1   Started
- ✔ Container debezium-ui-mongodb-1    Started
- ✔ Container debezium-ui-kafka-1      Started
- ✔ Container debezium-ui-connect-1    Started
+[+] Running 8/8
+ ✔ Network debezium-ui_default
+ ✔ Container zookeeper  Started
+ ✔ Container mysql      Started
+ ✔ Container sqlserver  Started
+ ✔ Container postgres   Started
+ ✔ Container mongodb    Started
+ ✔ Container kafka      Started
+ ✔ Container connect    Started
 
 ```
     
@@ -106,16 +107,16 @@ Debezium UI will be available on [http://localhost:9000](http://localhost:9000)
 later stop running containers.
 
 ```
-$ docker compose down
+$ DEBEZIUM_VERSION=2.5 docker compose down
 
 [+] Running 8/7
- ✔ Container debezium-ui-connect-1    Removed
- ✔ Container debezium-ui-mongodb-1    Removed
- ✔ Container debezium-ui-mysql-1      Removed
- ✔ Container debezium-ui-postgres-1   Removed
- ✔ Container debezium-ui-kafka-1      Removed
- ✔ Container debezium-ui-sqlserver-1  Removed
- ✔ Container debezium-ui-zookeeper-1  Removed
+ ✔ Container connect    Removed
+ ✔ Container mongodb    Removed
+ ✔ Container mysql      Removed
+ ✔ Container postgres   Removed
+ ✔ Container kafka      Removed
+ ✔ Container sqlserver  Removed
+ ✔ Container zookeeper  Removed
  ✔ Network debezium-ui_default        Removed
 
 ```
