@@ -53,18 +53,6 @@ You can setup a running DEV infrastructure with Zookeeper, Kafka, Debezium, MySq
 Mongo DB using docker compose:
 
 ```
-<!-- ## optionally make sure you have the latest images:
-$ docker compose pull
-
-[+] Pulling 97/60
- ✔ mysql 11 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
- ✔ mongodb 6 layers [⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
- ✔ postgres 23 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
- ✔ sqlserver 2 layers [⣿⣿]      0B/0B      Pulled
- ✔ zookeeper 15 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
- ✔ kafka 11 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled
- ✔ connect 22 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled     -->
-
 ## start containers
 $ DEBEZIUM_VERSION={DEBEZIUM_VERSION} docker compose up -d
 
