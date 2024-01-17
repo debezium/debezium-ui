@@ -24,7 +24,7 @@ node (version 16.x.x or higher) and npm (version 8.x.x or higher).
 
 ## Quick-start
 
-To quickly start react based UI web app. 
+To quickly start react based web app UI. 
 
 ```bash
 git clone https://github.com/debezium/debezium-ui
