@@ -5,6 +5,7 @@ import {
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
   PauseCircleIcon,
+  SyncAltIcon,
 } from "@patternfly/react-icons";
 import React from "react";
 import './ConnectorStatusComponent.css'
@@ -33,7 +34,7 @@ export const ConnectorStatusComponent: React.FC<
     case "RUNNING":
       labelColor = "green";
       variant = "success";
-      icon = <CheckCircleIcon />;
+      icon = <SyncAltIcon />;
       break;
     case "STOPPED":
       labelColor = "orange";
@@ -60,7 +61,7 @@ export const ConnectorStatusComponent: React.FC<
   if (task)
     return (
       <HelperText className="connector-status_task-status-text">
-        <HelperTextItem variant={variant} hasIcon>
+        <HelperTextItem variant={variant} icon={icon}>
           {status}
         </HelperTextItem>
       </HelperText>

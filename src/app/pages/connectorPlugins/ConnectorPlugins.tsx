@@ -11,6 +11,7 @@ import {
   Gallery,
   PageSection,
   SearchInput,
+  Skeleton,
   Switch,
   Text,
   TextContent,
@@ -104,37 +105,55 @@ export const ConnectorPlugins: React.FC<ConnectorPluginsProps> = (props) => {
       {PageTemplateTitle}
       <PageSection isFilled>
         <Gallery hasGutter aria-label="Clickable card container">
-          {connectorPlugins &&
-            connectorPlugins.map((plugins, key) => (
-              <Card
-                isCompact
-                isClickable
-                key={plugins.id}
-                id={plugins.id}
-                isRounded
-              >
-                <CardHeader
-                  className="connector-plugin-card-header"
-                  style={{ height: "175px" }}
-                  selectableActions={{
-                    onClickAction: onChange,
-                    selectableActionId: `connector-plugin-${plugins.id}`,
-                    selectableActionAriaLabelledby: `connector-plugin-${plugins.id}-title`,
-                    name: `${plugins.id}`,
-                  }}
+          {connectorPluginsLoading
+            ? "list1"
+                .split("")
+                .map((val) => (
+                  <Skeleton
+                    key={val}
+                    shape="square"
+                    width="100%"
+                    screenreaderText="Loading connector type cards"
+                  />
+                ))
+            : connectorPlugins &&
+              connectorPlugins.map((plugins, key) => (
+                <Card
+                  isCompact
+                  isClickable
+                  key={plugins.id}
+                  id={plugins.id}
+                  isRounded
                 >
-                  {plugins.className.includes("oracle") ? <DatabaseIcon className="placeholder-database-icon" /> : <ConnectorTypeLogo type={plugins.className} size={"140px"} />} 
-                  
-                </CardHeader>
-                <CardTitle>{plugins.displayName}</CardTitle>
+                  <CardHeader
+                    className="connector-plugin-card-header"
+                    style={{ height: "175px" }}
+                    selectableActions={{
+                      onClickAction: onChange,
+                      selectableActionId: `connector-plugin-${plugins.id}`,
+                      selectableActionAriaLabelledby: `connector-plugin-${plugins.id}-title`,
+                      name: `${plugins.id}`,
+                    }}
+                  >
+                    {plugins.className.includes("oracle") ? (
+                      <DatabaseIcon className="placeholder-database-icon" />
+                    ) : (
+                      <ConnectorTypeLogo
+                        type={plugins.className}
+                        size={"140px"}
+                      />
+                    )}
+                  </CardHeader>
+                  <CardTitle>{plugins.displayName}</CardTitle>
 
-                <CardFooter>
-                  <sub>
-                    Version: <i>{plugins.version}</i>
-                  </sub>
-                </CardFooter>
-              </Card>
-            ))}
+                  <CardFooter>
+                    <sub>
+                      Version: <i>{plugins.version}</i>
+                    </sub>
+                  </CardFooter>
+                </Card>
+              ))}
+          {}
         </Gallery>
       </PageSection>
     </>

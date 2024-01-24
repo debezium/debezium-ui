@@ -10,7 +10,11 @@ import { getConnectorClass } from "@app/utils";
 import {
   Button,
   Divider,
+  EmptyState,
+  EmptyStateHeader,
+  EmptyStateIcon,
   Form,
+  Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -63,9 +67,9 @@ export const FilterStep: React.FC<FilterStepProps> = ({
     }
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     onFilter();
-  },[])
+  }, []);
 
   const explicitProperty: string[] = [];
   explicitFields.forEach((property) => {
@@ -76,20 +80,19 @@ export const FilterStep: React.FC<FilterStepProps> = ({
   const connectorService = Services.getConnectorService();
   const { cluster: clusterUrl, addNewNotification } = appLayoutContext;
 
-  const applyFilter = () =>{
+  const applyFilter = () => {
     onFilter();
-  }
+  };
 
-  const clearFilter = () =>{
+  const clearFilter = () => {
     onFilter(true);
     clearFilterFormData();
+  };
 
-  }
-
-  async function onFilter(isClear?:boolean) {
-    let filterPayload = {...formData};
-    if(isClear){
-      filterPayload = {}
+  async function onFilter(isClear?: boolean) {
+    let filterPayload = { ...formData };
+    if (isClear) {
+      filterPayload = {};
     }
     setIsLoading(true);
     connectorService
@@ -207,15 +210,22 @@ export const FilterStep: React.FC<FilterStepProps> = ({
         </ToolbarContent>
       </Toolbar>
       <Divider style={{ paddingTop: "10px" }} />
-      {
-        isLoading ? <></> : <FilterTreeComponent
-        treeData={treeData}
-        invalidMsg={invalidMsg}
-        filterValues={formData}
-        clearFilter={clearFilter}
-      />
-      }
-      
+      {isLoading ? (
+        <EmptyState>
+          <EmptyStateHeader
+            titleText="Loading"
+            headingLevel="h4"
+            icon={<EmptyStateIcon icon={Spinner} />}
+          />
+        </EmptyState>
+      ) : (
+        <FilterTreeComponent
+          treeData={treeData}
+          invalidMsg={invalidMsg}
+          filterValues={formData}
+          clearFilter={clearFilter}
+        />
+      )}
     </>
   );
 };
