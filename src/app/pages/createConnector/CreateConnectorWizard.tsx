@@ -63,8 +63,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   >({});
 
   const [topicGroupFormData, setTopicGroupFormData] = React.useState<
-  Record<string, any>
->({});
+    Record<string, any>
+  >({});
 
   const [dataOptionFormData, setDataOptionFormData] = React.useState<
     Record<string, any>
@@ -193,15 +193,21 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   }, [connectionFormData, connectorName]);
 
   useEffect(() => {
-    if(clusterUrl){
-      connectorService.getTopicCreationEnabled(clusterUrl).then((response) => {
-        setTopicCreationEnabled(response);
-      }).catch((err) => { 
-        addNewNotification("danger", "Something went wrong: Topic Creation Enabled", err.message);
-      });
+    if (clusterUrl) {
+      connectorService
+        .getTopicCreationEnabled(clusterUrl)
+        .then((response) => {
+          setTopicCreationEnabled(response);
+        })
+        .catch((err) => {
+          addNewNotification(
+            "danger",
+            "Something went wrong: Topic Creation Enabled",
+            err.message
+          );
+        });
     }
-   
-  },[clusterUrl])
+  }, [clusterUrl]);
 
   const generateConnectorProperties = () => {
     const connectorProperties = {} as Record<string, ConnectorProperties>;
@@ -379,8 +385,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
 
   const ConnectionStepFooter = () => {
     const { goToNextStep, goToPrevStep, close } = useWizardContext();
-
     const [isLoading, setIsLoading] = useState(false);
+    const connectorPluginPage = () => navigate("/plugins");
 
     async function onValidate() {
       setIsLoading(true);
@@ -429,7 +435,11 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
 
     return (
       <WizardFooterWrapper>
-        <Button variant="secondary" onClick={goToPrevStep} isDisabled={true}>
+        <Button
+          variant="secondary"
+          onClick={connectorPluginPage}
+          isDisabled={false}
+        >
           Back
         </Button>
         <Button
@@ -638,9 +648,9 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 isHidden={!topicCreationEnabled || locationData.hideAdvance}
               >
                 <TopicCreationStep
-                 formData={topicGroupFormData}
-                 updateFormData={updateTopicGroupFormData}
-                  />
+                  formData={topicGroupFormData}
+                  updateFormData={updateTopicGroupFormData}
+                />
               </WizardStep>,
               <WizardStep
                 name="Data options"

@@ -13,6 +13,10 @@ import {
   Dropdown,
   DropdownItem,
   DropdownList,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateIcon,
   Flex,
   FlexItem,
   Grid,
@@ -24,6 +28,7 @@ import {
   MenuToggleElement,
   PageSection,
   PageSectionVariants,
+  Skeleton,
   Split,
   SplitItem,
   Stack,
@@ -46,6 +51,7 @@ import {
 import { POLLING_INTERVAL } from "@app/constants";
 import {
   CheckCircleIcon,
+  CheckIcon,
   ExclamationCircleIcon,
   PencilAltIcon,
   TimesCircleIcon,
@@ -334,21 +340,39 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
                       isAutoFit
                       autoFitMinModifier={{ default: "200px" }}
                     >
-                      {connectorConfiguration &&
-                        Object.keys(connectorConfiguration).map(
-                          (property: string) => {
-                            return (
-                              <DescriptionListGroup key={property}>
-                                <DescriptionListTerm>
-                                  {property}
-                                </DescriptionListTerm>
-                                <DescriptionListDescription>
-                                  {connectorConfiguration[property]}
-                                </DescriptionListDescription>
-                              </DescriptionListGroup>
-                            );
-                          }
-                        )}
+                      {connectorsSchemaLoading
+                        ? "loading".split("").map((char: string) => (
+                            <DescriptionListGroup key={char}>
+                              <DescriptionListTerm>
+                                <Skeleton
+                                  width="75%"
+                                  screenreaderText="Loading connector configuration"
+                                />
+                              </DescriptionListTerm>
+                              <DescriptionListDescription>
+                                <Skeleton
+                                  width="90%"
+                                  screenreaderText="Loading connector configuration"
+                                />
+                              </DescriptionListDescription>
+                            </DescriptionListGroup>
+                          ))
+                        : connectorConfiguration &&
+                          Object.keys(connectorConfiguration).map(
+                            (property: string) => {
+                              return (
+                                <DescriptionListGroup key={property}>
+                                  <DescriptionListTerm>
+                                    {property}
+                                  </DescriptionListTerm>
+                                  <DescriptionListDescription>
+                                    {connectorConfiguration[property]}
+                                  </DescriptionListDescription>
+                                </DescriptionListGroup>
+                              );
+                            }
+                          )}
+                      {}
                     </DescriptionList>
                   </CardBody>
                 </Card>
@@ -362,33 +386,44 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
                     </Title>
                   </CardTitle>
                   <CardBody>
-                    {connectorStatus?.tasks.map((task) => {
-                      return (
-                        <Card
-                          style={{ textAlign: "center", width: "250px" }}
-                          key={`${task.worker_id}`}
-                          component="div"
-                        >
-                          <CardTitle
-                            style={{ textAlign: "center" }}
-                          >{`Id: ${task.id}`}</CardTitle>
-                          <CardBody>
-                            <Stack>
-                              <Tooltip content={<div>{task.trace}</div>}>
-                                <Button variant="plain">
-                                  <ConnectorStatusComponent
-                                    status={task.state}
-                                    task={true}
-                                  />
-                                </Button>
-                              </Tooltip>
+                    {connectorStatusLoading ? (
+                      <div style={{ height: "150px" }}>
+                        <Skeleton
+                          height="100%"
+                          width="35%"
+                          screenreaderText="Loading medium rectangle contents"
+                        />
+                      </div>
+                    ) : (
+                      connectorStatus?.tasks.map((task) => {
+                        return (
+                          <Card
+                            style={{ textAlign: "center", width: "250px" }}
+                            key={`${task.worker_id}`}
+                            component="div"
+                          >
+                            <CardTitle
+                              style={{ textAlign: "center" }}
+                            >{`Id: ${task.id}`}</CardTitle>
+                            <CardBody>
+                              <Stack>
+                                <Tooltip content={<div>{task.trace}</div>}>
+                                  <Button variant="plain">
+                                    <ConnectorStatusComponent
+                                      status={task.state}
+                                      task={true}
+                                    />
+                                  </Button>
+                                </Tooltip>
 
-                              <span>Worker Id: &nbsp;{task.worker_id}</span>
-                            </Stack>
-                          </CardBody>
-                        </Card>
-                      );
-                    })}
+                                <span>Worker Id: &nbsp;{task.worker_id}</span>
+                              </Stack>
+                            </CardBody>
+                          </Card>
+                        );
+                      })
+                    )}
+                    {}
                   </CardBody>
                 </Card>
               </GridItem>
@@ -400,27 +435,50 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
                     </Title>
                   </CardTitle>
                   <CardBody>
-                    <DescriptionList isHorizontal isCompact isFluid>
-                      <DescriptionListGroup>
-                        <DescriptionListTerm>
-                          Streaming in progress:
-                        </DescriptionListTerm>
-                        <DescriptionListDescription>
-                          {connectorMetrics?.connector.metrics.Connected ? (
-                            <Icon status="success">
-                              <CheckCircleIcon />
-                            </Icon>
-                          ) : (
-                            <Icon status="danger">
-                              <ExclamationCircleIcon />
-                            </Icon>
-                          )}
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                    </DescriptionList>
-                    {connectorMetrics?.tasks &&
-                      connectorMetrics?.tasks.map((task) => {
-                        return (
+                    {connectorMetricsError ? (
+                      <EmptyState>
+                        <EmptyStateHeader
+                          titleText="Something went wrong"
+                          headingLevel="h4"
+                          icon={
+                            <EmptyStateIcon
+                              icon={ExclamationCircleIcon}
+                              color="var(--pf-v5-global--danger-color--100)"
+                            />
+                          }
+                        />
+                        <EmptyStateBody>
+                          Message: {connectorMetricsError.message}
+                        </EmptyStateBody>
+                      </EmptyState>
+                    ) : (
+                      <>
+                        <DescriptionList isHorizontal isCompact isFluid>
+                          <DescriptionListGroup>
+                            <DescriptionListTerm>
+                              Streaming in progress:
+                            </DescriptionListTerm>
+                            <DescriptionListDescription>
+                              {connectorMetricsLoading ? (
+                                <Skeleton
+                                  shape="circle"
+                                  width="5%"
+                                  screenreaderText="Loading streaming in progress status"
+                                />
+                              ) : connectorMetrics?.connector.metrics
+                                  .Connected ? (
+                                <Icon status="success">
+                                  <CheckCircleIcon />
+                                </Icon>
+                              ) : (
+                                <Icon status="danger">
+                                  <ExclamationCircleIcon />
+                                </Icon>
+                              )}
+                            </DescriptionListDescription>
+                          </DescriptionListGroup>
+                        </DescriptionList>
+                        {connectorMetricsLoading ? (
                           <>
                             <div
                               style={{
@@ -429,56 +487,107 @@ export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
                                 fontWeight: "bold",
                               }}
                             >
-                              Task Id: {task.id}
+                              Task Id:{" "}
+                              <Skeleton
+                                width="15%"
+                                screenreaderText="Loaded 25% of content"
+                              />
                             </div>
-
-                            {task.namespaces &&
-                              task.namespaces.map((namespace) => {
-                                return (
-                                  <>
-                                    {namespace.name && (
-                                      <div
-                                        style={{
-                                          fontWeight: "bold",
-                                        }}
-                                      >
-                                        Namespace: {namespace.name}
-                                      </div>
-                                    )}
-                                    <DescriptionList
-                                      displaySize={"lg"}
-                                      columnModifier={{ lg: "2Col" }}
-                                      style={{ marginBottom: "10px" }}
-                                    >
-                                      <Card component="div">
-                                        <DescriptionListTerm>
-                                          Time since last event:
-                                        </DescriptionListTerm>
-                                        <DescriptionListDescription>
-                                          {convertMilliSecToTime(
-                                            +namespace.metrics
-                                              .MilliSecondsSinceLastEvent
-                                          )}
-                                        </DescriptionListDescription>
-                                      </Card>
-                                      <Card component="div">
-                                        <DescriptionListTerm>
-                                          Total number of events:
-                                        </DescriptionListTerm>
-                                        <DescriptionListDescription>
-                                          {
-                                            namespace.metrics
-                                              .TotalNumberOfEventsSeen
-                                          }
-                                        </DescriptionListDescription>
-                                      </Card>
-                                    </DescriptionList>
-                                  </>
-                                );
-                              })}
+                            <DescriptionList
+                              displaySize={"lg"}
+                              columnModifier={{ lg: "2Col" }}
+                              style={{ marginBottom: "10px" }}
+                            >
+                              <Card component="div">
+                                <DescriptionListTerm>
+                                  Time since last event:
+                                </DescriptionListTerm>
+                                <DescriptionListDescription>
+                                  <Skeleton
+                                    width="35%"
+                                    screenreaderText="Loaded 25% of content"
+                                  />
+                                </DescriptionListDescription>
+                              </Card>
+                              <Card component="div">
+                                <DescriptionListTerm>
+                                  Total number of events:
+                                </DescriptionListTerm>
+                                <DescriptionListDescription>
+                                  <Skeleton
+                                    width="35%"
+                                    screenreaderText="Loaded 25% of content"
+                                  />
+                                </DescriptionListDescription>
+                              </Card>
+                            </DescriptionList>
                           </>
-                        );
-                      })}
+                        ) : (
+                          connectorMetrics?.tasks &&
+                          connectorMetrics?.tasks.map((task) => {
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    marginBottom: "5px",
+                                    marginTop: "15px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Task Id: {task.id}
+                                </div>
+
+                                {task.namespaces &&
+                                  task.namespaces.map((namespace) => {
+                                    return (
+                                      <>
+                                        {namespace.name && (
+                                          <div
+                                            style={{
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            Namespace: {namespace.name}
+                                          </div>
+                                        )}
+                                        <DescriptionList
+                                          displaySize={"lg"}
+                                          columnModifier={{ lg: "2Col" }}
+                                          style={{ marginBottom: "10px" }}
+                                        >
+                                          <Card component="div">
+                                            <DescriptionListTerm>
+                                              Time since last event:
+                                            </DescriptionListTerm>
+                                            <DescriptionListDescription>
+                                              {convertMilliSecToTime(
+                                                +namespace.metrics
+                                                  .MilliSecondsSinceLastEvent
+                                              )}
+                                            </DescriptionListDescription>
+                                          </Card>
+                                          <Card component="div">
+                                            <DescriptionListTerm>
+                                              Total number of events:
+                                            </DescriptionListTerm>
+                                            <DescriptionListDescription>
+                                              {
+                                                namespace.metrics
+                                                  .TotalNumberOfEventsSeen
+                                              }
+                                            </DescriptionListDescription>
+                                          </Card>
+                                        </DescriptionList>
+                                      </>
+                                    );
+                                  })}
+                              </>
+                            );
+                          })
+                        )}
+                        {}
+                      </>
+                    )}
                   </CardBody>
                 </Card>
               </GridItem>

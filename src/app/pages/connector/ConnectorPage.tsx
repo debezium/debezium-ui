@@ -14,6 +14,7 @@ import {
   OverflowMenuGroup,
   OverflowMenuItem,
   PageSection,
+  Spinner,
   Text,
   TextContent,
   Toolbar,
@@ -140,7 +141,13 @@ const ConnectorPage: React.FunctionComponent = () => {
     <>
       {(connectorsInfoLoading || connectorsStatusLoading) &&
       (isNull(connectorsInfo) || isNull(connectorsStatus)) ? (
-        <p>Loading...</p>
+        <EmptyState>
+          <EmptyStateHeader
+            titleText="Loading"
+            headingLevel="h4"
+            icon={<EmptyStateIcon icon={Spinner} />}
+          />
+        </EmptyState>
       ) : isEmpty(connectorsInfo) || isEmpty(connectorsStatus) ? (
         <>
           <EmptyState variant={EmptyStateVariant.lg}>
@@ -162,7 +169,9 @@ const ConnectorPage: React.FunctionComponent = () => {
               </TextContent>
             </EmptyStateBody>
             <EmptyStateFooter>
-              <Button variant="primary" onClick={createConnectorPage}>Create connector</Button>
+              <Button variant="primary" onClick={createConnectorPage}>
+                Create connector
+              </Button>
             </EmptyStateFooter>
           </EmptyState>
         </>
