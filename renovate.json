@@ -1,0 +1,3 @@
+{
+  "extends": ["github>redhat-developer/app-services-renovate-config"]
+}
