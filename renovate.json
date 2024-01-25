@@ -7,10 +7,9 @@
        "ignoreDeps": [
         "keycloak-js"
       ],
-      "automerge": true,
-      "major": {
-        "automerge": false
-      },
+    "assignees": [
+        "indraraj"
+    ],
       "transitiveRemediation": true
     }
     
