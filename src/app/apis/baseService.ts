@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-import { LoggerService } from './logger';
+import { LoggerService } from "./logger";
 // import {ConfigService} from "./config";
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
 
 export class ContentTypes {
-  public static APPLICATION_JSON: string = 'application/json';
-  public static APPLICATION_XML: string = 'application/xml';
+  public static APPLICATION_JSON: string = "application/json";
+  public static APPLICATION_XML: string = "application/xml";
 }
 
 /**
@@ -39,19 +39,25 @@ export abstract class BaseService implements Service {
   protected logger: LoggerService | null = null;
   // protected config: ConfigService | null = null;
 
-  private apiBaseHref: string = '';
+  private apiBaseHref: string = "";
   // private newApiBaseHref: string = '';
 
   public init(): void {
-    this.apiBaseHref = '';
+    this.apiBaseHref = "";
     // this.newApiBaseHref = this.config?.newArtifactsUrl() || '';
-    if (this.apiBaseHref.endsWith('/')) {
-      this.apiBaseHref = this.apiBaseHref.substring(0, this.apiBaseHref.length - 1);
+    if (this.apiBaseHref.endsWith("/")) {
+      this.apiBaseHref = this.apiBaseHref.substring(
+        0,
+        this.apiBaseHref.length - 1,
+      );
     }
     // if (this.newApiBaseHref.endsWith("/")) {
     //     this.newApiBaseHref = this.newApiBaseHref.substring(0, this.newApiBaseHref.length - 1);
     // }
-    this.logger?.debug('[BaseService] Base HREF of Cluster in Use: ', this.apiBaseHref);
+    this.logger?.debug(
+      "[BaseService] Base HREF of Cluster in Use: ",
+      this.apiBaseHref,
+    );
     // this.logger?.debug("[BaseService] Base HREF of Connectors REST API: ", this.newApiBaseHref);
   }
 
@@ -62,16 +68,24 @@ export abstract class BaseService implements Service {
    * @param params
    * @param queryParams
    */
-  protected endpoint(path: string, baseHref: string, params?: any, queryParams?: any): string {
+  protected endpoint(
+    path: string,
+    baseHref: string,
+    params?: any,
+    queryParams?: any,
+  ): string {
     if (params) {
       Object.keys(params).forEach((key) => {
         const value: string = encodeURIComponent(params[key]);
-        path = path.replace(':' + key, value);
+        path = path.replace(":" + key, value);
       });
     }
     if (baseHref !== this.apiBaseHref) {
       this.apiBaseHref = baseHref;
-      this.logger?.debug('[BaseService] Base HREF of Cluster in Use: ', this.apiBaseHref);
+      this.logger?.debug(
+        "[BaseService] Base HREF of Cluster in Use: ",
+        this.apiBaseHref,
+      );
     }
     let rval: string = this.apiBaseHref + path;
     if (queryParams) {
@@ -80,18 +94,18 @@ export abstract class BaseService implements Service {
         if (queryParams[key]) {
           const value: string = encodeURIComponent(queryParams[key]);
           if (first) {
-            rval = rval + '?' + key;
+            rval = rval + "?" + key;
           } else {
-            rval = rval + '&' + key;
+            rval = rval + "&" + key;
           }
           if (value !== null && value !== undefined) {
-            rval = rval + '=' + value;
+            rval = rval + "=" + value;
           }
           first = false;
         }
       }
     }
-    this.logger?.info('[BaseService] Using REST endpoint: ', rval);
+    this.logger?.info("[BaseService] Using REST endpoint: ", rval);
     return rval;
   }
 
@@ -108,14 +122,18 @@ export abstract class BaseService implements Service {
    * Performs an HTTP GET operation to the given URL with the given options.  Returns
    * a Promise to the HTTP response data.
    */
-  protected httpGet<T>(url: string, options?: AxiosRequestConfig, successCallback?: (value: any) => T): Promise<T> {
-    this.logger?.info('[BaseService] Making a GET request to: ', url);
+  protected httpGet<T>(
+    url: string,
+    options?: AxiosRequestConfig,
+    successCallback?: (value: any) => T,
+  ): Promise<T> {
+    this.logger?.info("[BaseService] Making a GET request to: ", url);
 
     if (!options) {
       options = this.options({ Accept: ContentTypes.APPLICATION_JSON });
     }
 
-    const config: AxiosRequestConfig = this.axiosConfig('get', url, options);
+    const config: AxiosRequestConfig = this.axiosConfig("get", url, options);
     return axios
       .request(config)
       .then((response) => {
@@ -144,13 +162,18 @@ export abstract class BaseService implements Service {
     options?: AxiosRequestConfig,
     successCallback?: () => void,
   ): Promise<void> {
-    this.logger?.info('[BaseService] Making a POST request to: ', url);
+    this.logger?.info("[BaseService] Making a POST request to: ", url);
 
     if (!options) {
-      options = this.options({ 'Content-Type': ContentTypes.APPLICATION_JSON });
+      options = this.options({ "Content-Type": ContentTypes.APPLICATION_JSON });
     }
 
-    const config: AxiosRequestConfig = this.axiosConfig('post', url, options, body);
+    const config: AxiosRequestConfig = this.axiosConfig(
+      "post",
+      url,
+      options,
+      body,
+    );
     return axios
       .request(config)
       .then(() => {
@@ -178,13 +201,21 @@ export abstract class BaseService implements Service {
     options?: AxiosRequestConfig,
     successCallback?: (data: any) => O,
   ): Promise<O> {
-    this.logger?.info('[BaseService] Making a POST request to: ', url);
+    this.logger?.info("[BaseService] Making a POST request to: ", url);
 
     if (!options) {
-      options = this.options({ Accept: ContentTypes.APPLICATION_JSON, 'Content-Type': ContentTypes.APPLICATION_JSON });
+      options = this.options({
+        Accept: ContentTypes.APPLICATION_JSON,
+        "Content-Type": ContentTypes.APPLICATION_JSON,
+      });
     }
 
-    const config: AxiosRequestConfig = this.axiosConfig('post', url, options, body);
+    const config: AxiosRequestConfig = this.axiosConfig(
+      "post",
+      url,
+      options,
+      body,
+    );
     return axios
       .request(config)
       .then((response) => {
@@ -213,13 +244,18 @@ export abstract class BaseService implements Service {
     options?: AxiosRequestConfig,
     successCallback?: () => void,
   ): Promise<void> {
-    this.logger?.info('[BaseService] Making a PUT request to: ', url);
+    this.logger?.info("[BaseService] Making a PUT request to: ", url);
 
     if (!options) {
-      options = this.options({ 'Content-Type': ContentTypes.APPLICATION_JSON });
+      options = this.options({ "Content-Type": ContentTypes.APPLICATION_JSON });
     }
 
-    const config: AxiosRequestConfig = this.axiosConfig('put', url, options, body);
+    const config: AxiosRequestConfig = this.axiosConfig(
+      "put",
+      url,
+      options,
+      body,
+    );
     return axios
       .request(config)
       .then(() => {
@@ -247,13 +283,21 @@ export abstract class BaseService implements Service {
     options?: AxiosRequestConfig,
     successCallback?: (data: O) => O,
   ): Promise<O> {
-    this.logger?.info('[BaseService] Making a PUT request to: ', url);
+    this.logger?.info("[BaseService] Making a PUT request to: ", url);
 
     if (!options) {
-      options = this.options({ Accept: ContentTypes.APPLICATION_JSON, 'Content-Type': ContentTypes.APPLICATION_JSON });
+      options = this.options({
+        Accept: ContentTypes.APPLICATION_JSON,
+        "Content-Type": ContentTypes.APPLICATION_JSON,
+      });
     }
 
-    const config: AxiosRequestConfig = this.axiosConfig('put', url, options, body);
+    const config: AxiosRequestConfig = this.axiosConfig(
+      "put",
+      url,
+      options,
+      body,
+    );
     return axios
       .request(config)
       .then((response) => {
@@ -274,14 +318,18 @@ export abstract class BaseService implements Service {
    * @param url
    * @param options
    */
-  protected httpDelete<T>(url: string, options?: AxiosRequestConfig, successCallback?: () => T): Promise<T | null> {
-    this.logger?.info('[BaseService] Making a DELETE request to: ', url);
+  protected httpDelete<T>(
+    url: string,
+    options?: AxiosRequestConfig,
+    successCallback?: () => T,
+  ): Promise<T | null> {
+    this.logger?.info("[BaseService] Making a DELETE request to: ", url);
 
     if (!options) {
       options = {};
     }
 
-    const config: AxiosRequestConfig = this.axiosConfig('delete', url, options);
+    const config: AxiosRequestConfig = this.axiosConfig("delete", url, options);
     return axios
       .request(config)
       .then(() => {
@@ -292,7 +340,12 @@ export abstract class BaseService implements Service {
       });
   }
 
-  private axiosConfig(method: string, url: string, options: any, data?: any): AxiosRequestConfig {
+  private axiosConfig(
+    method: string,
+    url: string,
+    options: any,
+    data?: any,
+  ): AxiosRequestConfig {
     return {
       ...{
         data,

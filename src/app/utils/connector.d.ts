@@ -100,7 +100,7 @@ interface ConnectorMetrics {
   name: string;
   "tasks.max": string;
   connector: ConnectorMetricsConnection;
-  tasks?: (TasksEntity)[] | null;
+  tasks?: TasksEntity[] | null;
 }
 interface ConnectorMetricsConnection {
   metrics: MetricsConnectorConnected;
@@ -110,7 +110,7 @@ interface MetricsConnectorConnected {
 }
 interface TasksEntity {
   id: number;
-  namespaces?: (TaskNamespaceMetrics)[] | null;
+  namespaces?: TaskNamespaceMetrics[] | null;
 }
 interface TaskNamespaceMetrics {
   metrics: TaskMetrics;
@@ -126,7 +126,6 @@ interface ConnectorNameStatus {
   connector: Connector;
   tasks: StatusTasks[];
 }
-
 
 interface SchemaComponent {
   schemas: Record<string, ConnectorSchema>;

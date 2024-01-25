@@ -1,1 +1,1 @@
-export * from './ConnectorDetails';
+export * from "./ConnectorDetails";
