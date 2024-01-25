@@ -1,0 +1,71 @@
+## Development infrastructure for running and testing the Debezium UI
+version: '4'
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper:latest
+    ports:
+     - 2181:2181
+     - 2888:2888
+     - 3888:3888
+  kafka:
+    image: quay.io/debezium/kafka:latest
+    ports:
+     - 9092:9092
+    links:
+     - zookeeper
+    environment:
+     - ZOOKEEPER_CONNECT=zookeeper:2181
+  mysql:
+    image: quay.io/debezium/example-mysql:latest
+    ports:
+     - 3306:3306
+    environment:
+     - MYSQL_ROOT_PASSWORD=debezium
+     - MYSQL_USER=mysqluser
+     - MYSQL_PASSWORD=mysqlpw
+  postgres:
+    image: quay.io/debezium/example-postgres:latest
+    ports:
+     - 5432:5432
+    environment:
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=postgres
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+     - 1433:1433
+    environment:
+     - ACCEPT_EULA=Y
+     - MSSQL_PID=Standard
+     - SA_PASSWORD=Password!
+     - MSSQL_AGENT_ENABLED=true
+  mongodb:
+    image: quay.io/debezium/example-mongodb:latest
+    hostname: mongodb
+    ports:
+     - 27017:27017
+    environment:
+     - MONGODB_USER=debezium
+     - MONGODB_PASSWORD=dbz
+  connect:
+    image: quay.io/debezium/connect:latest
+    ports:
+     - 8083:8083
+    links:
+     - kafka
+     - mysql
+     - postgres
+     - sqlserver
+     - mongodb
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:9092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+     - ENABLE_DEBEZIUM_KC_REST_EXTENSION=true
+     - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension,io.debezium.connector.mysql.rest.DebeziumMySqlConnectRestExtension,io.debezium.connector.postgresql.rest.DebeziumPostgresConnectRestExtension,io.debezium.connector.mongodb.rest.DebeziumMongoDbConnectRestExtension,io.debezium.connector.oracle.rest.DebeziumOracleConnectRestExtension,io.debezium.connector.sqlserver.rest.DebeziumSqlServerConnectRestExtension
+     - ENABLE_DEBEZIUM_SCRIPTING=true
+     - CONNECT_ACCESS_CONTROL_ALLOW_ORIGIN=*
+     - CONNECT_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE
+     - CONNECT_ACCESS_CONTROL_ALLOW_HEADERS=origin,content-type,accept,authorization
