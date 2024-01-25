@@ -21,9 +21,9 @@ export enum FormStep {
   CONNECTOR_NAME = "ConnectorName",
   CONNECTION = "Connection",
   FILTER = "Filter",
-  DATA_OPTION= "DataOption",
+  DATA_OPTION = "DataOption",
   RUNTIME_OPTION = "RuntimeOption",
   CUSTOM_PROPERTIES = "CustomProperties",
-  TRANSFORM="Transform",
-  TOPIC_CREATION="TopicCreation",
+  TRANSFORM = "Transform",
+  TOPIC_CREATION = "TopicCreation",
 }

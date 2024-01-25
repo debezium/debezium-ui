@@ -4,7 +4,7 @@ import { Route, RouteProps, Routes, useLocation } from "react-router-dom";
 // import { Support } from '@app/Support/Support';
 // import { GeneralSettings } from '@app/Settings/General/GeneralSettings';
 // import { ProfileSettings } from '@app/Settings/Profile/ProfileSettings';
-import { NotFound } from '@app/NotFound/NotFound';
+import { NotFound } from "@app/NotFound/NotFound";
 import { useDocumentTitle } from "@app/utils/useDocumentTitle";
 import { ConnectorPage } from "./pages/connector";
 import { CreateConnectorWizard } from "./pages/createConnector";
@@ -113,7 +113,7 @@ const flattenedRoutes: IAppRoute[] = routes.reduce(
     ...flattened,
     ...(route.routes ? route.routes : [route]),
   ],
-  [] as IAppRoute[]
+  [] as IAppRoute[],
 );
 
 const AppRoutes = (): React.ReactElement => (
@@ -134,7 +134,10 @@ const AppRoutes = (): React.ReactElement => (
     <Route path="/" element={<ConnectorPage />} />
     <Route path="/plugins" element={<ConnectorPlugins />} />
     <Route path="/connector/:connectorName" element={<ConnectorDetails />} />
-    <Route path="/config-connector/:connectorPlugin" element={<CreateConnectorWizard />} />
+    <Route
+      path="/config-connector/:connectorPlugin"
+      element={<CreateConnectorWizard />}
+    />
   </Routes>
 );
 

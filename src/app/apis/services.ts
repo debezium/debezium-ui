@@ -15,57 +15,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {ConnectorService} from "./connector";
+import { ConnectorService } from "./connector";
 // import {ConfigService} from "./config";
-import {GlobalsService} from "./globals";
-import {LoggerService} from "./logger";
-import {Service} from "./baseService";
+import { GlobalsService } from "./globals";
+import { LoggerService } from "./logger";
+import { Service } from "./baseService";
 
 /**
  * Class that provides access to all of the services in the application.
  */
 export class Services {
+  public static getConnectorService(): ConnectorService {
+    return Services.all.connector;
+  }
 
-    public static getConnectorService(): ConnectorService {
-        return Services.all.connector;
-    }
+  // public static getConfigService(): ConfigService {
+  //     return Services.all.config;
+  // }
 
-    // public static getConfigService(): ConfigService {
-    //     return Services.all.config;
-    // }
+  public static getGlobalsService(): GlobalsService {
+    return Services.all.globals;
+  }
 
-    public static getGlobalsService(): GlobalsService {
-        return Services.all.globals;
-    }
+  public static getLoggerService(): LoggerService {
+    return Services.all.logger;
+  }
 
-    public static getLoggerService(): LoggerService {
-        return Services.all.logger;
-    }
+  private static all: any = {
+    // config: new ConfigService(),
+    connector: new ConnectorService(),
+    globals: new GlobalsService(),
+    logger: new LoggerService(),
+  };
 
-    private static all: any = {
-        // config: new ConfigService(),
-        connector: new ConnectorService(),
-        globals: new GlobalsService(),
-        logger: new LoggerService()
-    };
-
-    // tslint:disable-next-line:member-ordering member-access
-    static _intialize(): void {
-        // First perform simple service-service injection.
-        Object.keys(Services.all).forEach( svcToInjectIntoName => {
-            const svcToInjectInto: any = Services.all[svcToInjectIntoName];
-            Object.keys(Services.all).filter(key => key !== svcToInjectIntoName).forEach(injectableSvcKey => {
-                if (svcToInjectInto[injectableSvcKey] !== undefined && svcToInjectInto[injectableSvcKey] === null) {
-                    svcToInjectInto[injectableSvcKey] = Services.all[injectableSvcKey];
-                }
-            })
+  // tslint:disable-next-line:member-ordering member-access
+  static _intialize(): void {
+    // First perform simple service-service injection.
+    Object.keys(Services.all).forEach((svcToInjectIntoName) => {
+      const svcToInjectInto: any = Services.all[svcToInjectIntoName];
+      Object.keys(Services.all)
+        .filter((key) => key !== svcToInjectIntoName)
+        .forEach((injectableSvcKey) => {
+          if (
+            svcToInjectInto[injectableSvcKey] !== undefined &&
+            svcToInjectInto[injectableSvcKey] === null
+          ) {
+            svcToInjectInto[injectableSvcKey] = Services.all[injectableSvcKey];
+          }
         });
-        // Once that's done, init() all the services
-        Object.keys(Services.all).forEach( svcToInjectIntoName => {
-            const svcToInit: Service = Services.all[svcToInjectIntoName];
-            svcToInit.init();
-        });
-    }
-
+    });
+    // Once that's done, init() all the services
+    Object.keys(Services.all).forEach((svcToInjectIntoName) => {
+      const svcToInit: Service = Services.all[svcToInjectIntoName];
+      svcToInit.init();
+    });
+  }
 }
 Services._intialize();

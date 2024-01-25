@@ -38,8 +38,7 @@ export const getConnectorType = (connectorType: string | undefined) => {
   }
 };
 
-
-export function mapToObject(map:  Map<string, string>) {
+export function mapToObject(map: Map<string, string>) {
   const obj = {} as Record<string, string>;
   map.forEach((value, key) => {
     obj[key] = value;
@@ -53,13 +52,13 @@ export const convertMilliSecToTime = (millisec: number) => {
   const hours = (millisec / (1000 * 60 * 60)).toFixed(2);
   const days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
   if (parseInt(seconds) < 60) {
-    return seconds + ' Sec';
+    return seconds + " Sec";
   } else if (parseInt(minutes) < 60) {
-    return minutes + ' Min';
+    return minutes + " Min";
   } else if (parseInt(hours) < 24) {
-    return hours + ' Hrs';
+    return hours + " Hrs";
   } else {
-    return days + ' Days';
+    return days + " Days";
   }
 };
 

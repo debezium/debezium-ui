@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 // a custom hook for setting the page title
 export function useDocumentTitle(title: string) {

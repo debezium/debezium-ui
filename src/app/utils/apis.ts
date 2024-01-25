@@ -12,28 +12,28 @@ const MAX_RETRIES: number = 1;
  * @param retries no. of retries
  */
 export function fetch_retry(
-    api: any,
-    serviceRef: any,
-    postParam?: any,
-    retries: number = 1
-  ): Promise<any> {
-    const apicall = api.bind(serviceRef);
-    // For Get method
-    if (postParam === undefined) {
-      return apicall().catch((err: any) => {
-        if (retries >= MAX_RETRIES) {
-          throw err;
-        }
-        return fetch_retry(api, serviceRef, ++retries);
-      });
-    }
-    // For Post method
-    else {
-      return apicall(...postParam).catch((err: any) => {
-        if (retries >= MAX_RETRIES) {
-          throw err;
-        }
-        return fetch_retry(api, serviceRef, postParam, ++retries);
-      });
-    }
+  api: any,
+  serviceRef: any,
+  postParam?: any,
+  retries: number = 1,
+): Promise<any> {
+  const apicall = api.bind(serviceRef);
+  // For Get method
+  if (postParam === undefined) {
+    return apicall().catch((err: any) => {
+      if (retries >= MAX_RETRIES) {
+        throw err;
+      }
+      return fetch_retry(api, serviceRef, ++retries);
+    });
   }
+  // For Post method
+  else {
+    return apicall(...postParam).catch((err: any) => {
+      if (retries >= MAX_RETRIES) {
+        throw err;
+      }
+      return fetch_retry(api, serviceRef, postParam, ++retries);
+    });
+  }
+}
