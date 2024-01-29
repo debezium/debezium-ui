@@ -18,3 +18,9 @@ dist/
 
 # Ignore log files
 *.log
+
+# Ignore coverage directory
+coverage/
+
+# Ignore stats file
+stats.json

@@ -16,3 +16,7 @@ cypress/videos
 cypress/screenshots
 
 storybook-static
+
+**/node_modules
+stats.json
+coverage
