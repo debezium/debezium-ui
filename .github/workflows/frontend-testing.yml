@@ -4,15 +4,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'ui/**'
-      - '.github/workflows/frontend-testing.yml'
   pull_request:
     branches:
       - main
-    paths:
-      - 'ui/**'
-      - '.github/workflows/frontend-testing.yml'
 
 jobs:
   test:
@@ -24,9 +18,6 @@ jobs:
         node: ['18.14.2']
         os: [ubuntu-latest]
 
-    defaults:
-      run:
-        working-directory: ./ui
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -36,29 +27,11 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Cache node modules
-        id: npm-cache
-        uses: actions/cache@v2
-        env:
-            cache-name: cache-node-modules-v2
-        with:
-            path: |
-                ~/.npm
-                ~/.cache/Cypress
-                node_modules
-                */*/node_modules
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-                ${{ runner.os }}-build-${{ env.cache-name }}-
-                ${{ runner.os }}-build-
-                ${{ runner.os }}-
-
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
         with:
           install-command: npm install
           useLockFile: false
-          working-directory: ./ui
 
       - name: Test Debezium UI Frontend
-        run: npm run unit:test
+        run: npm run test
