@@ -105,14 +105,16 @@ const AppHeader: React.FC<Props> = ({ updateCluster, notificationBadge }) => {
                 >
                   <ToggleGroupItem
                     icon={<SunIcon />}
-                    aria-label="copy"
+                    aria-label="light_theme"
+                    data-testid="light_theme"
                     buttonId="toggle-group-sun-icon"
                     isSelected={themeSelected === "toggle-group-sun-icon"}
                     onChange={handleThemeToggle}
                   />
                   <ToggleGroupItem
                     icon={<MoonIcon />}
-                    aria-label="undo"
+                    aria-label="dark_theme"
+                    data-testid="dark_theme"
                     buttonId="toggle-group-moon-icon"
                     isSelected={themeSelected === "toggle-group-moon-icon"}
                     onChange={handleThemeToggle}
