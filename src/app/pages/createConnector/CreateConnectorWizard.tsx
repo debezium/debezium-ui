@@ -38,8 +38,8 @@ import { TransformsStep } from "./TransformationStep";
 import { TopicCreationStep } from "./TopicCreationStep";
 
 export const CreateConnectorWizard: React.FunctionComponent = () => {
-  let { connectorPlugin } = useParams();
-  let locationData = useLocation().state;
+  const { connectorPlugin } = useParams();
+  const locationData = useLocation().state;
 
   const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
 

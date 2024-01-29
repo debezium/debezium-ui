@@ -90,8 +90,8 @@ export const ConnectorPlugins: React.FC<ConnectorPluginsProps> = (props) => {
         <Text component="h1">Connector plugins</Text>
         <Text component="p">
           List of available connector plugin type. To quickly create a connector
-          with just basic properties toggle off the switch for "Advance
-          configuration options" below before clicking on connector plugin type.{" "}
+            with just basic properties toggle off the switch for &quot;Advance
+            configuration options&quot; below before clicking on connector plugin type.{" "}
         </Text>
       </TextContent>
       <Toolbar id="toolbar-group-types">

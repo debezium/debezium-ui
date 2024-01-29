@@ -1,21 +1,15 @@
-import { FormInputComponent } from "@app/components/FormInputComponent";
 import { FormStep } from "@app/constants";
 import {
   Flex,
   FlexItem,
   FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-  Level,
-  LevelItem,
   Popover,
   TextInput,
   ToggleGroup,
   ToggleGroupItem,
 } from "@patternfly/react-core";
-import { HelpIcon, ExclamationCircleIcon } from "@patternfly/react-icons";
-import { capitalize, cloneDeep, filter, find, has, lowerCase } from "lodash";
+import { HelpIcon } from "@patternfly/react-icons";
+import { capitalize } from "lodash";
 import React, { SetStateAction, useEffect, useState } from "react";
 import "./FilterExplicitFields.css";
 

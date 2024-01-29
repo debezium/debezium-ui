@@ -5,7 +5,6 @@ import {
   MastheadBrand,
   MastheadContent,
   MastheadMain,
-  Switch,
   ToggleGroup,
   ToggleGroupItem,
   Toolbar,
@@ -29,7 +28,7 @@ interface Props {
 const AppHeader: React.FC<Props> = ({ updateCluster, notificationBadge }) => {
   const [themeSelected, setThemeSelected] = useState("toggle-group-sun-icon");
 
-  const handleThemeToggle = (event: any, selected: boolean) => {
+  const handleThemeToggle = (event: any) => {
     const id = event.currentTarget.id;
     setPreference(id);
   };
@@ -54,7 +53,7 @@ const AppHeader: React.FC<Props> = ({ updateCluster, notificationBadge }) => {
   }, []);
 
   const setPreference = (id: string) => {
-    let theme = id === "toggle-group-sun-icon" ? "light" : "dark";
+    const theme = id === "toggle-group-sun-icon" ? "light" : "dark";
     setThemeSelected(id);
     localStorage.setItem(storageKey, theme);
     reflectPreference(theme);

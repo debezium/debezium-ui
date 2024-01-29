@@ -1,13 +1,13 @@
 import {
-  Modal,
-  ModalVariant,
   Button,
+  Form,
   FormGroup,
-  TextInput,
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Form,
+  Modal,
+  ModalVariant,
+  TextInput,
 } from "@patternfly/react-core";
 import React from "react";
 import { validate } from "./FormInputComponent";

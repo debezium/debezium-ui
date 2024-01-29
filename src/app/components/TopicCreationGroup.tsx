@@ -1,25 +1,23 @@
 import {
-  Split,
-  SplitItem,
-  Tooltip,
-  Title,
   Button,
-  Grid,
-  GridItem,
-  Form,
-  FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-  TextInput,
   Card,
   CardBody,
-  CardFooter,
   CardTitle,
-  Popover,
+  FormGroup,
+  FormHelperText,
   FormSection,
   FormSelect,
   FormSelectOption,
+  Grid,
+  GridItem,
+  HelperText,
+  HelperTextItem,
+  Popover,
+  Split,
+  SplitItem,
+  TextInput,
+  Title,
+  Tooltip,
 } from "@patternfly/react-core";
 import {
   ExclamationCircleIcon,
@@ -28,8 +26,8 @@ import {
   TrashIcon,
 } from "@patternfly/react-icons";
 import React, { useCallback, useEffect } from "react";
-import { FormInputComponent, validate } from "./FormInputComponent";
-import { cloneDeep, isEmpty } from "lodash";
+import { validate } from "./FormInputComponent";
+import { cloneDeep } from "lodash";
 import topicCreationResponse from "../assets/mockResponse/topicCreation.json";
 import { FormStep } from "@app/constants";
 
@@ -120,7 +118,7 @@ export const TopicCreationGroup: React.FC<TopicCreationGroupProps> = ({
   const removeSelectedOptionsList = useCallback(
     (value: string) => {
       const selectedOptionsListCopy = [...selectedOptionsList];
-      let newArray = selectedOptionsListCopy.filter((item) => item !== value);
+      const newArray = selectedOptionsListCopy.filter((item) => item !== value);
       setSelectedOptionsList(newArray);
     },
     [selectedOptionsList, setSelectedOptionsList]
@@ -461,7 +459,7 @@ const TopicOptionsSelect: React.FC<TopicOptionsSelectProps> = ({
   };
 
   useEffect(() => {
-    let options = topicCreationResponse.groups.options.map((option) => {
+    const options = topicCreationResponse.groups.options.map((option) => {
       const selected = selectedOptionsList.includes(option["x-name"]);
       return {
         value: option["x-name"],

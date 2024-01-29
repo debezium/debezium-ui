@@ -21,8 +21,6 @@ import {
   FlexItem,
   Grid,
   GridItem,
-  HelperText,
-  HelperTextItem,
   Icon,
   MenuToggle,
   MenuToggleElement,
@@ -51,16 +49,12 @@ import {
 import { POLLING_INTERVAL } from "@app/constants";
 import {
   CheckCircleIcon,
-  CheckIcon,
   ExclamationCircleIcon,
   PencilAltIcon,
-  TimesCircleIcon,
 } from "@patternfly/react-icons";
 import useFetchApiMultiVariableApi from "@app/hooks/useFetchApiMultiVariableApi";
 import {
   convertMilliSecToTime,
-  getConnectorType,
-  getTaskStatus,
 } from "@app/utils";
 
 interface ConnectorDetailsProps {
@@ -68,7 +62,7 @@ interface ConnectorDetailsProps {
 }
 
 export const ConnectorDetails: React.FC<ConnectorDetailsProps> = (props) => {
-  let { connectorName } = useParams();
+  const { connectorName } = useParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   const [activeTabKey, setActiveTabKey] = React.useState(0);
