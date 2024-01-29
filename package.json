@@ -55,7 +55,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "file-loader": "6.2.0",
     "html-webpack-plugin": "5.5.3",
-    "husky": "^9.0.6",
+    "husky": "9.0.6",
     "imagemin": "8.0.1",
     "jest": "29.6.1",
     "jest-environment-jsdom": "29.6.1",
