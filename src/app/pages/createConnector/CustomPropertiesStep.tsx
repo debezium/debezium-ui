@@ -1,27 +1,27 @@
 import {
-  EmptyState,
-  EmptyStateVariant,
-  EmptyStateIcon,
-  EmptyStateBody,
+  Alert,
+  Bullseye,
   Button,
-  Level,
-  LevelItem,
-  TextInput,
-  Grid,
-  GridItem,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  Divider,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Grid,
+  GridItem,
   Label,
   LabelGroup,
-  Divider,
-  Alert,
-  Bullseye,
-  Tooltip,
-  Title,
+  Level,
+  LevelItem,
   Modal,
   ModalVariant,
+  TextInput,
+  Title,
+  Tooltip,
 } from "@patternfly/react-core";
 import {
   CircleIcon,
@@ -209,14 +209,14 @@ export const CustomPropertiesStep: React.FC<CustomPropertiesStepProps> = ({
                           <Tooltip
                             position="top"
                             content={
-                              formData.hasOwnProperty(properties.get(key)!.key)
+                              Object.prototype.hasOwnProperty.call(formData, properties.get(key)!.key)
                                 ? "Saved"
                                 : "Not saved: either key or value is missing"
                             }
                           >
                             <Alert
                               variant={
-                                formData.hasOwnProperty(
+                                Object.prototype.hasOwnProperty.call(formData,
                                   properties.get(key)!.key
                                 )
                                   ? "success"

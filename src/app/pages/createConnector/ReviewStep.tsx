@@ -1,10 +1,10 @@
 import { getConnectorClass } from "@app/utils";
 import {
   Button,
-  CodeBlock,
-  CodeBlockCode,
   ClipboardCopyButton,
+  CodeBlock,
   CodeBlockAction,
+  CodeBlockCode,
   Tooltip,
 } from "@patternfly/react-core";
 import {

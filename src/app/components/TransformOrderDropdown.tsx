@@ -1,10 +1,8 @@
 import {
   Dropdown,
-  MenuToggleElement,
-  MenuToggle,
   DropdownList,
-  DropdownItem,
-  Divider,
+  MenuToggle,
+  MenuToggleElement,
 } from "@patternfly/react-core";
 import { EllipsisVIcon } from "@patternfly/react-icons";
 import React from "react";

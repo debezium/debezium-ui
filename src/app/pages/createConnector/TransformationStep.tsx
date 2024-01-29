@@ -3,16 +3,16 @@ import { Services } from "@app/apis/services";
 import { TransformCard } from "@app/components/TransformCard";
 import { mapToObject } from "@app/utils";
 import {
-  EmptyState,
-  EmptyStateVariant,
-  EmptyStateIcon,
-  EmptyStateBody,
   Button,
+  EmptyState,
+  EmptyStateActions,
+  EmptyStateBody,
+  EmptyStateFooter,
+  EmptyStateHeader,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Modal,
   ModalVariant,
-  EmptyStateHeader,
-  EmptyStateFooter,
-  EmptyStateActions,
 } from "@patternfly/react-core";
 import { CubesIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import _, { isEmpty } from "lodash";
@@ -85,11 +85,13 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = ({
 
   const moveTransformOrder = React.useCallback(
     (order, position) => {
+      let i = 1;
+      let j = transforms.size;
       const transformsCopy = new Map<number, ITransformData>(transforms);
       switch (position) {
         case "top":
           transformsCopy.set(1, transforms.get(order)!);
-          let i = 1;
+
           while (i < order) {
             transformsCopy.set(i + 1, transforms.get(i)!);
             i++;
@@ -105,7 +107,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = ({
           break;
         case "bottom":
           transformsCopy.set(transforms.size, transforms.get(order)!);
-          let j = transforms.size;
+
           while (j > order) {
             transformsCopy.set(j - 1, transforms.get(j)!);
             j--;
@@ -243,6 +245,7 @@ export const TransformsStep: React.FunctionComponent<ITransformStepProps> = ({
             <a
               href="https://debezium.io/documentation/reference/nightly/transformations/index.html"
               target="_blank"
+              rel="noreferrer"
             >
               {" "}
               documentation{" "}

@@ -35,8 +35,6 @@ import { useNavigate } from "react-router-dom";
 import { POLLING_INTERVAL } from "@app/constants";
 
 const ConnectorPage: React.FunctionComponent = () => {
-  // const [loading, setLoading] = React.useState<boolean>(false);
-  // const [connectorsList, setConnectorsList] = React.useState<any>({});
 
   const appLayoutContext = React.useContext(AppLayoutContext);
   const { cluster: clusterUrl, addNewNotification } = appLayoutContext;
@@ -65,32 +63,6 @@ const ConnectorPage: React.FunctionComponent = () => {
     isLoading: connectorsInfoLoading,
     error: connectorsInfoError,
   } = getConnectorsInfo;
-
-  // useEffect(() => {
-  //   if (connectorsStatusLoading || connectorsInfoLoading) {
-  //     setLoading(true);
-  //   } else {
-  //     setLoading(false);
-  //   }
-  //   // console.log(connectorsInfoError, connectorsStatusError);
-  // }, [connectorsStatusLoading, connectorsInfoLoading, connectorsInfoError, connectorsStatusError]);
-
-  // useEffect(() => {
-  //   if (!isEmpty(connectorsStatus) && !isEmpty(connectorsInfo)) {
-  //     const connectorsDetailedList: any = { ...connectorsInfo };
-
-  //     for (const key in connectorsStatus) {
-  //       if (connectorsDetailedList[key] !== undefined) {
-  //         // If the key already exists in mergedObject, add the values
-  //         connectorsDetailedList[key] = merge(connectorsDetailedList[key].info, connectorsStatus[key].status);
-  //       } else {
-  //         // If the key doesn't exist, simply add it to mergedObject
-  //         connectorsDetailedList[key] = connectorsStatus[key];
-  //       }
-  //     }
-  //     setConnectorsList(connectorsDetailedList);
-  //   }
-  // }, [connectorsStatus, connectorsInfo]);
 
   const navigate = useNavigate();
   const createConnectorPage = () => navigate("/plugins");
@@ -162,10 +134,6 @@ const ConnectorPage: React.FunctionComponent = () => {
                   You can create a new connector by clicking on the &quot;Create
                   connector&quot; button.
                 </Text>
-                {/* <Text component={TextVariants.small}>
-                This text has overridden a css component variable to demonstrate how to apply customizations using
-                PatternFly&apos;s global variable API.
-              </Text> */}
               </TextContent>
             </EmptyStateBody>
             <EmptyStateFooter>

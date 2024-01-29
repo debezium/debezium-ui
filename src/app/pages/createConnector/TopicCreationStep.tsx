@@ -1,11 +1,9 @@
 import {
-  FormSection,
-  FormGroup,
-  TextInput,
-  Form,
-  GridItem,
-  Grid,
   Button,
+  Form,
+  FormSection,
+  Grid,
+  GridItem,
 } from "@patternfly/react-core";
 import React, { useCallback, useEffect } from "react";
 import topicCreationResponse from "../../assets/mockResponse/topicCreation.json";

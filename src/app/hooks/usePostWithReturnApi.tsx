@@ -27,6 +27,6 @@ function usePostWithReturnApi<T>(): PostWithReturnApiResult<T> {
     };
 
     return { response, error, isLoading, postWithReturn };
-};
+}
 
 export default usePostWithReturnApi;
