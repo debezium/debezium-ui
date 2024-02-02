@@ -10,11 +10,14 @@ import {
   Skeleton,
   Split,
   SplitItem,
+  Switch,
   Text,
   TextContent,
   ToolbarItem,
+  Tooltip,
   Wizard,
   WizardFooterWrapper,
+  WizardHeader,
   WizardStep,
   useWizardContext,
 } from "@patternfly/react-core";
@@ -89,7 +92,25 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   const [connectionValidationMessage, setConnectionValidationMessage] =
     useState<string>("");
 
+  const [showAdvanceProp, setShowAdvanceProp] = React.useState<boolean>(false);
+
   const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (locationData) {
+      if (!locationData.hideAdvance) {
+        setShowAdvanceProp(false);
+      } else {
+        setShowAdvanceProp(true);
+      }
+    }
+  }, [locationData]);
+
+  const connectorPluginPage = () => {
+    navigate("/plugins", {
+      state: { hideAdvance: showAdvanceProp },
+    });
+  };
 
   const updateFormData = useCallback(
     (key: string, value: any, formStep: FormStep) => {
@@ -353,17 +374,27 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
             </Text>
           </TextContent>
         </SplitItem>
-        {/* <SplitItem isFilled></SplitItem>
+        <SplitItem isFilled></SplitItem>
         <SplitItem>
-          <Switch
-            label="Skip additional properties"
-            labelOff="Configure additional properties"
-            isChecked={isAdvanceChecked}
-            onChange={handleAdvanceChange}
-            id="Advance-config-switch"
-            name="Toggle Hide and Show Advanced Configuration steps"
-          />
-        </SplitItem> */}
+          <Tooltip
+            content={
+              showAdvanceProp
+                ? `Hide advanced options`
+                : `Show advanced options`
+            }
+          >
+            <Button variant="plain">
+              <Switch
+                id="quick-start-switch-on"
+                aria-label="Configure connector with advanced options toggle"
+                label="Advance configuration"
+                isChecked={showAdvanceProp}
+                hasCheckIcon
+                onChange={() => setShowAdvanceProp(!showAdvanceProp)}
+              />
+            </Button>
+          </Tooltip>
+        </SplitItem>
       </Split>
     </PageSection>
   );
@@ -386,7 +417,6 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   const ConnectionStepFooter = () => {
     const { goToNextStep, goToPrevStep, close } = useWizardContext();
     const [isLoading, setIsLoading] = useState(false);
-    const connectorPluginPage = () => navigate("/plugins");
 
     async function onValidate() {
       setIsLoading(true);
@@ -539,7 +569,18 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
         <Wizard
           className="connector-config-wizard"
           onClose={() => setIsCancelModalOpen(true)}
-          isVisitRequired
+          header={
+            !showAdvanceProp ? (
+              <Alert
+                variant="info"
+                isInline
+                title='Advance properties steps are hidden, to configure the advance properties enable the "Advance configuration" toggle.'
+              />
+            ) : (
+              <></>
+            )
+          }
+          // isVisitRequired
         >
           <WizardStep
             name="Connection"
@@ -609,14 +650,16 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
           <WizardStep
             name="Additional properties"
             id="wizard-step-2-additional"
-            isExpandable
-            isHidden={locationData.hideAdvance || false}
+            // isExpandable
+            // isHidden={!showAdvanceProp}
+            isDisabled={!connectionFilled}
             steps={[
               <WizardStep
                 name="Filter definition"
                 id="wizard-step-2-filter"
                 key="wizard-step-2-filter"
-                isHidden={locationData.hideAdvance || false}
+                // isHidden={!showAdvanceProp}
+                isDisabled={!connectionFilled}
               >
                 <FilterStep
                   filterProperties={[...filterProperties]}
@@ -631,10 +674,15 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 />
               </WizardStep>,
               <WizardStep
-                name="Transformation"
+                name={
+                  <>
+                    Transformation <sup style={{color: "#0066CC"}}>Adv.</sup>
+                  </>
+                }
                 id="wizard-step-2-transform"
                 key="wizard-step-2-smt"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={!showAdvanceProp}
+                isDisabled={!connectionFilled}
               >
                 <TransformsStep
                   formData={transformFormData}
@@ -642,10 +690,16 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 />
               </WizardStep>,
               <WizardStep
-                name="Topic creation"
+              name={
+                <>
+                  Topic creation <sup style={{color: "#0066CC"}}>Adv.</sup>
+                </>
+              }
+              
                 id="wizard-step-2-topic"
                 key="wizard-step-2-topic-creation"
-                isHidden={!topicCreationEnabled || locationData.hideAdvance}
+                isHidden={!topicCreationEnabled || !showAdvanceProp}
+                isDisabled={!connectionFilled}
               >
                 <TopicCreationStep
                   formData={topicGroupFormData}
@@ -653,10 +707,16 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 />
               </WizardStep>,
               <WizardStep
-                name="Data options"
+              name={
+                <>
+                  Data options <sup style={{color: "#0066CC"}}>Adv.</sup>
+                </>
+              }
+            
                 id="wizard-step-2-data"
                 key="wizard-step-2-data-options"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={!showAdvanceProp}
+                isDisabled={!connectionFilled}
               >
                 <DataOptionStep
                   dataOptionProperties={[...dataOptionProperties]}
@@ -670,10 +730,17 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 />
               </WizardStep>,
               <WizardStep
-                name="Runtime options"
+              // name={
+              //   <>
+              //     Runtime options <sup style={{color: "#0066CC"}}>Adv.</sup>
+              //   </>
+              // }
+              name="Runtime options"
+               
                 id="wizard-step-2-runtime"
                 key="wizard-step-2-runtime-options"
-                isHidden={locationData.hideAdvance || false}
+                // isHidden={!showAdvanceProp}
+                isDisabled={!connectionFilled}
               >
                 <RuntimeOptionStep
                   runtimeOptionEngineProperties={[
@@ -688,10 +755,17 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 />
               </WizardStep>,
               <WizardStep
-                name="Custom properties"
+              // name={
+              //   <>
+              //     Custom properties <sup style={{color: "#0066CC"}}>Adv.</sup>
+              //   </>
+              // }
+              name="Custom properties"
+               
                 id="wizard-step-2-custom"
                 key="wizard-step-2-custom-property"
-                isHidden={locationData.hideAdvance || false}
+                // isHidden={!showAdvanceProp}
+                isDisabled={!connectionFilled}
               >
                 <CustomPropertiesStep
                   formData={customPropFormData}
@@ -714,6 +788,7 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
             name="Review"
             id="wizard-step-3-review"
             footer={<ReviewStepFooter />}
+            isDisabled={!connectionFilled}
           >
             <ReviewStep
               connectorName={connectorName}
