@@ -61,7 +61,7 @@
     "jest-environment-jsdom": "29.6.1",
     "mini-css-extract-plugin": "2.8.0",
     "postcss": "8.4.33",
-    "prettier": "3.2.4",
+    "prettier": "3.2.5",
     "prop-types": "15.8.1",
     "raw-loader": "4.0.2",
     "react-axe": "3.5.4",
@@ -85,10 +85,10 @@
     "webpack-merge": "5.10.0"
   },
   "dependencies": {
-    "@patternfly/react-core": "5.1.2",
-    "@patternfly/react-icons": "5.1.2",
-    "@patternfly/react-styles": "5.1.2",
-    "@patternfly/react-table": "5.1.2",
+    "@patternfly/react-core": "5.2.0",
+    "@patternfly/react-icons": "5.2.0",
+    "@patternfly/react-styles": "5.2.0",
+    "@patternfly/react-table": "5.2.0",
     "@storybook/builder-webpack5": "7.0.27",
     "axios": "1.6.7",
     "i": "0.3.7",
