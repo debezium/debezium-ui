@@ -10,7 +10,7 @@ COPY --chown=1001 . .
 RUN npm run build
 
 # Final image with only build artifacts
-FROM node:18-slim
+FROM node:18.19.0-slim
 WORKDIR /app
 RUN npm install express
 COPY --from=build /app/dist/serve.js /app/dist/config.js ./
