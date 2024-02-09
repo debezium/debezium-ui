@@ -142,6 +142,9 @@ module.exports = (env) => {
       new CopyPlugin({
         patterns: [{ from: './config.js', to: './' }],
       }),
+      new CopyPlugin({
+        patterns: [{ from: './serve.js', to: './' }],
+      }),
     ],
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
