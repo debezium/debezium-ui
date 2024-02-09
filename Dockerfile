@@ -1,21 +1,25 @@
 ####
-# This Dockerfile is used in order to build a container with Debezium UI.
+# This Dockerfile is used to build a production container image for Debezium UI.
 ###
-# Build UI
-FROM registry.access.redhat.com/ubi9/nodejs-18 AS build
+FROM registry.access.redhat.com/ubi9/nodejs-20:1-24 as builder
+
 WORKDIR /app
 COPY --chown=1001 package*.json ./
+
 RUN npm install
+
 COPY --chown=1001 . .
+
+ENV NODE_ENV=production
+
+# Build the React application
 RUN npm run build
 
-# Final image with only build artifacts
-FROM node:18-slim
-WORKDIR /app
-RUN npm install express
-COPY --from=build /app/dist/serve.js /app/dist/config.js ./
-COPY --from=build /app/dist ./dist
-EXPOSE 3000
-ENV NODE_ENV=production
+
+FROM nginx:1.25.3-alpine
+
 ENV KAFKA_CONNECT_CLUSTERS=http://localhost:8083/
-CMD ["node", "serve"]
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY config.json /app/config.json
+COPY deployment/image/create-dbzui-config.sh /docker-entrypoint.d/

@@ -1,0 +1,3 @@
+{
+    "KAFKA_CONNECT_CLUSTERS": "http://localhost:8083"
+}
