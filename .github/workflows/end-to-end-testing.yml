@@ -76,7 +76,7 @@ jobs:
           install: false
           working-directory: ./ui
       - name: upload Cypress screenshots for failed tests
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
@@ -84,7 +84,7 @@ jobs:
 
       # Test run video was always captured, so this action uses "always()" condition
       - name: upload Cypress test run video
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-videos
