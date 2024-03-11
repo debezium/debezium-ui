@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Checkout Debezium UI
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build Debezium UI container
         run: DOCKER_BUILDKIT=1 docker build --cache-from debezium/debezium-ui --file ./Dockerfile --tag dbzui-backend:${GITHUB_SHA} .
       - name: Run Debezium UI container
