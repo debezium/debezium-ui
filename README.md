@@ -40,7 +40,7 @@ Debezium UI will be available on [http://localhost:9000](http://localhost:9000)
 
 ### Prerequisites
 
-With the latest update to Debezium UI you need a properly running Debezium instance version 2.5 or newer with Debezium kafka connect rest extension enabled and running DB instances, depending on what connectors you are going to use (Postgres, Mongo DB, MySQL, etc).
+With the latest update to Debezium UI you need a properly running Debezium instance version 2.5 or newer with Debezium kafka connect rest extension enabled and running DB instances, depending on what connectors you are going to use (Postgres, Mongo DB, MySQL, etc). see example set of the configuration options [here](https://github.com/debezium/debezium-ui/blob/main/docker-compose.yaml#L67-L78)
 
 #### DEV Infrastructure with Docker-Compose
 
