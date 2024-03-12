@@ -8,7 +8,7 @@ import { NotFound } from "@app/NotFound/NotFound";
 import { useDocumentTitle } from "@app/utils/useDocumentTitle";
 import { ConnectorPage } from "./pages/connector";
 import { CreateConnectorWizard } from "./pages/createConnector";
-import { ConnectorDetails } from "./pages/connectorDetails";
+import { ConnectorInsight } from "./pages/connectorInsight";
 import { ConnectorPlugins } from "./pages/connectorPlugins/ConnectorPlugins";
 
 let routeFocusTimer: number;
@@ -133,7 +133,7 @@ const AppRoutes = (): React.ReactElement => (
 
     <Route path="/" element={<ConnectorPage />} />
     <Route path="/plugins" element={<ConnectorPlugins />} />
-    <Route path="/connector/:connectorName" element={<ConnectorDetails />} />
+    <Route path="/connector/:connectorName" element={<ConnectorInsight />} />
     <Route
       path="/config-connector/:connectorPlugin"
       element={<CreateConnectorWizard />}
