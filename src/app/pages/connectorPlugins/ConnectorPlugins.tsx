@@ -18,10 +18,11 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
+  Tooltip,
 } from "@patternfly/react-core";
-import React from "react";
+import React, { useEffect } from "react";
 import "./ConnectorPlugins.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DatabaseIcon } from "@patternfly/react-icons";
 
 interface ConnectorPluginsProps {
@@ -29,7 +30,9 @@ interface ConnectorPluginsProps {
 }
 
 export const ConnectorPlugins: React.FC<ConnectorPluginsProps> = (props) => {
-  const [quickStart, setQuickStart] = React.useState<boolean>(false);
+  const locationData = useLocation().state;
+
+  const [showAdvanceProp, setShowAdvanceProp] = React.useState<boolean>(false);
   const appLayoutContext = React.useContext(AppLayoutContext);
   const { cluster: clusterUrl, addNewNotification } = appLayoutContext;
   const connectorService = Services.getConnectorService();
@@ -56,9 +59,19 @@ export const ConnectorPlugins: React.FC<ConnectorPluginsProps> = (props) => {
     const target = event.target as HTMLInputElement;
     const name = target.name;
     navigate(`/config-connector/${name}`, {
-      state: { hideAdvance: quickStart },
+      state: { hideAdvance: showAdvanceProp },
     });
   };
+
+  useEffect(() => {
+    if (locationData) {
+      if (!locationData.hideAdvance) {
+        setShowAdvanceProp(false);
+      } else {
+        setShowAdvanceProp(true);
+      }
+    }
+  }, [locationData]);
 
   const toolbarItems = (
     <React.Fragment>
@@ -70,16 +83,22 @@ export const ConnectorPlugins: React.FC<ConnectorPluginsProps> = (props) => {
       </ToolbarItem>
       <ToolbarItem variant="separator" />
       <ToolbarItem>
-        <Button variant="plain">
-          <Switch
-            id="quick-start-switch-on"
-            aria-label="Configure connector with advanced options toggle"
-            label="Advance configuration options"
-            isChecked={!quickStart}
-            hasCheckIcon
-            onChange={() => setQuickStart(!quickStart)}
-          />
-        </Button>
+        <Tooltip
+          content={
+            showAdvanceProp ? `Hide advanced options` : `Show advanced options`
+          }
+        >
+          <Button variant="plain">
+            <Switch
+              id="quick-start-switch-on"
+              aria-label="Configure connector with advanced options toggle"
+              label="Advance configuration"
+              isChecked={showAdvanceProp}
+              hasCheckIcon
+              onChange={() => setShowAdvanceProp(!showAdvanceProp)}
+            />
+          </Button>
+        </Tooltip>
       </ToolbarItem>
     </React.Fragment>
   );
@@ -90,8 +109,9 @@ export const ConnectorPlugins: React.FC<ConnectorPluginsProps> = (props) => {
         <Text component="h1">Connector plugins</Text>
         <Text component="p">
           List of available connector plugin type. To quickly create a connector
-            with just basic properties toggle off the switch for &quot;Advance
-            configuration options&quot; below before clicking on connector plugin type.{" "}
+          with just basic properties toggle off the switch for &quot;Advance
+          configuration options&quot; below before clicking on connector plugin
+          type.{" "}
         </Text>
       </TextContent>
       <Toolbar id="toolbar-group-types">
