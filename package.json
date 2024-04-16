@@ -38,7 +38,7 @@
     "@storybook/addons": "7.0.27",
     "@storybook/react": "7.0.27",
     "@testing-library/jest-dom": "5.17.0",
-    "@testing-library/react": "14.2.1",
+    "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.5.2",
     "@types/jest": "29.5.3",
     "@types/lodash": "4.14.202",
