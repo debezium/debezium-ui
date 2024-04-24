@@ -20,6 +20,9 @@ FROM nginx:1.25.3-alpine
 
 ENV KAFKA_CONNECT_CLUSTERS=http://localhost:8083/
 
+RUN rm -rf /etc/nginx/conf.d/*.conf
+COPY ./etc/nginx/default.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY config.json /app/config.json
 COPY deployment/image/create-dbzui-config.sh /docker-entrypoint.d/
