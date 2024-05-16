@@ -89,6 +89,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
   const [connectionValidationMessage, setConnectionValidationMessage] =
     useState<string>("");
 
+  const [showAdvanceProp, setShowAdvanceProp] = React.useState<boolean>(false);
+
   const ref = useRef<HTMLInputElement>(null);
 
   const updateFormData = useCallback(
@@ -539,7 +541,7 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
         <Wizard
           className="connector-config-wizard"
           onClose={() => setIsCancelModalOpen(true)}
-          isVisitRequired
+          // isVisitRequired
         >
           <WizardStep
             name="Connection"
@@ -609,14 +611,16 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
           <WizardStep
             name="Additional properties"
             id="wizard-step-2-additional"
-            isExpandable
-            isHidden={locationData.hideAdvance || false}
+            // isExpandable
+            isHidden={locationData?.hideAdvance || false}
+            isDisabled={!connectionFilled}
             steps={[
               <WizardStep
                 name="Filter definition"
                 id="wizard-step-2-filter"
                 key="wizard-step-2-filter"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={locationData?.hideAdvance || false}
+                isDisabled={!connectionFilled}
               >
                 <FilterStep
                   filterProperties={[...filterProperties]}
@@ -634,7 +638,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 name="Transformation"
                 id="wizard-step-2-transform"
                 key="wizard-step-2-smt"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={locationData?.hideAdvance || false}
+                isDisabled={!connectionFilled}
               >
                 <TransformsStep
                   formData={transformFormData}
@@ -645,7 +650,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 name="Topic creation"
                 id="wizard-step-2-topic"
                 key="wizard-step-2-topic-creation"
-                isHidden={!topicCreationEnabled || locationData.hideAdvance}
+                isHidden={!topicCreationEnabled || locationData?.hideAdvance}
+                isDisabled={!connectionFilled}
               >
                 <TopicCreationStep
                   formData={topicGroupFormData}
@@ -656,7 +662,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 name="Data options"
                 id="wizard-step-2-data"
                 key="wizard-step-2-data-options"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={locationData?.hideAdvance || false}
+                isDisabled={!connectionFilled}
               >
                 <DataOptionStep
                   dataOptionProperties={[...dataOptionProperties]}
@@ -673,7 +680,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 name="Runtime options"
                 id="wizard-step-2-runtime"
                 key="wizard-step-2-runtime-options"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={locationData?.hideAdvance || false}
+                isDisabled={!connectionFilled}
               >
                 <RuntimeOptionStep
                   runtimeOptionEngineProperties={[
@@ -691,7 +699,8 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
                 name="Custom properties"
                 id="wizard-step-2-custom"
                 key="wizard-step-2-custom-property"
-                isHidden={locationData.hideAdvance || false}
+                isHidden={locationData?.hideAdvance || false}
+                isDisabled={!connectionFilled}
               >
                 <CustomPropertiesStep
                   formData={customPropFormData}
@@ -714,6 +723,7 @@ export const CreateConnectorWizard: React.FunctionComponent = () => {
             name="Review"
             id="wizard-step-3-review"
             footer={<ReviewStepFooter />}
+            isDisabled={!connectionFilled}
           >
             <ReviewStep
               connectorName={connectorName}
