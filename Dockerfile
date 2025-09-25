@@ -1,7 +1,7 @@
 ####
 # This Dockerfile is used to build a production container image for Debezium UI.
 ###
-FROM registry.access.redhat.com/ubi9/nodejs-20:1-24 as builder
+FROM registry.access.redhat.com/ubi9/nodejs-20:1-34.1712566506 as builder
 
 WORKDIR /app
 COPY --chown=1001 package*.json ./
@@ -16,7 +16,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 
-FROM nginx:1.25.3-alpine
+FROM nginx:1.26.0-alpine
 
 ENV KAFKA_CONNECT_CLUSTERS=http://localhost:8083/
 
